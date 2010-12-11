@@ -25,7 +25,7 @@ module AX
     end
   end
 
-  # Chops off a trailing 's' if there is one and then looks up the constant.
+  # Chomps off a trailing 's' if there is one and then looks up the constant.
   # @param [String] const
   # @return [Class,nil] the class if it exists, else returns nil
   def self.plural_const_get const
@@ -84,7 +84,7 @@ module AX
     carbon_point = CGPointZero
     NSScreen.screens.each { |screen|
       if NSPointInRect(point, screen.frame)
-	height = screen.frame.size.height
+	height       = screen.frame.size.height
 	carbon_point = CGPoint.new point.x, (height - point.y - 1)
       end
     }
