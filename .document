@@ -1,5 +1,4 @@
 lib/**/*.rb
-bin/*
-- 
-features/**/*.feature
+-
+test/**/*.rb
 LICENSE.txt
