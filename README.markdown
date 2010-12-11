@@ -3,6 +3,17 @@ AXElements
 
 A simple layer above the Mac OS X Accessibility APIs.
 
+
+Running The Test Suite
+======================
+
+We use rspec to test AX::Element, the abstract base class for all the AX
+elements, but for any explicitly declared subclass of AX::Element we use
+minitest as it seems more appropriate.
+
+To run the whole rake the `spec` and `unit` targets.
+
+
 Contributing to AXElements
 ==========================
 
@@ -13,6 +24,7 @@ Contributing to AXElements
 * Commit and push until you are happy with your contribution
 * Make sure to add tests for it. This is important so I don't break it in a future version unintentionally.
 * Please try not to mess with the Rakefile, version, or history. If you want to have your own version, or is otherwise necessary, that is fine, but please isolate to its own commit so I can cherry-pick around it.
+
 
 Copyright
 =========
