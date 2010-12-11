@@ -9,7 +9,7 @@ require   'AXElements/Elements'
 # The module should NEVER return something from the lower levels.
 # To help with this, the module includes a few handy methods.
 #
-# ![Class Diagram](/docs/file/docs/images/AX-DL4.png)
+# ![Class Diagram](/docs/file/docs/images/AX.png)
 module AX
 
   # Like {#const_get} except that if the class does not exist yet then

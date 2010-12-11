@@ -1,0 +1,9 @@
+--protected
+--no-private
+--markup markdown
+--asset docs/images:images
+--verbose
+--no-cache
+--no-output
+-
+docs/GeneratingEvents.markdown

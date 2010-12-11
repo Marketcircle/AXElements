@@ -38,3 +38,12 @@ task :default => :test
 
 require 'yard'
 YARD::Rake::YardocTask.new
+
+task :garden do
+  sh 'yard graph --dependencies --dot="-o docs/images/AX.png -Tpng:quartz"'
+end
+
+task :show_off do
+  sh 'yard server --reload'
+end
+
