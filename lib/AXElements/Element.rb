@@ -74,13 +74,18 @@ class Element
     ptr[0]
   end
 
+  # Like the #perform_action method, we cannot make any assumptions
+  # about the state of the program after you have set a value; at
+  # least not in the general case. So, the best we can do here is
+  # return true if there were no issues.
   # @param [String] attr
   # @param [Object] value
-  # @return [boolean] true
+  # @return [boolean, Fixnum] true if successful, otherwise returns
+  #  the error code
   def set_attribute_with_value attr, value
     error_code = AXUIElementSetAttributeValue( @ref, attr, value )
-    log_error error_code unless error_code.zero?
-    true
+    return true if error_code.zero?
+    log_error error_code
   end
 
   # @todo make the method wait until the action completes
@@ -89,11 +94,12 @@ class Element
   # longer be valid. An example of this would be pressing the close
   # button on a window.
   # @param [String] action_name
-  # @return [boolean]
+  # @return [boolean, Fixnum] true if successufl, otherwise returns the
+  #  the error code
   def perform_action action_name
-    ret = AXUIElementPerformAction(@ref, action_name)
-    log_error ret unless ret.zero?
-    true
+    error_code = AXUIElementPerformAction(@ref, action_name)
+    return true if error_code.zero?
+    log_error error_code
   end
 
   # Takes an AXUIElementRef and gives you some kind of accessibility object.
