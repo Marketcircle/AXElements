@@ -360,13 +360,14 @@ class Element
 
   # Uses the call stack and error code to log a message that might be helpful
   # in debugging.
-  # @param [Fixnum] errorCode an AXError value
-  # @return [nil]
+  # @param [Fixnum] error_code an AXError value
+  # @return [Fixnum] the error code that was passed to this method
   def log_error error_code
     error = @@AXError[error_code] || 'UNKNOWN ERROR CODE'
     NSLog("[#{error} (#{error_code})] while trying something on a #{self.role}:")
     NSLog("Attributes and actions that were available: #{self.available_methods}")
     NSLog("Backtrace: #{caller.description}")
+    error_code
   end
 end
 end
