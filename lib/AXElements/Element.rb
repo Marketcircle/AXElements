@@ -215,6 +215,7 @@ class Element
     :decrement                      => [:perform_action, NSAccessibilityDecrementAction],
     :delete                         => [:perform_action, NSAccessibilityDeleteAction],
     :increment                      => [:perform_action, NSAccessibilityIncrementAction],
+    :pick                           => [:perform_action, NSAccessibilityPickAction],
     :press                          => [:perform_action, NSAccessibilityPressAction],
     :raise                          => [:perform_action, NSAccessibilityRaiseAction],
     :show_menu                      => [:perform_action, NSAccessibilityShowMenuAction],
