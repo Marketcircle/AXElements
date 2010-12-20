@@ -6,7 +6,7 @@ source "http://rubygems.org"
 # Add dependencies to develop your gem here.
 # Include everything needed to run rake, tests, features, etc.
 group :development do
-  gem "rspec", "~> 2.2.0"
+  gem "rspec", "~> 2.3.0"
   gem "minitest", "~> 2.0.0"
   gem "yard", "~> 0.6.0"
   gem "bluecloth", "~> 2.0.0"
