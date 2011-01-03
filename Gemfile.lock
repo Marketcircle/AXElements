@@ -19,6 +19,8 @@ GEM
       diff-lcs (~> 1.1.2)
     rspec-mocks (2.3.0)
     yard (0.6.3)
+    yard-rspec (0.1)
+      yard
 
 PLATFORMS
   ruby
@@ -30,3 +32,4 @@ DEPENDENCIES
   minitest (~> 2.0.0)
   rspec (~> 2.3.0)
   yard (~> 0.6.0)
+  yard-rspec (~> 0.1.0)
