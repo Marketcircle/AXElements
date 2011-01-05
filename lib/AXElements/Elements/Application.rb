@@ -3,6 +3,18 @@ module AX
 # Some additional constructors and factories for Application objects.
 class Application < AX::Element
 
+  # @return [Fixnum] the process identifier of the app
+  attr_reader :pid
+
+  # Just so we can cache the PID.
+  def initialize app
+    super app
+
+    pid  = Poniter.new 'i'
+    AXUIElementGetPid(@ref, pid)
+    @pid = pid[0]
+  end
+
   # @todo make this method actually wait for Daylite to finish loading,
   #  I should be able to do this with accessibility notifications, so I
   #  should register for notifications when I launch the application
