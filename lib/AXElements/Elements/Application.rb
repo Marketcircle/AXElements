@@ -34,16 +34,9 @@ class Application < AX::Element
     Element.make_element AXUIElementCreateApplication(pid)
   end
 
-  # @param [CGPoint] point
-  # @return [Element]
-  def element_at_position point
-    ptr = Pointer.new :id
-    err_code = AXUIElementCopyElementAtPosition( @ref, point.x, point.y, ptr )
-    log_error err_code unless err_code.zero?
-    Element.make_element ptr[0]
-  end
 
   private
+
   # This is an asynchronous method.
   # @param [String] bundle the bundle identifier for the app
   # @return [boolean]
