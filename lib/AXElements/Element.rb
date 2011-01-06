@@ -5,6 +5,49 @@ module AX
 # The abstract base class for all accessibility objects.
 class Element
 
+  class << self
+
+    # Takes an AXUIElementRef and gives you some kind of accessibility object.
+    #
+    # The method prefers to create objects with the subrole value for an
+    # accessibility object, it will use the role if there is no subrole.
+    #
+    # @note we have to check that the subrole value returns non-nil because
+    #  sometimes an element will have a subrole but the value will be nil
+    # @param [AXUIElementRef] element
+    # @return [Element]
+    def self.make_element element
+      role    = attribute_of_element KAXRoleAttribute, element
+      subrole = nil
+      if attribute_names_for_element(element).include? KAXSubroleAttribute
+        subrole = attribute_of_element KAXSubroleAttribute, element
+      end
+      choice = (subrole ? subrole : role).sub(/^AX/, '').to_sym
+      AX.new_const_get(choice).new element
+    end
+
+
+    private
+
+    # @param [AXUIElementRef] element
+    # @return [[String]]
+    def self.attribute_names_for_element element
+      names = Pointer.new '^{__CFArray}'
+      AXUIElementCopyAttributeNames( element, names )
+      names[0]
+    end
+
+    # @param [AXUIElementRef] element
+    # @return [Object]
+    def self.attribute_of_element attr, element
+      value = Pointer.new :id
+      AXUIElementCopyAttributeValue( element, attr, value )
+      value[0]
+    end
+
+  end
+
+
   # @return [[String]] A cache of available attributes and actions
   attr_reader :available_methods
 
@@ -100,25 +143,6 @@ class Element
     error_code = AXUIElementPerformAction(@ref, action_name)
     return true if error_code.zero?
     log_error error_code
-  end
-
-  # Takes an AXUIElementRef and gives you some kind of accessibility object.
-  #
-  # The method prefers to create objects with the subrole value for an
-  # accessibility object, it will use the role if there is no subrole.
-  #
-  # @note we have to check that the subrole value returns non-nil because
-  #  sometimes an element will have a subrole but the value will be nil
-  # @param [AXUIElementRef] element
-  # @return [Element]
-  def self.make_element element
-    role    = attribute_of_element KAXRoleAttribute, element
-    subrole = nil
-    if attribute_names_for_element(element).include? KAXSubroleAttribute
-      subrole = attribute_of_element KAXSubroleAttribute, element
-    end
-    choice = (subrole ? subrole : role).sub(/^AX/, '').to_sym
-    AX.new_const_get(choice).new element
   end
 
   # Needed to override inherited NSObject#description. If you want a
@@ -320,25 +344,6 @@ class Element
     end
 
     raise NoMethodError, "Got to the end when trying ##{method} on a #{self.class}. Typo?"
-  end
-
-
-  private
-
-  # @param [AXUIElementRef] element
-  # @return [[String]]
-  def self.attribute_names_for_element element
-    names = Pointer.new '^{__CFArray}'
-    AXUIElementCopyAttributeNames( element, names )
-    names[0]
-  end
-
-  # @param [AXUIElementRef] element
-  # @return [Object]
-  def self.attribute_of_element attr, element
-    value = Pointer.new :id
-    AXUIElementCopyAttributeValue( element, attr, value )
-    value[0]
   end
 
 
