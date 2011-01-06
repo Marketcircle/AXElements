@@ -6,11 +6,11 @@ class Application < AX::Element
   # @return [Fixnum] the process identifier of the app
   attr_reader :pid
 
-  # Just so we can cache the PID.
+  # We need to cache the PID and register for notifications.
   def initialize app
     super app
 
-    pid  = Poniter.new 'i'
+    pid  = Pointer.new 'i'
     AXUIElementGetPid(@ref, pid)
     @pid = pid[0]
   end
