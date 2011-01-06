@@ -4,11 +4,11 @@ GEM
     bluecloth (2.0.9)
     diff-lcs (1.1.2)
     git (1.2.5)
-    jeweler (1.5.1)
+    jeweler (1.5.2)
       bundler (~> 1.0.0)
       git (>= 1.2.5)
       rake
-    minitest (2.0.0)
+    minitest (2.0.2)
     rake (0.8.7)
     rcov (0.9.9)
     reek (1.2.8)
@@ -31,7 +31,7 @@ GEM
     ruby_parser (2.0.5)
       sexp_processor (~> 3.0)
     sexp_processor (3.0.5)
-    yard (0.6.3)
+    yard (0.6.4)
     yard-rspec (0.1)
       yard
 
