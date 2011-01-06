@@ -19,6 +19,7 @@ Jeweler::Tasks.new do |gem|
   gem.email = "mrada@marketcircle.com"
   gem.authors = ["Mark Rada"]
   gem.requirements << 'BridgeSupport 2.0'
+  gem.files = ['lib/**/*']
 end
 Jeweler::RubygemsDotOrgTasks.new
 
