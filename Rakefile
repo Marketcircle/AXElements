@@ -45,13 +45,6 @@ task :test => [:spec, :unit]
 
 task :default => :spec
 
-require 'rcov/rcovtask'
-Rcov::RcovTask.new do |test|
-  test.libs << 'test'
-  test.pattern = 'test/**/test_*.rb'
-  test.verbose = true
-end
-
 require 'reek/rake/task'
 Reek::Rake::Task.new do |t|
   t.fail_on_error = true
