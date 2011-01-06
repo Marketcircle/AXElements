@@ -18,9 +18,9 @@ module AX
   # @param [Symbol] const the value you want as a constant
   # @return [Class] a reference to the class being looked up
   def self.new_const_get const
-    begin
+    if const_defined? const
       const_get const
-    rescue
+    else
       create_ax_class const
     end
   end
@@ -30,9 +30,9 @@ module AX
   # @return [Class,nil] the class if it exists, else returns nil
   def self.plural_const_get const
     const.chomp! 's'
-    begin
+    if const_defined? const
       const_get const
-    rescue
+    else
       nil
     end
   end
