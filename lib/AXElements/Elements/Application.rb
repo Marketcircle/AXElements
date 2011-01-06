@@ -34,6 +34,12 @@ class Application < AX::Element
     Element.make_element AXUIElementCreateApplication(pid)
   end
 
+  # The inherited #get_focus will not work for applications.
+  # @return [true]
+  def get_focus
+    AX::DOCK.list.application_dock_item(title:'Mail').press
+  end
+
 
   private
 
