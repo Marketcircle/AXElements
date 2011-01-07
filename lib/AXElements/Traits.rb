@@ -27,7 +27,7 @@ end
 # See the documentation page
 # ![GeneratingEvents](/docs/file/docs/GeneratingEvents.markdown)
 # on how to encode strings.
-module Type
+module Typing
   # @todo implement keyboard event posting method
   # Key codes are independant of the layout in the sense that they are
   # absolute key positions on the keyboard and that different layouts will
