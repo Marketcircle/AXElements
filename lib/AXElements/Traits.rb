@@ -50,7 +50,6 @@ module Typing
 
     string.each_char { |char|
       code = KEYCODE_MAP[char]
-      puts "#{char} : #{code}"
       AXUIElementPostKeyboardEvent(app, 0, code, true)
       AXUIElementPostKeyboardEvent(app, 0, code, false)
     }
