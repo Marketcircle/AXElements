@@ -5,6 +5,7 @@ module AX
 # The abstract base class for all accessibility objects.
 class Element
   include Traits::Typing
+  include Traits::Clicking
 
 
   class << self
