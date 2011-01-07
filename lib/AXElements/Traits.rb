@@ -5,7 +5,7 @@ module AX
 module Traits
 
 # All the different ways in which you can click on an object.
-module Click
+module Clicking
   # @return [boolean] true if successful, otherwise crash
   def left_click
     position = self.position
