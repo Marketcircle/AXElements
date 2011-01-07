@@ -15,9 +15,8 @@ class Application < AX::Element
     @pid = pid[0]
   end
 
-  # @todo make this method actually wait for Daylite to finish loading,
-  #  I should be able to do this with accessibility notifications, so I
-  #  should register for notifications when I launch the application
+  # This is the standard way of creating an application object. It will launch
+  # the app if it is not already running.
   # @param [String] bundle
   # @return [AX::Application]
   def self.application_with_bundle_identifier bundle
@@ -28,6 +27,8 @@ class Application < AX::Element
     application_for_pid apps.first.processIdentifier
   end
 
+  # You can call this method to create the application object if the app is
+  # already running; otherwise the object creation will fail.
   # @param [Fixnum] pid The process identifier for the application you want
   # @return [AX::Application]
   def self.application_for_pid pid
@@ -43,7 +44,7 @@ class Application < AX::Element
 
   private
 
-  # This is an asynchronous method.
+  # This method uses asynchronous method calls to launch applications.
   # @param [String] bundle the bundle identifier for the app
   # @return [boolean]
   def self.launch_application bundle
