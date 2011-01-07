@@ -41,19 +41,34 @@ module Typing
   #
   # @todo a small parser to generate the actual sequence of key presses to
   #  simulate. Most likely just going to extend built in string escape sequences.
-  # @param [[Fixnum, boolean]] *keys a pair with the keycode and the state
+  # @param [String] string the string you want typed on the screen
   # @return [boolean] always returns true
-  def post_kb_event *keys
+  def post_kb_event string
     pid = Pointer.new 'i'
     AXUIElementGetPid(@ref, pid)
     app = AXUIElementCreateApplication(pid[0])
 
-    keys.each { |pair|
-      AXUIElementPostKeyboardEvent(app, pair[0], 1, pair[1])
+    string.each_char { |char|
+      code = KEYCODE_MAP[char]
+      puts "#{char} : #{code}"
+      AXUIElementPostKeyboardEvent(app, 0, code, true)
+      AXUIElementPostKeyboardEvent(app, 0, code, false)
     }
 
     true
   end
+
+  KEYCODE_MAP = {
+    'a' => 0,  'b' => 11, 'c' => 8,  'd' => 2,  'e' => 14,
+    'f' => 3,  'g' => 5,  'h' => 4,  'i' => 34, 'j' => 38,
+    'k' => 40, 'l' => 37, 'm' => 46, 'n' => 45, 'o' => 31,
+    'p' => 35, 'q' => 12, 'r' => 15, 's' => 1,  't' => 17,
+    'u' => 32, 'v' => 9,  'w' => 13, 'x' => 7,  'y' => 16,
+    'z' => 6,
+    '1' => 18, '2' => 19, '3' => 20, '4' => 21, '5' => 23,
+    '6' => 22, '7' => 26, '8' => 28, '9' => 25, '0' => 29,
+    "\t"=> 48, ' ' => 49
+  }
 end
 
 end
