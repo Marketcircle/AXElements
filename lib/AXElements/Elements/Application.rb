@@ -9,10 +9,7 @@ class Application < AX::Element
   # We need to cache the PID and register for notifications.
   def initialize app
     super app
-
-    pid  = Pointer.new 'i'
-    AXUIElementGetPid(@ref, pid)
-    @pid = pid[0]
+    get_pid
   end
 
   # This is the standard way of creating an application object. It will launch

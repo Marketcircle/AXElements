@@ -44,9 +44,7 @@ module Typing
   # @param [String] string the string you want typed on the screen
   # @return [boolean] always returns true
   def post_kb_event string
-    pid = Pointer.new 'i'
-    AXUIElementGetPid(@ref, pid)
-    app = AXUIElementCreateApplication(pid[0])
+    app = AXUIElementCreateApplication(get_pid)
 
     string.each_char { |char|
       code = KEYCODE_MAP[char]

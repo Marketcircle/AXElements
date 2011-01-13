@@ -57,10 +57,18 @@ class Element
   # @return [AXUIElementRef] the low level object reference
   attr_reader :ref
 
+  # @return [Fixnum]
+  attr_reader :pid
+
   # @param [AXUIElementRef] element
   def initialize element
     @ref               = element
     @available_methods = available_attributes + available_actions
+  end
+
+  # @return [Fixnum]
+  def get_pid
+    @pid ||= ( ptr = Pointer.new 'i' ; AXUIElementGetPid( @ref, ptr ) ; ptr[0] )
   end
 
   # @return [[String]]
