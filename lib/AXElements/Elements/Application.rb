@@ -38,6 +38,15 @@ class Application < AX::Element
     AX::DOCK.list.application_dock_item(title:'Mail').press
   end
 
+  # Create and return a notification observer for the object's application.
+  # @param [Proc] callback
+  # @return [AXObserverRef]
+  def observer callback
+    observer = Pointer.new '^{__AXObserver}'
+    AXObserverCreate( @pid, callback, observer )
+    observer[0]
+  end
+
 
   private
 

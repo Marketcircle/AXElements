@@ -68,5 +68,54 @@ module Typing
   }
 end
 
+
+# You can find a list of built in notifications in Apple's [documentation](http://developer.apple.com/library/mac/#documentation/Accessibility/Reference/AccessibilityLowlevel/AXNotificationConstants_h/index.html).
+module Notifications
+
+  # @param [AXObserverRef] observer the observer being notified
+  # @param [AXUIElementRef] element the element being referenced
+  # @param [String] notif the notification name
+  # @param [nil] refcon not really nil, but I have no idea what this
+  #  is used for
+  # @return
+  def notif_method observer, element, notif, refcon
+    @notif_proc.call observer, element, notif, refcon
+
+    run_loop   = CFRunLoopGetCurrent()
+    app_source = AXObserverGetRunLoopSource( observer )
+
+    CFRunLoopRemoveSource( run_loop, app_source, KCFRunLoopDefaultMode )
+    CFRunLoopStop( run_loop )
+  end
+
+  # @param [String] notif
+  # @param [Float] timeout
+  # @yield The block should include whatever you want to do when a
+  #  notification is received.
+  # @yieldparam [AXObserverRef] observer the observer being notified
+  # @yieldparam [AXUIElementRef] element the element being referenced
+  # @yieldparam [String] notif the notification name
+  # @yieldparam [nil] refcon not really nil, but I have no idea what this
+  #  is used for
+  # @return [Boolean] true if the notification was received, otherwise false.
+  #  There are actually four different return codes, three which are 'possible'
+  #  to receive under the given conditions, but only two conditions which will
+  #  occur under regular circumstances.
+  def wait_for_notification notif, timeout = 10, &block
+    @notif_proc  = block
+    callback     = method :notif_method
+    observer     = Application.application_for_pid( get_pid ).observer callback
+
+    run_loop     = CFRunLoopGetCurrent()
+    app_run_loop = AXObserverGetRunLoopSource( observer )
+
+    AXObserverAddNotification( observer, @ref, notif, nil )
+    CFRunLoopAddSource( run_loop, app_run_loop, KCFRunLoopDefaultMode )
+
+    # use RunInMode because it has timeout functionality
+    CFRunLoopRunInMode( KCFRunLoopDefaultMode, timeout, false )
+  end
+end
+
 end
 end

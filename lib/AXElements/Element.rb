@@ -4,8 +4,10 @@ module AX
 # @abstract
 # The abstract base class for all accessibility objects.
 class Element
+
   include Traits::Typing
   include Traits::Clicking
+  include Traits::Notifications
 
 
   class << self
