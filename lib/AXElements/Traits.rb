@@ -109,7 +109,7 @@ module Notifications
     run_loop     = CFRunLoopGetCurrent()
     app_run_loop = AXObserverGetRunLoopSource( observer )
 
-    AXObserverAddNotification( observer, @ref, notif, nil )
+    log_error AXObserverAddNotification( observer, @ref, notif, nil )
     CFRunLoopAddSource( run_loop, app_run_loop, KCFRunLoopDefaultMode )
 
     # use RunInMode because it has timeout functionality

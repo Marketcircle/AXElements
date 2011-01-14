@@ -76,16 +76,14 @@ class Element
   # @return [[String]]
   def available_attributes
     array_ptr  = Pointer.new '^{__CFArray}'
-    error_code = AXUIElementCopyAttributeNames(@ref, array_ptr)
-    log_error error_code unless error_code.zero?
+    log_error AXUIElementCopyAttributeNames(@ref, array_ptr)
     array_ptr[0]
   end
 
   # @return [[String]]
   def available_actions
     array_ptr  = Pointer.new '^{__CFArray}'
-    error_code = AXUIElementCopyActionNames(@ref, array_ptr)
-    log_error error_code unless error_code.zero?
+    log_error AXUIElementCopyActionNames(@ref, array_ptr)
     array_ptr[0]
   end
 
@@ -93,8 +91,7 @@ class Element
   # @return [Object]
   def attribute attr
     result_ptr = Pointer.new :id
-    error_code = AXUIElementCopyAttributeValue(@ref, attr, result_ptr)
-    log_error error_code unless error_code.zero?
+    log_error AXUIElementCopyAttributeValue(@ref, attr, result_ptr)
     # AXUIElementSetMessagingTimeout( @ref, 5.0 ) # fudge elements timeout
     # return self.attribute attribute
     result_ptr[0]
@@ -139,9 +136,9 @@ class Element
   # @return [boolean, Fixnum] true if successful, otherwise returns
   #  the error code
   def set_attribute_with_value attr, value
-    error_code = AXUIElementSetAttributeValue( @ref, attr, value )
+    log_error AXUIElementSetAttributeValue( @ref, attr, value )
     return true if error_code.zero?
-    log_error error_code
+    false
   end
 
   # @todo make the method wait until the action completes
@@ -153,9 +150,9 @@ class Element
   # @return [boolean, Fixnum] true if successufl, otherwise returns the
   #  the error code
   def perform_action action_name
-    error_code = AXUIElementPerformAction(@ref, action_name)
+    log_error AXUIElementPerformAction(@ref, action_name)
     return true if error_code.zero?
-    log_error error_code
+    false
   end
 
   # Needed to override inherited NSObject#description. If you want a
@@ -387,6 +384,7 @@ class Element
   # @param [Fixnum] error_code an AXError value
   # @return [Fixnum] the error code that was passed to this method
   def log_error error_code
+    return 0 if error_code.zero?
     error = @@AXError[error_code] || 'UNKNOWN ERROR CODE'
     NSLog("[#{error} (#{error_code})] while trying something on a #{self.role}:")
     NSLog("Attributes and actions that were available: #{self.available_methods}")
