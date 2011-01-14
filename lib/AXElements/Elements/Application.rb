@@ -19,7 +19,7 @@ class Application < AX::Element
   def self.application_with_bundle_identifier bundle
     while (apps = NSRunningApplication.runningApplicationsWithBundleIdentifier bundle).empty?
       launch_application bundle
-      sleep 8
+      sleep 2
     end
     application_for_pid apps.first.processIdentifier
   end
