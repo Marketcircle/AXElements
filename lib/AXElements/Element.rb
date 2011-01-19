@@ -127,7 +127,7 @@ class Element
     ptr[0]
   end
 
-  # Like the #perform_action method, we cannot make any assumptions
+  # Like the {#perform_action} method, we cannot make any assumptions
   # about the state of the program after you have set a value; at
   # least not in the general case. So, the best we can do here is
   # return true if there were no issues.
