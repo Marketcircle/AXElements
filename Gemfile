@@ -6,7 +6,7 @@ group :development do
   gem "jeweler", "~> 1.5.1"
 
   gem "rspec", "~> 2.4.0"
-  gem "rcov", ">= 0"
+#  gem "rcov", ">= 0"
 
   gem "reek", "~> 1.2.8"
   gem "roodi", "~> 2.1.0"
