@@ -133,12 +133,9 @@ class Element
   # return true if there were no issues.
   # @param [String] attr
   # @param [Object] value
-  # @return [boolean, Fixnum] true if successful, otherwise returns
-  #  the error code
+  # @return [Boolean] true if successful, otherwise false
   def set_attribute_with_value attr, value
-    log_error AXUIElementSetAttributeValue( @ref, attr, value )
-    return true if error_code.zero?
-    false
+    log_error( AXUIElementSetAttributeValue( @ref, attr, value ) ) == 0
   end
 
   # @todo make the method wait until the action completes
@@ -147,12 +144,9 @@ class Element
   # longer be valid. An example of this would be pressing the close
   # button on a window.
   # @param [String] action_name
-  # @return [boolean, Fixnum] true if successufl, otherwise returns the
-  #  the error code
+  # @return [Boolean] true if successful, otherwise false
   def perform_action action_name
-    log_error AXUIElementPerformAction(@ref, action_name)
-    return true if error_code.zero?
-    false
+    log_error( AXUIElementPerformAction(@ref, action_name) ) == 0
   end
 
   # Needed to override inherited NSObject#description. If you want a
