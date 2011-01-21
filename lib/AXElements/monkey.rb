@@ -8,6 +8,6 @@ class String
   # is assumed to be in snake_case.
   # @return [String]
   def camelize!
-    self.gsub!(/(?:^|_)(.)/) { $1.upcase }
+    gsub!(/(?:^|_)(.)/) { $1.upcase }
   end
 end
