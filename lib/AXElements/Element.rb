@@ -97,27 +97,26 @@ class Element
   end
 
   # @param [String] attr an attribute constant
-  # @return [Element]
+  # @return [AX::Element,nil]
   def element_attribute attr
-    Element.make_element attribute attr
+    value = attribute attr
+    return nil unless value
+    Element.make_element value
   end
 
-  # @param [String] attr
-  # @return [[Element]]
+  # @param [String] attr an attribute constant
+  # @return [Array<AX::Element>,nil]
   def elements_attribute attr
-    attribute(attr).map { |element| Element.make_element element }
+    value = attribute attr
+    return nil unless value
+    value.map { |element| Element.make_element element }
   end
 
-  # @param [String] attribute
-  # @return [NSURL]
-  def url_attribute attr
-    NSURL.alloc.initFileURLWithPath attribute attr
-  end
-
-  # @param [String] attr
-  # @return [Boxed] boxed struct for klass
+  # @param [String] attr an attribute constant
+  # @return [Boxed,nil]
   def boxed_attribute attr
     value = attribute attr
+    return nil unless value
     box   = AXValueGetType( value )
     ptr   = Pointer.new AXBoxTypes[box].type
     AXValueGetValue( value, box, ptr )
