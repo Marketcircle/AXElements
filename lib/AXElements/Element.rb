@@ -76,14 +76,14 @@ class Element
   # @return [Array<String>]
   def attributes
     array_ptr  = Pointer.new '^{__CFArray}'
-    log_error AXUIElementCopyAttributeNames( @ref, array_ptr )
+    log AXUIElementCopyAttributeNames( @ref, array_ptr )
     array_ptr[0]
   end
 
   # @return [Array<String>]
   def actions
     array_ptr  = Pointer.new '^{__CFArray}'
-    log_error AXUIElementCopyActionNames( @ref, array_ptr )
+    log AXUIElementCopyActionNames( @ref, array_ptr )
     array_ptr[0]
   end
 
@@ -92,7 +92,7 @@ class Element
   def attribute attr
     result_ptr = Pointer.new :id
     error_code = AXUIElementCopyAttributeValue( @ref, attr, result_ptr )
-    log_error error_code, attr
+    log error_code, attr
     result_ptr[0]
   end
 
@@ -131,7 +131,7 @@ class Element
   # @return [Boolean] true if successful, otherwise false
   def set_attribute_with_value attr, value
     error_code AXUIElementSetAttributeValue( @ref, attr, value )
-    log_error( error_code, [attr, value] ) == 0
+    log( error_code, [attr, value] ) == 0
   end
 
   # Ideally this method would return a reference to self, but as the
@@ -142,7 +142,7 @@ class Element
   # @return [Boolean] true if successful, otherwise false
   def perform_action action_name
     error_code = AXUIElementPerformAction( @ref, action_name )
-    log_error( error_code, action_name ) == 0
+    log( error_code, action_name ) == 0
   end
 
   # Needed to override inherited NSObject#description. If you want a
@@ -374,8 +374,9 @@ class Element
   # Uses the call stack and error code to log a message that might be helpful
   # in debugging.
   # @param [Fixnum] error_code an AXError value
+  # @param [#to_s] method_args an AXError value
   # @return [Fixnum] the error code that was passed to this method
-  def log_error error_code, method = 'unspecified method'
+  def log error_code, method_args = 'unspecified method'
     return 0 if error_code.zero?
     error = AXError[error_code] || 'UNKNOWN ERROR CODE'
     AX.log.warn "[#{error} (#{error_code})] while trying #{method_args} on a #{self.role}"

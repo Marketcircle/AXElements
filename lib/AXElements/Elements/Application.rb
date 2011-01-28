@@ -41,7 +41,7 @@ class Application < AX::Element
   # @return [AXObserverRef]
   def observer callback
     observer = Pointer.new '^{__AXObserver}'
-    log_error AXObserverCreate( @pid, callback, observer )
+    log AXObserverCreate( @pid, callback, observer )
     observer[0]
   end
 
