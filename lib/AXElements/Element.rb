@@ -378,12 +378,12 @@ class Element
   # in debugging.
   # @param [Fixnum] error_code an AXError value
   # @return [Fixnum] the error code that was passed to this method
-  def log_error error_code
+  def log_error error_code, method = 'unspecified method'
     return 0 if error_code.zero?
-    NSLog("[#{error} (#{error_code})] while trying something on a #{self.role}:")
-    NSLog("Attributes and actions that were available: #{self.available_methods}")
-    NSLog("Backtrace: #{caller.description}")
     error = AXError[error_code] || 'UNKNOWN ERROR CODE'
+    AX.log.error "[#{error} (#{error_code})] while trying #{method} on a #{self.role}"
+    AX.log.error "Attributes and actions that were available: #{self.methods}"
+    AX.log.error "Backtrace: #{caller.description}"
     error_code
   end
 end
