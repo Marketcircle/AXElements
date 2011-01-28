@@ -16,13 +16,12 @@ class Element
 
   class << self
 
-    # Takes an AXUIElementRef and gives you some kind of accessibility object.
-    #
-    # The method prefers to create objects with the subrole value for an
-    # accessibility object, it will use the role if there is no subrole.
-    #
     # @note we have to check that the subrole value returns non-nil because
     #  sometimes an element will have a subrole but the value will be nil
+    # Takes an AXUIElementRef and gives you some kind of accessibility object.
+    #
+    # This method prefers to choose a class type based on the subrole value for
+    # an accessibility object, and it will use the role if there is no subrole.
     # @param [AXUIElementRef] element
     # @return [Element]
     def make_element element
