@@ -31,7 +31,7 @@ module AX
   end
 
   @log = Logger.new $stderr
-  @log.level = Logger::INFO
+  @log.level = Logger::ERROR
 
 end
 

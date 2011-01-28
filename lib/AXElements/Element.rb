@@ -378,9 +378,9 @@ class Element
   def log_error error_code, method = 'unspecified method'
     return 0 if error_code.zero?
     error = AXError[error_code] || 'UNKNOWN ERROR CODE'
-    AX.log.error "[#{error} (#{error_code})] while trying #{method} on a #{self.role}"
-    AX.log.error "Attributes and actions that were available: #{self.methods}"
-    AX.log.error "Backtrace: #{caller.description}"
+    AX.log.warn "[#{error} (#{error_code})] while trying #{method_args} on a #{self.role}"
+    AX.log.info "Attributes and actions that were available: #{self.methods.inspect}"
+    AX.log.debug "Backtrace: #{caller.description}"
     error_code
   end
 end
