@@ -272,57 +272,66 @@ class Element
                          show_menu:[:perform_action, NSAccessibilityShowMenuAction]
   }
 
-  # We use #method missing to dynamically handle requests to get elements
-  # that are children of the current element or attributes of the current
-  # element. Basically, everything that is not a convenience method is routed
-  # through here to figure things out for you dynamically.
-  #
-  # Since this method does both types of dynamic lookup, one has to take
-  # priority over the other. Attributes comes first, then children element
-  # search.
-  #
-  # When you are looking up an attribute this method will first make sure that
-  # the current element has the required attribute, then it maps your call to
-  # the more abstract wrapper class.
-  #
-  # Should the attribute lookup fail, the method will then try search for an
-  # element that is a child of the current element. In this case, if the method
-  # name ends with an 's' it is assumed you wanted an array of elements that
-  # match the criteria and no 's' means you want the first one that is found.
-  #
-  # The first crieteria is the name of the method, mangled matched against the
-  # existing classes in the AX namespace. Additional criteria are taken from
-  # the arguments to the method, and are assumed to be key-value pairs with
-  # the key being an attribute and the value being the value of the attribute.
-  #
-  # @example Simple single element lookup
-  #  daylite = Application.daylite 3
-  #  window  = daylite.focused_window
-  #  window.button.press # => You want the first Button that is found
-  # @example Simple multi-element lookup
-  #  window.text_fields # => You want all the TextField objects found
-  # @example Filtered single element lookup
-  #  window.button(title:'Log In') # => First Button with a title of 'Log In'
-  # @example Filtered multi-element lookup
-  #  window.buttons(title:'New Project')
-  # @example Contrived multi-element lookup
-  #  window.buttons(title:'New Project', role:KAXButtonRole)
-  #
-  # While the code in here is a bit ugly, I justify it by the fact that this
-  # method will be THE hotspot during run time due to the way the system has
-  # been designed, and so some attempt at making performant code needs to
-  # be made.
-  #
+
+  # @todo allow regex matching when filtering string attributes
   # @note Some attribute names don't map consistently from Apple's
   #  documentation because it would have caused a clash with the two
   #  systems used for attribute lookup and searching/filtering.
   #
-  # @todo print UI tree when method is not found
-  # @todo allow element lookup for array returning attributes other than
-  #  the children method
-  # @todo allow regex matching when filtering string attributes
-  # @todo if the method corresponds to something that returns an array
-  #  and so it should allow optional filtering
+  # We use {#method missing} to dynamically handle requests to lookup
+  # attributes and to dynamically search for elements in the view
+  # hierarchy. Everything that is not a convenience method is routed
+  # through here to figure things out for you dynamically.
+  #
+  # Since this method does two types of dynamic lookup, one has to take
+  # priority over the other. Attribute lookups come first, and if that
+  # fails a search through the hierarchy will begin.
+  #
+  # When you are looking up an attribute, this method will first make
+  # sure that the current element has the required attribute, then it
+  # will try to map the method name to an actual attribute name (listed
+  # in {@@method_map}) in order to call a lower level method (which in
+  # turn calls the actual CoreFoundation API).
+  #
+  # Should the attribute lookup fail, the method will then try search
+  # for an element that is a descendant of the current element by way of
+  # a breadth first search through the view hierarchy subtree rooted at
+  # the current node.
+  #
+  # There are two features of the search that are important with regards
+  # results of the search: pluralization and filtering.
+  #
+  # Pluralization is simply when an 's' is appended to the method call
+  # causing the lookup to assume you wanted every element in the view
+  # hierarchy that meets the filtering criteria. This causes the lookup
+  # to be very slow (~1 second) and is meant more for prototying tests
+  # and debugging broken tests. If you do not pluralize, then the first
+  # element that meets all the filtering criteria will be returned.
+  #
+  # Filtering is the important part of a lookup. There is one default
+  # filter which filters based on the class of the element, and the class
+  # name is taken from method name that triggered {#method_missing}. Other
+  # filtering criteria is optional, but often helpful in finding a
+  # specific element. Right now the only types of filtering criteria that
+  # work are attribute filters, which lookup attributes on the element
+  # being inspected and compare them to an expected value. You can attach
+  # as many attribute filters as you want.
+  #
+  # @example Attribute lookup of another element
+  #  mail   = AX::Application.application_with_bundle_identifier 'com.apple.mail'
+  #  window = mail.focused_window
+  # @example Attribute lookup of element properties
+  #  window.title
+  # @example Simple single element lookup
+  #  window.button # => You want the first Button that is found
+  # @example Simple multi-element lookup
+  #  window.text_fields # => You want all the TextField objects found
+  # @example Additional filters for a single element lookup
+  #  window.button(title:'Log In') # => First Button with a title of 'Log In'
+  # @example Additional filters for a multi-element lookup
+  #  window.buttons(title:'New Project')
+  # @example Contrived multi-element lookup
+  #  window.buttons(title:'New Project', enabled?:true)
   # @raise NoMethodError
   def method_missing method, *args
 
@@ -332,20 +341,32 @@ class Element
       end
     end
 
+    # NOW WE TRY TO DO A SEARCH
+
     # check to avoid an infinite loop
-    if @available_methods.index NSAccessibilityChildrenAttribute
-      elements = self.children
-      args.unshift class:(AX.plural_const_get(method.to_s.camelize!))
+    if @methods.index NSAccessibilityChildrenAttribute
+      elements       = self.children # seed the search array
+      results        = []
+      filters        = [ [ :class, AX.plural_const_get( method.to_s.camelize! ) ] ]
+      filters.concat args[0].to_a unless args.empty?
 
-      args.each { |map| map = map.shift
-        elements = elements.select { |element| element.send(map[0]) == map[1] }
-      }
+      until elements.empty?
+        element = elements.shift
+        elements.concat ( element.children || [] ) if element.methods.index NSAccessibilityChildrenAttribute
 
-      return elements if method.to_s.match /s$/
-      return elements.first
+        next unless filters.inject true do |previous, filter|
+          previous && ( element.send( filter[0] ) == filter[1] )
+        end
+
+        return element unless method.to_s.match(/s$/)
+        results << element
+      end
+
+      return results if method.to_s.match /s$/
+      return results.first
     end
 
-    raise NoMethodError, "Got to the end when trying ##{method} on a #{self.class}. Typo?"
+    raise NoMethodError, "The ##{method} attribute does not exist and this #{class} does not have children."
   end
 
 
@@ -371,6 +392,7 @@ class Element
     KAXErrorNotEnoughPrecision                => 'Not Enough Precision',
   }
 
+  # @todo print view hierarchy
   # Uses the call stack and error code to log a message that might be helpful
   # in debugging.
   # @param [Fixnum] error_code an AXError value
