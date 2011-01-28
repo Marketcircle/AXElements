@@ -1,9 +1,3 @@
-# A module for all the different accessibility roles.
-# Inside the module, we should always try to work with the lower level APIs.
-# The module should NEVER return something from the lower levels.
-# To help with this, the module includes a few handy methods.
-#
-# ![Class Diagram](/docs/file/docs/images/AX.png)
 module AX
 
   # Like {#const_get} except that if the class does not exist yet then
