@@ -88,7 +88,6 @@ class Element
   end
 
   # @param [String] attr an attribute constant
-  # @return [Object]
   def attribute attr
     result_ptr = Pointer.new :id
     log_error AXUIElementCopyAttributeValue(@ref, attr, result_ptr)
@@ -130,13 +129,11 @@ class Element
   # least not in the general case. So, the best we can do here is
   # return true if there were no issues.
   # @param [String] attr
-  # @param [Object] value
   # @return [Boolean] true if successful, otherwise false
   def set_attribute_with_value attr, value
     log_error( AXUIElementSetAttributeValue( @ref, attr, value ) ) == 0
   end
 
-  # @todo make the method wait until the action completes
   # Ideally this method would return a reference to self, but as the
   # method inherently causes state change the reference to self may no
   # longer be valid. An example of this would be pressing the close
@@ -153,12 +150,11 @@ class Element
     self.method_missing :description
   end
 
-  # @todo use macirb to give all the completions to KAX and then audit
   # A big lookup table that maps nice method names to more obfuscated method
   # names in the private part of this class.
   #
   # You can add more attributes to this table at run time.
-  # @return [Array] a double or triple that will be sent to self
+  # @return [Array<Symbol, String, Boolean>] a double that will be sent to self
   @@method_map = {
     ################ Fixnum
     :disclosure_level              => [:attribute, NSAccessibilityDisclosureLevelAttribute],
@@ -251,7 +247,7 @@ class Element
     :press                          => [:perform_action, NSAccessibilityPressAction],
     :raise                          => [:perform_action, NSAccessibilityRaiseAction],
     :show_menu                      => [:perform_action, NSAccessibilityShowMenuAction],
-    ################ [Element]
+    ################ Array<Element>
     :children                       => [:elements_attribute, NSAccessibilityChildrenAttribute],
     :columns                        => [:elements_attribute, NSAccessibilityColumnsAttribute],
     :column_titles                  => [:elements_attribute, NSAccessibilityColumnTitlesAttribute],
