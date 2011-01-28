@@ -130,7 +130,8 @@ class Element
   # @param [String] attr
   # @return [Boolean] true if successful, otherwise false
   def set_attribute_with_value attr, value
-    log_error( AXUIElementSetAttributeValue( @ref, attr, value ) ) == 0
+    error_code AXUIElementSetAttributeValue( @ref, attr, value )
+    log_error( error_code, [attr, value] ) == 0
   end
 
   # Ideally this method would return a reference to self, but as the
@@ -140,7 +141,8 @@ class Element
   # @param [String] action_name
   # @return [Boolean] true if successful, otherwise false
   def perform_action action_name
-    log_error( AXUIElementPerformAction(@ref, action_name) ) == 0
+    error_code = AXUIElementPerformAction( @ref, action_name )
+    log_error( error_code, action_name ) == 0
   end
 
   # Needed to override inherited NSObject#description. If you want a
