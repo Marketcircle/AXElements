@@ -366,7 +366,7 @@ class Element
       return results.first
     end
 
-    raise NoMethodError, "The ##{method} attribute does not exist and this #{class} does not have children."
+    raise NoMethodError, "The ##{method} attribute does not exist and this #{self.class} does not have children."
   end
 
 
