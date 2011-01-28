@@ -3,13 +3,10 @@ module AX
 # Some additional constructors and factories for Application objects.
 class Application < AX::Element
 
-  # @return [Fixnum] the process identifier of the app
-  attr_reader :pid
-
   # We need to cache the PID and register for notifications.
   def initialize app
     super app
-    get_pid
+    pid
   end
 
   # This is the standard way of creating an application object. It will launch
