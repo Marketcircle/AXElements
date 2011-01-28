@@ -174,7 +174,7 @@ class Element
                           focused?:[:attribute, NSAccessibilityFocusedAttribute],
                         frontmost?:[:attribute, NSAccessibilityFrontmostAttribute],
                            hidden?:[:attribute, NSAccessibilityHiddenAttribute],
-           is_application_running?:[:attribute, KAXIsApplicationRunningAttribute],
+              application_running?:[:attribute, KAXIsApplicationRunningAttribute],
                       main_window?:[:attribute, NSAccessibilityMainAttribute],
                         minimized?:[:attribute, NSAccessibilityMinimizedAttribute],
                             modal?:[:attribute, NSAccessibilityModalAttribute],
