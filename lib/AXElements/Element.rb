@@ -10,6 +10,10 @@ class Element
   include Traits::Notifications
 
 
+  # @return [Class,nil]
+  AXBoxTypes = [ nil, CGPoint, CGSize, CGRect, CFRange ]
+
+
   class << self
 
     # Takes an AXUIElementRef and gives you some kind of accessibility object.
@@ -115,14 +119,12 @@ class Element
     NSURL.alloc.initFileURLWithPath attribute attr
   end
 
-  @@AXBoxType = [ nil, CGPoint, CGSize, CGRect, CFRange ]
-
   # @param [String] attr
   # @return [Boxed] boxed struct for klass
   def boxed_attribute attr
     value = attribute attr
     box   = AXValueGetType( value )
-    ptr   = Pointer.new @@AXBoxType[box].type
+    ptr   = Pointer.new AXBoxTypes[box].type
     AXValueGetValue( value, box, ptr )
     ptr[0]
   end
