@@ -356,7 +356,7 @@ class Element
 
   # A mapping of the AXError constants to human readable strings.
   # @return [String]
-  @@AXError = {
+  AXError = {
     KAXErrorFailure                           => 'Generic Failure',
     KAXErrorIllegalArgument                   => 'Illegal Argument',
     KAXErrorInvalidUIElement                  => 'Invalid UI Element',
@@ -380,10 +380,10 @@ class Element
   # @return [Fixnum] the error code that was passed to this method
   def log_error error_code
     return 0 if error_code.zero?
-    error = @@AXError[error_code] || 'UNKNOWN ERROR CODE'
     NSLog("[#{error} (#{error_code})] while trying something on a #{self.role}:")
     NSLog("Attributes and actions that were available: #{self.available_methods}")
     NSLog("Backtrace: #{caller.description}")
+    error = AXError[error_code] || 'UNKNOWN ERROR CODE'
     error_code
   end
 end
