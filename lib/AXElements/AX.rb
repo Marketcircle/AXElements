@@ -37,7 +37,7 @@ module AX
   # @return [Class]
   def self.create_ax_class class_name
     klass = Class.new Element do
-      NSLog("#{class_name} class created")
+      AX.log.debug "#{class_name} class created"
     end
     Object.const_set class_name, klass
   end

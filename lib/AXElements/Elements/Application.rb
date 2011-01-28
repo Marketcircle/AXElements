@@ -54,7 +54,7 @@ class Application < AX::Element
   # @param [String] bundle the bundle identifier for the app
   # @return [boolean]
   def self.launch_application bundle
-    NSLog("Launching app with bundleID '#{bundle}'")
+    AX.log.info "Launching app with bundleID '#{bundle}'"
     NSWorkspace.sharedWorkspace.launchAppWithBundleIdentifier bundle,
                                                       options:NSWorkspaceLaunchAsync,
                                additionalEventParamDescriptor:nil,

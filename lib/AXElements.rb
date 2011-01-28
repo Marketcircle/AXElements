@@ -1,3 +1,4 @@
+require   'logger'
 framework 'Cocoa'
 
 begin
@@ -18,3 +19,16 @@ require   'AXElements/Traits'
 require   'AXElements/Element'
 require   'AXElements/Elements'
 require   'AXElements/AX'
+module AX
+
+  class << self
+
+    # @return [Logger]
+    attr_accessor :log
+
+  end
+
+  @log = Logger.new $stderr
+  @log.level = Logger::INFO
+
+end
