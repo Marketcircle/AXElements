@@ -65,7 +65,7 @@ class Element
 
   # @param [AXUIElementRef] element
   def initialize element
-    @ref               = element
+    @ref     = element
     @methods = attributes + actions
   end
 
@@ -77,14 +77,14 @@ class Element
   # @return [Array<String>]
   def attributes
     array_ptr  = Pointer.new '^{__CFArray}'
-    log_error AXUIElementCopyAttributeNames(@ref, array_ptr)
+    log_error AXUIElementCopyAttributeNames( @ref, array_ptr )
     array_ptr[0]
   end
 
   # @return [Array<String>]
   def actions
     array_ptr  = Pointer.new '^{__CFArray}'
-    log_error AXUIElementCopyActionNames(@ref, array_ptr)
+    log_error AXUIElementCopyActionNames( @ref, array_ptr )
     array_ptr[0]
   end
 

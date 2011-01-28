@@ -26,7 +26,7 @@ class Application < AX::Element
   # @param [Fixnum] pid The process identifier for the application you want
   # @return [AX::Application]
   def self.application_for_pid pid
-    Element.make_element AXUIElementCreateApplication(pid)
+    Element.make_element AXUIElementCreateApplication( pid )
   end
 
   # The inherited {Element#get_focus} will not work for applications.
