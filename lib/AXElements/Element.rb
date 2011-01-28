@@ -57,8 +57,8 @@ class Element
   end
 
 
-  # @return [[String]] A cache of available attributes and actions
-  attr_reader :available_methods
+  # @return [Array<String>] A cache of available attributes and actions
+  attr_reader :methods
 
   # @return [AXUIElementRef] the low level object reference
   attr_reader :ref
@@ -69,7 +69,7 @@ class Element
   # @param [AXUIElementRef] element
   def initialize element
     @ref               = element
-    @available_methods = available_attributes + available_actions
+    @methods = attributes + actions
   end
 
   # @return [Fixnum]
@@ -77,15 +77,15 @@ class Element
     @pid ||= ( ptr = Pointer.new 'i' ; AXUIElementGetPid( @ref, ptr ) ; ptr[0] )
   end
 
-  # @return [[String]]
-  def available_attributes
+  # @return [Array<String>]
+  def attributes
     array_ptr  = Pointer.new '^{__CFArray}'
     log_error AXUIElementCopyAttributeNames(@ref, array_ptr)
     array_ptr[0]
   end
 
-  # @return [[String]]
-  def available_actions
+  # @return [Array<String>]
+  def actions
     array_ptr  = Pointer.new '^{__CFArray}'
     log_error AXUIElementCopyActionNames(@ref, array_ptr)
     array_ptr[0]
@@ -331,9 +331,12 @@ class Element
   # @todo if the method corresponds to something that returns an array
   #  and so it should allow optional filtering
   # @raise NoMethodError
-  def method_missing(method, *args)
-    if (set = @@method_map[method]) && (@available_methods.index set[1])
-      return self.send *set, *args
+  def method_missing method, *args
+
+    if (action = @@method_map[method])
+      if @methods.index action[1]
+        return self.send *action, *args
+      end
     end
 
     # check to avoid an infinite loop
