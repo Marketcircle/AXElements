@@ -25,10 +25,10 @@ class Element
     #  sometimes an element will have a subrole but the value will be nil
     # @param [AXUIElementRef] element
     # @return [Element]
-    def self.make_element element
+    def make_element element
       role    = attribute_of_element KAXRoleAttribute, element
       subrole = nil
-      if attribute_names_for_element(element).include? KAXSubroleAttribute
+      if attributes(element).include? KAXSubroleAttribute
         subrole = attribute_of_element KAXSubroleAttribute, element
       end
       choice = (subrole || role).sub(/^AX/, '').to_sym
@@ -39,8 +39,8 @@ class Element
     private
 
     # @param [AXUIElementRef] element
-    # @return [[String]]
-    def self.attribute_names_for_element element
+    # @return [Array<String>]
+    def attributes element
       names = Pointer.new '^{__CFArray}'
       AXUIElementCopyAttributeNames( element, names )
       names[0]
@@ -48,7 +48,7 @@ class Element
 
     # @param [AXUIElementRef] element
     # @return [Object]
-    def self.attribute_of_element attr, element
+    def attribute_of_element attr, element
       value = Pointer.new :id
       AXUIElementCopyAttributeValue( element, attr, value )
       value[0]
