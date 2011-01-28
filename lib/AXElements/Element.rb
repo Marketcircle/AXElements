@@ -88,11 +88,11 @@ class Element
   end
 
   # @param [String] attr an attribute constant
+  # @return [Object,nil]
   def attribute attr
     result_ptr = Pointer.new :id
-    log_error AXUIElementCopyAttributeValue(@ref, attr, result_ptr)
-    # AXUIElementSetMessagingTimeout( @ref, 5.0 ) # fudge elements timeout
-    # return self.attribute attribute
+    error_code = AXUIElementCopyAttributeValue( @ref, attr, result_ptr )
+    log_error error_code, attr
     result_ptr[0]
   end
 
