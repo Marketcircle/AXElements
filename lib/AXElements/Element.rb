@@ -259,7 +259,7 @@ class Element
                            windows:[:elements_attribute, NSAccessibilityWindowsAttribute],
     #                              Setters
                          get_focus:[:set_attribute_with_value, NSAccessibilityFocusedAttribute, true],
-                            value=:[:set_attribute_with_value, NSAccessibilityValueAttribute],
+                         :value= =>[:set_attribute_with_value, NSAccessibilityValueAttribute],
     #                              Actions
                             cancel:[:perform_action, NSAccessibilityCancelAction],
                            confirm:[:perform_action, NSAccessibilityConfirmAction],
