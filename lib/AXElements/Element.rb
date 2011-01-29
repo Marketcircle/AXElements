@@ -344,26 +344,34 @@ class Element
     # NOW WE TRY TO DO A SEARCH
 
     # check to avoid an infinite loop
-    if @methods.index NSAccessibilityChildrenAttribute
+    if @methods.index KAXChildrenAttribute
       elements       = self.children # seed the search array
-      results        = []
-      filters        = [ [ :class, AX.plural_const_get( method.to_s.camelize! ) ] ]
-      filters.concat args[0].to_a unless args.empty?
+      search_results = []
+      filters        = args[0] || {}
+      class_const    = method.to_s.camelize!
 
       until elements.empty?
-        element = elements.shift
-        elements.concat ( element.children || [] ) if element.methods.index NSAccessibilityChildrenAttribute
+        element          = elements.shift
+        primary_filter ||= AX.plural_const_get class_const
 
+        elements.concat(element.children) if element.methods.include? KAXChildrenAttribute
+
+        next unless element.class == primary_filter
+
+        # disabled until MacRuby ticket #1139 is resolved
+        # next unless filters.each_pair { |filter_attribute, value|
+        #   break unless element.send(filter_attribute) == value
+        # }
         next unless filters.inject true do |previous, filter|
-          previous && ( element.send( filter[0] ) == filter[1] )
+          previous && (element.send(filter[0]) == filter[1])
         end
 
         return element unless method.to_s.match(/s$/)
-        results << element
+        search_results << element
       end
 
-      return results if method.to_s.match /s$/
-      return results.first
+      return search_results if method.to_s.match /s$/
+      return search_results.first
     end
 
     raise NoMethodError, "The ##{method} attribute does not exist and this #{self.class} does not have children."
