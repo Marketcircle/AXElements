@@ -9,6 +9,8 @@ class Element
   include Traits::Notifications
 
 
+  # This array is order-sensitive, which is why there is a
+  # nil object at index 0.
   # @return [Class,nil]
   AXBoxTypes = [ nil, CGPoint, CGSize, CGRect, CFRange ]
 
@@ -388,7 +390,7 @@ class Element
   protected
 
   # A mapping of the AXError constants to human readable strings.
-  # @return [String]
+  # @return [Hash{Fixnum => String}]
   AXError = {
     KAXErrorFailure                           => 'Generic Failure',
     KAXErrorIllegalArgument                   => 'Illegal Argument',

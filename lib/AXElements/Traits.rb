@@ -121,11 +121,8 @@ module Notifications
   # @param [Float] timeout
   # @yield The block should include whatever you want to do when a
   #  notification is received.
-  # @yieldparam [AXObserverRef] observer the observer being notified
-  # @yieldparam [AXUIElementRef] element the element being referenced
+  # @yieldparam [AX::Element] element the element that generated the notif
   # @yieldparam [String] notif the notification name
-  # @yieldparam [nil] refcon not really nil, but I have no idea what this
-  #  is used for
   # @return [Boolean] true if the notification was received, otherwise false.
   #  There are actually four different return codes, three which are 'possible'
   #  to receive under the given conditions, but only two conditions which will

@@ -50,7 +50,7 @@ class Application < AX::Element
 
   # This method uses asynchronous method calls to launch applications.
   # @param [String] bundle the bundle identifier for the app
-  # @return [boolean]
+  # @return [Boolean]
   def self.launch_application bundle
     AX.log.info "Launching app with bundleID '#{bundle}'"
     NSWorkspace.sharedWorkspace.launchAppWithBundleIdentifier bundle,
