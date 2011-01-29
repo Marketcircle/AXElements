@@ -3,12 +3,6 @@ module AX
 # Some additional constructors and factories for Application objects.
 class Application < AX::Element
 
-  # We need to cache the PID and register for notifications.
-  def initialize app
-    super app
-    pid
-  end
-
   # This is the standard way of creating an application object. It will launch
   # the app if it is not already running.
   # @param [String] bundle
@@ -41,7 +35,7 @@ class Application < AX::Element
   # @return [AXObserverRef]
   def observer callback
     observer = Pointer.new '^{__AXObserver}'
-    log AXObserverCreate( @pid, callback, observer )
+    log AXObserverCreate( pid, callback, observer )
     observer[0]
   end
 
