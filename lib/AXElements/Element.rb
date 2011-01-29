@@ -335,10 +335,8 @@ class Element
   # @raise NoMethodError
   def method_missing method, *args
 
-    if (action = @@method_map[method])
-      if @methods.index action[1]
-        return self.send *action, *args
-      end
+    if (action = @@method_map[method]) && (@methods.index action[1])
+      return self.send *action, *args
     end
 
     # NOW WE TRY TO DO A SEARCH
