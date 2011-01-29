@@ -1,1 +1,1 @@
-rvm use macruby-nightly@AXElements --create
+rvm use macruby-nightly
