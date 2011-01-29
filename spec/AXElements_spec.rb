@@ -1,3 +1,5 @@
-require File.expand_path(File.dirname(__FILE__) + '/spec_helper')
+$LOAD_PATH.unshift File.dirname(__FILE__)
+require 'helper'
 
-require 'mail'
+require 'element'
+require 'application'
