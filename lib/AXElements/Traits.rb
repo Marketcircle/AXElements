@@ -139,7 +139,7 @@ module Notifications
     CFRunLoopAddSource( run_loop, app_run_loop, KCFRunLoopDefaultMode )
 
     # use RunInMode because it has timeout functionality
-    CFRunLoopRunInMode( KCFRunLoopDefaultMode, timeout, false )
+    CFRunLoopRunInMode( KCFRunLoopDefaultMode, timeout, false ) == 2
   end
 end
 
