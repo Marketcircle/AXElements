@@ -383,7 +383,8 @@ class Element
       return search_results.first
     end
 
-    raise NoMethodError, "The ##{method} attribute does not exist and this #{self.class} does not have children."
+    AX.log.debug "##{method} attr doesn't exist and this #{self.class} doesn't have children"
+    super
   end
 
 
