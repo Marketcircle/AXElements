@@ -1,6 +1,5 @@
 module AX
 
-# @todo add a method for checking writability
 # @abstract
 # The abstract base class for all accessibility objects.
 class Element
@@ -85,6 +84,16 @@ class Element
     array_ptr  = Pointer.new '^{__CFArray}'
     log AXUIElementCopyActionNames( @ref, array_ptr )
     array_ptr[0]
+  end
+
+  # Check the writability of a particular attribute
+  # @param [String] attr
+  # @return [Boolean]
+  def attribute_writable? attr
+    ptr = Pointer.new :id
+    error_code = AXUIElementElementIsAttributeSettable( @ref, attr, ptr )
+    log error_code, attr
+    ptr[0]
   end
 
   # @param [String] attr an attribute constant
