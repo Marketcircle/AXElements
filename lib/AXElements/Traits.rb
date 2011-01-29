@@ -108,7 +108,8 @@ module Notifications
   #  is used for
   # @return
   def notif_method observer, element, notif, refcon
-    @notif_proc.call observer, element, notif, refcon
+    wrapped_element = Element.make_element element
+    @notif_proc.call wrapped_element, notif
 
     run_loop   = CFRunLoopGetCurrent()
     app_source = AXObserverGetRunLoopSource( observer )
