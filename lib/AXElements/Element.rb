@@ -155,7 +155,7 @@ class Element
   # names in the private part of this class.
   #
   # You can add more attributes to this table at run time.
-  # @return [Array<Symbol, String, Boolean>] a double that will be sent to self
+  # @return [Array<Symbol, String, Boolean>] a pair or triple that will be sent to self
   @@method_map = {
     #                             Fixnum
                  disclosure_level:[:attribute, NSAccessibilityDisclosureLevelAttribute],
