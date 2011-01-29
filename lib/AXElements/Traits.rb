@@ -130,12 +130,12 @@ module Notifications
   def wait_for_notification notif, timeout = 10, &block
     @notif_proc  = block
     callback     = method :notif_method
-    observer     = Application.application_for_pid( get_pid ).observer callback
+    observer     = Application.application_for_pid( pid ).observer callback
 
     run_loop     = CFRunLoopGetCurrent()
     app_run_loop = AXObserverGetRunLoopSource( observer )
 
-    log_error AXObserverAddNotification( observer, @ref, notif, nil )
+    log AXObserverAddNotification( observer, @ref, notif, nil )
     CFRunLoopAddSource( run_loop, app_run_loop, KCFRunLoopDefaultMode )
 
     # use RunInMode because it has timeout functionality
