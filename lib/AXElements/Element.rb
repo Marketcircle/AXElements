@@ -139,7 +139,7 @@ class Element
   # @param [String] attr
   # @return [Boolean] true if successful, otherwise false
   def set_attribute_with_value attr, value
-    error_code AXUIElementSetAttributeValue( @ref, attr, value )
+    error_code = AXUIElementSetAttributeValue( @ref, attr, value )
     log( error_code, [attr, value] ) == 0
   end
 
