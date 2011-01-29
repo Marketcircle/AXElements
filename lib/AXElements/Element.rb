@@ -105,10 +105,10 @@ class Element
   end
 
   # @param [String] attr an attribute constant
-  # @return [Array<AX::Element>,nil]
+  # @return [Array<AX::Element>]
   def elements_attribute attr
     value = attribute attr
-    return nil unless value
+    return [] unless value
     value.map { |element| Element.make_element element }
   end
 
