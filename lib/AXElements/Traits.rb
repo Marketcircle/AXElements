@@ -127,7 +127,7 @@ module Notifications
   #  to receive under the given conditions, but only two conditions which will
   #  occur under regular circumstances.
   def wait_for_notification notif, timeout = 10, &block
-    @notif_proc  = block
+    @notif_proc  = block || Proc.new { |element, notif| }
     callback     = method :notif_method
     observer     = Application.application_for_pid( pid ).observer callback
 
