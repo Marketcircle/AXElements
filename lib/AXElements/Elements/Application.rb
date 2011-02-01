@@ -3,6 +3,8 @@ module AX
 # Some additional constructors and factories for Application objects.
 class Application < AX::Element
 
+  include Traits::Typing
+
   # This is the standard way of creating an application object. It will launch
   # the app if it is not already running.
   # @param [String] bundle
