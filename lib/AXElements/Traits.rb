@@ -106,8 +106,10 @@ module Notifications
   #  is used for
   # @return
   def notif_method observer, element, notif, refcon
-    wrapped_element = Element.make_element element
-    @notif_proc.call wrapped_element, notif
+    if @notif_proc
+      wrapped_element = Element.make_element element
+      @notif_proc.call wrapped_element, notif
+    end
 
     run_loop   = CFRunLoopGetCurrent()
     app_source = AXObserverGetRunLoopSource( observer )
@@ -127,7 +129,7 @@ module Notifications
   #  to receive under the given conditions, but only two conditions which will
   #  occur under regular circumstances.
   def wait_for_notification notif, timeout = 10, &block
-    @notif_proc  = block || Proc.new { |element, notif| }
+    @notif_proc  = block
     callback     = method :notif_method
     observer     = Application.application_for_pid( pid ).observer callback
 
