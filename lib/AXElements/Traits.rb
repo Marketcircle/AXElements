@@ -8,8 +8,8 @@ module Traits
 module Clicking
   # @return [boolean] true if successful, otherwise crash
   def left_click
-    position = self.position
-    size     = self.size
+    position    = self.position
+    size        = self.size
     position.x += (size.width / 2)
     position.y += (size.height / 2)
     mouse_event = CGEventCreateMouseEvent(nil, KCGEventLeftMouseDown, position, KCGMouseButtonLeft)
