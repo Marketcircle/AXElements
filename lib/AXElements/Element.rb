@@ -30,7 +30,7 @@ class Element
       if attributes(element).include? KAXSubroleAttribute
         subrole = attribute_of_element KAXSubroleAttribute, element
       end
-      choice = (subrole || role).sub(/^AX/, '').to_sym
+      choice = (subrole || role).sub(/^(MC)?AX/, '')
       AX.new_const_get(choice).new element
     end
 
