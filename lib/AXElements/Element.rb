@@ -208,6 +208,7 @@ class Element
                              units:[:attribute, NSAccessibilityUnitsAttribute],
                   unit_description:[:attribute, NSAccessibilityUnitDescriptionAttribute],
                              value:[:attribute, NSAccessibilityValueAttribute],
+           quick_search_group_name:[:attribute, 'MCAXQuickSearchGroupName'],
     #                              NSURL
                           document:[:attribute, NSAccessibilityDocumentAttribute],
                                url:[:attribute, NSAccessibilityURLAttribute],
