@@ -3,7 +3,7 @@ module AX
   # Like {#const_get} except that if the class does not exist yet then
   # it will create the class for you. If not used carefully, you could end
   # up creating a bunch of useless, possibly harmful, classes at run time.
-  # @param [Symbol] const the value you want as a constant
+  # @param [Symbol,String] const the value you want as a constant
   # @return [Class] a reference to the class being looked up
   def self.new_const_get const
     if const_defined? const
@@ -14,10 +14,10 @@ module AX
   end
 
   # Chomps off a trailing 's' if there is one and then looks up the constant.
-  # @param [String] const
+  # @param [String,Symbol] const
   # @return [Class,nil] the class if it exists, else returns nil
   def self.plural_const_get const
-    const.chomp! 's'
+    const = const.to_s.chomp! 's'
     if const_defined? const
       const_get const
     else
@@ -27,7 +27,7 @@ module AX
 
   # Creates new class at run time. This method is called for each
   # type of UI element that has not yet been explicitly defined.
-  # @param [Symbol] class_name
+  # @param [Symbol,String] class_name
   # @return [Class]
   def self.create_ax_class class_name
     klass = Class.new Element do
