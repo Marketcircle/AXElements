@@ -25,9 +25,9 @@ describe 'Mail.app' do
 
   describe 'using the preferences' do
     before do
-      mail_menu = @mail.menu_bar.menu_bar_item(title:'Mail')
+      mail_menu = @mail.menu_bar_item(title:'Mail')
       mail_menu.press
-      mail_menu.menu.menu_item(title:'Preferences…').press
+      mail_menu.menu_item(title:'Preferences…').press
       @window = @mail.focused_window
     end
 
