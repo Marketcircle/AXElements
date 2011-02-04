@@ -17,7 +17,7 @@ module AX
   # @param [String,Symbol] const
   # @return [Class,nil] the class if it exists, else returns nil
   def self.plural_const_get const
-    const = const.to_s.chomp! 's'
+    const = const.to_s.chomp 's'
     if const_defined? const
       const_get const
     else
