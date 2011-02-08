@@ -20,6 +20,14 @@ Jeweler::Tasks.new do |gem|
   gem.authors = ["Mark Rada"]
   gem.requirements << 'BridgeSupport 2.0'
   gem.files = ['lib/**/*']
+  gem.development_dependency = 'bundler',   '~> 1.0.10'
+  gem.development_dependency = 'jeweler',   '~> 1.5.2'
+  gem.development_dependency = 'rspec',     '~> 2.5.0'
+#  gem.development_dependency = 'rcov',      '>= 0'
+  gem.development_dependency = 'reek',      '~> 1.2.8'
+  gem.development_dependency = 'yard',      '~> 0.6.4'
+  gem.development_dependency = 'bluecloth', '~> 2.0.10'
+  gem.test_files = Dir.glob('spec/*_spec.rb')
 end
 Jeweler::RubygemsDotOrgTasks.new
 
