@@ -45,12 +45,6 @@ Reek::Rake::Task.new do |t|
   t.source_files = 'lib/**/*.rb'
 end
 
-require 'roodi'
-require 'roodi_task'
-RoodiTask.new do |t|
-  t.verbose = false
-end
-
 require 'yard'
 YARD::Rake::YardocTask.new
 
@@ -60,17 +54,4 @@ end
 
 task :show_off do
   sh 'yard server --reload'
-end
-
-begin
-  require 'reek/rake/task'
-  Reek::Rake::Task.new do |t|
-    t.fail_on_error = true
-    t.verbose = false
-    t.source_files = 'lib/**/*.rb'
-  end
-rescue LoadError
-  task :reek do
-    abort 'Reek is not available. In order to run reek, you must: sudo gem install reek'
-  end
 end

@@ -9,7 +9,6 @@ group :development do
 #  gem "rcov", ">= 0"
 
   gem "reek", "~> 1.2.8"
-  gem "roodi", "~> 2.1.0"
 
   gem "yard", "~> 0.6.0"
   gem "yard-rspec", "~> 0.1.0"
