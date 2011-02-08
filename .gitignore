@@ -9,4 +9,5 @@ doc
 pkg
 
 AX.png
-.gemspec
+
+Gemfile.lock
