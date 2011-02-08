@@ -35,7 +35,7 @@ module AX
 
 end
 
-
+require 'AXElements/Symbol_ext'
 require 'AXElements/String_ext'
 require 'AXElements/Array_ext'
 require 'AXElements/Traits'
