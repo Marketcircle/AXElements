@@ -1,5 +1,3 @@
-# This file contains all the monkey patches used in AXElements
-
 # Extensions to the String class.
 class String
 

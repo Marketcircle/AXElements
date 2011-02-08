@@ -37,6 +37,7 @@ end
 
 
 require 'AXElements/String_ext'
+require 'AXElements/Array_ext'
 require 'AXElements/Traits'
 require 'AXElements/Element'
 require 'AXElements/Elements'
