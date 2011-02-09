@@ -23,7 +23,9 @@ class Application < AX::Element
   # @param [Fixnum] pid The process identifier for the application you want
   # @return [AX::Application]
   def self.application_for_pid pid
+    end
   end
+
 
   # The inherited {Element#get_focus} will not work for applications.
   # @param [String] title the title of the application in the dock
@@ -53,7 +55,11 @@ class Application < AX::Element
                                                       options:NSWorkspaceLaunchAsync,
                                additionalEventParamDescriptor:nil,
                                              launchIdentifier:nil
+  # Override the base class to make sure the pid is included
+  def inspect
+    (super).sub />$/, "@pid=#{self.pid}>"
   end
+
 end
 
 end

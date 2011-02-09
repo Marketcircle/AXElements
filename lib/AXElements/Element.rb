@@ -337,6 +337,28 @@ class Element
   end
 
 
+  # @todo consider replacing method names with their values
+  #  or key/value pairs
+  # Method is overriden to produce cleaner output.
+  def inspect
+    nice_methods = @methods.map { |name|
+      name.sub AX.attribute_prefix, ''
+    }
+    "\#<#{self.class}: @methods=#{nice_methods}>"
+  end
+
+
+  # This helps a bit with regards to the dynamic methods.
+  # @param [Symbol] name
+  def respond_to? name
+    if (action = @@method_map[method]) && (@methods.index action[1])
+      true
+    elsif @methods.index KAXChildrenAttribute
+      true
+    else
+      super
+    end
+  end
 
   # Needed to override inherited NSObject#description. If you want a
   # description of the object try using #inspect.
