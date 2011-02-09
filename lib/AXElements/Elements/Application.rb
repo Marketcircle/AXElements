@@ -5,24 +5,55 @@ class Application < AX::Element
 
   include Traits::Typing
 
-  # This is the standard way of creating an application object. It will launch
-  # the app if it is not already running.
-  # @param [String] bundle
-  # @return [AX::Application]
-  def self.application_with_bundle_identifier bundle
-    while (apps = NSRunningApplication.runningApplicationsWithBundleIdentifier bundle).empty?
-      launch_application bundle
-      sleep 2
+  class << self
+
+    # This is the standard way of creating an application object. It will launch
+    # the app if it is not already running.
+    # @param [String] bundle
+    # @return [AX::Application]
+    def self.application_with_bundle_identifier bundle, timeout = 10
+      workspace = NSWorkspace.sharedWorkspace
+
+      unless workspace.runningApplications.map(&:bundleIdentifier).include? bundle
+        callback = Proc.new { |notif|
+          app_bundle = notif.userInfo['NSWorkspaceApplicationKey'].bundleIdentifier
+          CFRunLoopStop( CFRunLoopGetCurrent() ) if app_bundle == bundle
+        }
+
+        workspace.notificationCenter.addObserver(callback,
+                                        selector:'call:',
+                                            name:NSWorkspaceDidLaunchApplicationNotification,
+                                          object:nil)
+
+        launch_application bundle
+        CFRunLoopRunInMode( KCFRunLoopDefaultMode, timeout, false )
+      end
+
+      application_for_pid workspace.runningApplications.select { |app|
+        app.bundleIdentifier == bundle
+      }.first.processIdentifier
+    end
+
+    # You can call this method to create the application object if the app is
+    # already running; otherwise the object creation will fail.
+    # @param [Fixnum] pid The process identifier for the application you want
+    # @return [AX::Application]
+    def self.application_for_pid pid
       AX.make_element AXUIElementCreateApplication( pid )
     end
-    application_for_pid apps.first.processIdentifier
-  end
 
-  # You can call this method to create the application object if the app is
-  # already running; otherwise the object creation will fail.
-  # @param [Fixnum] pid The process identifier for the application you want
-  # @return [AX::Application]
-  def self.application_for_pid pid
+
+    private
+
+    # This method uses asynchronous method calls to launch applications.
+    # @param [String] bundle the bundle identifier for the app
+    # @return [Boolean]
+    def self.launch_application bundle
+      AX.log.info "Launching app with bundleID '#{bundle}'"
+      NSWorkspace.sharedWorkspace.launchAppWithBundleIdentifier bundle,
+                                                        options:NSWorkspaceLaunchAsync,
+                                 additionalEventParamDescriptor:nil,
+                                               launchIdentifier:nil
     end
   end
 
@@ -43,18 +74,6 @@ class Application < AX::Element
     observer[0]
   end
 
-
-  private
-
-  # This method uses asynchronous method calls to launch applications.
-  # @param [String] bundle the bundle identifier for the app
-  # @return [Boolean]
-  def self.launch_application bundle
-    AX.log.info "Launching app with bundleID '#{bundle}'"
-    NSWorkspace.sharedWorkspace.launchAppWithBundleIdentifier bundle,
-                                                      options:NSWorkspaceLaunchAsync,
-                               additionalEventParamDescriptor:nil,
-                                             launchIdentifier:nil
   # Override the base class to make sure the pid is included
   def inspect
     (super).sub />$/, "@pid=#{self.pid}>"
