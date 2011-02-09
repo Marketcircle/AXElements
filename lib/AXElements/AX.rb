@@ -116,6 +116,9 @@ module AX
   end
 
 
+  # initialize the value
+  @attribute_prefix = /^AX/
+
   # @return [AX::SystemWide]
   SYSTEM = make_element AXUIElementCreateSystemWide()
 

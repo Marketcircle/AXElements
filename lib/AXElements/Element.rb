@@ -18,6 +18,7 @@ class Element
   # @return [AXUIElementRef] the low level object reference
   attr_reader :ref
 
+
   # @param [AXUIElementRef] element
   def initialize element
     @ref     = element
