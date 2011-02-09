@@ -122,7 +122,9 @@ class Element
   # names in the private part of this class.
   #
   # You can add more attributes to this table at run time.
-  # @return [Array<Symbol, String, Boolean>] a pair or triple that will be sent to self
+  # @return [Array<Symbol, String, Boolean>] a pair or triple that will be
+  #  sent to self
+  cattr_accessor :method_map, instance_writer:false, instance_reader:false
   @@method_map = {
     #                             Fixnum
                  disclosure_level:[:attribute, NSAccessibilityDisclosureLevelAttribute],
@@ -165,7 +167,6 @@ class Element
                              units:[:attribute, NSAccessibilityUnitsAttribute],
                   unit_description:[:attribute, NSAccessibilityUnitDescriptionAttribute],
                              value:[:attribute, NSAccessibilityValueAttribute],
-           quick_search_group_name:[:attribute, 'MCAXQuickSearchGroupName'],
     #                              NSURL
                           document:[:attribute, NSAccessibilityDocumentAttribute],
                                url:[:attribute, NSAccessibilityURLAttribute],
