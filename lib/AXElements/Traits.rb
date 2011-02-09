@@ -99,6 +99,8 @@ end
 # You can find a list of built in notifications in Apple's [documentation](http://developer.apple.com/library/mac/#documentation/Accessibility/Reference/AccessibilityLowlevel/AXNotificationConstants_h/index.html).
 module Notifications
 
+  # @todo turn this into a proc and dispatch it from within
+  #  the {#wait_for_notification} method
   # @param [AXObserverRef] observer the observer being notified
   # @param [AXUIElementRef] element the element being referenced
   # @param [String] notif the notification name
@@ -107,8 +109,9 @@ module Notifications
   # @return
   def notif_method observer, element, notif, refcon
     if @notif_proc
-      wrapped_element = Element.make_element element
+      wrapped_element = AX.make_element element
       @notif_proc.call wrapped_element, notif
+      @notif_proc     = nil
     end
 
     run_loop   = CFRunLoopGetCurrent()
@@ -128,8 +131,8 @@ module Notifications
   #  There are actually four different return codes, three which are 'possible'
   #  to receive under the given conditions, but only two conditions which will
   #  occur under regular circumstances.
-  def wait_for_notification notif, timeout = 10, &block
-    @notif_proc  = block
+  def wait_for_notification notif, timeout = 10
+    @notif_proc  = Proc.new if block_given?
     callback     = method :notif_method
     observer     = Application.application_for_pid( pid ).observer callback
 
