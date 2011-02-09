@@ -1,6 +1,7 @@
 require 'rubygems'
 require 'active_support/inflector'
 
+
 # Overrides for the Array class that makes it possible to
 module ArrayAXElementExtensions
 
@@ -11,19 +12,34 @@ module ArrayAXElementExtensions
   # types of AX::Element objects that may not have the same attributes
   # or you could end up having a single element throw an exception.
   def method_missing method, *args
-    if first.kind_of? AX::Element
-      map &method
+    return super        unless first.kind_of? AX::Element
+    return map(&method) if AX::Element.method_map[method]
+    map &(singularized_method_name method)
+  end
+
+
+  private
+
+  # Takes a method name and singularizes it, including the case where
+  # the method name is a predicate.
+  # @param [#to_s] method
+  # @return [Symbol]
+  def singularized_method_name method
+    if method.predicate?
+      (ActiveSupport::Inflector.singularize(method.to_s[0...-1]) + '?').to_sym
     else
-      super
+      ActiveSupport::Inflector.singularize(method).to_sym
     end
   end
 
 end
 
+
 # Monkey patches on top of Array
 class Array
   include ArrayAXElementExtensions
 end
+
 
 # Extensions to the String class.
 class String

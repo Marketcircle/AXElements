@@ -9,6 +9,21 @@ describe Array, '#method_missing' do
     expect { AX::DOCK.list.application_dock_items.role }.should_not raise_exception
     AX::DOCK.list.application_dock_items.role.first.class.should == String
   end
+
+  it 'should not singularize methods that are meant to be plural' do
+    # based on the fact that #child does not exist
+    expect {
+      AX::DOCK.list.application_dock_items.children
+    }.should_not raise_error NoMethodError
+  end
+
+  it 'should singularize methods that do not exist normally as a plural' do
+    expect {
+      [:roles, :titles, :parents, :positions, :sizes, :urls].each { |attribute|
+        AX::DOCK.list.application_dock_items.send attribute
+      }
+    }.should_not raise_error NoMethodError
+  end
 end
 
 describe String, '#camelize!' do
