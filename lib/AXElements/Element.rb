@@ -126,16 +126,16 @@ class Element
   #  sent to self
   cattr_accessor :method_map, instance_writer:false, instance_reader:false
   @@method_map = {
-    #                             Fixnum
-                 disclosure_level:[:attribute, NSAccessibilityDisclosureLevelAttribute],
-                            index:[:attribute, NSAccessibilityIndexAttribute],
-      insertion_point_line_number:[:attribute, NSAccessibilityInsertionPointLineNumberAttribute],
-                    maximum_value:[:attribute, NSAccessibilityMaxValueAttribute],
-                    minimum_value:[:attribute, NSAccessibilityMinValueAttribute],
-             number_of_characters:[:attribute, NSAccessibilityNumberOfCharactersAttribute],
-    #                             Array<Fixnum>
-                   allowed_values:[:attribute, NSAccessibilityAllowedValuesAttribute],
-    #                             Boolean
+    #                              Fixnum
+                  disclosure_level:[:attribute, NSAccessibilityDisclosureLevelAttribute],
+                             index:[:attribute, NSAccessibilityIndexAttribute],
+       insertion_point_line_number:[:attribute, NSAccessibilityInsertionPointLineNumberAttribute],
+                     maximum_value:[:attribute, NSAccessibilityMaxValueAttribute],
+                     minimum_value:[:attribute, NSAccessibilityMinValueAttribute],
+              number_of_characters:[:attribute, NSAccessibilityNumberOfCharactersAttribute],
+    #                              Array<Fixnum>
+                    allowed_values:[:attribute, NSAccessibilityAllowedValuesAttribute],
+    #                              Boolean
                        disclosing?:[:attribute, NSAccessibilityDisclosingAttribute],
                            edited?:[:attribute, NSAccessibilityEditedAttribute],
                           enabled?:[:attribute, NSAccessibilityEnabledAttribute],
