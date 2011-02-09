@@ -13,6 +13,7 @@ class Application < AX::Element
     while (apps = NSRunningApplication.runningApplicationsWithBundleIdentifier bundle).empty?
       launch_application bundle
       sleep 2
+      AX.make_element AXUIElementCreateApplication( pid )
     end
     application_for_pid apps.first.processIdentifier
   end
@@ -22,7 +23,6 @@ class Application < AX::Element
   # @param [Fixnum] pid The process identifier for the application you want
   # @return [AX::Application]
   def self.application_for_pid pid
-    Element.make_element AXUIElementCreateApplication( pid )
   end
 
   # The inherited {Element#get_focus} will not work for applications.

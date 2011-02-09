@@ -12,50 +12,6 @@ class Element
   # nil object at index 0.
   # @return [Class,nil]
   AXBoxTypes = [ nil, CGPoint, CGSize, CGRect, CFRange ]
-
-
-  class << self
-
-    # @note we have to check that the subrole value returns non-nil because
-    #  sometimes an element will have a subrole but the value will be nil
-    # Takes an AXUIElementRef and gives you some kind of accessibility object.
-    #
-    # This method prefers to choose a class type based on the subrole value for
-    # an accessibility object, and it will use the role if there is no subrole.
-    # @param [AXUIElementRef] element
-    # @return [Element]
-    def make_element element
-      role    = attribute_of_element KAXRoleAttribute, element
-      subrole = nil
-      if attributes(element).include? KAXSubroleAttribute
-        subrole = attribute_of_element KAXSubroleAttribute, element
-      end
-      choice = (subrole || role).sub(/^(MC)?AX/, '')
-      AX.new_const_get(choice).new element
-    end
-
-
-    private
-
-    # @param [AXUIElementRef] element
-    # @return [Array<String>]
-    def attributes element
-      names = Pointer.new '^{__CFArray}'
-      AXUIElementCopyAttributeNames( element, names )
-      names[0]
-    end
-
-    # @param [AXUIElementRef] element
-    # @return [Object]
-    def attribute_of_element attr, element
-      value = Pointer.new :id
-      AXUIElementCopyAttributeValue( element, attr, value )
-      value[0]
-    end
-
-  end
-
-
   # @return [Array<String>] A cache of available attributes and actions
   attr_reader :methods
 
@@ -111,7 +67,7 @@ class Element
   def element_attribute attr
     value = attribute attr
     return nil unless value
-    Element.make_element value
+    AX.make_element value
   end
 
   # @param [String] attr an attribute constant
@@ -119,7 +75,7 @@ class Element
   def elements_attribute attr
     value = attribute attr
     return [] unless value
-    value.map { |element| Element.make_element element }
+    value.map { |element| AX.make_element element }
   end
 
   # @param [String] attr an attribute constant

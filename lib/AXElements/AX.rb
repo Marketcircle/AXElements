@@ -2,6 +2,25 @@ module AX
 
   class << self
 
+    # @return [Regex]
+    attr_accessor :attribute_prefix
+
+    # @note we have to check that the subrole value returns non-nil because
+    #  sometimes an element will have a subrole but the value will be nil
+    # Takes an AXUIElementRef and gives you some kind of accessibility object.
+    #
+    # This method prefers to choose a class type based on the subrole value for
+    # an accessibility object, and it will use the role if there is no subrole.
+    # @param [AXUIElementRef] element
+    # @return [Element]
+    def make_element element
+      role    = attribute_of_element KAXRoleAttribute, element
+      subrole = nil
+      if attributes(element).include? KAXSubroleAttribute
+        subrole = attribute_of_element KAXSubroleAttribute, element
+      end
+      choice = (subrole || role).sub(@attribute_prefix, '')
+      new_const_get(choice).new element
     end
 
     # Like {#const_get} except that if the class does not exist yet then
@@ -78,12 +97,27 @@ module AX
       carbon_point
     end
 
+    # @param [AXUIElementRef] element
+    # @return [Array<String>]
+    def attributes element
+      names = Pointer.new '^{__CFArray}'
+      AXUIElementCopyAttributeNames( element, names )
+      names[0]
+    end
+
+    # @param [AXUIElementRef] element
+    # @return [Object]
+    def attribute_of_element attr, element
+      value = Pointer.new :id
+      AXUIElementCopyAttributeValue( element, attr, value )
+      value[0]
+    end
 
   end
 
 
   # @return [AX::SystemWide]
-  SYSTEM = Element.make_element AXUIElementCreateSystemWide()
+  SYSTEM = make_element AXUIElementCreateSystemWide()
 
   # @return [AX::Application] the Mac OS X dock application
   DOCK = Application.application_with_bundle_identifier 'com.apple.dock'
