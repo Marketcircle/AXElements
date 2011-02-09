@@ -8,10 +8,6 @@ class Element
   include Traits::Notifications
 
 
-  # This array is order-sensitive, which is why there is a
-  # nil object at index 0.
-  # @return [Class,nil]
-  AXBoxTypes = [ nil, CGPoint, CGSize, CGRect, CFRange ]
   # @return [Array<String>] A cache of available attributes and actions
   attr_reader :methods
 
@@ -112,11 +108,6 @@ class Element
     log( error_code, action_name ) == 0
   end
 
-  # Needed to override inherited NSObject#description. If you want a
-  # description of the object try using #inspect.
-  def description
-    self.method_missing :description
-  end
 
   # A big lookup table that maps nice method names to more obfuscated method
   # names in the private part of this class.
@@ -346,7 +337,20 @@ class Element
   end
 
 
+
+  # Needed to override inherited NSObject#description. If you want a
+  # description of the object try using #inspect.
+  def description
+    self.method_missing :description
+  end
+
+
   protected
+
+  # This array is order-sensitive, which is why there is a
+  # nil object at index 0.
+  # @return [Class,nil]
+  AXBoxTypes = [ nil, CGPoint, CGSize, CGRect, CFRange ]
 
   # A mapping of the AXError constants to human readable strings.
   # @return [Hash{Fixnum => String}]
