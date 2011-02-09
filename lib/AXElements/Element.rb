@@ -1,3 +1,6 @@
+require 'rubygems'
+require 'active_support/core_ext/class'
+
 module AX
 
 # @abstract
