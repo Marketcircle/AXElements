@@ -84,7 +84,7 @@ class Element
     value = attribute attr
     return nil unless value
     box   = AXValueGetType( value )
-    ptr   = Pointer.new AXBoxTypes[box].type
+    ptr   = Pointer.new AXBoxType[box].type
     AXValueGetValue( value, box, ptr )
     ptr[0]
   end
@@ -375,7 +375,7 @@ class Element
   # This array is order-sensitive, which is why there is a
   # nil object at index 0.
   # @return [Class,nil]
-  AXBoxTypes = [ nil, CGPoint, CGSize, CGRect, CFRange ]
+  AXBoxType = [ nil, CGPoint, CGSize, CGRect, CFRange ]
 
   # A mapping of the AXError constants to human readable strings.
   # @return [Hash{Fixnum => String}]
