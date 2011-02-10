@@ -236,6 +236,12 @@ class Element
   }
 
 
+  # @todo replace lookup table with name mangling using
+  #  ActiveSupport::Inflector to mangle the name, and then introspect
+  #  the object to find out if it needs to be wrapped and how.
+  #  this will replace the need for all the attribute lookups.
+  #  for the setters, we just define two extra methods that check
+  #  their own validity. the actions will be tricky
   # @todo allow regex matching when filtering string attributes
   # @note Some attribute names don't map consistently from Apple's
   #  documentation because it would have caused a clash with the two
@@ -253,7 +259,7 @@ class Element
   # When you are looking up an attribute, this method will first make
   # sure that the current element has the required attribute, then it
   # will try to map the method name to an actual attribute name (listed
-  # in {@@method_map}) in order to call a lower level method (which in
+  # in {.method_map}) in order to call a lower level method (which in
   # turn calls the actual CoreFoundation API).
   #
   # Should the attribute lookup fail, the method will then try search
@@ -377,6 +383,7 @@ class Element
   # @return [Class,nil]
   AXBoxType = [ nil, CGPoint, CGSize, CGRect, CFRange ]
 
+  # @todo find out how to get a list of constants (dietrb source)
   # A mapping of the AXError constants to human readable strings.
   # @return [Hash{Fixnum => String}]
   AXError = {
