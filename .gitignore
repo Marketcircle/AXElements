@@ -5,9 +5,5 @@ doc
 # bundler
 .bundle
 
-# jeweler generated
-pkg
-
 AX.png
-
 Gemfile.lock
