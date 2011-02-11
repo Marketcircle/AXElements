@@ -360,9 +360,9 @@ class Element
   # This helps a bit with regards to the dynamic methods.
   # @param [Symbol] name
   def respond_to? name
-    if (action = @@method_map[method]) && (@methods.index action[1])
+    if (action = @@method_map[name]) && (@methods.index action[1])
       true
-    elsif @methods.index KAXChildrenAttribute
+    elsif (name == :children) && @methods.index(KAXChildrenAttribute)
       true
     else
       super
