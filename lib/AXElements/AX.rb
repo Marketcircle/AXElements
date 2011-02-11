@@ -78,6 +78,15 @@ module AX
       make_element element[0]
     end
 
+    # @note This method was designed as a debugging tool.
+    # Find out what the top level element is for any given element. This should
+    # always be the application to which the UI element belongs.
+    # @param [AX::Element] element
+    def ride_hierarchy_up element
+      return ride_hierarchy_up(element.parent) if element.respond_to? :parent
+      element
+    end
+
 
     private
 
