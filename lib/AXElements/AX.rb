@@ -5,22 +5,14 @@ module AX
     # @return [Regex]
     attr_accessor :attribute_prefix
 
-    # @note we have to check that the subrole value returns non-nil because
-    #  sometimes an element will have a subrole but the value will be nil
+    # @note We cannot use {#sub!} because the class name we get back is not
+    #  mutable
     # Takes an AXUIElementRef and gives you some kind of accessibility object.
-    #
-    # This method prefers to choose a class type based on the subrole value for
-    # an accessibility object, and it will use the role if there is no subrole.
     # @param [AXUIElementRef] element
     # @return [Element]
     def make_element element
-      role    = attribute_of_element KAXRoleAttribute, element
-      subrole = nil
-      if attributes(element).include? KAXSubroleAttribute
-        subrole = attribute_of_element KAXSubroleAttribute, element
-      end
-      choice = (subrole || role).sub(@attribute_prefix, '')
-      new_const_get(choice).new element
+      klass = class_name(element).sub(@attribute_prefix, '')
+      new_const_get(klass).new element
     end
 
     # Like {#const_get} except that if the class does not exist yet then
@@ -49,15 +41,16 @@ module AX
       end
     end
 
-    # Creates new class at run time. This method is called for each
-    # type of UI element that has not yet been explicitly defined.
+    # Creates new class at run time and puts it into the {AX} namespace.
+    # This method is called for each type of UI element that has not yet been
+    # explicitly defined to define them at runtime.
     # @param [#to_sym] class_name
     # @return [Class]
     def create_ax_class class_name
       klass = Class.new Element do
         AX.log.debug "#{class_name} class created"
       end
-      Object.const_set class_name.to_sym, klass
+      AX.const_set class_name, klass
     end
 
     # Finds the current mouse position and then calls {#element_at_position}.
@@ -106,20 +99,34 @@ module AX
       carbon_point
     end
 
-    # @param [AXUIElementRef] element
-    # @return [Array<String>]
-    def attributes element
-      names = Pointer.new '^{__CFArray}'
-      AXUIElementCopyAttributeNames( element, names )
-      names[0]
+    # Figures out what the name of the class of an element should be.
+    # We have to be careful, because some things claim to have a subrole
+    # but return nil.
+    #
+    # This method prefers to choose a class type based on the subrole value for
+    # an accessibility object, and it will use the role if there is no subrole.
+    # @param [AXUIElementRef]
+    # @return [String]
+    def class_name element
+      attrs_of_element(element, KAXSubroleAttribute, KAXRoleAttribute).first
     end
 
     # @param [AXUIElementRef] element
+    # @param [String] *attrs
     # @return [Object]
-    def attribute_of_element attr, element
-      value = Pointer.new :id
-      AXUIElementCopyAttributeValue( element, attr, value )
-      value[0]
+    def attrs_of_element element, *attrs
+      attributes = Pointer.new '^{__CFArray}'
+      attr_value = Pointer.new :id
+
+      AXUIElementCopyAttributeNames( element, attributes )
+      attributes = attributes[0]
+
+      attrs.map { |attr|
+        if attributes.include?(attr)
+          AXUIElementCopyAttributeValue( element, attr, attr_value )
+          attr_value[0]
+        end
+      }.compact
     end
 
   end
