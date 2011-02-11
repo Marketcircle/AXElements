@@ -1,1 +1,1 @@
-rvm use macruby-nightly
+rvm use macruby-nightly@MCTesting --create
