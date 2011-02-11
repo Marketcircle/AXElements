@@ -237,11 +237,14 @@ class Element
 
 
   # @todo replace lookup table with name mangling using
-  #  ActiveSupport::Inflector to mangle the name, and then introspect
-  #  the object to find out if it needs to be wrapped and how.
-  #  this will replace the need for all the attribute lookups.
-  #  for the setters, we just define two extra methods that check
-  #  their own validity. the actions will be tricky
+  #  ActiveSupport::Inflector to mangle the name (pre_mangle _ui_),
+  #  and then introspect the object to find out if it needs to be
+  #  wrapped and how. this will replace the need for all the attribute
+  #  lookups. the actions will be tricky, but we will have
+  #  separate the attributes from the actions and check attributes
+  #  first and then actions
+  #  the setters will have to be done in such a way that #respond_to?
+  #  will not return true when it doesn't exist
   # @todo allow regex matching when filtering string attributes
   # @note Some attribute names don't map consistently from Apple's
   #  documentation because it would have caused a clash with the two
