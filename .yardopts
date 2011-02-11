@@ -1,9 +1,12 @@
 --protected
---no-private
---markup markdown
---asset docs/images:images
---verbose
+--private
 --no-cache
 --no-output
+--verbose
+--markup markdown
+--asset docs/images:images
+--readme README.markdown
+lib/**/*.rb
 -
+LICENSE.txt
 docs/GeneratingEvents.markdown
