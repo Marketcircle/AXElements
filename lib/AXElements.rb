@@ -1,4 +1,3 @@
-require   'logger'
 framework 'Cocoa'
 
 # check that the new bridge support exists
@@ -22,6 +21,8 @@ end
 #
 # ![Class Diagram](/docs/file/docs/images/AX.png)
 module AX
+
+  require   'logger'
 
   class << self
 

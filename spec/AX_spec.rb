@@ -107,4 +107,23 @@ describe AX do
     end
   end
 
+  describe '.log' do
+    it 'should be initialized to be a logger' do
+      AX.log.class.should be Logger
+    end
+
+    it 'should be writable' do
+      current_logger = AX.log
+      new_logger     = Logger.new $stdout
+      AX.log         = new_logger
+      AX.log.should be new_logger
+      AX.log         = current_logger
+      AX.log.should be current_logger
+    end
+
+    it 'should only be logging error and higher by default' do
+      AX.log.level.should be LOGGER::ERROR
+    end
+  end
+
 end
