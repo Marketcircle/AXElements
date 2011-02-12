@@ -22,11 +22,12 @@ module ArrayAXElementExtensions
 
   # Takes a method name and singularizes it, including the case where
   # the method name is a predicate.
-  # @param [#to_s] method
+  # @param [Symbol] method
   # @return [Symbol]
   def singularized_method_name method
+    method = method.to_s
     if method.predicate?
-      (method.to_s[0...-1].singularize + '?').to_sym
+      (method[0...-1].singularize + '?').to_sym
     else
       method.singularize.to_sym
     end
@@ -56,15 +57,10 @@ class String
     gsub! /(?:^|_)(.)/ do |match| match[-1].upcase end
   end
 
-end
-
-
-class Symbol
-
   # Tells you if the symbol would be a predicate method by
   # checking if it ends with a question mark '?'.
   def predicate?
-    to_s.match( /\?$/ ).is_a? MatchData
+    match( /\?$/ ) != nil
   end
 
 end
