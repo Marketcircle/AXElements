@@ -25,9 +25,9 @@ module ArrayAXElementExtensions
   # @return [Symbol]
   def singularized_method_name method
     if method.predicate?
-      (ActiveSupport::Inflector.singularize(method.to_s[0...-1]) + '?').to_sym
+      (method.to_s[0...-1].singularize + '?').to_sym
     else
-      ActiveSupport::Inflector.singularize(method).to_sym
+      method.singularize.to_sym
     end
   end
 
