@@ -1,9 +1,5 @@
-# yard generated
 doc
 .yardoc
-
-# bundler
-.bundle
-
-AX.png
 Gemfile.lock
+gems/
+lib/*.rbo
