@@ -16,14 +16,15 @@ Gem::Specification.new do |s|
   s.email       = 'mrada@marketcircle.com'
   s.homepage    = 'http://samurai.marketcircle.com:3000/docs/AXElements'
   s.licenses    = ['MIT']
+  s.has_rdoc    = 'yard'
 
   s.require_paths    = ['lib']
-  s.files            = Dir.glob('/lib/**/*')
+  s.files            = Dir.glob('/lib/**/*.rbo') + Dir.glob('/gems/**/*.rbo')
   s.test_files       = Dir.glob 'spec/**/*_spec.rb'
   s.extra_rdoc_files = [
                         'LICENSE.txt',
-                        'README.markdown'
-                       ]
+                        'README.markdown',
+                       ] + Dir.glob('docs/**/*')
 
   # They are development dependencies because the runtime versions
   # are already installed and packaged gems directory.

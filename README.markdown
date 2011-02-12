@@ -1,7 +1,8 @@
 AXElements
 ==========
 
-A simple layer above the Mac OS X Accessibility APIs to make code more readable.
+A layer above the Mac OS X Accessibility APIs to make accessibility objects behave
+like objects in a very dynamic way.
 
 
 Contributing to AXElements
