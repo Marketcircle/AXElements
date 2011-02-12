@@ -108,7 +108,9 @@ module AX
     # @param [AXUIElementRef]
     # @return [String]
     def class_name element
-      attrs_of_element(element, KAXSubroleAttribute, KAXRoleAttribute).first
+      attrs_of_element(element,
+                       KAXSubroleAttribute, KAXRoleAttribute
+                       ).compact.first
     end
 
     # @param [AXUIElementRef] element
@@ -126,7 +128,7 @@ module AX
           AXUIElementCopyAttributeValue( element, attr, attr_value )
           attr_value[0]
         end
-      }.compact
+      }
     end
 
   end
