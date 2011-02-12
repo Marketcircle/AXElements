@@ -113,7 +113,7 @@ module AX
 
     # @param [AXUIElementRef] element
     # @param [String] *attrs
-    # @return [Object]
+    # @return [Array]
     def attrs_of_element element, *attrs
       attributes = Pointer.new '^{__CFArray}'
       attr_value = Pointer.new :id

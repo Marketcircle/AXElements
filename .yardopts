@@ -10,3 +10,4 @@ lib/**/*.rb
 -
 LICENSE.txt
 docs/GeneratingEvents.markdown
+docs/AXElements.markdown

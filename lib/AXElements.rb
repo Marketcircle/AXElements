@@ -16,13 +16,10 @@ rescue NoMethodError
 end
 
 
-# @version 0.1.2
 # A module for all the different accessibility roles.
 # Inside the module, we should always try to work with the lower level APIs.
 # The module should NEVER return something from the lower levels.
 # To help with this, the module includes a few handy methods.
-#
-# ![Class Diagram](images/AX.png)
 module AX
 
   require   'logger'
