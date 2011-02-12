@@ -36,6 +36,7 @@ module AX
 
 end
 
+require 'AXElements/Version'
 require 'AXElements/CoreExtensions'
 require 'AXElements/Traits'
 require 'AXElements/Element'

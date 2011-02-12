@@ -1,6 +1,3 @@
-require 'rubygems'
-require 'active_support/core_ext/class'
-
 module AX
 
 # @abstract
@@ -118,7 +115,7 @@ class Element
   # You can add more attributes to this table at run time.
   # @return [Array<Symbol, String, Boolean>] a pair or triple that will be
   #  sent to self
-  cattr_accessor :method_map, instance_writer:false, instance_reader:false
+  def self.method_map; @@method_map; end
   @@method_map = {
     #                              Fixnum
                   disclosure_level:[:attribute, NSAccessibilityDisclosureLevelAttribute],

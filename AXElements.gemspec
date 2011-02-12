@@ -1,8 +1,10 @@
 # -*- encoding: utf-8 -*-
+$LOAD_PATH.unshift File.expand_path 'lib'
+require 'AXElements/Version'
 
 Gem::Specification.new do |s|
   s.name    = 'AXElements'
-  s.version = '0.1.2'
+  s.version = AX::VERSION
 
   s.required_rubygems_version = '>= 1.4.2'
   s.rubygems_version          = '1.4.2'
@@ -23,9 +25,10 @@ Gem::Specification.new do |s|
                         'README.markdown'
                        ]
 
-  s.add_runtime_dependency 'AXElements',    ['>= 0']
-  s.add_runtime_dependency 'i18n',          ['~> 0.5.0']
-  s.add_runtime_dependency 'activesupport', ['~> 3.0.4']
+  # They are development dependencies because the runtime versions
+  # are already installed and packaged gems directory.
+  s.add_development_dependency 'i18n',          ['~> 0.5.0']
+  s.add_development_dependency 'activesupport', ['~> 3.0.4']
 
   s.add_development_dependency 'rake',      ['~> 0.8.7']
   s.add_development_dependency 'rspec',     ['~> 2.5.0']
