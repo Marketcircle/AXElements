@@ -126,4 +126,43 @@ describe AX do
     end
   end
 
+  describe '.attrs_of_element' do
+    before do
+      @attributes = [
+                     KAXRoleAttribute,
+                     KAXSubroleAttribute,
+                     KAXTitleAttribute,
+                     KAXValueAttribute
+                    ]
+    end
+
+    it 'should return an array' do
+      ret = AX.send :attrs_of_element, AX::DOCK.ref, @attributes.first
+      ret.class.should be Array
+    end
+
+    it 'should return Dock when I ask for the role of the Dock' do
+      ret = AX.send :attrs_of_element, AX::DOCK.ref, KAXRoleAttribute
+      ret.first.should == KAXApplicationRole
+      ret = AX.send :attrs_of_element, AX::DOCK.ref, KAXTitleAttribute
+      ret.first.should == 'Dock'
+    end
+
+    it 'should use varags to get as many attributes as I want' do
+      expect {
+        AX.send :attrs_of_element, AX::DOCK.ref, *@attributes
+      }.should_not raise_error ArgumentError
+    end
+
+    it 'should return an array with an element for each attribute I asked for' do
+      ret = AX.send :attrs_of_element, AX::DOCK.ref, *@attributes
+      ret.size.should == @attributes.size
+    end
+
+    it 'should return nil entries for non-existant attributes' do
+      ret = AX.send :attrs_of_element, AX::DOCK.ref, 'madeupattribute'
+      ret.first.should be_nil
+    end
+  end
+
 end
