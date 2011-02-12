@@ -122,7 +122,7 @@ describe AX do
     end
 
     it 'should only be logging error and higher by default' do
-      AX.log.level.should be LOGGER::ERROR
+      AX.log.level.should be Logger::ERROR
     end
   end
 
