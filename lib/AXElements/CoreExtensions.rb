@@ -4,12 +4,13 @@ require 'active_support/inflector'
 # Overrides for the Array class that makes it possible to
 module ArrayAXElementExtensions
 
-  # If the array contains AX::Element objects, then we can just iterate
-  # over the array passing the argument in.
+  # If the array contains {AX::Element} objects, then we can just
+  # iterate over the array passing the argument in.
   #
   # You have to be careful in cases where the array contains various
-  # types of AX::Element objects that may not have the same attributes
-  # or you could end up having a single element throw an exception.
+  # types of {AX::Element} objects that may not have the same
+  # attributes or you could end up having a single element throw
+  # a {NoMethodError}.
   def method_missing method, *args
     return super        unless first.kind_of? AX::Element
     return map(&method) if AX::Element.method_map[method]
