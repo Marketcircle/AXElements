@@ -8,8 +8,8 @@
 --readme README.markdown
 lib/**/*.rb
 -
-LICENSE.txt
 docs/AXElements.markdown
 docs/KeyboardEvents.markdown
-docs/MouseEvents.markdown
 docs/Notifications.markdown
+docs/MouseEvents.markdown
+LICENSE.txt

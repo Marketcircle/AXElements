@@ -4,3 +4,4 @@ Gemfile.lock
 gems/
 lib/*.rbo
 *.rbo
+*.gem
