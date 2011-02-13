@@ -16,7 +16,7 @@ Gem::Specification.new do |s|
   s.email       = 'mrada@marketcircle.com'
   s.homepage    = 'http://samurai.marketcircle.com:3000/docs/AXElements'
   s.licenses    = ['MIT']
-  s.has_rdoc    = 'yard'
+  s.has_rdoc      = true
 
   s.require_paths    = ['lib']
   s.files            = Dir.glob('/lib/**/*.rbo') + Dir.glob('/gems/**/*.rbo')
