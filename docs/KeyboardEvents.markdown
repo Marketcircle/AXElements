@@ -1,7 +1,11 @@
 Keyboard Events
 ===============
 
-Used for entering passwords, hotkeys, etc.
+In some cases you cannot, or do not want to,  set the value of a field
+directly by assigning to it's value attribute. In these cases you can
+post keyboard events to an application object.
+
+Keyboard events must be posted to an application object.
 
 Escape Sequences
 ----------------
