@@ -10,17 +10,23 @@ Gem::Specification.new do |s|
   s.rubygems_version          = '1.4.2'
   s.requirements              = ['BridgeSupport 2.0']
 
-  s.summary     = 'A simple layer above the Mac OS X Accessibility APIs'
-  s.description = 'Takes advantage of the new Bridge Support in Mac OS X Lion'
-  s.authors     = ['Mark Rada']
-  s.email       = 'mrada@marketcircle.com'
-  s.homepage    = 'http://samurai.marketcircle.com:3000/docs/AXElements'
-  s.licenses    = ['MIT']
+  s.summary       = 'An abstraction on top of the Mac OS X Accessibility APIs'
+  s.description   = <<-EOS
+Takes advantage of the new Bridge Support in Mac OS X Lion to build an object
+oriented framework from the low level CoreFoundation API for accessibility.
+  EOS
+  s.authors       = ['Mark Rada']
+  s.email         = 'mrada@marketcircle.com'
+  s.homepage      = 'http://samurai.marketcircle.com:3000/docs/AXElements'
+  s.licenses      = ['MIT']
   s.has_rdoc      = true
+  s.require_paths = ['lib']
 
   s.files            =
     Dir.glob('lib/**/*.rb*')  +
     Dir.glob('gems/**/*.rbo')
+  s.test_files       =
+    Dir.glob 'spec/**/*_spec.rb'
   s.extra_rdoc_files =
     [ 'LICENSE.txt', 'README.markdown', '.yardopts' ] +
     Dir.glob('docs/**/*')
