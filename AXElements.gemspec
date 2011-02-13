@@ -18,9 +18,9 @@ Gem::Specification.new do |s|
   s.licenses    = ['MIT']
   s.has_rdoc      = true
 
-  s.require_paths    = ['lib']
-  s.files            = Dir.glob('/lib/**/*.rbo') + Dir.glob('/gems/**/*.rbo')
-  s.test_files       = Dir.glob 'spec/**/*_spec.rb'
+  s.files            =
+    Dir.glob('lib/**/*.rb*')  +
+    Dir.glob('gems/**/*.rbo')
   s.extra_rdoc_files =
     [ 'LICENSE.txt', 'README.markdown', '.yardopts' ] +
     Dir.glob('docs/**/*')
