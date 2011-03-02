@@ -325,6 +325,7 @@ class Element
 
         next unless element.class == primary_filter
 
+        # @todo try using #find instead
         # disabled until MacRuby ticket #1139 is resolved
         # next unless filters.each_pair { |filter_attribute, value|
         #   break unless element.send(filter_attribute) == value
