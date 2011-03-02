@@ -37,7 +37,7 @@ end
 
 namespace :gem do
   desc 'Build the gem'
-  task :build => [:'macruby:compile', :'macruby:compile_deps'] do
+  task :build do
     puts `gem build -v AXElements.gemspec`
   end
 
