@@ -38,12 +38,12 @@ end
 namespace :gem do
   desc 'Build the gem'
   task :build do
-    puts `gem build -v AXElements.gemspec`
+    puts `gem build -V AXElements.gemspec`
   end
 
   desc 'Build the gem and install it'
   task :install => :build do
-    puts `gem install -v #{Dir.glob('./AXElements*.gem').sort.reverse.first}`
+    puts `gem install #{Dir.glob('./AXElements*.gem').sort.reverse.first}`
   end
 end
 
