@@ -19,6 +19,7 @@ describe AX do
 
   # @todo figure out an easy way to do this
   describe '.make_element' do
+    it 'should return an AX::Element'
   end
 
   describe '.new_const_get' do

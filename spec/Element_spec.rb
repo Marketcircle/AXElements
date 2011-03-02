@@ -3,23 +3,24 @@ require './helper'
 describe AX::Element do
 
   it 'should be able to click' do
-    # should be_respond_to left_click
+    AX::Element.ancestors.should be_include AX::Traits::Clicking
   end
 
   it 'should be able wait for notifications' do
-    # should be_respond_to wait_for_notification
-  end
-
-  describe '.make_element' do
+    AX::Element.ancestors.should be_include AX::Traits::Notifications
   end
 
   describe '#methods' do
+    it 'should contain attributes'
+    it 'should contain actions'
   end
 
   describe '#ref' do
+    it 'should be the low level AXUIElementRef'
   end
 
   describe '#pid' do
+    it 'should get the pid for the application to which the element belongs'
   end
 
   describe '#attributes' do
