@@ -54,7 +54,7 @@ class String
   # place we save an allocation (which is slow on MacRuby right now).
   # @return [String]
   def camelize!
-    gsub! /(?:^|_)(.)/ do |match| match[-1].upcase end
+    gsub! /(?:^|_)(.)/ do $1.upcase end
   end
 
   # Tells you if the symbol would be a predicate method by
