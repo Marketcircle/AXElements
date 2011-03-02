@@ -6,7 +6,7 @@ module AX
   # A list of dependencies
   RUNTIME_DEPENDENCIES = {
     i18n:          '0.5.0',
-    activesupport: '3.0.4'
+    activesupport: '3.0.5'
   }
 
   # Point of entry for any runtime dependencies
