@@ -11,7 +11,7 @@ namespace :macruby do
       name = File.basename source
       puts "#{name} => #{name}o"
       # @todo link against ApplicationServices
-      `macrubyc --arch x86_64 -C '#{source}' -o '#{source}o'`
+      `macrubyc -C '#{source}' -o '#{source}o'`
     end
   end
 
@@ -20,8 +20,7 @@ namespace :macruby do
     FileList["gems/**/*.rb"].each do |source|
       name = File.basename source
       puts "#{name} => #{name}o"
-      # @todo link against ApplicationServices
-      `macrubyc --arch x86_64 -C '#{source}' -o '#{source}o'`
+      `macrubyc -C '#{source}' -o '#{source}o'`
       rm source
     end
   end
