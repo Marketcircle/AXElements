@@ -6,7 +6,7 @@ Gem::Specification.new do |s|
   s.version = AX::VERSION
 
   s.required_rubygems_version = Gem::Requirement.new '>= 1.4.2'
-  s.rubygems_version          = '1.4.2'
+  s.rubygems_version          = Gem::VERSION
   s.requirements              = ['BridgeSupport Preview 3']
 
   s.summary       = 'An abstraction on top of the Mac OS X Accessibility APIs'
