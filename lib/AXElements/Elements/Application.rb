@@ -61,8 +61,8 @@ class Application < AX::Element
   # The inherited {Element#get_focus} will not work for applications.
   # @param [String] title the title of the application in the dock
   # @return [Boolean] true if successful, otherwise false
-  def get_focus title
-    AX::DOCK.list.application_dock_item(title:title).press
+  def get_focus
+    AX::DOCK.list.application_dock_item(title: title).press
   end
 
   # Create and return a notification observer for the object's application.
