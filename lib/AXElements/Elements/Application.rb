@@ -72,6 +72,17 @@ class Application < AX::Element
   end
 
   ##
+  # @todo Since this does not use internal state, it is a candidate to be
+  #       moved to a utility class
+  #
+  # A macro for showing the About window for an app
+  def show_about_window
+    self.get_focus
+    self.menu_bar_item(title:(self.title)).press
+    self.menu_bar.menu_item(title: "About #{self.title}").press
+  end
+
+  ##
   # Create and return a notification observer for the object's application.
   # This method is almost never directly called, it is instead called by
   # {Traits::Notifications#wait_for_notification}.
