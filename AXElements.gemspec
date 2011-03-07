@@ -31,7 +31,6 @@ oriented framework from the low level CoreFoundation API for accessibility.
     [ 'Rakefile', 'LICENSE.txt', 'README.markdown', '.yardopts' ] +
     Dir.glob('docs/**/*')
 
-  s.add_development_dependency 'rake',      ['>= 0.8.7']
   s.add_development_dependency 'rspec',     ['~> 2.5']
   s.add_development_dependency 'yard',      ['~> 0.6.4']
   s.add_development_dependency 'bluecloth', ['~> 2.0.11']
