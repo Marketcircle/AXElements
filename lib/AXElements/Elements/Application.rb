@@ -11,27 +11,12 @@ class Application < AX::Element
     # the app if it is not already running.
     # @param [String] bundle
     # @return [AX::Application]
-    def self.application_with_bundle_identifier bundle, timeout = 10
-      workspace = NSWorkspace.sharedWorkspace
-
-      unless workspace.runningApplications.map(&:bundleIdentifier).include? bundle
-        callback = Proc.new { |notif|
-          app_bundle = notif.userInfo['NSWorkspaceApplicationKey'].bundleIdentifier
-          CFRunLoopStop( CFRunLoopGetCurrent() ) if app_bundle == bundle
-        }
-
-        workspace.notificationCenter.addObserver(callback,
-                                        selector:'call:',
-                                            name:NSWorkspaceDidLaunchApplicationNotification,
-                                          object:nil)
-
+    def self.application_with_bundle_identifier bundle, sleep_time = 2
+      while (apps = NSRunningApplication.runningApplicationsWithBundleIdentifier bundle).empty?
         launch_application bundle
-        CFRunLoopRunInMode( KCFRunLoopDefaultMode, timeout, false )
+        sleep sleep_time
       end
-
-      application_for_pid workspace.runningApplications.select { |app|
-        app.bundleIdentifier == bundle
-      }.first.processIdentifier
+      application_for_pid apps.first.processIdentifier
     end
 
     # You can call this method to create the application object if the app is
