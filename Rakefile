@@ -1,50 +1,44 @@
-require 'rubygems'
 require 'rake'
+
+$LOAD_PATH.unshift File.join(File.dirname(__FILE__),'lib')
+require 'AXElements/Version'
 
 task :test    => :spec
 task :default => :test
 
-namespace :macruby do
-  desc 'AOT compile for MacRuby'
-  task :compile do
-    FileList["lib/**/*.rb"].each do |source|
-      name = File.basename source
-      puts "#{name} => #{name}o"
-      # @todo link against ApplicationServices
-      `macrubyc -C '#{source}' -o '#{source}o'`
-    end
-  end
+require 'rake/compiletask'
+Rake::CompileTask.new do |t|
+  t.files = FileList["lib/**/*.rb"]
+  t.verbose = true
+end
+Rake::CompileTask.new(:compile_deps) do |t|
+  t.files = FileList["vendor/**/*.rb"]
+end
 
-  desc 'AOT compile dependencies for MacRuby'
-  task :compile_deps do
-    FileList["gems/**/*.rb"].each do |source|
-      name = File.basename source
-      puts "#{name} => #{name}o"
-      `macrubyc -C '#{source}' -o '#{source}o'`
-      rm source
-    end
-  end
-
-  desc 'Clean MacRuby binaries'
-  task :clean do
-    FileList["lib/**/*.rbo"].each do |bin|
-      puts "rm #{bin}"
-      rm bin
-    end
+desc 'Clean MacRuby binaries'
+task :clean do
+  FileList["lib/**/*.rbo"].each do |bin|
+    puts "rm #{bin}"
+    rm bin
   end
 end
 
 
-namespace :gem do
-  desc 'Build the gem'
-  task :build do
-    puts `gem build -V AXElements.gemspec`
-  end
+def build_gem(spec_name)
+  require 'rubygems/builder'
+  spec = Gem::Specification.load(spec_name)
+  Gem::Builder.new(spec).build
+end
 
-  desc 'Build the gem and install it'
-  task :install => :build do
-    puts `gem install #{Dir.glob('./AXElements*.gem').sort.reverse.first}`
-  end
+desc 'Build the gem'
+task :build do
+  build_gem 'AXElements.gemspec'
+end
+
+desc 'Build the gem and install it'
+task :install => [:build] do
+  gem_name = build_gem 'AXElements.gemspec'
+  sh "gem install #{gem_name}"
 end
 
 
@@ -57,15 +51,11 @@ RSpec::Core::RakeTask.new(:spec) do |spec|
   spec.pattern = FileList['spec/**/*_spec.rb']
 end
 
-# RSpec::Core::RakeTask.new(:rcov) do |spec|
-#   spec.pattern = 'spec/**/*_spec.rb'
-#   spec.rcov = true
-# end
-
 
 ###
 # Documentation
 
+require 'rubygems'
 require 'yard'
 YARD::Rake::YardocTask.new
 
