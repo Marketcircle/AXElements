@@ -1,7 +1,6 @@
 doc
 .yardoc
 Gemfile.lock
-gems/
-lib/*.rbo
+vendor/
 *.rbo
 *.gem
