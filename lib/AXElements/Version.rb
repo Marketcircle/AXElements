@@ -1,6 +1,6 @@
 module AX
 
-  VERSION = '0.2.1'
+  VERSION   = '0.2.1'
   CODE_NAME = 'Tiger Blood'
 
   # A list of dependencies

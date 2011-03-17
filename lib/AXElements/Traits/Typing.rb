@@ -1,6 +1,10 @@
 module AX
 module Traits
 
+  ##
+  # @todo look at CGEventKeyboardSetUnicodeString for posting events without needing the keycodes
+  # @todo look at UCKeyTranslate for working with different keyboard layouts
+
   # In cases where you need to simulate keyboard input, such as entering
   # passwords or triggering hotkeys, you will need to use this method.
   #

@@ -1,6 +1,10 @@
 module AX
 module Traits
 
+  ##
+  # @todo kAXUIElementDestroyedNotification look at it for catching
+  #  windows that disappear
+  #
   # [Notifications](../../file/Notifications.markdown) are a way to
   # put non-polling delays into your scripts.
   module Notifications
@@ -27,13 +31,19 @@ module Traits
       CFRunLoopStop( run_loop )
     end
 
-    # @param [String] notif
+    ##
+    # Pause execution of the program until a notification is received or a
+    # timeout occurs.
+    #
+    # You can optionally pass a block to this method.
+    #
+    # @param [String] notif the name of the notification
     # @param [Float] timeout
-    # @yield The block will be yielded the sender of the notification and the
-    #  notification name.
-    # @yieldparam [AX::Element] element the element that generated the notif
-    # @yieldparam [String] notif the notification name
-    # @return [Boolean] true if the notification was received, otherwise false.
+    # @yield The block will be yield the notification and sender if a block is
+    #        given to this method
+    # @yieldparam [AX::Element] element the element that sent the notification
+    # @yieldparam [String] notif the name of the notification
+    # @return [Boolean] true if the notification was received, otherwise false
     def wait_for_notification notif, timeout = 10
       @notif_proc  = Proc.new if block_given?
       callback     = method :notif_method

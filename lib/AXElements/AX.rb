@@ -120,11 +120,12 @@ module AX
       attributes = Pointer.new '^{__CFArray}'
       attr_value = Pointer.new :id
 
+      # @todo need to deal with cases when this returns non-zero
       AXUIElementCopyAttributeNames( element, attributes )
       attributes = attributes[0]
 
       attrs.map { |attr|
-        if attributes.include?(attr)
+        if attributes.include? attr
           AXUIElementCopyAttributeValue( element, attr, attr_value )
           attr_value[0]
         end

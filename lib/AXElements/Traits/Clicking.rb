@@ -21,6 +21,21 @@ module Traits
       true
     end
 
+    # click and hold
+    # click
+    # double click
+    # drag
+    # all of the above have to be doable with left, right, and middle buttons
+    # scroll
+
+    # one idea is to compose mouse events, everything starts with creating a generic event source
+    # followed by the desired event, followed by posting the event
+
+    # CGEventCReaeteScrollWheelEvent for scrolling
+    # CGEventCreateMouseEvent for clicking
+    # CGEventGetUnflippedLocation for getting the carbon co-ordinates
+    # CGEventSetLocation @todo find out if this actually moves the mouse
+
   end
 
 end
