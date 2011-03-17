@@ -23,7 +23,7 @@ oriented framework from the low level CoreFoundation API for accessibility.
 
   s.files            =
     Dir.glob('lib/**/*.rb*')  +
-    Dir.glob('gems/**/*.rbo')
+    Dir.glob('vendor/**/*.rbo')
   s.test_files       =
     Dir.glob('spec/**/*_spec.rb') +
     [ 'spec/helper.rb' ]
