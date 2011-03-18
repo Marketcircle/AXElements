@@ -1,9 +1,4 @@
 require 'rake'
-
-$LOAD_PATH.unshift File.join(File.dirname(__FILE__),'lib')
-require 'AXElements/Version'
-
-task :test    => :spec
 task :default => :test
 
 require 'rake/compiletask'
@@ -39,16 +34,6 @@ desc 'Build the gem and install it'
 task :install => [:build] do
   gem_name = build_gem 'AXElements.gemspec'
   sh "gem install #{gem_name}"
-end
-
-
-###
-# Tests
-
-require 'rspec/core'
-require 'rspec/core/rake_task'
-RSpec::Core::RakeTask.new(:spec) do |spec|
-  spec.pattern = FileList['spec/**/*_spec.rb']
 end
 
 
