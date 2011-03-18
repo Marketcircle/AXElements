@@ -42,9 +42,11 @@ class Array
 end
 
 
+##
 # Extensions to the String class.
 class String
 
+  ##
   # Returns the upper camel case version of the string. The string
   # is assumed to be in snake_case, but should return an unchanged
   # string if the string is already in camel case.
@@ -57,6 +59,7 @@ class String
     gsub! /(?:^|_)(.)/ do $1.upcase end
   end
 
+  ##
   # Tells you if the symbol would be a predicate method by
   # checking if it ends with a question mark '?'.
   def predicate?

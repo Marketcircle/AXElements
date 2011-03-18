@@ -347,8 +347,10 @@ class Element
   end
 
 
+  ##
   # @todo consider replacing method names with their values
   #  or key/value pairs
+  # @todo consider putting the hash value back in
   # Method is overriden to produce cleaner output.
   def inspect
     nice_methods = @methods.map { |name|

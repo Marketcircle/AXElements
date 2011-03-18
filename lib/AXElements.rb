@@ -3,7 +3,7 @@ require 'AXElements/Version'
 # @todo switch to ApplicationServices when the NS constants go away
 framework 'Cocoa'
 
-# @todo embed the new bridge support
+# @todo embed the new bridge support?
 # check that the new bridge support exists
 # check that the Accessibility APIs are enabled
 begin

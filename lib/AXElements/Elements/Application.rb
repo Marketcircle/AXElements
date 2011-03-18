@@ -10,6 +10,7 @@ class Application < AX::Element
 
     ##
     # @todo Find a way for this method to work without sleeping
+    # @todo Search NSWorkspace.sharedWorkspace.runningApplications ?
     #
     # This is the standard way of creating an application object. It will
     # launch the app if it is not already running and then create the
