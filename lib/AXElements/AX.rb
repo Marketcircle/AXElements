@@ -71,13 +71,21 @@ module AX
       make_element element[0]
     end
 
+    ##
     # @note This method was designed as a debugging tool.
-    # Find out what the top level element is for any given element. This should
-    # always be the application to which the UI element belongs.
+    #
+    # Get a list of elements, starting with the element you gave and riding
+    # all the way up the hierarchy to the top level (should be the Application).
+    #
     # @param [AX::Element] element
-    def ride_hierarchy_up element
-      return ride_hierarchy_up(element.parent) if element.respond_to? :parent
-      element
+    # @return [Array<AX::Element>] the hierarchy in ascending order
+    def hierarchy *elements
+      element = elements.last
+      if element.respond_to?(:parent)
+        hierarchy( elements << element.parent )
+      else
+        elements
+      end
     end
 
 
