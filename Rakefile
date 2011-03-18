@@ -29,6 +29,9 @@ Rake::TestTask.new do |t|
 end
 
 
+###
+# Gem stuff
+
 def build_gem(spec_name)
   require 'rubygems/builder'
   spec = Gem::Specification.load(spec_name)
@@ -50,13 +53,13 @@ end
 ###
 # Documentation
 
-require 'rubygems'
-require 'yard'
-YARD::Rake::YardocTask.new
+# require 'rubygems'
+# require 'yard'
+# YARD::Rake::YardocTask.new
 
-namespace :yard do
-  desc 'Generate Graphviz object graph'
-  task :garden do
-    `yard graph --full --dependencies --dot="-Tpng:quartz" -f docs/images/AX.png`
-  end
-end
+# namespace :yard do
+#   desc 'Generate Graphviz object graph'
+#   task :garden do
+#     sh 'yard graph --full --dependencies --dot="-Tpng:quartz" -f docs/images/AX.png'
+#   end
+# end
