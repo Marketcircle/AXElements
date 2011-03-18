@@ -11,6 +11,7 @@ class TestAXApplication < MiniTest::Unit::TestCase
   end
 
   def test_application_with_bundle_identifier_should_launch_app_if_not_running
+    skip 'This test is too invasive, need to find another way or add a test option'
     # while true
     #   mails = NSRunningApplication.runningApplicationsWithBundleIdentifier 'com.apple.mail'
     #   break if mails.empty?
@@ -20,9 +21,6 @@ class TestAXApplication < MiniTest::Unit::TestCase
     # AX::Application.application_with_bundle_identifier 'com.apple.mail'
     # mails = NSRunningApplication.runningApplicationsWithBundleIdentifier 'com.apple.mail'
     # mails.should_not be_empty
-  end
-
-  def test_get_focus_gets_focus
   end
 
   def test_inspect_includes_pid

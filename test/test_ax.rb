@@ -62,6 +62,7 @@ class TestAXElementUnderMouse < MiniTest::Unit::TestCase
 
   # @todo need to manipulate the mouse
   def test_returns_a_menubar_when_mouse_is_on_menubar
+    skip 'This test is too invasive, need to find another way or add a test option'
   end
 end
 
