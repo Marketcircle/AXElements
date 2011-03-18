@@ -99,7 +99,7 @@ class Application < AX::Element
   ##
   # Override the base class to make sure the pid is included
   def inspect
-    (super).sub />$/, "@pid=#{self.pid}>"
+    (super).sub />$/, " @pid=#{self.pid}>"
   end
 
 end

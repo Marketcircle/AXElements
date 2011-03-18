@@ -356,7 +356,7 @@ class Element
     nice_methods = @methods.map { |name|
       name.sub AX.attribute_prefix, ''
     }
-    "\#<#{self.class}: @methods=#{nice_methods}>"
+    "\#<#{self.class} @methods=#{nice_methods}>"
   end
 
 
