@@ -1,3 +1,5 @@
+require 'AXElements/Version'
+
 # @todo switch to ApplicationServices when the NS constants go away
 framework 'Cocoa'
 
@@ -15,28 +17,6 @@ rescue NoMethodError
   exit 4
 end
 
-
-# A module for all the different accessibility roles.
-# Inside the module, we should always try to work with the lower level APIs.
-# The module should NEVER return something from the lower levels.
-# To help with this, the module includes a few handy methods.
-module AX
-
-  require   'logger'
-
-  class << self
-
-    # @return [Logger]
-    attr_accessor :log
-
-  end
-
-  @log = Logger.new $stderr
-  @log.level = Logger::ERROR
-
-end
-
-require 'AXElements/Version'
 require 'AXElements/CoreExtensions'
 require 'AXElements/Traits'
 require 'AXElements/Element'
