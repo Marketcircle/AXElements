@@ -1,3 +1,4 @@
+require 'active_support/core_ext/array/access'
 require 'active_support/inflector'
 
 
@@ -37,14 +38,14 @@ end
 
 
 # Monkey patches on top of Array
-class Array
+class NSArray
   include ArrayAXElementExtensions
 end
 
 
 ##
 # Extensions to the String class.
-class String
+class NSMutableString
 
   ##
   # Returns the upper camel case version of the string. The string
