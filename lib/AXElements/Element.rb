@@ -215,10 +215,7 @@ class Element
         elements.concat(element.children) if element.methods.include?(KAXChildrenAttribute)
         next unless element.class == primary_filter
 
-        # @todo try using #find instead
-        next unless filters.inject true do |previous, filter|
-          previous && (element.send(filter[0]) == filter[1])
-        end
+        next if filters.find { |filter| element.send(filter[0]) != filter[1] }
 
         return element unless method.to_s[-1] == 's'
         search_results << element
