@@ -210,10 +210,11 @@ class Element
 
       until elements.empty?
         element          = elements.shift
-        primary_filter ||= AX.plural_const_get(class_const)
 
-        elements.concat(element.children) if element.methods.include?(KAXChildrenAttribute)
+        primary_filter ||= AX.plural_const_get(class_const)
         next unless element.class == primary_filter
+
+        elements.concat(element.children) if element.attributes.include?(KAXChildrenAttribute)
 
         next if filters.find { |filter| element.send(filter[0]) != filter[1] }
 
