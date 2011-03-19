@@ -230,10 +230,18 @@ class Element
     super
   end
 
+  ##
+  # Needed to override inherited {#raise} so that the raise action still
+  # works, but in such a way that the original {#raise} still works.
+  def raise *args
+    self.method_missing(:raise) || super
+  end
 
-  alias_method :__raise__, :raise
-  def raise
-    self.method_missing :raise
+  ##
+  # Needed to override inherited NSObject#description. If you want a
+  # description of the object try using {#inspect}.
+  def description
+    self.method_missing :description
   end
 
   ##
@@ -270,13 +278,6 @@ class Element
       return true
     end
     super
-  end
-
-  ##
-  # Needed to override inherited NSObject#description. If you want a
-  # description of the object try using {#inspect}.
-  def description
-    self.method_missing :description
   end
 
 
