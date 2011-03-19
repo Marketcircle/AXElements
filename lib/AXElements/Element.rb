@@ -8,8 +8,11 @@ class Element
   include Traits::Notifications
 
 
-  # @return [Array<String>] A cache of available attributes and actions
-  attr_reader :methods
+  # @return [Array<String>] A cache of available attributes
+  attr_reader :attributes
+
+  # @return [Array<String>] A cache of available actions
+  attr_reader :actions
 
   # @return [AXUIElementRef] the low level object reference
   attr_reader :ref
@@ -17,8 +20,9 @@ class Element
 
   # @param [AXUIElementRef] element
   def initialize element
-    @ref     = element
-    @methods = attributes + actions
+    @ref        = element
+    @attributes = AX.attrs_of_element(element)
+    @actions    = AX.actions_of_element(element)
   end
 
   # @return [Fixnum]
@@ -26,21 +30,6 @@ class Element
     @pid ||= ( ptr = Pointer.new 'i' ; AXUIElementGetPid( @ref, ptr ) ; ptr[0] )
   end
 
-  # @return [Array<String>]
-  def attributes
-    array_ptr  = Pointer.new '^{__CFArray}'
-    log AXUIElementCopyAttributeNames( @ref, array_ptr )
-    array_ptr[0]
-  end
-
-  # @return [Array<String>]
-  def actions
-    array_ptr  = Pointer.new '^{__CFArray}'
-    log AXUIElementCopyActionNames( @ref, array_ptr )
-    array_ptr[0]
-  end
-
-  # Check the writability of a particular attribute
   # @param [String] attr
   # @return [Boolean]
   def attribute_writable? attr
@@ -53,35 +42,26 @@ class Element
   # @param [String] attr an attribute constant
   # @return [Object,nil]
   def attribute attr
-    result_ptr = Pointer.new :id
+    result_ptr = Pointer.new(:id)
     error_code = AXUIElementCopyAttributeValue( @ref, attr, result_ptr )
-    log error_code, attr
+    log(error_code, attr)
     result_ptr[0]
   end
 
-  # @param [String] attr an attribute constant
-  # @return [AX::Element,nil]
-  def element_attribute attr
-    value = attribute attr
-    return nil unless value
-    AX.make_element value
+  # @return [Array,nil]
+  def array_attribute value
+    if value.empty? || (ATTRIBUTE_VALUES[CFGetTypeID(value.first)] == 1)
+      value
+    else
+      value.map { |element| AX.make_element element }
+    end
   end
 
-  # @param [String] attr an attribute constant
-  # @return [Array<AX::Element>]
-  def elements_attribute attr
-    value = attribute attr
-    return [] unless value
-    value.map { |element| AX.make_element element }
-  end
-
-  # @param [String] attr an attribute constant
   # @return [Boxed,nil]
-  def boxed_attribute attr
-    value = attribute attr
+  def boxed_attribute value
     return nil unless value
-    box   = AXValueGetType( value )
-    ptr   = Pointer.new AXBoxType[box].type
+    box = AXValueGetType( value )
+    ptr = Pointer.new( AXBoxType[box].type )
     AXValueGetValue( value, box, ptr )
     ptr[0]
   end
@@ -97,10 +77,12 @@ class Element
     log( error_code, [attr, value] ) == 0
   end
 
+  ##
   # Ideally this method would return a reference to self, but as the
   # method inherently causes state change the reference to self may no
   # longer be valid. An example of this would be pressing the close
   # button on a window.
+  #
   # @param [String] action_name
   # @return [Boolean] true if successful, otherwise false
   def perform_action action_name
@@ -108,131 +90,18 @@ class Element
     log( error_code, action_name ) == 0
   end
 
-
-  # A big lookup table that maps nice method names to more obfuscated method
-  # names in the private part of this class.
-  #
-  # You can add more attributes to this table at run time.
-  # @return [Array<Symbol, String, Boolean>] a pair or triple that will be
-  #  sent to self
-  def self.method_map; @@method_map; end
-  @@method_map = {
-    #                              Fixnum
-                  disclosure_level:[:attribute, NSAccessibilityDisclosureLevelAttribute],
-                             index:[:attribute, NSAccessibilityIndexAttribute],
-       insertion_point_line_number:[:attribute, NSAccessibilityInsertionPointLineNumberAttribute],
-                     maximum_value:[:attribute, NSAccessibilityMaxValueAttribute],
-                     minimum_value:[:attribute, NSAccessibilityMinValueAttribute],
-              number_of_characters:[:attribute, NSAccessibilityNumberOfCharactersAttribute],
-    #                              Array<Fixnum>
-                    allowed_values:[:attribute, NSAccessibilityAllowedValuesAttribute],
-    #                              Boolean
-                       disclosing?:[:attribute, NSAccessibilityDisclosingAttribute],
-                           edited?:[:attribute, NSAccessibilityEditedAttribute],
-                          enabled?:[:attribute, NSAccessibilityEnabledAttribute],
-                         expanded?:[:attribute, NSAccessibilityExpandedAttribute],
-                          focused?:[:attribute, NSAccessibilityFocusedAttribute],
-                        frontmost?:[:attribute, NSAccessibilityFrontmostAttribute],
-                           hidden?:[:attribute, NSAccessibilityHiddenAttribute],
-              application_running?:[:attribute, KAXIsApplicationRunningAttribute],
-                      main_window?:[:attribute, NSAccessibilityMainAttribute],
-                        minimized?:[:attribute, NSAccessibilityMinimizedAttribute],
-                            modal?:[:attribute, NSAccessibilityModalAttribute],
-                         selected?:[:attribute, NSAccessibilitySelectedAttribute],
-    #                              String
-                       description:[:attribute, NSAccessibilityDescriptionAttribute],
-                              help:[:attribute, NSAccessibilityHelpAttribute],
-                       marker_type:[:attribute, NSAccessibilityMarkerTypeAttribute],
-           marker_type_description:[:attribute, NSAccessibilityMarkerTypeDescriptionAttribute],
-       menu_item_command_character:[:attribute, KAXMenuItemCmdCharAttribute],
-           menu_item_command_glyph:[:attribute, KAXMenuItemCmdGlyphAttribute],
-       menu_item_command_modifiers:[:attribute, KAXMenuItemCmdModifiersAttribute],
-     menu_item_command_virtual_key:[:attribute, KAXMenuItemCmdVirtualKeyAttribute],
-          menu_item_mark_character:[:attribute, KAXMenuItemMarkCharAttribute],
-                       orientation:[:attribute, NSAccessibilityOrientationAttribute],
-                              role:[:attribute, NSAccessibilityRoleAttribute],
-                  role_description:[:attribute, NSAccessibilityRoleDescriptionAttribute],
-                     selected_text:[:attribute, NSAccessibilitySelectedTextAttribute],
-                           subrole:[:attribute, NSAccessibilitySubroleAttribute],
-                             title:[:attribute, NSAccessibilityTitleAttribute],
-                             units:[:attribute, NSAccessibilityUnitsAttribute],
-                  unit_description:[:attribute, NSAccessibilityUnitDescriptionAttribute],
-                             value:[:attribute, NSAccessibilityValueAttribute],
-    #                              NSURL
-                          document:[:attribute, NSAccessibilityDocumentAttribute],
-                               url:[:attribute, NSAccessibilityURLAttribute],
-    #                              Boxed (e.g. CGPoint)
-                          position:[:boxed_attribute, NSAccessibilityPositionAttribute],
-               selected_text_range:[:boxed_attribute, NSAccessibilitySelectedTextRangeAttribute],
-            shared_character_range:[:boxed_attribute, NSAccessibilitySharedCharacterRangeAttribute],
-                              size:[:boxed_attribute, NSAccessibilitySizeAttribute],
-           visible_character_range:[:boxed_attribute, NSAccessibilityVisibleCharacterRangeAttribute],
-    #                              Element
-                     cancel_button:[:element_attribute, NSAccessibilityCancelButtonAttribute],
-                      clear_button:[:element_attribute, NSAccessibilityClearButtonAttribute],
-                      close_button:[:element_attribute, NSAccessibilityCloseButtonAttribute],
-                 containing_window:[:element_attribute, NSAccessibilityWindowAttribute],
-                  decrement_button:[:element_attribute, NSAccessibilityDecrementButtonAttribute],
-                    default_button:[:element_attribute, NSAccessibilityDefaultButtonAttribute],
-                  disclosed_by_row:[:element_attribute, NSAccessibilityDisclosedByRowAttribute],
-               focused_application:[:element_attribute, KAXFocusedApplicationAttribute],
-                 focused_uielement:[:element_attribute, NSAccessibilityFocusedUIElementAttribute],
-                    focused_window:[:element_attribute, NSAccessibilityFocusedWindowAttribute],
-                         grow_area:[:element_attribute, NSAccessibilityGrowAreaAttribute],
-                            header:[:element_attribute, NSAccessibilityHeaderAttribute],
-             horizontal_scroll_bar:[:element_attribute, NSAccessibilityHorizontalScrollBarAttribute],
-                  increment_button:[:element_attribute, NSAccessibilityIncrementButtonAttribute],
-                       main_window:[:element_attribute, NSAccessibilityMainWindowAttribute],
-                   minimize_button:[:element_attribute, NSAccessibilityMinimizeButtonAttribute],
-                          menu_bar:[:element_attribute, NSAccessibilityMenuBarAttribute],
-      menu_item_primary_ui_element:[:element_attribute, KAXMenuItemPrimaryUIElementAttribute],
-                   overflow_button:[:element_attribute, NSAccessibilityOverflowButtonAttribute],
-                            parent:[:element_attribute, NSAccessibilityParentAttribute],
-                             proxy:[:element_attribute, NSAccessibilityProxyAttribute],
-                     search_button:[:element_attribute, NSAccessibilitySearchButtonAttribute],
-                   title_uielement:[:element_attribute, NSAccessibilityTitleUIElementAttribute],
-                    toolbar_button:[:element_attribute, NSAccessibilityToolbarButtonAttribute],
-              top_level_ui_element:[:element_attribute, NSAccessibilityTopLevelUIElementAttribute],
-               vertical_scroll_bar:[:element_attribute, NSAccessibilityVerticalScrollBarAttribute],
-                       zoom_button:[:element_attribute, NSAccessibilityZoomButtonAttribute],
-    #                              Array<Element>
-                          children:[:elements_attribute, NSAccessibilityChildrenAttribute],
-                           columns:[:elements_attribute, NSAccessibilityColumnsAttribute],
-                     column_titles:[:elements_attribute, NSAccessibilityColumnTitlesAttribute],
-                          contents:[:elements_attribute, NSAccessibilityContentsAttribute],
-                    disclosed_rows:[:elements_attribute, NSAccessibilityDisclosedRowsAttribute],
-                 marker_uielements:[:elements_attribute, NSAccessibilityMarkerUIElementsAttribute],
-                     next_contents:[:elements_attribute, NSAccessibilityNextContentsAttribute],
-                 previous_contents:[:elements_attribute, NSAccessibilityPreviousContentsAttribute],
-                              rows:[:elements_attribute, NSAccessibilityRowsAttribute],
-             shown_menu_ui_element:[:elements_attribute, NSAccessibilityShownMenuAttribute],
-                 selected_children:[:elements_attribute, NSAccessibilitySelectedChildrenAttribute],
-                  selected_columns:[:elements_attribute, NSAccessibilitySelectedColumnsAttribute],
-                     selected_rows:[:elements_attribute, NSAccessibilitySelectedRowsAttribute],
-    serves_as_title_for_uielements:[:elements_attribute, NSAccessibilityServesAsTitleForUIElementsAttribute],
-            shared_text_uielements:[:elements_attribute, NSAccessibilitySharedTextUIElementsAttribute],
-                         splitters:[:elements_attribute, NSAccessibilitySplittersAttribute],
-                              tabs:[:elements_attribute, NSAccessibilityTabsAttribute],
-                  visible_children:[:elements_attribute, NSAccessibilityVisibleChildrenAttribute],
-                   visible_columns:[:elements_attribute, NSAccessibilityVisibleColumnsAttribute],
-                      visible_rows:[:elements_attribute, NSAccessibilityVisibleRowsAttribute],
-                           windows:[:elements_attribute, NSAccessibilityWindowsAttribute],
-    #                              Setters
-                         get_focus:[:set_attribute_with_value, NSAccessibilityFocusedAttribute, true],
-                         :value= =>[:set_attribute_with_value, NSAccessibilityValueAttribute],
-    #                              Actions
-                            cancel:[:perform_action, NSAccessibilityCancelAction],
-                           confirm:[:perform_action, NSAccessibilityConfirmAction],
-                         decrement:[:perform_action, NSAccessibilityDecrementAction],
-                            delete:[:perform_action, NSAccessibilityDeleteAction],
-                         increment:[:perform_action, NSAccessibilityIncrementAction],
-                              pick:[:perform_action, NSAccessibilityPickAction],
-                             press:[:perform_action, NSAccessibilityPressAction],
-                             raise:[:perform_action, NSAccessibilityRaiseAction],
-                         show_menu:[:perform_action, NSAccessibilityShowMenuAction]
+  # @todo THESE STILL NEED TO BE DEALT WITH
+  @@setter_methods = {
+    get_focus:[:set_attribute_with_value, NSAccessibilityFocusedAttribute, true],
+    :value= =>[:set_attribute_with_value, NSAccessibilityValueAttribute],
   }
 
+  ATTRIBUTE_VALUES = []
+  ATTRIBUTE_VALUES[AXUIElementGetTypeID()] = :element_attribute
+  ATTRIBUTE_VALUES[CFArrayGetTypeID()]     = :array_attribute
+  ATTRIBUTE_VALUES[AXValueGetTypeID()]     = :boxed_attribute
 
+  ##
   # @todo replace lookup table with name mangling using
   #  ActiveSupport::Inflector to mangle the name (pre_mangle _ui_),
   #  and then introspect the object to find out if it needs to be
@@ -304,14 +173,36 @@ class Element
   # @raise NoMethodError
   def method_missing method, *args
 
-    if (action = @@method_map[method]) && (@methods.index action[1])
-      return self.send *action, *args
+    # Bascially:
+    # attribute_lookup || action_lookup || element_search || super
+
+    matcher = /#{method.to_s.gsub(/_|\?$/, '')}$/i
+
+    matches = []
+    for attr in attributes
+      matches << attr if attr.match(matcher)
+    end
+    unless matches.empty?
+      matches.sort_by(&:length) if matches.size > 1
+      ret = self.attribute(matches.first)
+      id  = ATTRIBUTE_VALUES[CFGetTypeID(ret)]
+      return case id
+             when :array_attribute   then array_attribute(ret)
+             when :element_attribute then AX.make_element(ret)
+             when :boxed_attribute   then boxed_attribute(ret)
+             else ret
+             end
+    end
+
+    # Search the actions
+    for action in actions
+      return perform_action(action) if action.match(matcher)
     end
 
     # NOW WE TRY TO DO A SEARCH
 
     # check to avoid an infinite loop
-    if @methods.index KAXChildrenAttribute
+    if attributes.index(KAXChildrenAttribute)
       elements       = self.children # seed the search array
       search_results = []
       filters        = args[0] || {}
@@ -319,26 +210,21 @@ class Element
 
       until elements.empty?
         element          = elements.shift
-        primary_filter ||= AX.plural_const_get class_const
+        primary_filter ||= AX.plural_const_get(class_const)
 
-        elements.concat(element.children) if element.methods.include? KAXChildrenAttribute
-
+        elements.concat(element.children) if element.methods.include?(KAXChildrenAttribute)
         next unless element.class == primary_filter
 
         # @todo try using #find instead
-        # disabled until MacRuby ticket #1139 is resolved
-        # next unless filters.each_pair { |filter_attribute, value|
-        #   break unless element.send(filter_attribute) == value
-        # }
         next unless filters.inject true do |previous, filter|
           previous && (element.send(filter[0]) == filter[1])
         end
 
-        return element unless method.to_s.match(/s$/)
+        return element unless method.to_s[-1] == 's'
         search_results << element
       end
 
-      return search_results if method.to_s.match /s$/
+      return search_results if method.to_s[-1] == 's'
       return search_results.first
     end
 
@@ -347,33 +233,50 @@ class Element
   end
 
 
+  alias_method :__raise__, :raise
+  def raise
+    self.method_missing :raise
+  end
+
   ##
-  # @todo consider replacing method names with their values
-  #  or key/value pairs
-  # @todo consider putting the hash value back in
   # Method is overriden to produce cleaner output.
   def inspect
-    nice_methods = @methods.map { |name|
-      name.sub AX.attribute_prefix, ''
+    nice_methods = (attributes + actions).map { |name|
+      name.sub(AX.accessibility_prefix) { $1 }
     }
     "\#<#{self.class} @methods=#{nice_methods}>"
   end
 
-
-  # This helps a bit with regards to the dynamic methods.
-  # @param [Symbol] name
-  def respond_to? name
-    if (action = @@method_map[name]) && (@methods.index action[1])
-      true
-    elsif (name == :children) && @methods.index(KAXChildrenAttribute)
-      true
-    else
-      super
-    end
+  ##
+  # @todo finish this method
+  #
+  # A more expensive {#inspect} where we actually look up the
+  # values for each attribute and formate the output nicely.
+  def pretty_print
+    nice_methods = (attributes + actions).map { |name|
+      name.sub(AX.accessibility_prefix) { $1 }
+    }
+    "\#<#{self.class} @methods=#{nice_methods}>"
   end
 
+  ##
+  # This helps a bit with regards to the dynamic methods.
+  #
+  # @param [Symbol] name
+  def respond_to? name
+    matcher = /#{name.to_s.gsub(/_|\?$/, '')}$/i
+    for method in (attributes + actions)
+      return true if method.match(matcher)
+    end
+    if (name == :children) && attributes.index(KAXChildrenAttribute)
+      return true
+    end
+    super
+  end
+
+  ##
   # Needed to override inherited NSObject#description. If you want a
-  # description of the object try using #inspect.
+  # description of the object try using {#inspect}.
   def description
     self.method_missing :description
   end
@@ -381,12 +284,16 @@ class Element
 
   protected
 
+  ##
   # This array is order-sensitive, which is why there is a
   # nil object at index 0.
+  #
   # @return [Class,nil]
   AXBoxType = [ nil, CGPoint, CGSize, CGRect, CFRange ]
 
+  ##
   # @todo find out how to get a list of constants (dietrb source)
+  #
   # A mapping of the AXError constants to human readable strings.
   # @return [Hash{Fixnum => String}]
   AXError = {
@@ -407,9 +314,12 @@ class Element
     KAXErrorNotEnoughPrecision                => 'Not Enough Precision',
   }
 
-  # @todo print view hierarchy
+  ##
+  # @todo print view hierarchy using {#pretty_print}
+  #
   # Uses the call stack and error code to log a message that might be helpful
   # in debugging.
+  #
   # @param [Fixnum] error_code an AXError value
   # @param [#to_s] method_args an AXError value
   # @return [Fixnum] the error code that was passed to this method

@@ -2,22 +2,27 @@ module AX
 
   class << self
 
-    # @return [Regex]
-    attr_accessor :attribute_prefix
+    # @return [Regexp]
+    attr_reader :accessibility_prefix
 
+    ##
     # @note We cannot use {#sub!} because the class name we get back is not
     #  mutable
+    #
     # Takes an AXUIElementRef and gives you some kind of accessibility object.
+    #
     # @param [AXUIElementRef] element
     # @return [Element]
     def make_element element
-      klass = class_name(element).sub(@attribute_prefix, '')
+      klass = class_name(element).sub(@accessibility_prefix) { $1 }
       new_const_get(klass).new element
     end
 
+    ##
     # Like {#const_get} except that if the class does not exist yet then
     # it will create the class for you. If not used carefully, you could end
     # up creating a bunch of useless, possibly harmful, classes at run time.
+    #
     # @param [#to_sym] const the value you want as a constant
     # @return [Class] a reference to the class being looked up
     def new_const_get const
@@ -28,8 +33,11 @@ module AX
       end
     end
 
+    ##
     # @todo consider using the rails inflector
+    #
     # Chomps off a trailing 's' if there is one and then looks up the constant.
+    #
     # @param [#to_s] const
     # @return [Class,nil] the class if it exists, else returns nil
     def plural_const_get const
@@ -41,9 +49,11 @@ module AX
       end
     end
 
+    ##
     # Creates new class at run time and puts it into the {AX} namespace.
     # This method is called for each type of UI element that has not yet been
     # explicitly defined to define them at runtime.
+    #
     # @param [#to_sym] class_name
     # @return [Class]
     def create_ax_class class_name
@@ -53,16 +63,20 @@ module AX
       AX.const_set class_name, klass
     end
 
+    ##
     # Finds the current mouse position and then calls {#element_at_position}.
+    #
     # @return [AX::Element]
     def element_under_mouse
       position = carbon_point_from_cocoa_point NSEvent.mouseLocation
       element_at_position position
     end
 
+    ##
     # This will give you the UI element located at the position given (if
     # there is one). If more than one element is at the position then the
     # z-order of the elements will be used to determine which is "on top".
+    #
     # @param [CGPoint] point
     # @return [AX::Element]
     def element_at_position point
@@ -88,12 +102,28 @@ module AX
       end
     end
 
+    # @return [Array<String>]
+    def attrs_of_element element
+      array_ptr  = Pointer.new '^{__CFArray}'
+      AXUIElementCopyAttributeNames( element, array_ptr )
+      array_ptr[0]
+    end
+
+    # @return [Array<String>]
+    def actions_of_element element
+      array_ptr  = Pointer.new '^{__CFArray}'
+      AXUIElementCopyActionNames( element, array_ptr )
+      array_ptr[0]
+    end
+
 
     private
 
+    ##
     # Take a point that uses the bottom left of the screen as the origin
     # and returns a point that uses the top left of the screen as the
     # origin.
+    #
     # @param [CGPoint] point screen position in Cocoa screen coordinates
     # @return [CGPoint]
     def carbon_point_from_cocoa_point point
@@ -107,33 +137,33 @@ module AX
       carbon_point
     end
 
+    ##
     # Figures out what the name of the class of an element should be.
     # We have to be careful, because some things claim to have a subrole
     # but return nil.
     #
     # This method prefers to choose a class type based on the subrole value for
     # an accessibility object, and it will use the role if there is no subrole.
+    #
     # @param [AXUIElementRef]
     # @return [String]
     def class_name element
-      attrs_of_element(element,
-                       KAXSubroleAttribute, KAXRoleAttribute
-                       ).compact.first
+      attr_values_of_element(element,
+                             KAXSubroleAttribute, KAXRoleAttribute
+                             ).compact.first
     end
 
+    ##
+    # @todo need to deal with cases when this returns non-zero
+    #
     # @param [AXUIElementRef] element
     # @param [String] *attrs
     # @return [Array]
-    def attrs_of_element element, *attrs
-      attributes = Pointer.new '^{__CFArray}'
+    def attr_values_of_element element, *attrs
       attr_value = Pointer.new :id
-
-      # @todo need to deal with cases when this returns non-zero
-      AXUIElementCopyAttributeNames( element, attributes )
-      attributes = attributes[0]
-
+      attributes = attrs_of_element(element)
       attrs.map { |attr|
-        if attributes.include? attr
+        if attributes.include?(attr)
           AXUIElementCopyAttributeValue( element, attr, attr_value )
           attr_value[0]
         end
@@ -142,9 +172,7 @@ module AX
 
   end
 
-
-  # initialize the value
-  @attribute_prefix = /^AX/
+  @accessibility_prefix = /[A-Z]+([A-Z][a-z])/
 
   # @return [AX::SystemWide]
   SYSTEM = make_element AXUIElementCreateSystemWide()
