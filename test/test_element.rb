@@ -33,4 +33,25 @@ class TestAXElementMethodMissing < MiniTest::Unit::TestCase
     assert_instance_of AX::List, ret.first
   end
 end
+
+class TestAXElementRespondTo < MiniTest::Unit::TestCase
+  def test_works_on_attributes
+    assert AX::DOCK.respond_to?(:title)
+  end
+
+  def test_works_on_actions
+    assert AX::DOCK.list.application_dock_item.respond_to?(:press)
+  end
+
+  def test_does_not_work_with_search_names
+    refute AX::DOCK.respond_to?(:list)
+  end
+
+  def test_works_for_regular_methods
+    assert AX::DOCK.respond_to?(:ref)
+  end
+
+  def test_returns_false_for_non_existant_methods
+    refute AX::DOCK.respond_to?(:crazy_thing_that_cant_work)
+  end
 end

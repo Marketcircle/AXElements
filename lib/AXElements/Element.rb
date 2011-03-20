@@ -7,7 +7,6 @@ class Element
   include Traits::Clicking
   include Traits::Notifications
 
-
   # @return [Array<String>] A cache of available attributes
   attr_reader :attributes
 
@@ -177,7 +176,6 @@ class Element
     # attribute_lookup || action_lookup || element_search || super
 
     matcher = /#{method.to_s.gsub(/_|\?$/, '')}$/i
-
     matches = []
     for attr in attributes
       matches << attr if attr.match(matcher)
@@ -266,15 +264,13 @@ class Element
 
   ##
   # This helps a bit with regards to the dynamic methods.
+  # However, it does not work on search names.
   #
   # @param [Symbol] name
   def respond_to? name
     matcher = /#{name.to_s.gsub(/_|\?$/, '')}$/i
     for method in (attributes + actions)
       return true if method.match(matcher)
-    end
-    if (name == :children) && attributes.index(KAXChildrenAttribute)
-      return true
     end
     super
   end
