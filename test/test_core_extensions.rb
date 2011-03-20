@@ -1,23 +1,38 @@
 require 'helper'
 
-class TestArrayCoreExtensions < MiniTest::Unit::TestCase
-  def test_method_missing_delegates_up_if_array_is_not_composed_of_elements
+class TestNSArrayMethodMissing < MiniTest::Unit::TestCase
+  ELEMENTS = AX::DOCK.list.application_dock_items
+
+  def test_delegates_up_if_array_is_not_composed_of_elements
     assert_raises NoMethodError do [1,2].title_ui_element end
   end
 
-  def test_method_missing_maps_method_across_array
-    assert_instance_of String, AX::DOCK.list.application_dock_items.role.sample
+  def test_actions_are_executed
+    skip 'This test is too invasive, need to find another way or add a test option'
   end
 
-  def test_should_not_singularize_methods_that_are_meant_to_be_plural
-    refute_empty AX::DOCK.list.application_dock_items.children.compact
+  def test_not_plural_not_predicate
+    refute_empty ELEMENTS.url.compact
   end
 
-  def test_should_singularize_methods_that_do_not_normally_exist
-    [:roles, :titles, :parents, :positions, :sizes, :urls].each { |attribute|
-      refute_empty AX::DOCK.list.application_dock_items.send(attribute).compact
-    }
+  def test_plural_not_predicate
+    refute_empty ELEMENTS.children.compact
   end
+
+  def test_artificially_plural_not_predicate
+    refute_empty ELEMENTS.urls.compact
+  end
+
+  def test_not_plural_predicate
+    refute_empty ELEMENTS.application_running?.compact
+  end
+
+  # predicate names are general past tens and sound silly when
+  # I try to pluralize them
+  # def test_plural_predicate
+  # end
+  # def test_artificially_plural_predicate
+  # end
 end
 
 class TestStringCoreExtensions < MiniTest::Unit::TestCase

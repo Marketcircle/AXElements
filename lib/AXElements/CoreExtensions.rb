@@ -1,37 +1,43 @@
 require 'active_support/core_ext/array/access'
 require 'active_support/inflector'
 
-
+##
 # Overrides for the Array class that makes it possible to
 module ArrayAXElementExtensions
 
-  # If the array contains {AX::Element} objects, then we can just
-  # iterate over the array passing the argument in.
+  ##
+  # If the array contains {AX::Element} objects and the method name
+  # belongs to an attribute or action then the method will be mapped
+  # across the array. In this case, you can artificially pluralize
+  # the attribute name and the lookup will singularize the method name
+  # for you.
   #
-  # You have to be careful in cases where the array contains various
-  # types of {AX::Element} objects that may not have the same
-  # attributes or you could end up having a single element throw
-  # a {NoMethodError}.
+  # Be careful when mapping actions as some actions could, in theory,
+  # invalidate other elements in the array.
+  #
+  # You also have to be careful in cases where the array contains
+  # various types of {AX::Element} objects that may not have the same
+  # attributes or you could trigger a {NoMethodError}.
   def method_missing method, *args
-    return super        unless first.kind_of? AX::Element
-    return map(&method) if AX::Element.method_map[method]
-    map &(singularized_method_name method)
+    return super                 if empty? || !(first.kind_of?(AX::Element))
+    return map(&method)          if first.respond_to?(method)
+    singular_method              =  singularized_method_name(method)
+    return map(&singular_method) if first.respond_to?(singular_method)
+    super
   end
 
 
   private
 
+  ##
   # Takes a method name and singularizes it, including the case where
   # the method name is a predicate.
+  #
   # @param [Symbol] method
   # @return [Symbol]
   def singularized_method_name method
     method = method.to_s
-    if method.predicate?
-      (method[0...-1].singularize + '?').to_sym
-    else
-      method.singularize.to_sym
-    end
+    (method.predicate? ? method[0..-1] : method).singularize.to_sym
   end
 
 end
