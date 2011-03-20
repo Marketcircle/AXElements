@@ -47,12 +47,17 @@ class Element
     result_ptr[0]
   end
 
+  # @return [AX::Element]
+  def element_attribute value
+    AX.make_element( value )
+  end
+
   # @return [Array,nil]
   def array_attribute value
     if value.empty? || (ATTRIBUTE_VALUES[CFGetTypeID(value.first)] == 1)
       value
     else
-      value.map { |element| AX.make_element element }
+      value.map { |element| element_attribute(element) }
     end
   end
 
@@ -184,12 +189,7 @@ class Element
       matches.sort_by(&:length) if matches.size > 1
       ret = self.attribute(matches.first)
       id  = ATTRIBUTE_VALUES[CFGetTypeID(ret)]
-      return case id
-             when :array_attribute   then array_attribute(ret)
-             when :element_attribute then AX.make_element(ret)
-             when :boxed_attribute   then boxed_attribute(ret)
-             else ret
-             end
+      return (id ? self.send(id, ret) : ret)
     end
 
     # Search the actions
