@@ -23,15 +23,15 @@ oriented framework from the low level CoreFoundation API for accessibility.
 
   s.files            =
     Dir.glob('lib/**/*.rb*')  +
-    Dir.glob('vendor/**/*.rbo')
+    Dir.glob('vendor/**/*')
   s.test_files       =
-    Dir.glob('spec/**/*_spec.rb') +
-    [ 'spec/helper.rb' ]
+    Dir.glob('test/**/test_*.rb') +
+    [ 'test/helper.rb' ]
   s.extra_rdoc_files =
     [ 'Rakefile', 'LICENSE.txt', 'README.markdown', '.yardopts' ] +
     Dir.glob('docs/**/*')
 
-  s.add_development_dependency 'rspec',     ['~> 2.5']
+  s.add_development_dependency 'minitest',  ['~> 2.0.2']
   s.add_development_dependency 'yard',      ['~> 0.6.4']
   s.add_development_dependency 'bluecloth', ['~> 2.0.11']
 end
