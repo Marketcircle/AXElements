@@ -1,6 +1,8 @@
 module AX
 
+##
 # @abstract
+#
 # The abstract base class for all accessibility objects.
 class Element
 
@@ -29,12 +31,16 @@ class Element
     @pid ||= ( ptr = Pointer.new 'i' ; AXUIElementGetPid( @ref, ptr ) ; ptr[0] )
   end
 
+  ##
+  # @todo need a method for getting method names from from things
+  #       refactored from #method_missing
+  #
   # @param [String] attr
   # @return [Boolean]
   def attribute_writable? attr
-    ptr = Pointer.new :id
+    ptr = Pointer.new(:id)
     error_code = AXUIElementElementIsAttributeSettable( @ref, attr, ptr )
-    log error_code, attr
+    log(error_code, attr)
     ptr[0]
   end
 

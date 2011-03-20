@@ -7,7 +7,7 @@ module AX
 
     ##
     # @note We cannot use {#sub!} because the class name we get back is not
-    #  mutable
+    #       mutable
     #
     # Takes an AXUIElementRef and gives you some kind of accessibility object.
     #
@@ -178,9 +178,9 @@ module AX
   SYSTEM = make_element AXUIElementCreateSystemWide()
 
   # @return [AX::Application] the Mac OS X dock application
-  DOCK = Application.application_with_bundle_identifier 'com.apple.dock'
+  DOCK = Application.application_with_bundle_identifier( 'com.apple.dock' )
 
   # @return [AX::Application] the Mac OS X Finder application
-  FINDER = Application.application_with_bundle_identifier 'com.apple.finder'
+  FINDER = Application.application_with_bundle_identifier( 'com.apple.finder' )
 
 end
