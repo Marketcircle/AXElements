@@ -1,13 +1,19 @@
 require 'helper'
 require 'active_support/core_ext/array/access'
 
-class TestAXAttributePrefix < MiniTest::Unit::TestCase
-  def test_returns_regex
-    assert_instance_of Regexp, AX.attribute_prefix
+class TestAXAccessibilityPrefix < MiniTest::Unit::TestCase
+  BUTTON = 'Button'
+  def test_removes_ax_prefix
+    ret = 'AXButton'.sub(AX.accessibility_prefix) { $1 }
+    assert_equal BUTTON, ret
   end
-
-  def test_is_overrideable
-    assert AX.respond_to?(:attribute_prefix=)
+  def test_removes_other_prefxexs
+    ret = 'MCButton'.sub(AX.accessibility_prefix) { $1 }
+    assert_equal BUTTON, ret
+  end
+  def test_removes_combination_prefixes
+    ret = 'AXMCButton'.sub(AX.accessibility_prefix) { $1 }
+    assert_equal BUTTON, ret
   end
 end
 
@@ -84,7 +90,7 @@ class TestAXHierarchy < MiniTest::Unit::TestCase
   end
 
   def test_correctness
-    assert_equal 3, RET.size
+    assert_equal 3, RET.size, RET.inspect
     assert_instance_of AX::ApplicationDockItem, RET.first
     assert_instance_of AX::List,                RET.second
     assert_instance_of AX::Application,         RET.third

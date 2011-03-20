@@ -35,19 +35,21 @@ class TestNSArrayMethodMissing < MiniTest::Unit::TestCase
   # end
 end
 
-class TestStringCoreExtensions < MiniTest::Unit::TestCase
-  def test_camelize_bang_takes_snake_case_string_and_makes_it_camel_case
+class TestNSMutableStringCamelizeBang < MiniTest::Unit::TestCase
+  def test_takes_snake_case_string_and_makes_it_camel_case
     assert_equal 'AMethodName', 'a_method_name'.camelize!
     assert_equal 'MethodName',  'method_name'.camelize!
     assert_equal 'Name',        'name'.camelize!
   end
 
-  def test_camelize_bany_takes_camel_case_and_does_nothing
+  def test_takes_camel_case_and_does_nothing
     assert_equal 'AMethodName', 'AMethodName'.camelize!
     assert_equal 'MethodName',  'MethodName'.camelize!
     assert_equal 'Name',        'Name'.camelize!
   end
+end
 
+class TestNSMutableStringPredicate < MiniTest::Unit::TestCase
   def test_predicate_returns_true_if_string_ends_with_a_question_mark
     assert 'test?'.predicate?
   end
