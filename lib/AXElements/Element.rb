@@ -318,7 +318,7 @@ class Element
   # @param [#to_s] method_args an AXError value
   # @return [Fixnum] the error code that was passed to this method
   def log error_code, method_args = 'unspecified method'
-    return 0 if error_code.zero?
+    return error_code if error_code.zero?
     error = AXError[error_code] || 'UNKNOWN ERROR CODE'
     AX.log.warn "[#{error} (#{error_code})] while trying #{method_args} on a #{self.role}"
     AX.log.info "Attributes and actions that were available: #{self.methods.inspect}"
