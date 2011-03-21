@@ -106,10 +106,6 @@ class Element
   end
 
 
-  ATTR_MASSAGERS = []
-  ATTR_MASSAGERS[AXUIElementGetTypeID()] = :element_attribute
-  ATTR_MASSAGERS[CFArrayGetTypeID()]     = :array_attribute
-  ATTR_MASSAGERS[AXValueGetTypeID()]     = :boxed_attribute
 
   ##
   # Focus an element on the screen, if possible.
@@ -288,6 +284,16 @@ class Element
     end
     nil
   end
+
+  ##
+  # Mapping low level type ID numbers to methods to massage useful
+  # objects from data.
+  #
+  # @return [Array<Symbol>]
+  ATTR_MASSAGERS = []
+  ATTR_MASSAGERS[AXUIElementGetTypeID()] = :element_attribute
+  ATTR_MASSAGERS[CFArrayGetTypeID()]     = :array_attribute
+  ATTR_MASSAGERS[AXValueGetTypeID()]     = :boxed_attribute
 
   ##
   # This array is order-sensitive, which is why there is a
