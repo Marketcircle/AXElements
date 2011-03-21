@@ -1,5 +1,3 @@
-require 'active_support/core_ext/array/access'
-
 class TestAXAccessibilityPrefix < MiniTest::Unit::TestCase
   BUTTON = 'Button'
   def test_removes_ax_prefix
