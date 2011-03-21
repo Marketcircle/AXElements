@@ -97,12 +97,11 @@ class Element
   # @param [Symbol] attr
   # @return [Boolean]
   def attribute_writable? attr
-    ptr         = Pointer.new(:id)
-    method_name = attribute_for_symbol(attr)
-    unless method_name
+    ptr         = Pointer.new('B')
+    unless method_name = attribute_for_symbol(attr)
       raise ArgumentError, "#{attr} is not an attribute of this #{self.class}"
     end
-    error_code  = AXUIElementElementIsAttributeSettable( @ref, method_name, ptr )
+    error_code  = AXUIElementIsAttributeSettable( @ref, method_name, ptr )
     log(error_code, attr)
     ptr[0]
   end
