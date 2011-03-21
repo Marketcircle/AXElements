@@ -1,5 +1,3 @@
-require 'AXElements/Version'
-
 # @todo switch to ApplicationServices when the NS constants go away
 framework 'Cocoa'
 
@@ -17,8 +15,8 @@ rescue NoMethodError
   exit 4
 end
 
+require 'AXElements/Version'
 require 'AXElements/CoreExtensions'
-require 'AXElements/Traits'
 require 'AXElements/Element'
-require 'AXElements/Elements'
+require 'AXElements/Elements/Application'
 require 'AXElements/AX'

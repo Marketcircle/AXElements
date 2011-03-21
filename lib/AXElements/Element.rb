@@ -1,7 +1,6 @@
 require 'AXElements/Traits/Searching'
 require 'AXElements/Traits/Notifications'
 require 'AXElements/Traits/Clicking'
-require 'AXElements/AX'
 
 module AX
 

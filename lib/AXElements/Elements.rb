@@ -1,1 +1,0 @@
-require 'AXElements/Elements/Application'
