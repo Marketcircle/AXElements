@@ -60,7 +60,7 @@ class Element
 
   # @return [Array,nil]
   def array_attribute value
-    if value.empty? || (ATTRIBUTE_VALUES[CFGetTypeID(value.first)] == 1)
+    if value.empty? || (ATTR_MASSAGERS[CFGetTypeID(value.first)] == 1)
       value
     else
       value.map { |element| element_attribute(element) }
@@ -106,10 +106,10 @@ class Element
     :value= =>[:set_attribute_with_value, NSAccessibilityValueAttribute],
   }
 
-  ATTRIBUTE_VALUES = []
-  ATTRIBUTE_VALUES[AXUIElementGetTypeID()] = :element_attribute
-  ATTRIBUTE_VALUES[CFArrayGetTypeID()]     = :array_attribute
-  ATTRIBUTE_VALUES[AXValueGetTypeID()]     = :boxed_attribute
+  ATTR_MASSAGERS = []
+  ATTR_MASSAGERS[AXUIElementGetTypeID()] = :element_attribute
+  ATTR_MASSAGERS[CFArrayGetTypeID()]     = :array_attribute
+  ATTR_MASSAGERS[AXValueGetTypeID()]     = :boxed_attribute
 
   ##
   # @todo replace lookup table with name mangling using
@@ -194,7 +194,7 @@ class Element
     unless matches.empty?
       matches.sort_by(&:length) if matches.size > 1
       ret = self.attribute(matches.first)
-      id  = ATTRIBUTE_VALUES[CFGetTypeID(ret)]
+      id  = ATTR_MASSAGERS[CFGetTypeID(ret)]
       return (id ? self.send(id, ret) : ret)
     end
 
