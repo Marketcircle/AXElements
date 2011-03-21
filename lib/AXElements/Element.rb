@@ -105,16 +105,27 @@ class Element
     log( error_code, action_name ) == 0
   end
 
-  # @todo THESE STILL NEED TO BE DEALT WITH
-  @@setter_methods = {
-    get_focus:[:set_attribute_with_value, NSAccessibilityFocusedAttribute, true],
-    :value= =>[:set_attribute_with_value, NSAccessibilityValueAttribute],
-  }
 
   ATTR_MASSAGERS = []
   ATTR_MASSAGERS[AXUIElementGetTypeID()] = :element_attribute
   ATTR_MASSAGERS[CFArrayGetTypeID()]     = :array_attribute
   ATTR_MASSAGERS[AXValueGetTypeID()]     = :boxed_attribute
+
+  ##
+  # Focus an element on the screen, if possible.
+  def get_focus
+    raise NoMethodError unless attributes.include?(KAXFocusedAttribute)
+    self.set_attribute_with_value(KAXFocusedAttribute, true)
+  end
+
+  ##
+  # Set the value of an element that has a value, such as a text box or
+  # a slider. You need to be weary of the type that the value is expected
+  # to be.
+  def value= val
+    raise NoMethodError unless attributes.include?(KAXFocusedAttribute)
+    self.set_attribute_with_value(KAXValueAttribute, val)
+  end
 
   ##
   # @todo replace lookup table with name mangling using
