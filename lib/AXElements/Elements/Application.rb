@@ -1,10 +1,10 @@
+require 'AXElements/Traits/Typing'
+
 module AX
 
 ##
 # Some additional constructors and conveniences for Application objects.
 class Application < AX::Element
-
-  include Traits::Typing
 
   class << self
 
