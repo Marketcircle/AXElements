@@ -256,6 +256,8 @@ class Element
     for method in (attributes + actions)
       return true if method.match(matcher)
     end
+    return attributes.include?(KAXFocusedAttribute) if method == :get_focus
+    return attributes.include?(KAXValueAttribute)   if method == :value=
     super
   end
 
