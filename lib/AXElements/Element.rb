@@ -1,3 +1,4 @@
+require 'AXElements/Traits/Notifications'
 module AX
 
 ##
@@ -7,7 +8,6 @@ module AX
 class Element
 
   include Traits::Clicking
-  include Traits::Notifications
 
   # @return [Array<String>] A cache of available attributes
   attr_reader :attributes
