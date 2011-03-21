@@ -6,6 +6,13 @@ module AX
     attr_reader :accessibility_prefix
 
     ##
+    # Make a regexp that can match against the proper attributes
+    # and/or actions for an AX::Element object.
+    def matcher name
+      /#{name.to_s.gsub(/_|\?$/, '')}$/i
+    end
+
+    ##
     # @note We cannot use {#sub!} because the class name we get back is not
     #       mutable
     #
