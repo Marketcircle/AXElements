@@ -34,19 +34,6 @@ class Element
     @pid ||= ( ptr = Pointer.new 'i' ; AXUIElementGetPid( @ref, ptr ) ; ptr[0] )
   end
 
-  ##
-  # @todo need a method for getting method names from from things
-  #       refactored from #method_missing
-  #
-  # @param [Symbol] attr
-  # @return [Boolean]
-  def attribute_writable? attr
-    ptr = Pointer.new(:id)
-    method_name = attribute_for_symbol(attr)
-    error_code = AXUIElementElementIsAttributeSettable( @ref, method_name, ptr )
-    log(error_code, attr)
-    ptr[0]
-  end
 
   # @param [String] attr an attribute constant
   # @return [Object,nil]
@@ -105,6 +92,20 @@ class Element
   end
 
 
+
+  ##
+  # @param [Symbol] attr
+  # @return [Boolean]
+  def attribute_writable? attr
+    ptr         = Pointer.new(:id)
+    method_name = attribute_for_symbol(attr)
+    unless method_name
+      raise ArgumentError, "#{attr} is not an attribute of this #{self.class}"
+    end
+    error_code  = AXUIElementElementIsAttributeSettable( @ref, method_name, ptr )
+    log(error_code, attr)
+    ptr[0]
+  end
 
   ##
   # Focus an element on the screen, if possible.

@@ -6,7 +6,7 @@ class TestAXElement < MiniTest::Unit::TestCase
   end
 
   def test_can_wait_for_notifications
-    assert AX::Element.ancestors.include?(AX::Traits::Notifications)
+    assert AX::DOCK.respond_to?(:wait_for_notification)
   end
 end
 

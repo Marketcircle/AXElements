@@ -7,7 +7,7 @@ class TestAXApplication < MiniTest::Unit::TestCase
   end
 
   def test_can_post_keyboard_events
-    assert AX::Application.ancestors.include?(AX::Traits::Typing)
+    assert AX::DOCK.respond_to?(:post_kb_event)
   end
 
   def test_application_with_bundle_identifier_should_launch_app_if_not_running
