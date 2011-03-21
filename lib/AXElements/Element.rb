@@ -186,22 +186,15 @@ class Element
     # Bascially:
     # attribute_lookup || action_lookup || element_search || super
 
-    matcher = /#{method.to_s.gsub(/_|\?$/, '')}$/i
-    matches = []
-    for attr in attributes
-      matches << attr if attr.match(matcher)
-    end
-    unless matches.empty?
-      matches.sort_by(&:length) if matches.size > 1
-      ret = self.attribute(matches.first)
+    attr = attribute_for_symbol(method)
+    if attr
+      ret = self.attribute(attr)
       id  = ATTR_MASSAGERS[CFGetTypeID(ret)]
       return (id ? self.send(id, ret) : ret)
     end
 
-    # Search the actions
-    for action in actions
-      return perform_action(action) if action.match(matcher)
-    end
+    action = action_for_symbol(method)
+    return self.perform_action(action) if action
 
     # NOW WE TRY TO DO A SEARCH
 
@@ -232,6 +225,7 @@ class Element
     AX.log.debug "##{method} attr doesn't exist and this #{self.class} doesn't have children"
     super
   end
+
 
   ##
   # Needed to override inherited {#raise} so that the raise action still
@@ -283,6 +277,27 @@ class Element
 
 
   protected
+
+  # @return [String,nil]
+  def attribute_for_symbol sym
+    matcher = AX.matcher(sym)
+    matches = []
+    for attr in attributes
+      matches << attr if attr.match(matcher)
+    end
+    unless matches.empty?
+      matches.sort_by(&:length) if matches.size > 1
+      matches.first
+    end
+  end
+
+  # @return [String,nil]
+  def action_for_symbol sym
+    matcher = AX.matcher(sym)
+    for action in actions
+      return action if action.match(matcher)
+    end
+  end
 
   ##
   # This array is order-sensitive, which is why there is a
