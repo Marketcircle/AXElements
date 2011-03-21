@@ -1,4 +1,7 @@
 require 'AXElements/Traits/Notifications'
+require 'AXElements/Traits/Clicking'
+require 'AXElements/AX'
+
 module AX
 
 ##
