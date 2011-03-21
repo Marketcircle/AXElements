@@ -21,7 +21,6 @@ class Element
   # @return [AXUIElementRef] the low level object reference
   attr_reader :ref
 
-
   # @param [AXUIElementRef] element
   def initialize element
     @ref        = element
@@ -35,6 +34,9 @@ class Element
   end
 
 
+  # @group Plumbing
+
+  ##
   # @param [String] attr an attribute constant
   # @return [Object,nil]
   def attribute attr
@@ -46,7 +48,7 @@ class Element
 
   # @return [AX::Element]
   def element_attribute value
-    AX.make_element( value )
+    AX.make_element(value)
   end
 
   # @return [Array,nil]
@@ -67,10 +69,12 @@ class Element
     ptr[0]
   end
 
+  ##
   # Like the {#perform_action} method, we cannot make any assumptions
   # about the state of the program after you have set a value; at
   # least not in the general case. So, the best we can do here is
   # return true if there were no issues.
+  #
   # @param [String] attr
   # @return [Boolean] true if successful, otherwise false
   def set_attribute_with_value attr, value
@@ -92,6 +96,8 @@ class Element
   end
 
 
+  # @endgroup
+  # @group Porcelain
 
   ##
   # @param [Symbol] attr
@@ -123,75 +129,29 @@ class Element
   end
 
   ##
-  # @todo replace lookup table with name mangling using
-  #  ActiveSupport::Inflector to mangle the name (pre_mangle _ui_),
-  #  and then introspect the object to find out if it needs to be
-  #  wrapped and how. this will replace the need for all the attribute
-  #  lookups. the actions will be tricky, but we will have
-  #  separate the attributes from the actions and check attributes
-  #  first and then actions
-  #  the setters will have to be done in such a way that #respond_to?
-  #  will not return true when it doesn't exist
-  # @todo allow regex matching when filtering string attributes
   # @note Some attribute names don't map consistently from Apple's
-  #  documentation because it would have caused a clash with the two
-  #  systems used for attribute lookup and searching/filtering.
+  #       documentation because it would have caused a clash with the
+  #       two systems used for attribute lookup and searching/filtering.
   #
-  # We use {#method missing} to dynamically handle requests to lookup
-  # attributes and to dynamically search for elements in the view
-  # hierarchy. Everything that is not a convenience method is routed
-  # through here to figure things out for you dynamically.
+  # We use {#method missing} to dynamically handle requests to, in the
+  # following order, lookup attributes, perform actions, or search for
+  # elements in the view hierarchy.
   #
-  # Since this method does two types of dynamic lookup, one has to take
-  # priority over the other. Attribute lookups come first, and if that
-  # fails a search through the hierarchy will begin.
+  # Failing all three lookups, this method calls super.
   #
-  # When you are looking up an attribute, this method will first make
-  # sure that the current element has the required attribute, then it
-  # will try to map the method name to an actual attribute name (listed
-  # in {.method_map}) in order to call a lower level method (which in
-  # turn calls the actual CoreFoundation API).
-  #
-  # Should the attribute lookup fail, the method will then try search
-  # for an element that is a descendant of the current element by way of
-  # a breadth first search through the view hierarchy subtree rooted at
-  # the current node.
-  #
-  # There are two features of the search that are important with regards
-  # results of the search: pluralization and filtering.
-  #
-  # Pluralization is simply when an 's' is appended to the method call
-  # causing the lookup to assume you wanted every element in the view
-  # hierarchy that meets the filtering criteria. This causes the lookup
-  # to be very slow (~1 second) and is meant more for prototying tests
-  # and debugging broken tests. If you do not pluralize, then the first
-  # element that meets all the filtering criteria will be returned.
-  #
-  # Filtering is the important part of a lookup. There is one default
-  # filter which filters based on the class of the element, and the class
-  # name is taken from method name that triggered {#method_missing}. Other
-  # filtering criteria is optional, but often helpful in finding a
-  # specific element. Right now the only types of filtering criteria that
-  # work are attribute filters, which lookup attributes on the element
-  # being inspected and compare them to an expected value. You can attach
-  # as many attribute filters as you want.
-  #
-  # @example Attribute lookup of another element
+  # @example Attribute lookup of an element
   #  mail   = AX::Application.application_with_bundle_identifier 'com.apple.mail'
   #  window = mail.focused_window
-  # @example Attribute lookup of element properties
+  # @example Attribute lookup of an element property
   #  window.title
-  # @example Simple single element lookup
+  # @example Simple single element search
   #  window.button # => You want the first Button that is found
-  # @example Simple multi-element lookup
-  #  window.text_fields # => You want all the TextField objects found
-  # @example Additional filters for a single element lookup
+  # @example Simple multi-element search
+  #  window.buttons # => You want all the Button objects found
+  # @example Filters for a single element search
   #  window.button(title:'Log In') # => First Button with a title of 'Log In'
-  # @example Additional filters for a multi-element lookup
-  #  window.buttons(title:'New Project')
-  # @example Contrived multi-element lookup
+  # @example Contrived multi-element search with filtering
   #  window.buttons(title:'New Project', enabled?:true)
-  # @raise NoMethodError
   def method_missing method, *args
 
     attr = attribute_for_symbol(method)
@@ -211,9 +171,12 @@ class Element
     super
   end
 
+  # @endgroup
+  # @group Overridden methods
+
   ##
-  # Needed to override inherited {#raise} so that the raise action still
-  # works, but in such a way that the original {#raise} still works.
+  # Needed to override inherited {#raise} so that the raise action works,
+  # but in such a way that the original {#raise} also works.
   def raise *args
     self.method_missing(:raise) || super
   end
@@ -226,6 +189,15 @@ class Element
   end
 
   ##
+  # @todo finish this method
+  #
+  # A more expensive {#inspect} where we actually look up the
+  # values for each attribute and format the output nicely.
+  def pretty_print
+    inspect
+  end
+
+  ##
   # Method is overriden to produce cleaner output.
   def inspect
     nice_methods = (attributes + actions).map { |name|
@@ -235,20 +207,8 @@ class Element
   end
 
   ##
-  # @todo finish this method
-  #
-  # A more expensive {#inspect} where we actually look up the
-  # values for each attribute and formate the output nicely.
-  def pretty_print
-    nice_methods = (attributes + actions).map { |name|
-      name.sub(AX.accessibility_prefix) { $1 }
-    }
-    "\#<#{self.class} @methods=#{nice_methods}>"
-  end
-
-  ##
-  # This helps a bit with regards to the dynamic methods.
-  # However, it does not work on search names.
+  # This helps a bit with regards to the dynamic attribute and action
+  # lookups, but will return false on potential search names.
   #
   # @param [Symbol] name
   def respond_to? name
@@ -260,6 +220,8 @@ class Element
     return attributes.include?(KAXValueAttribute)   if method == :value=
     super
   end
+
+  # @endgroup
 
 
   protected
@@ -305,6 +267,7 @@ class Element
 
   ##
   # A mapping of the AXError constants to human readable strings.
+  #
   # @return [Hash{Fixnum => String}]
   AXError = {
     KAXErrorFailure                           => 'Generic Failure',

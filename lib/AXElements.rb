@@ -1,4 +1,3 @@
-# @todo switch to ApplicationServices when the NS constants go away
 framework 'Cocoa'
 
 # @todo embed the new bridge support?

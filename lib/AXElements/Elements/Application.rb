@@ -8,8 +8,10 @@ class Application < AX::Element
   class << self
 
     ##
-    # @todo Find a way for this method to work without sleeping
+    # @todo Find a way for this method to work without sleeping;
+    #       consider looping begin/rescue/end until AX starts up
     # @todo Search NSWorkspace.sharedWorkspace.runningApplications ?
+    # @todo add another app launching method using app names
     #
     # This is the standard way of creating an application object. It will
     # launch the app if it is not already running and then create the
@@ -28,7 +30,7 @@ class Application < AX::Element
         launch_application bundle
         sleep sleep_time
       end
-      application_for_pid apps.first.processIdentifier
+      application_for_pid( apps.first.processIdentifier )
     end
 
     ##
@@ -38,7 +40,7 @@ class Application < AX::Element
     # @param [Fixnum] pid The process identifier for the application you want
     # @return [AX::Application]
     def self.application_for_pid pid
-      AX.make_element AXUIElementCreateApplication( pid )
+      AX.make_element( AXUIElementCreateApplication(pid) )
     end
 
 
@@ -102,5 +104,4 @@ class Application < AX::Element
   end
 
 end
-
 end

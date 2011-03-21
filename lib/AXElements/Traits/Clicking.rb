@@ -1,7 +1,11 @@
 module AX
 
+##
+# All the non-default actions you can perform on an accessibility object
+# which are not tightly coupled and can be mixed in elsewhere.
 module Traits
 
+  ##
   # All the different ways in which you can click on an object.
   # See [Mouse Events](../../file/MouseEvents.markdown) for more
   # detailed documentation on using methods from this module.
