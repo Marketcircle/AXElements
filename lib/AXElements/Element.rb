@@ -39,7 +39,8 @@ class Element
   # @return [Boolean]
   def attribute_writable? attr
     ptr = Pointer.new(:id)
-    error_code = AXUIElementElementIsAttributeSettable( @ref, attr, ptr )
+    method_name = attribute_for_symbol(attr)
+    error_code = AXUIElementElementIsAttributeSettable( @ref, method_name, ptr )
     log(error_code, attr)
     ptr[0]
   end
