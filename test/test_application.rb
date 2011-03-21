@@ -1,5 +1,3 @@
-require 'helper'
-
 class TestAXApplication < MiniTest::Unit::TestCase
 
   def test_is_subclass_of_element

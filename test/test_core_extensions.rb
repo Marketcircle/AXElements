@@ -1,5 +1,3 @@
-require 'helper'
-
 class TestNSArrayMethodMissing < MiniTest::Unit::TestCase
   ELEMENTS = AX::DOCK.list.application_dock_items
 

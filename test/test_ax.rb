@@ -1,4 +1,3 @@
-require 'helper'
 require 'active_support/core_ext/array/access'
 
 class TestAXAccessibilityPrefix < MiniTest::Unit::TestCase
