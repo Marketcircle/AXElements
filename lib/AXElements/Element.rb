@@ -291,6 +291,7 @@ class Element
     for action in actions
       return action if action.match(matcher)
     end
+    nil
   end
 
   ##
