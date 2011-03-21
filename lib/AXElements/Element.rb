@@ -286,8 +286,6 @@ class Element
   AXBoxType = [ nil, CGPoint, CGSize, CGRect, CFRange ]
 
   ##
-  # @todo find out how to get a list of constants (dietrb source)
-  #
   # A mapping of the AXError constants to human readable strings.
   # @return [Hash{Fixnum => String}]
   AXError = {
