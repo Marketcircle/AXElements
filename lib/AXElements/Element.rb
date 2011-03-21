@@ -35,7 +35,7 @@ class Element
   # @todo need a method for getting method names from from things
   #       refactored from #method_missing
   #
-  # @param [String] attr
+  # @param [Symbol] attr
   # @return [Boolean]
   def attribute_writable? attr
     ptr = Pointer.new(:id)
@@ -183,9 +183,6 @@ class Element
   # @raise NoMethodError
   def method_missing method, *args
 
-    # Bascially:
-    # attribute_lookup || action_lookup || element_search || super
-
     attr = attribute_for_symbol(method)
     if attr
       ret = self.attribute(attr)
@@ -196,9 +193,6 @@ class Element
     action = action_for_symbol(method)
     return self.perform_action(action) if action
 
-    # NOW WE TRY TO DO A SEARCH
-
-    # check to avoid an infinite loop
     if attributes.index(KAXChildrenAttribute)
       elements       = self.children # seed the search array
       search_results = []
@@ -222,7 +216,6 @@ class Element
       return search_results.first
     end
 
-    AX.log.debug "##{method} attr doesn't exist and this #{self.class} doesn't have children"
     super
   end
 
