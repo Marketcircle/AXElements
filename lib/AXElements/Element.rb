@@ -76,6 +76,7 @@ class Element
       raise ArgumentError, "#{attr} is not an attribute of this #{self.class}"
     end
     ptr[0]
+  def set_attribute attr, value
     code = AXUIElementSetAttributeValue( @ref, attr, value )
     log_ax_call( @ref, code ) == 0
   end
@@ -84,7 +85,7 @@ class Element
   # Focus an element on the screen, if possible.
   def get_focus
     raise NoMethodError unless attributes.include?(KAXFocusedAttribute)
-    self.set_attribute_with_value(KAXFocusedAttribute, true)
+    self.set_attribute(KAXFocusedAttribute, true)
   end
 
   ##
@@ -93,7 +94,8 @@ class Element
   # to be.
   def value= val
     raise NoMethodError unless attributes.include?(KAXFocusedAttribute)
-    self.set_attribute_with_value(KAXValueAttribute, val)
+    self.set_attribute(KAXValueAttribute, val)
+  end
     code = AXUIElementPerformAction( @ref, action_name )
     log_ax_call( @ref, code ) == 0
   end
