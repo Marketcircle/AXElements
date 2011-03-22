@@ -211,9 +211,9 @@ class Element
   # @param [Symbol] name
   def respond_to? name
     matcher = AX.matcher(name)
-    return true if (attributes + actions).find { |method| method.match(matcher) }
-    return attributes.include?(KAXFocusedAttribute) if method == :get_focus
-    return attributes.include?(KAXValueAttribute)   if method == :value=
+    return true if (attributes + actions).find { |meth| meth.match(matcher) }
+    return attributes.include?(KAXFocusedAttribute) if name == :get_focus
+    return attributes.include?(KAXValueAttribute)   if name == :value=
     super
   end
 
