@@ -181,14 +181,12 @@ class Element
   #
   # @param [Symbol] name
   def respond_to? name
-    matcher = AX.matcher(name)
-    return true if (attributes + actions).find { |meth| meth.match(matcher) }
+    pattern = matcher(name)
+    return true if (attributes + actions).find { |meth| meth.match(pattern) }
     return attributes.include?(KAXFocusedAttribute) if name == :get_focus
     return attributes.include?(KAXValueAttribute)   if name == :value=
     super
   end
-
-  # @endgroup
 
 
   protected
@@ -202,8 +200,8 @@ class Element
 
   # @return [String,nil]
   def attribute_for_symbol sym
-    matcher = AX.matcher(sym)
-    matches = attributes.find_all { |attr| attr.match(matcher) }
+    pattern = matcher(sym)
+    matches = attributes.find_all { |attr| attr.match(pattern) }
     unless matches.empty?
       matches.sort_by(&:length) if matches.size > 1
       matches.first
@@ -212,8 +210,8 @@ class Element
 
   # @return [String,nil]
   def action_for_symbol sym
-    matcher = AX.matcher(sym)
-    actions.find { |action| action.match(matcher) }
+    pattern = matcher(sym)
+    actions.find { |action| action.match(pattern) }
   end
 
 end
