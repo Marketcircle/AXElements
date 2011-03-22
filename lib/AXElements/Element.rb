@@ -31,8 +31,10 @@ class Element
     @pid ||= ( ptr = Pointer.new 'i' ; AXUIElementGetPid( @ref, ptr ) ; ptr[0] )
   end
 
-
-  # @group Plumbing
+  # @param [String] attribute an attribute constant
+  def get_attribute attribute
+    AX.attr_of_element(@ref, attribute)
+  end
 
   ##
     end
@@ -125,13 +127,8 @@ class Element
   # @example Contrived multi-element search with filtering
   #  window.buttons(title:'New Project', enabled?:true)
   def method_missing method, *args
-
     attr = attribute_for_symbol(method)
-    if attr
-      ret = self.attribute(attr)
-      id  = ATTR_MASSAGERS[CFGetTypeID(ret)]
-      return (id ? self.send(id, ret) : ret)
-    end
+    return self.get_attribute(attr) if attr
 
     action = action_for_symbol(method)
     return self.perform_action(action) if action
