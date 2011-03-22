@@ -13,16 +13,13 @@ module AX
     end
 
     ##
-    # @note We cannot use {#sub!} because the class name we get back is not
-    #       mutable
-    #
     # Takes an AXUIElementRef and gives you some kind of accessibility object.
     #
     # @param [AXUIElementRef] element
     # @return [Element]
     def make_element element
       klass = class_name(element).sub(@accessibility_prefix) { $1 }
-      new_const_get(klass).new element
+      new_const_get(klass).new(element)
     end
 
     ##
@@ -33,11 +30,8 @@ module AX
     # @param [#to_sym] const the value you want as a constant
     # @return [Class] a reference to the class being looked up
     def new_const_get const
-      if const_defined? const
-        const_get const
-      else
-        create_ax_class const
-      end
+      return const_get(const) if const_defined?(const)
+      create_ax_class(const)
     end
 
     ##
@@ -48,12 +42,9 @@ module AX
     # @param [#to_s] const
     # @return [Class,nil] the class if it exists, else returns nil
     def plural_const_get const
-      const = const.to_s.chomp 's'
-      if const_defined? const
-        const_get const
-      else
-        nil
-      end
+      const = const.to_s.chomp('s')
+      return const_get(const) if const_defined?(const)
+      nil
     end
 
     ##
@@ -64,10 +55,10 @@ module AX
     # @param [#to_sym] class_name
     # @return [Class]
     def create_ax_class class_name
-      klass = Class.new Element do
+      klass = Class.new(Element) {
         AX.log.debug "#{class_name} class created"
-      end
-      AX.const_set class_name, klass
+      }
+      AX.const_set( class_name, klass )
     end
 
     ##
@@ -75,8 +66,8 @@ module AX
     #
     # @return [AX::Element]
     def element_under_mouse
-      position = carbon_point_from_cocoa_point NSEvent.mouseLocation
-      element_at_position position
+      mouse_point = carbon_point_from_cocoa_point(NSEvent.mouseLocation)
+      element_at_position mouse_point
     end
 
     ##
@@ -84,17 +75,18 @@ module AX
     # there is one). If more than one element is at the position then the
     # z-order of the elements will be used to determine which is "on top".
     #
+    # The co-ordinates should be specified with the origin being in the
+    # top-left corner of the main screen.
+    #
     # @param [CGPoint] point
     # @return [AX::Element]
     def element_at_position point
-      element  = Pointer.new '^{__AXUIElement}'
-      AXUIElementCopyElementAtPosition(SYSTEM.ref, point.x, point.y, element)
+      element = Pointer.new( '^{__AXUIElement}' )
+      AXUIElementCopyElementAtPosition( SYSTEM.ref, point.x, point.y, element )
       make_element element[0]
     end
 
     ##
-    # @note This method was designed as a debugging tool.
-    #
     # Get a list of elements, starting with the element you gave and riding
     # all the way up the hierarchy to the top level (should be the Application).
     #
@@ -102,23 +94,22 @@ module AX
     # @return [Array<AX::Element>] the hierarchy in ascending order
     def hierarchy *elements
       element = elements.last
-      if element.respond_to?(:parent)
-        hierarchy( elements << element.parent )
-      else
-        elements
-      end
+      return hierarchy(elements << element.parent) if element.respond_to?(:parent)
+      return elements
     end
 
+    # @param [AXUIElementRef] element low level accessibility object
     # @return [Array<String>]
     def attrs_of_element element
-      array_ptr  = Pointer.new '^{__CFArray}'
+      array_ptr = Pointer.new( '^{__CFArray}' )
       AXUIElementCopyAttributeNames( element, array_ptr )
       array_ptr[0]
     end
 
+    # @param [AXUIElementRef] element low level accessibility object
     # @return [Array<String>]
     def actions_of_element element
-      array_ptr  = Pointer.new '^{__CFArray}'
+      array_ptr = Pointer.new( '^{__CFArray}' )
       AXUIElementCopyActionNames( element, array_ptr )
       array_ptr[0]
     end
@@ -138,7 +129,7 @@ module AX
       NSScreen.screens.each { |screen|
         if NSPointInRect(point, screen.frame)
           height       = screen.frame.size.height
-          carbon_point = CGPoint.new point.x, (height - point.y - 1)
+          carbon_point = CGPoint.new( point.x, (height - point.y - 1) )
         end
       }
       carbon_point
@@ -167,8 +158,8 @@ module AX
     # @param [String] *attrs
     # @return [Array]
     def attr_values_of_element element, *attrs
-      attr_value = Pointer.new :id
-      attributes = attrs_of_element(element)
+      attr_value = Pointer.new(:id)
+      attributes = attrs_of_element element
       attrs.map { |attr|
         if attributes.include?(attr)
           AXUIElementCopyAttributeValue( element, attr, attr_value )
@@ -178,6 +169,8 @@ module AX
     end
 
   end
+
+  ### Initialize various constants and instance variables
 
   @accessibility_prefix = /[A-Z]+([A-Z][a-z])/
 

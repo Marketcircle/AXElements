@@ -13,12 +13,30 @@ class TestAXAccessibilityPrefix < MiniTest::Unit::TestCase
   end
 end
 
+class TestAXMatcher < MiniTest::Unit::TestCase
+  def test_matches_snake_case_names
+    assert_match AX.matcher(:button), 'AXButton'
+    assert_match AX.matcher(:title_ui_element), 'AXTitleUIElement'
+  end
+  def test_matches_camel_case_names
+    assert_match AX.matcher(:Button), 'AXButton'
+    assert_match AX.matcher(:TitleUIElement), 'AXTitleUIElement'
+  end
+  def test_matches_predicate_names
+    assert_match AX.matcher(:selected?), 'AXSelected'
+    assert_match AX.matcher(:Selected?), 'AXSelected'
+  end
+  def test_matches_exact_names
+    assert_match AX.matcher(:AXButton), 'AXButton'
+    assert_match AX.matcher(:AXTitleUIElement), 'AXTitleUIElement'
+  end
+end
+
 class TestAXNewConstGet < MiniTest::Unit::TestCase
   def test_returns_class_even_when_class_does_not_exist_yet
     assert_equal AX::Element, AX.new_const_get( :Element )
     assert_equal 'AX::RazzleDazzle', AX.new_const_get( :RazzleDazzle ).to_s
   end
-
   def test_creates_classes_if_they_do_not_exist
     refute AX.constants.include?( :MadeUpName )
     AX.new_const_get( :MadeUpName )
@@ -31,11 +49,9 @@ class TestAXPluralConstGet < MiniTest::Unit::TestCase
   def test_finds_things_that_are_not_pluralized
     refute_nil AX.plural_const_get( 'Application' )
   end
-
   def test_finds_things_that_are_pluralized_with_an_s
     refute_nil AX.plural_const_get( 'Applications' )
   end
-
   def test_returns_nil_if_the_class_does_not_exist
     assert_nil AX.plural_const_get( 'NonExistant' )
   end
@@ -45,12 +61,10 @@ class TestAXCreateAXClass < MiniTest::Unit::TestCase
   def test_returns_constant
     assert_equal 'AX::HeyHeyHey', AX.create_ax_class( :HeyHeyHey ).to_s
   end
-
   def test_creates_classes_in_the_ax_namespace
     AX.create_ax_class( :AnotherTestClass )
     assert AX.constants.include?( :AnotherTestClass )
   end
-
   def test_makes_new_classes_a_subclass_of_ax_element
     AX.create_ax_class( :RoflCopter )
     assert AX::RoflCopter.ancestors.include?(AX::Element)
@@ -61,14 +75,11 @@ class TestAXElementUnderMouse < MiniTest::Unit::TestCase
   def test_returns_some_kind_of_ax_element
     assert_kind_of AX::Element, AX.element_under_mouse
   end
-
-  # @todo need to manipulate the mouse
-  def test_returns_a_menubar_when_mouse_is_on_menubar
-    skip 'This test is too invasive, need to find another way or add a test option'
-  end
+  # @todo need to manipulate the mouse and put it in some
+  #       well known locations and make sure I get the right
+  #       element created
 end
 
-# @todo I should really have some more tests for this class
 class TestAXElementAtPosition < MiniTest::Unit::TestCase
   def test_returns_a_menubar_for_coordinates_10_0
     item = AX.element_at_position( CGPoint.new(10, 0) )
@@ -79,17 +90,42 @@ end
 class TestAXHierarchy < MiniTest::Unit::TestCase
   ITEM = AX::DOCK.list.application_dock_item
   RET  = AX.hierarchy( ITEM )
-
   def test_returns_array_of_elements
     assert_instance_of Array, RET
-    assert_kind_of AX::Element, RET.first
+    assert_kind_of     AX::Element, RET.first
   end
-
   def test_correctness
-    assert_equal 3, RET.size, RET.inspect
+    assert_equal 3, RET.size
     assert_instance_of AX::ApplicationDockItem, RET.first
     assert_instance_of AX::List,                RET.second
     assert_instance_of AX::Application,         RET.third
+  end
+end
+
+class TestAXAttrsOfElement < MiniTest::Unit::TestCase
+  def setup; @attrs = AX.attrs_of_element(AX::DOCK.ref); end
+  def test_returns_array_of_strings
+    assert_instance_of String, @attrs.first
+  end
+  def test_make_sure_certain_attributes_are_present
+    assert @attrs.include?(KAXRoleAttribute)
+    assert @attrs.include?(KAXChildrenAttribute)
+    assert @attrs.include?(KAXTitleAttribute)
+  end
+end
+
+class TestAXActionsOfElement < MiniTest::Unit::TestCase
+  def test_works_when_there_are_no_actions
+    assert_empty AX.actions_of_element(AX::DOCK.ref)
+  end
+  def test_returns_array_of_strings
+    actions = AX.actions_of_element(AX::DOCK.application_dock_item.ref)
+    assert_instance_of String, actions.first
+  end
+  def test_make_sure_certain_actions_are_present
+    actions = AX.actions_of_element(AX::DOCK.application_dock_item.ref)
+    assert actions.include?(KAXPressAction)
+    assert actions.include?(KAXShowMenuAction)
   end
 end
 
@@ -103,8 +139,16 @@ class TestAXDOCK < MiniTest::Unit::TestCase
   def test_dock_is_an_application
     assert_instance_of AX::Application, AX::DOCK
   end
-
   def test_is_the_dock_application
     assert_equal 'Dock', AX::DOCK.title
+  end
+end
+
+class TestAXFinder < MiniTest::Unit::TestCase
+  def test_finder_is_an_application
+    assert_instance_of AX::Application, AX::FINDER
+  end
+  def test_is_the_finder_application
+    assert_equal 'Finder', AX::FINDER.title
   end
 end
