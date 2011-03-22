@@ -227,10 +227,7 @@ class Element
   # @return [String,nil]
   def attribute_for_symbol sym
     matcher = AX.matcher(sym)
-    matches = []
-    for attr in attributes
-      matches << attr if attr.match(matcher)
-    end
+    matches = attributes.find_all { |attr| attr.match(matcher) }
     unless matches.empty?
       matches.sort_by(&:length) if matches.size > 1
       matches.first
@@ -240,10 +237,7 @@ class Element
   # @return [String,nil]
   def action_for_symbol sym
     matcher = AX.matcher(sym)
-    for action in actions
-      return action if action.match(matcher)
-    end
-    nil
+    actions.find { |action| action.match(matcher) }
   end
 
   ##
