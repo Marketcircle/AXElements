@@ -40,7 +40,7 @@ class Application < AX::Element
     # @param [Fixnum] pid The process identifier for the application you want
     # @return [AX::Application]
     def self.application_for_pid pid
-      AX.make_element( AXUIElementCreateApplication(pid) )
+      AX.element_attribute( AXUIElementCreateApplication(pid) )
     end
 
 
@@ -93,7 +93,8 @@ class Application < AX::Element
   # @return [AXObserverRef]
   def observer callback
     observer = Pointer.new '^{__AXObserver}'
-    log AXObserverCreate( pid, callback, observer )
+    code = AXObserverCreate( pid, callback, observer )
+    AX.log_ax_call( @ref, code )
     observer[0]
   end
 

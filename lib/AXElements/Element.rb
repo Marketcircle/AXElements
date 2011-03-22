@@ -35,35 +35,9 @@ class Element
   # @group Plumbing
 
   ##
-  # @param [String] attr an attribute constant
-  # @return [Object,nil]
-  def attribute attr
-    result_ptr = Pointer.new(:id)
-    error_code = AXUIElementCopyAttributeValue( @ref, attr, result_ptr )
-    log(error_code, attr)
-    result_ptr[0]
-  end
-
-  # @return [AX::Element]
-  def element_attribute value
-    AX.make_element(value)
-  end
-
-  # @return [Array,nil]
-  def array_attribute value
-    if value.empty? || (ATTR_MASSAGERS[CFGetTypeID(value.first)] == 1)
-      value
-    else
-      value.map { |element| element_attribute(element) }
     end
-  end
-
-  # @return [Boxed,nil]
-  def boxed_attribute value
-    return nil unless value
-    box = AXValueGetType( value )
-    ptr = Pointer.new( AXBoxType[box].type )
-    AXValueGetValue( value, box, ptr )
+    code  = AXUIElementIsAttributeSettable( @ref, method_name, ptr )
+    log_ax_call(@ref, code)
     ptr[0]
   end
 
@@ -76,8 +50,6 @@ class Element
   # @param [String] attr
   # @return [Boolean] true if successful, otherwise false
   def set_attribute_with_value attr, value
-    error_code = AXUIElementSetAttributeValue( @ref, attr, value )
-    log( error_code, [attr, value] ) == 0
   end
 
   ##
@@ -89,8 +61,6 @@ class Element
   # @param [String] action_name
   # @return [Boolean] true if successful, otherwise false
   def perform_action action_name
-    error_code = AXUIElementPerformAction( @ref, action_name )
-    log( error_code, action_name ) == 0
   end
 
 
@@ -105,9 +75,9 @@ class Element
     unless method_name = attribute_for_symbol(attr)
       raise ArgumentError, "#{attr} is not an attribute of this #{self.class}"
     end
-    error_code  = AXUIElementIsAttributeSettable( @ref, method_name, ptr )
-    log(error_code, attr)
     ptr[0]
+    code = AXUIElementSetAttributeValue( @ref, attr, value )
+    log_ax_call( @ref, code ) == 0
   end
 
   ##
@@ -124,6 +94,8 @@ class Element
   def value= val
     raise NoMethodError unless attributes.include?(KAXFocusedAttribute)
     self.set_attribute_with_value(KAXValueAttribute, val)
+    code = AXUIElementPerformAction( @ref, action_name )
+    log_ax_call( @ref, code ) == 0
   end
 
   ##
@@ -245,61 +217,5 @@ class Element
     actions.find { |action| action.match(matcher) }
   end
 
-  ##
-  # Mapping low level type ID numbers to methods to massage useful
-  # objects from data.
-  #
-  # @return [Array<Symbol>]
-  ATTR_MASSAGERS = []
-  ATTR_MASSAGERS[AXUIElementGetTypeID()] = :element_attribute
-  ATTR_MASSAGERS[CFArrayGetTypeID()]     = :array_attribute
-  ATTR_MASSAGERS[AXValueGetTypeID()]     = :boxed_attribute
-
-  ##
-  # This array is order-sensitive, which is why there is a
-  # nil object at index 0.
-  #
-  # @return [Class,nil]
-  AXBoxType = [ nil, CGPoint, CGSize, CGRect, CFRange ]
-
-  ##
-  # A mapping of the AXError constants to human readable strings.
-  #
-  # @return [Hash{Fixnum => String}]
-  AXError = {
-    KAXErrorFailure                           => 'Generic Failure',
-    KAXErrorIllegalArgument                   => 'Illegal Argument',
-    KAXErrorInvalidUIElement                  => 'Invalid UI Element',
-    KAXErrorInvalidUIElementObserver          => 'Invalid UI Element Observer',
-    KAXErrorCannotComplete                    => 'Cannot Complete',
-    KAXErrorAttributeUnsupported              => 'Attribute Unsupported',
-    KAXErrorActionUnsupported                 => 'Action Unsupported',
-    KAXErrorNotificationUnsupported           => 'Notification Unsupported',
-    KAXErrorNotImplemented                    => 'Not Implemented',
-    KAXErrorNotificationAlreadyRegistered     => 'Notification Already Registered',
-    KAXErrorNotificationNotRegistered         => 'Notification Not Registered',
-    KAXErrorAPIDisabled                       => 'API Disabled',
-    KAXErrorNoValue                           => 'No Value',
-    KAXErrorParameterizedAttributeUnsupported => 'Parameterized Attribute Unsupported',
-    KAXErrorNotEnoughPrecision                => 'Not Enough Precision',
-  }
-
-  ##
-  # @todo print view hierarchy using {#pretty_print}
-  #
-  # Uses the call stack and error code to log a message that might be helpful
-  # in debugging.
-  #
-  # @param [Fixnum] error_code an AXError value
-  # @param [#to_s] method_args an AXError value
-  # @return [Fixnum] the error code that was passed to this method
-  def log error_code, method_args = 'unspecified method'
-    return error_code if error_code.zero?
-    error = AXError[error_code] || 'UNKNOWN ERROR CODE'
-    AX.log.warn "[#{error} (#{error_code})] while trying #{method_args} on a #{self.role}"
-    AX.log.info "Attributes and actions that were available: #{self.methods.inspect}"
-    AX.log.debug "Backtrace: #{caller.description}"
-    error_code
-  end
 end
 end

@@ -5,7 +5,25 @@ module AX
     # @return [Regexp]
     attr_reader :accessibility_prefix
 
+    # @param [AXUIElementRef] element
+    # @param [String] attr an attribute constant
+    def raw_attr_of_element element, attr
+      ptr = Pointer.new(:id)
+      code = AXUIElementCopyAttributeValue( element, attr, ptr )
+      log_ax_call(element, code)
+      ptr[0]
+    end
+
     ##
+    # Call {#raw_attr_of_element} and perform extra processing
+    # to make sure the returned data is wrapped properly.
+    #
+    # @param [AXUIElementRef] element
+    # @param [String] attr an attribute constant
+    def attr_of_element element, attr
+      ret = raw_attr_of_element(element, attr)
+      id  = ATTR_MASSAGERS[CFGetTypeID(ret)]
+      id  ? self.send(id,ret) : ret
     end
 
     ##
@@ -13,9 +31,27 @@ module AX
     #
     # @param [AXUIElementRef] element
     # @return [Element]
-    def make_element element
+    def element_attribute element
       klass = class_name(element).sub(@accessibility_prefix) { $1 }
       new_const_get(klass).new(element)
+    end
+
+    # @return [Array,nil]
+    def array_attribute value
+      if value.empty? || (ATTR_MASSAGERS[CFGetTypeID(value.first)] == 1)
+        value
+      else
+        value.map { |element| element_attribute(element) }
+      end
+    end
+
+    # @return [Boxed,nil]
+    def boxed_attribute value
+      return nil unless value
+      box = AXValueGetType( value )
+      ptr = Pointer.new( AXBoxType[box].type )
+      AXValueGetValue( value, box, ptr )
+      ptr[0]
     end
 
     ##
@@ -54,7 +90,7 @@ module AX
       klass = Class.new(Element) {
         AX.log.debug "#{class_name} class created"
       }
-      AX.const_set( class_name, klass )
+      const_set( class_name, klass )
     end
 
     ##
@@ -78,11 +114,14 @@ module AX
     # @return [AX::Element]
     def element_at_position point
       element = Pointer.new( '^{__AXUIElement}' )
-      AXUIElementCopyElementAtPosition( SYSTEM.ref, point.x, point.y, element )
-      make_element element[0]
+      code = AXUIElementCopyElementAtPosition( SYSTEM.ref, point.x, point.y, element )
+      log_ax_call(SYSTEM.ref, code)
+      element_attribute element[0]
     end
 
     ##
+    # @todo should this take a lower level object?
+    #
     # Get a list of elements, starting with the element you gave and riding
     # all the way up the hierarchy to the top level (should be the Application).
     #
@@ -98,7 +137,8 @@ module AX
     # @return [Array<String>]
     def attrs_of_element element
       array_ptr = Pointer.new( '^{__CFArray}' )
-      AXUIElementCopyAttributeNames( element, array_ptr )
+      code = AXUIElementCopyAttributeNames( element, array_ptr )
+      log_ax_call(element, code)
       array_ptr[0]
     end
 
@@ -106,12 +146,70 @@ module AX
     # @return [Array<String>]
     def actions_of_element element
       array_ptr = Pointer.new( '^{__CFArray}' )
-      AXUIElementCopyActionNames( element, array_ptr )
+      code = AXUIElementCopyActionNames( element, array_ptr )
+      log_ax_call(element, code)
       array_ptr[0]
+    end
+
+    ##
+    # @todo print view hierarchy using {#pretty_print}
+    #
+    # Uses the call stack and error code to log a message that might be
+    # helpful in debugging.
+    #
+    # @param [AXUIElementRef] element
+    # @param [Fixnum] code AXError value
+    # @return [Fixnum] returns the code that was passed
+    def log_ax_call element, code
+      return code if code.zero?
+      message = AXError[code] || 'UNKNOWN ERROR CODE'
+      log.warn "[#{message} (#{code})] while trying #{caller}"
+      log.info "Available attrs/actions were: #{attrs_of_element(element)} #{actions_of_element(element)}"
+      log.debug "Backtrace: #{caller.description}"
+      code
     end
 
 
     private
+
+    ##
+    # Mapping low level type ID numbers to methods to massage useful
+    # objects from data.
+    #
+    # @return [Array<Symbol>]
+    ATTR_MASSAGERS = []
+    ATTR_MASSAGERS[AXUIElementGetTypeID()] = :element_attribute
+    ATTR_MASSAGERS[CFArrayGetTypeID()]     = :array_attribute
+    ATTR_MASSAGERS[AXValueGetTypeID()]     = :boxed_attribute
+
+    ##
+    # This array is order-sensitive, which is why there is a
+    # nil object at index 0.
+    #
+    # @return [Class,nil]
+    AXBoxType = [ nil, CGPoint, CGSize, CGRect, CFRange ]
+
+    ##
+    # A mapping of the AXError constants to human readable strings.
+    #
+    # @return [Hash{Fixnum=>String}]
+    AXError = {
+      KAXErrorFailure                           => 'Generic Failure',
+      KAXErrorIllegalArgument                   => 'Illegal Argument',
+      KAXErrorInvalidUIElement                  => 'Invalid UI Element',
+      KAXErrorInvalidUIElementObserver          => 'Invalid UI Element Observer',
+      KAXErrorCannotComplete                    => 'Cannot Complete',
+      KAXErrorAttributeUnsupported              => 'Attribute Unsupported',
+      KAXErrorActionUnsupported                 => 'Action Unsupported',
+      KAXErrorNotificationUnsupported           => 'Notification Unsupported',
+      KAXErrorNotImplemented                    => 'Not Implemented',
+      KAXErrorNotificationAlreadyRegistered     => 'Notification Already Registered',
+      KAXErrorNotificationNotRegistered         => 'Notification Not Registered',
+      KAXErrorAPIDisabled                       => 'API Disabled',
+      KAXErrorNoValue                           => 'No Value',
+      KAXErrorParameterizedAttributeUnsupported => 'Parameterized Attribute Unsupported',
+      KAXErrorNotEnoughPrecision                => 'Not Enough Precision'
+    }
 
     ##
     # Take a point that uses the bottom left of the screen as the origin
@@ -142,24 +240,11 @@ module AX
     # @param [AXUIElementRef]
     # @return [String]
     def class_name element
-      attr_values_of_element(element,
-                             KAXSubroleAttribute, KAXRoleAttribute
-                             ).compact.first
-    end
-
-    ##
-    # @todo need to deal with cases when this returns non-zero
-    #
-    # @param [AXUIElementRef] element
-    # @param [String] *attrs
-    # @return [Array]
-    def attr_values_of_element element, *attrs
-      attr_value = Pointer.new(:id)
-      attributes = attrs_of_element element
-      attrs.map { |attr|
-        if attributes.include?(attr)
-          AXUIElementCopyAttributeValue( element, attr, attr_value )
-          attr_value[0]
+      attrs = attrs_of_element(element)
+      [KAXSubroleAttribute,KAXRoleAttribute].map { |attr|
+        if attrs.include?(attr)
+          value = raw_attr_of_element(element, attr)
+          return value if value
         end
       }
     end
@@ -171,7 +256,7 @@ module AX
   @accessibility_prefix = /[A-Z]+([A-Z][a-z])/
 
   # @return [AX::SystemWide]
-  SYSTEM = make_element AXUIElementCreateSystemWide()
+  SYSTEM = element_attribute AXUIElementCreateSystemWide()
 
   # @return [AX::Application] the Mac OS X dock application
   DOCK = Application.application_with_bundle_identifier( 'com.apple.dock' )

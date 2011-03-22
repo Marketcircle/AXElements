@@ -14,7 +14,7 @@ class Element
   # @param [Object] refcon some context object that you can pass around
   def notif_method observer, element, notif, refcon
     if @notif_proc
-      wrapped_element = AX.make_element(element)
+      wrapped_element = AX.element_attribute(element)
       @notif_proc.call( wrapped_element, notif )
       @notif_proc     = nil
     end
@@ -56,7 +56,7 @@ class Element
     run_loop     = CFRunLoopGetCurrent()
     app_run_loop = AXObserverGetRunLoopSource( observer )
 
-    log( AXObserverAddNotification(observer, @ref, notif, nil) )
+    AX.log_ax_call( AXObserverAddNotification(observer, @ref, notif, nil) )
     CFRunLoopAddSource( run_loop, app_run_loop, KCFRunLoopDefaultMode )
 
     # use RunInMode because it has timeout functionality; this method
