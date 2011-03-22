@@ -57,15 +57,6 @@ class Element
   #
   # @param [String] attr
   # @return [Boolean] true if successful, otherwise false
-  ##
-  # Ideally this method would return a reference to self, but as the
-  # method inherently causes state change the reference to self may no
-  # longer be valid. An example of this would be pressing the close
-  # button on a window.
-  #
-  # @param [String] action_name
-  # @return [Boolean] true if successful, otherwise false
-  def perform_action action_name
   def set_attribute attr, value
     code = AXUIElementSetAttributeValue( @ref, attr, value )
     log_ax_call( @ref, code ) == 0
@@ -86,6 +77,16 @@ class Element
     raise NoMethodError unless attributes.include?(KAXFocusedAttribute)
     self.set_attribute(KAXValueAttribute, val)
   end
+
+  ##
+  # Ideally this method would return a reference to `self`, but since
+  # this method inherently causes state change, the reference to `self`
+  # may no longer be valid. An example of this would be pressing the
+  # close button on a window.
+  #
+  # @param [String] action_name
+  # @return [Boolean] true if successful
+  def perform_action action_name
     code = AXUIElementPerformAction( @ref, action_name )
     log_ax_call( @ref, code ) == 0
   end
