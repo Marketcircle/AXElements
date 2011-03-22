@@ -16,20 +16,6 @@ class TestAXElementMethodMissing < MiniTest::Unit::TestCase
   def test_finds_actions
     skip 'This test is too invasive, need to find another way or add a test option'
   end
-
-  def test_search_one_level_deep
-    assert_equal 'AX::List', AX::DOCK.list.class.to_s
-  end
-
-  def test_search_multiple_levels_deep
-    assert_equal 'AX::ApplicationDockItem', AX::DOCK.application_dock_item.class.to_s
-  end
-
-  def test_search_works_with_plural
-    ret = AX::DOCK.lists
-    assert_instance_of Array, ret
-    assert_instance_of AX::List, ret.first
-  end
 end
 
 class TestAXElementAttributeWritable < MiniTest::Unit::TestCase
@@ -73,3 +59,9 @@ class TestAXElementRespondTo < MiniTest::Unit::TestCase
     refute AX::DOCK.respond_to?(:crazy_thing_that_cant_work)
   end
 end
+
+# @todo test #search
+# is breadth first
+# plural works
+# singular works
+# assert performance of singular search

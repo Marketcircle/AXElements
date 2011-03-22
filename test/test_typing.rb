@@ -1,3 +1,2 @@
-
-class TestAXTraitsTyping < MiniTest::Unit::TestCase
+class TestAXApplicationTyping < MiniTest::Unit::TestCase
 end

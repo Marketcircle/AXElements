@@ -1,3 +1,2 @@
-
-class TestAXTraitsNotifications < MiniTest::Unit::TestCase
+class TestAXElementNotifications < MiniTest::Unit::TestCase
 end

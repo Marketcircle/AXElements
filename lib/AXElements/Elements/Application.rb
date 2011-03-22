@@ -3,7 +3,7 @@ module AX
 ##
 # Some additional constructors and conveniences for Application objects.
 class Application < AX::Element
-  require 'AXElements/Traits/Typing'
+  require 'AXElements/Elements/Application/Typing'
 
   class << self
 

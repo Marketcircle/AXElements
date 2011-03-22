@@ -1,6 +1,6 @@
-require 'AXElements/Traits/Searching'
-require 'AXElements/Traits/Notifications'
-require 'AXElements/Traits/Clicking'
+require 'AXElements/Element/Searching'
+require 'AXElements/Element/Notifications'
+require 'AXElements/Element/Clicking'
 
 module AX
 
@@ -9,8 +9,6 @@ module AX
 #
 # The abstract base class for all accessibility objects.
 class Element
-
-  include Traits::Clicking
 
   # @return [Array<String>] A cache of available attributes
   attr_reader :attributes
