@@ -13,25 +13,6 @@ class TestAXAccessibilityPrefix < MiniTest::Unit::TestCase
   end
 end
 
-class TestAXMatcher < MiniTest::Unit::TestCase
-  def test_matches_snake_case_names
-    assert_match AX.matcher(:button), 'AXButton'
-    assert_match AX.matcher(:title_ui_element), 'AXTitleUIElement'
-  end
-  def test_matches_camel_case_names
-    assert_match AX.matcher(:Button), 'AXButton'
-    assert_match AX.matcher(:TitleUIElement), 'AXTitleUIElement'
-  end
-  def test_matches_predicate_names
-    assert_match AX.matcher(:selected?), 'AXSelected'
-    assert_match AX.matcher(:Selected?), 'AXSelected'
-  end
-  def test_matches_exact_names
-    assert_match AX.matcher(:AXButton), 'AXButton'
-    assert_match AX.matcher(:AXTitleUIElement), 'AXTitleUIElement'
-  end
-end
-
 class TestAXNewConstGet < MiniTest::Unit::TestCase
   def test_returns_class_even_when_class_does_not_exist_yet
     assert_equal AX::Element, AX.new_const_get( :Element )

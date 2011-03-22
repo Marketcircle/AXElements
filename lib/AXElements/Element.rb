@@ -222,6 +222,13 @@ class Element
 
   protected
 
+  ##
+  # Make a regexp that can match against the proper attributes
+  # and/or actions for an AX::Element object.
+  def matcher name
+    /#{name.to_s.gsub(/_|\?$/, '')}$/i
+  end
+
   # @return [String,nil]
   def attribute_for_symbol sym
     matcher = AX.matcher(sym)
