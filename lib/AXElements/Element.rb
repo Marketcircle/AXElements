@@ -37,6 +37,12 @@ class Element
   end
 
   ##
+  # @param [Symbol] attr
+  # @return [Boolean]
+  def attribute_writable? attr
+    ptr         = Pointer.new('B')
+    unless method_name = attribute_for_symbol(attr)
+      raise ArgumentError, "#{attr} is not an attribute of this #{self.class}"
     end
     code  = AXUIElementIsAttributeSettable( @ref, method_name, ptr )
     log_ax_call(@ref, code)
@@ -63,21 +69,6 @@ class Element
   # @param [String] action_name
   # @return [Boolean] true if successful, otherwise false
   def perform_action action_name
-  end
-
-
-  # @endgroup
-  # @group Porcelain
-
-  ##
-  # @param [Symbol] attr
-  # @return [Boolean]
-  def attribute_writable? attr
-    ptr         = Pointer.new('B')
-    unless method_name = attribute_for_symbol(attr)
-      raise ArgumentError, "#{attr} is not an attribute of this #{self.class}"
-    end
-    ptr[0]
   def set_attribute attr, value
     code = AXUIElementSetAttributeValue( @ref, attr, value )
     log_ax_call( @ref, code ) == 0
