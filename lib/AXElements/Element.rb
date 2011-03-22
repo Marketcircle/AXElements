@@ -57,9 +57,6 @@ class Element
   #
   # @param [String] attr
   # @return [Boolean] true if successful, otherwise false
-  def set_attribute_with_value attr, value
-  end
-
   ##
   # Ideally this method would return a reference to self, but as the
   # method inherently causes state change the reference to self may no
