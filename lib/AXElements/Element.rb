@@ -210,10 +210,8 @@ class Element
   #
   # @param [Symbol] name
   def respond_to? name
-    matcher = /#{name.to_s.gsub(/_|\?$/, '')}$/i
-    for method in (attributes + actions)
-      return true if method.match(matcher)
-    end
+    matcher = AX.matcher(name)
+    return true if (attributes + actions).find { |method| method.match(matcher) }
     return attributes.include?(KAXFocusedAttribute) if method == :get_focus
     return attributes.include?(KAXValueAttribute)   if method == :value=
     super
