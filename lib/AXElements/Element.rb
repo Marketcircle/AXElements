@@ -10,10 +10,10 @@ module AX
 # The abstract base class for all accessibility objects.
 class Element
 
-  # @return [Array<String>] A cache of available attributes
+  # @return [Array<String>] cache of available attributes
   attr_reader :attributes
 
-  # @return [Array<String>] A cache of available actions
+  # @return [Array<String>] cache of available actions
   attr_reader :actions
 
   # @return [AXUIElementRef] the low level object reference
@@ -31,20 +31,20 @@ class Element
     @pid ||= ( ptr = Pointer.new 'i' ; AXUIElementGetPid( @ref, ptr ) ; ptr[0] )
   end
 
-  # @param [String] attribute an attribute constant
-  def get_attribute attribute
-    AX.attr_of_element(@ref, attribute)
+  # @param [String] attr an attribute constant
+  def get_attribute attr
+    AX.attr_of_element(@ref, attr)
   end
 
   ##
   # @param [Symbol] attr
   # @return [Boolean]
   def attribute_writable? attr
-    ptr         = Pointer.new('B')
+    ptr  = Pointer.new('B')
     unless method_name = attribute_for_symbol(attr)
       raise ArgumentError, "#{attr} is not an attribute of this #{self.class}"
     end
-    code  = AXUIElementIsAttributeSettable( @ref, method_name, ptr )
+    code = AXUIElementIsAttributeSettable( @ref, method_name, ptr )
     log_ax_call(@ref, code)
     ptr[0]
   end
@@ -84,7 +84,7 @@ class Element
   # may no longer be valid. An example of this would be pressing the
   # close button on a window.
   #
-  # @param [String] action_name
+  # @param [String] action_name an action constant
   # @return [Boolean] true if successful
   def perform_action action_name
     code = AXUIElementPerformAction( @ref, action_name )
@@ -92,15 +92,11 @@ class Element
   end
 
   ##
-  # @note Some attribute names don't map consistently from Apple's
-  #       documentation because it would have caused a clash with the
-  #       two systems used for attribute lookup and searching/filtering.
-  #
   # We use {#method missing} to dynamically handle requests to, in the
   # following order, lookup attributes, perform actions, or search for
   # elements in the view hierarchy.
   #
-  # Failing all three lookups, this method calls super.
+  # Failing all three lookups, this method calls `super`.
   #
   # @example Attribute lookup of an element
   #  mail   = AX::Application.application_with_bundle_identifier 'com.apple.mail'
@@ -129,11 +125,8 @@ class Element
     super
   end
 
-  # @endgroup
-  # @group Overridden methods
-
   ##
-  # Needed to override inherited {#raise} so that the raise action works,
+  # Needed to override inherited {Kernel#raise} so that the raise action works,
   # but in such a way that the original {#raise} also works.
   def raise *args
     self.method_missing(:raise) || super
@@ -143,7 +136,7 @@ class Element
   # Needed to override inherited NSObject#description. If you want a
   # description of the object try using {#inspect}.
   def description
-    self.method_missing :description
+    self.method_missing(:description)
   end
 
   ##

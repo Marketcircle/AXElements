@@ -1,2 +1,2 @@
-class TestAXTraitsClicking < MiniTest::Unit::TestCase
+class TestAXElementClicking < MiniTest::Unit::TestCase
 end

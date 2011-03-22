@@ -8,7 +8,7 @@ module AX
     # @param [AXUIElementRef] element
     # @param [String] attr an attribute constant
     def raw_attr_of_element element, attr
-      ptr = Pointer.new(:id)
+      ptr  = Pointer.new(:id)
       code = AXUIElementCopyAttributeValue( element, attr, ptr )
       log_ax_call(element, code)
       ptr[0]
