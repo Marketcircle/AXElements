@@ -31,7 +31,7 @@ oriented framework from the low level CoreFoundation API for accessibility.
     [ 'Rakefile', 'LICENSE.txt', 'README.markdown', '.yardopts' ] +
     Dir.glob('docs/**/*')
 
-  s.add_development_dependency 'minitest',  ['~> 2.0.2']
-  s.add_development_dependency 'yard',      ['~> 0.6.4']
-  s.add_development_dependency 'bluecloth', ['~> 2.0.11']
+  s.add_development_dependency 'minitest-macruby-pride',  ['~> 2.1.2']
+  s.add_development_dependency 'yard',                    ['~> 0.6.4']
+  s.add_development_dependency 'bluecloth',               ['~> 2.0.11']
 end
