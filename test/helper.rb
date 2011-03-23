@@ -27,7 +27,7 @@ class PrideIO
 
   def initialize io
     @io = io
-    @index  = 0
+    @index = 0
   end
 
   def print o
