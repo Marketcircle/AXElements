@@ -22,6 +22,7 @@ module AX
     # @param [String] attr an attribute constant
     def attr_of_element element, attr
       ret = raw_attr_of_element(element, attr)
+      return if ret.nil?
       id  = ATTR_MASSAGERS[CFGetTypeID(ret)]
       id  ? self.send(id,ret) : ret
     end
