@@ -152,6 +152,26 @@ class TestAXActionsOfElement < MiniTest::Unit::TestCase
   end
 end
 
+class TestAXLogAXCall < MiniTest::Unit::TestCase
+  def setup; super; AX.log.level = Logger::DEBUG; end
+  def teardown; AX.log.level = Logger::WARN; end
+  def test_code_is_returned
+    assert_equal KAXErrorIllegalArgument, AX.log_ax_call(AX::DOCK.ref, KAXErrorIllegalArgument)
+    assert_equal KAXErrorAPIDisabled, AX.log_ax_call(AX::DOCK.ref, KAXErrorAPIDisabled)
+    assert_equal KAXErrorSuccess, AX.log_ax_call(AX::DOCK.ref, KAXErrorSuccess)
+  end
+  def test_logs_nothing_for_success_case
+    AX.log_ax_call(AX::DOCK.ref, KAXErrorSuccess)
+    assert_empty @log_output.string
+  end
+  def test_looks_up_code_properly
+    AX.log_ax_call(AX::DOCK.ref, KAXErrorAPIDisabled)
+    assert_match /API Disabled/, @log_output.string
+    AX.log_ax_call(AX::DOCK.ref, KAXErrorNotImplemented)
+    assert_match /Not Implemented/, @log_output.string
+  end
+end
+
 class TestAXSYSTEM < MiniTest::Unit::TestCase
   def test_is_the_system_wide_object
     assert_instance_of AX::SystemWide, AX::SYSTEM
