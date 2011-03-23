@@ -70,7 +70,7 @@ module AX
     def element_at_position point
       element = Pointer.new( '^{__AXUIElement}' )
       code = AXUIElementCopyElementAtPosition( SYSTEM.ref, point.x, point.y, element )
-      log_ax_call(SYSTEM.ref, code)
+      log_ax_call SYSTEM.ref, code
       element_attribute element[0]
     end
 
@@ -93,7 +93,7 @@ module AX
     def attrs_of_element element
       array_ptr = Pointer.new( '^{__CFArray}' )
       code = AXUIElementCopyAttributeNames( element, array_ptr )
-      log_ax_call(element, code)
+      log_ax_call element, code
       array_ptr[0]
     end
 
@@ -102,7 +102,7 @@ module AX
     def actions_of_element element
       array_ptr = Pointer.new( '^{__CFArray}' )
       code = AXUIElementCopyActionNames( element, array_ptr )
-      log_ax_call(element, code)
+      log_ax_call element, code
       array_ptr[0]
     end
 
@@ -268,9 +268,9 @@ module AX
   SYSTEM = element_attribute AXUIElementCreateSystemWide()
 
   # @return [AX::Application] the Mac OS X dock application
-  DOCK = Application.application_with_bundle_identifier( 'com.apple.dock' )
+  DOCK = Application.application_with_bundle_identifier 'com.apple.dock'
 
   # @return [AX::Application] the Mac OS X Finder application
-  FINDER = Application.application_with_bundle_identifier( 'com.apple.finder' )
+  FINDER = Application.application_with_bundle_identifier 'com.apple.finder'
 
 end
