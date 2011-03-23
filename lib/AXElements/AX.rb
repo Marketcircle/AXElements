@@ -164,8 +164,8 @@ module AX
     def log_ax_call element, code
       return code if code.zero?
       message = AXError[code] || 'UNKNOWN ERROR CODE'
-      log.warn "[#{message} (#{code})] while trying #{caller}"
-      log.info "Available attrs/actions were: #{attrs_of_element(element)} #{actions_of_element(element)}"
+      log.warn "[#{message} (#{code})] while trying #{caller[0]}"
+      log.info "Available attrs/actions were:\n#{attrs_of_element(element)}\n#{actions_of_element(element)}"
       log.debug "Backtrace: #{caller.description}"
       code
     end
