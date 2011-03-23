@@ -1,14 +1,14 @@
-class TestAXAccessibilityPrefix < MiniTest::Unit::TestCase
+class TestAXPrefix < MiniTest::Unit::TestCase
   def test_removes_ax_prefix
-    ret = 'AXButton'.sub(AX.accessibility_prefix) { $1 }
+    ret = 'AXButton'.sub(AX.prefix) { $1 }
     assert_equal 'Button', ret
   end
   def test_removes_other_prefxexs
-    ret = 'MCButton'.sub(AX.accessibility_prefix) { $1 }
+    ret = 'MCButton'.sub(AX.prefix) { $1 }
     assert_equal 'Button', ret
   end
   def test_removes_combination_prefixes
-    ret = 'AXMCButton'.sub(AX.accessibility_prefix) { $1 }
+    ret = 'AXMCButton'.sub(AX.prefix) { $1 }
     assert_equal 'Button', ret
   end
 end

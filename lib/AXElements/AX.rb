@@ -3,7 +3,7 @@ module AX
   class << self
 
     # @return [Regexp]
-    attr_reader :accessibility_prefix
+    attr_reader :prefix
 
     # @param [AXUIElementRef] element
     # @param [String] attr an attribute constant
@@ -254,7 +254,7 @@ module AX
 
   ### Initialize various constants and instance variables
 
-  @accessibility_prefix = /[A-Z]+([A-Z][a-z])/
+  @prefix = /[A-Z]+([A-Z][a-z])/
 
   # @return [AX::SystemWide]
   SYSTEM = element_attribute AXUIElementCreateSystemWide()

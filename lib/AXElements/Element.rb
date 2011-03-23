@@ -152,7 +152,7 @@ class Element
   # Method is overriden to produce cleaner output.
   def inspect
     nice_methods = (attributes + actions).map { |name|
-      name.sub(AX.accessibility_prefix) { $1 }
+      name.sub(AX.prefix) { $1 }
     }
     "\#<#{self.class} @methods=#{nice_methods}>"
   end
