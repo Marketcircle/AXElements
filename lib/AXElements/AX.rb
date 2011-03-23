@@ -10,7 +10,7 @@ module AX
     def raw_attr_of_element element, attr
       ptr  = Pointer.new(:id)
       code = AXUIElementCopyAttributeValue( element, attr, ptr )
-      log_ax_call(element, code)
+      log_ax_call element, code
       ptr[0]
     end
 
@@ -31,17 +31,9 @@ module AX
     # useful.
     #
     # @param [AXUIElementRef] element
-
-    ##
-    # Like {#const_get} except that if the class does not exist yet then
-    # it will create the class for you. If not used carefully, you could end
-    # up creating a bunch of useless, possibly harmful, classes at run time.
-    #
-    # @param [#to_sym] const the value you want as a constant
-    # @return [Class] a reference to the class being looked up
-    def new_const_get const
-      return const_get(const) if const_defined?(const)
-      create_ax_class(const)
+    # @param [String] attr an attribute constant
+    def attr_of_element element, attr
+      process_ax_data( raw_attr_of_element(element, attr) )
     end
 
     ##
@@ -52,23 +44,8 @@ module AX
     # @param [#to_s] const
     # @return [Class,nil] the class if it exists, else returns nil
     def plural_const_get const
-      const = const.to_s.chomp('s')
-      return const_get(const) if const_defined?(const)
-      nil
-    end
-
-    ##
-    # Creates new class at run time and puts it into the {AX} namespace.
-    # This method is called for each type of UI element that has not yet been
-    # explicitly defined to define them at runtime.
-    #
-    # @param [#to_sym] class_name
-    # @return [Class]
-    def create_ax_class class_name
-      klass = Class.new(Element) {
-        AX.log.debug "#{class_name} class created"
-      }
-      const_set( class_name, klass )
+      const = const.to_s.chomp 's'
+      return const_get const if const_defined? const
     end
 
     ##
@@ -173,24 +150,31 @@ module AX
     }
 
     ##
-    # Take a point that uses the bottom left of the screen as the origin
-    # and returns a point that uses the top left of the screen as the
-    # origin.
+    # Creates new class at run time and puts it into the {AX} namespace.
+    # This method is called for each type of UI element that has not yet been
+    # explicitly defined to define them at runtime.
     #
-    # @param [CGPoint] point screen position in Cocoa screen coordinates
-    # @return [CGPoint]
-    def carbon_point_from_cocoa_point point
-      carbon_point = nil
-      NSScreen.screens.each { |screen|
-        if NSPointInRect(point, screen.frame)
-          height       = screen.frame.size.height
-          carbon_point = CGPoint.new( point.x, (height - point.y - 1) )
-        end
+    # @param [#to_sym] class_name
+    # @return [Class]
+    def create_ax_class class_name
+      klass = Class.new(Element) {
+        AX.log.debug "#{class_name} class created"
       }
-      carbon_point
+      const_set( class_name, klass )
     end
 
     ##
+    # Like {#const_get} except that if the class does not exist yet then
+    # it will create the class for you. If not used carefully, it could end
+    # up creating a bunch of useless, possibly harmful, classes at run time.
+    #
+    # @param [#to_sym] const the value you want as a constant
+    # @return [Class] a reference to the class being looked up
+    def new_const_get const
+      return const_get const if const_defined? const
+      create_ax_class const
+    end
+
     ##
     # Mapping low level type ID numbers to methods to massage useful
     # objects from data.
@@ -255,6 +239,25 @@ module AX
       AXValueGetValue( value, box_type, ptr )
       ptr[0]
     end
+
+    ##
+    # Take a point that uses the bottom left of the screen as the origin
+    # and returns a point that uses the top left of the screen as the
+    # origin.
+    #
+    # @param [CGPoint] point screen position in Cocoa screen coordinates
+    # @return [CGPoint]
+    def carbon_point_from_cocoa_point point
+      carbon_point = nil
+      NSScreen.screens.each { |screen|
+        if NSPointInRect(point, screen.frame)
+          height       = screen.frame.size.height
+          carbon_point = CGPoint.new( point.x, (height - point.y - 1) )
+        end
+      }
+      carbon_point
+    end
+
   end
 
   ### Initialize various constants and instance variables

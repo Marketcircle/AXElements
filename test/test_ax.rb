@@ -50,16 +50,35 @@ class TestAXProcessAXData < MiniTest::Unit::TestCase
     ret = AX.process_ax_data(mb)
     assert_instance_of AX::MenuBar, ret
   end
-class TestAXNewConstGet < MiniTest::Unit::TestCase
-  def test_returns_class_even_when_class_does_not_exist_yet
-    assert_equal AX::Element, AX.new_const_get( :Element )
-    assert_equal 'AX::RazzleDazzle', AX.new_const_get( :RazzleDazzle ).to_s
+  def test_works_with_array_of_elements
+    ret = AX.raw_attr_of_element(AX::DOCK.ref, KAXChildrenAttribute).first
+    assert_kind_of AX::Element, AX.process_ax_data(ret)
   end
-  def test_creates_classes_if_they_do_not_exist
-    refute AX.constants.include?( :MadeUpName )
-    AX.new_const_get( :MadeUpName )
-    assert AX.constants.include?( :MadeUpName )
-    assert_instance_of Class, AX::MadeUpName
+  # @todo this type takes a few steps to get to
+  #  def test_works_with_a_number
+  #  end
+  # @todo this type exists in the documentation but is not easy to find
+  #  def test_works_with_array_of_numbers
+  #  end
+  def test_works_with_a_size
+    menu_bar = AX.raw_attr_of_element(AX::FINDER.ref, KAXMenuBarAttribute)
+    ret = AX.raw_attr_of_element(menu_bar, KAXSizeAttribute)
+    assert_instance_of CGSize, AX.process_ax_data(ret)
+  end
+  def test_works_with_a_point
+    menu_bar = AX.raw_attr_of_element(AX::FINDER.ref, KAXMenuBarAttribute)
+    ret = AX.raw_attr_of_element(menu_bar, KAXPositionAttribute)
+    assert_instance_of CGPoint, AX.process_ax_data(ret)
+  end
+  # @todo this type takes a few steps to get to
+  # def test_works_with_a_range
+  # end
+  # @todo this type takes a few steps to get to
+  # def test_works_with_a_rect
+  # end
+  def test_works_with_strings
+    ret = AX.raw_attr_of_element(AX::DOCK.ref, KAXTitleAttribute)
+    assert_kind_of NSString, AX.process_ax_data(ret)
   end
 end
 
@@ -72,20 +91,6 @@ class TestAXPluralConstGet < MiniTest::Unit::TestCase
   end
   def test_returns_nil_if_the_class_does_not_exist
     assert_nil AX.plural_const_get( 'NonExistant' )
-  end
-end
-
-class TestAXCreateAXClass < MiniTest::Unit::TestCase
-  def test_returns_constant
-    assert_equal 'AX::HeyHeyHey', AX.create_ax_class( :HeyHeyHey ).to_s
-  end
-  def test_creates_classes_in_the_ax_namespace
-    AX.create_ax_class( :AnotherTestClass )
-    assert AX.constants.include?( :AnotherTestClass )
-  end
-  def test_makes_new_classes_a_subclass_of_ax_element
-    AX.create_ax_class( :RoflCopter )
-    assert AX::RoflCopter.ancestors.include?(AX::Element)
   end
 end
 
