@@ -24,7 +24,7 @@ module AX
       ret = raw_attr_of_element(element, attr)
       return if ret.nil?
       id  = ATTR_MASSAGERS[CFGetTypeID(ret)]
-      id  ? self.send(id,ret) : ret
+      id  ? self.send(id, ret) : ret
     end
 
     ##

@@ -13,6 +13,58 @@ class TestAXAccessibilityPrefix < MiniTest::Unit::TestCase
   end
 end
 
+class TestAXRawAttrOfElement < MiniTest::Unit::TestCase
+  def test_returns_raw_values
+    ret = AX.raw_attr_of_element(AX::DOCK.ref, KAXChildrenAttribute)
+    assert CFGetTypeID(ret) == CFArrayGetTypeID()
+  end
+  def test_returns_nil_for_non_existant_attributes
+    AX.log.level = Logger::DEBUG
+    assert_nil AX.raw_attr_of_element(AX::DOCK.ref, 'MADEUPATTRIBUTE')
+    AX.log.level = Logger::WARN
+    assert_match /#{KAXErrorAttributeUnsupported}/, @log_output.string
+  end
+end
+
+class TestAXAttrOfElement < MiniTest::Unit::TestCase
+  def test_works_with_nil_values
+    assert_nil AX.attr_of_element(AX::DOCK.ref, KAXFocusedUIElementAttribute)
+  end
+  def test_works_with_boolean_false
+    ret = AX.attr_of_element(AX::DOCK.ref, 'AXEnhancedUserInterface')
+    assert_equal false, ret
+  end
+  def test_works_with_elements
+    ret = AX.attr_of_element(AX::FINDER.ref, KAXMenuBarAttribute)
+    assert_kind_of AX::Element, ret
+  end
+  def test_works_with_array_of_elements
+    ret = AX.attr_of_element(AX::DOCK.ref, KAXChildrenAttribute).first
+    assert_kind_of AX::Element, ret
+  end
+# @todo this type exists in the documentation but is not easy to find
+#  def test_works_with_array_of_numbers
+#  end
+  def test_works_with_boxed_types
+    menu_bar = AX.attr_of_element(AX::FINDER.ref, KAXMenuBarAttribute)
+    ret = AX.attr_of_element(menu_bar.ref, KAXSizeAttribute)
+    assert_instance_of CGSize, ret
+  end
+  def test_works_with_strings
+    assert_kind_of NSString, AX.attr_of_element(AX::DOCK.ref, KAXTitleAttribute)
+  end
+# @todo this type takes a few steps to get to
+#  def test_works_with_numbers
+#  end
+end
+
+class TestAXElementAttribute < MiniTest::Unit::TestCase
+  def test_menu_bar_returns_menu_bar_object
+    mb  = AX.raw_attr_of_element(AX::FINDER.ref, KAXMenuBarAttribute)
+    ret = AX.element_attribute(mb)
+    assert_instance_of AX::MenuBar, ret
+  end
+end
 class TestAXNewConstGet < MiniTest::Unit::TestCase
   def test_returns_class_even_when_class_does_not_exist_yet
     assert_equal AX::Element, AX.new_const_get( :Element )
