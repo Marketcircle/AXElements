@@ -27,44 +27,29 @@ class TestAXRawAttrOfElement < MiniTest::Unit::TestCase
 end
 
 class TestAXAttrOfElement < MiniTest::Unit::TestCase
-  def test_works_with_nil_values
-    assert_nil AX.attr_of_element(AX::DOCK.ref, KAXFocusedUIElementAttribute)
+  def test_does_not_return_raw_values
+    ret = AX.attr_of_element(AX::DOCK.ref, KAXChildrenAttribute)
+    assert_kind_of AX::Element, ret.first
   end
-  def test_works_with_boolean_false
-    ret = AX.attr_of_element(AX::DOCK.ref, 'AXEnhancedUserInterface')
-    assert_equal false, ret
-  end
-  def test_works_with_elements
-    ret = AX.attr_of_element(AX::FINDER.ref, KAXMenuBarAttribute)
-    assert_kind_of AX::Element, ret
-  end
-  def test_works_with_array_of_elements
-    ret = AX.attr_of_element(AX::DOCK.ref, KAXChildrenAttribute).first
-    assert_kind_of AX::Element, ret
-  end
-# @todo this type exists in the documentation but is not easy to find
-#  def test_works_with_array_of_numbers
-#  end
-  def test_works_with_boxed_types
-    menu_bar = AX.attr_of_element(AX::FINDER.ref, KAXMenuBarAttribute)
-    ret = AX.attr_of_element(menu_bar.ref, KAXSizeAttribute)
-    assert_instance_of CGSize, ret
-  end
-  def test_works_with_strings
-    assert_kind_of NSString, AX.attr_of_element(AX::DOCK.ref, KAXTitleAttribute)
-  end
-# @todo this type takes a few steps to get to
-#  def test_works_with_numbers
-#  end
 end
 
-class TestAXElementAttribute < MiniTest::Unit::TestCase
-  def test_menu_bar_returns_menu_bar_object
+class TestAXProcessAXData < MiniTest::Unit::TestCase
+  def test_works_with_nil_values
+    ret = AX.raw_attr_of_element(AX::DOCK.ref, KAXFocusedUIElementAttribute)
+    assert_nil AX.process_ax_data(ret)
+  end
+  def test_works_with_boolean_false
+    ret = AX.raw_attr_of_element(AX::DOCK.ref, 'AXEnhancedUserInterface')
+    assert_equal false, AX.process_ax_data(ret)
+  end
+  # @todo
+  # def test_works_with_boolean_true
+  # end
+  def test_works_with_a_new_element
     mb  = AX.raw_attr_of_element(AX::FINDER.ref, KAXMenuBarAttribute)
-    ret = AX.element_attribute(mb)
+    ret = AX.process_ax_data(mb)
     assert_instance_of AX::MenuBar, ret
   end
-end
 class TestAXNewConstGet < MiniTest::Unit::TestCase
   def test_returns_class_even_when_class_does_not_exist_yet
     assert_equal AX::Element, AX.new_const_get( :Element )

@@ -40,7 +40,7 @@ class Application < AX::Element
     # @param [Fixnum] pid The process identifier for the application you want
     # @return [AX::Application]
     def self.application_for_pid pid
-      AX.element_attribute( AXUIElementCreateApplication(pid) )
+      AX.process_ax_data( AXUIElementCreateApplication(pid) )
     end
 
 

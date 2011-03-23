@@ -14,7 +14,7 @@ class Element
   # @param [Object] refcon some context object that you can pass around
   def notif_method observer, element, notif, refcon
     if @notif_proc
-      wrapped_element = AX.element_attribute(element)
+      wrapped_element = AX.process_ax_data(element)
       @notif_proc.call( wrapped_element, notif )
       @notif_proc     = nil
     end

@@ -15,45 +15,22 @@ module AX
     end
 
     ##
-    # Call {#raw_attr_of_element} and perform extra processing
-    # to make sure the returned data is wrapped properly.
+    # Takes a return value from {#raw_attr_of_element} and, if required,
+    # converts the data to something more usable.
     #
-    # @param [AXUIElementRef] element
-    # @param [String] attr an attribute constant
-    def attr_of_element element, attr
-      ret = raw_attr_of_element(element, attr)
-      return if ret.nil?
-      id  = ATTR_MASSAGERS[CFGetTypeID(ret)]
-      id  ? self.send(id, ret) : ret
+    # Generally, used to process an AXValue into a CGPoint or an
+    # AXUIElementRef into some kind of AX::Element object.
+    def process_ax_data value
+      return if value.nil?
+      id  = ATTR_MASSAGERS[CFGetTypeID(value)]
+      id  ? self.send(id, value) : value
     end
 
     ##
-    # Takes an AXUIElementRef and gives you some kind of accessibility object.
+    # Fetch the data from an attribute and process it into something
+    # useful.
     #
     # @param [AXUIElementRef] element
-    # @return [Element]
-    def element_attribute element
-      klass = class_name(element).sub(@accessibility_prefix) { $1 }
-      new_const_get(klass).new(element)
-    end
-
-    # @return [Array,nil]
-    def array_attribute value
-      if value.empty? || (ATTR_MASSAGERS[CFGetTypeID(value.first)] == 1)
-        value
-      else
-        value.map { |element| element_attribute(element) }
-      end
-    end
-
-    # @return [Boxed,nil]
-    def boxed_attribute value
-      return nil unless value
-      box = AXValueGetType( value )
-      ptr = Pointer.new( AXBoxType[box].type )
-      AXValueGetValue( value, box, ptr )
-      ptr[0]
-    end
 
     ##
     # Like {#const_get} except that if the class does not exist yet then
@@ -174,23 +151,6 @@ module AX
     private
 
     ##
-    # Mapping low level type ID numbers to methods to massage useful
-    # objects from data.
-    #
-    # @return [Array<Symbol>]
-    ATTR_MASSAGERS = []
-    ATTR_MASSAGERS[AXUIElementGetTypeID()] = :element_attribute
-    ATTR_MASSAGERS[CFArrayGetTypeID()]     = :array_attribute
-    ATTR_MASSAGERS[AXValueGetTypeID()]     = :boxed_attribute
-
-    ##
-    # This array is order-sensitive, which is why there is a
-    # nil object at index 0.
-    #
-    # @return [Class,nil]
-    AXBoxType = [ nil, CGPoint, CGSize, CGRect, CFRange ]
-
-    ##
     # A mapping of the AXError constants to human readable strings.
     #
     # @return [Hash{Fixnum=>String}]
@@ -231,6 +191,17 @@ module AX
     end
 
     ##
+    ##
+    # Mapping low level type ID numbers to methods to massage useful
+    # objects from data.
+    #
+    # @return [Array<Symbol>]
+    ATTR_MASSAGERS = []
+    ATTR_MASSAGERS[AXUIElementGetTypeID()] = :element_attribute
+    ATTR_MASSAGERS[CFArrayGetTypeID()]     = :array_attribute
+    ATTR_MASSAGERS[AXValueGetTypeID()]     = :boxed_attribute
+
+    ##
     # Figures out what the name of the class of an element should be.
     # We have to be careful, because some things claim to have a subrole
     # but return nil.
@@ -250,6 +221,40 @@ module AX
       }
     end
 
+    ##
+    # Takes an AXUIElementRef and gives you some kind of accessibility object.
+    #
+    # @param [AXUIElementRef] element
+    # @return [Element]
+    def element_attribute element
+      klass = class_name(element).sub(@prefix) { $1 }
+      new_const_get(klass).new(element)
+    end
+
+    ##
+    # @todo Consider mapping in all cases to avoid returning a CFArray
+    #
+    # @return [Array,nil]
+    def array_attribute vals
+      return vals if vals.empty? || (ATTR_MASSAGERS[CFGetTypeID(vals.first)] == 1)
+      vals.map { |val| element_attribute val }
+    end
+
+    ##
+    # This array is order-sensitive, which is why there is a
+    # nil object at index 0.
+    #
+    # @return [Class,nil]
+    AXBoxType = [ nil, CGPoint, CGSize, CGRect, CFRange ]
+
+    # @return [Boxed,nil]
+    def boxed_attribute value
+      return unless value
+      box_type = AXValueGetType( value )
+      ptr      = Pointer.new( AXBoxType[box_type].type )
+      AXValueGetValue( value, box_type, ptr )
+      ptr[0]
+    end
   end
 
   ### Initialize various constants and instance variables
