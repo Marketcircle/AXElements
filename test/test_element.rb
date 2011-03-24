@@ -52,7 +52,7 @@ class TestAXElementRespondTo < MiniTest::Unit::TestCase
   end
 
   def test_works_for_regular_methods
-    assert AX::DOCK.respond_to?(:ref)
+    assert AX::DOCK.respond_to?(:attributes)
   end
 
   def test_returns_false_for_non_existant_methods

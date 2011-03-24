@@ -16,9 +16,6 @@ class Element
   # @return [Array<String>] cache of available actions
   attr_reader :actions
 
-  # @return [AXUIElementRef] the low level object reference
-  attr_reader :ref
-
   # @param [AXUIElementRef] element
   def initialize element
     @ref        = element

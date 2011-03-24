@@ -69,8 +69,9 @@ module AX
     # @return [AX::Element]
     def element_at_position point
       element = Pointer.new( '^{__AXUIElement}' )
-      code = AXUIElementCopyElementAtPosition( SYSTEM.ref, point.x, point.y, element )
-      log_ax_call SYSTEM.ref, code
+      system  = AXUIElementCreateSystemWide()
+      code = AXUIElementCopyElementAtPosition( system, point.x, point.y, element )
+      log_ax_call system, code
       element_attribute element[0]
     end
 

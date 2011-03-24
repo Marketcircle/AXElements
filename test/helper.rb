@@ -11,6 +11,16 @@ $init_output = StringIO.new
 AX.log = Logger.new $init_output
 
 class MiniTest::Unit::TestCase
+  class << self
+    def pid_for_app name
+      apps = NSWorkspace.sharedWorkspace.runningApplications
+      apps.find { |app| app.localizedName == name }.processIdentifier
+    end
+  end
+
+  DOCK   = AXUIElementCreateApplication(pid_for_app 'Dock')
+  FINDER = AXUIElementCreateApplication(pid_for_app 'Finder')
+
   def setup
     @log_output = StringIO.new
     AX.log = Logger.new @log_output

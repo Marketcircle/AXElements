@@ -15,12 +15,12 @@ end
 
 class TestAXRawAttrOfElement < MiniTest::Unit::TestCase
   def test_returns_raw_values
-    ret = AX.raw_attr_of_element(AX::DOCK.ref, KAXChildrenAttribute)
+    ret = AX.raw_attr_of_element(DOCK, KAXChildrenAttribute)
     assert CFGetTypeID(ret) == CFArrayGetTypeID()
   end
   def test_returns_nil_for_non_existant_attributes
     AX.log.level = Logger::DEBUG
-    assert_nil AX.raw_attr_of_element(AX::DOCK.ref, 'MADEUPATTRIBUTE')
+    assert_nil AX.raw_attr_of_element(DOCK, 'MADEUPATTRIBUTE')
     AX.log.level = Logger::WARN
     assert_match /#{KAXErrorAttributeUnsupported}/, @log_output.string
   end
@@ -28,30 +28,30 @@ end
 
 class TestAXAttrOfElement < MiniTest::Unit::TestCase
   def test_does_not_return_raw_values
-    ret = AX.attr_of_element(AX::DOCK.ref, KAXChildrenAttribute)
+    ret = AX.attr_of_element(DOCK, KAXChildrenAttribute)
     assert_kind_of AX::Element, ret.first
   end
 end
 
 class TestAXProcessAXData < MiniTest::Unit::TestCase
   def test_works_with_nil_values
-    ret = AX.raw_attr_of_element(AX::DOCK.ref, KAXFocusedUIElementAttribute)
+    ret = AX.raw_attr_of_element(DOCK, KAXFocusedUIElementAttribute)
     assert_nil AX.process_ax_data(ret)
   end
   def test_works_with_boolean_false
-    ret = AX.raw_attr_of_element(AX::DOCK.ref, 'AXEnhancedUserInterface')
+    ret = AX.raw_attr_of_element(DOCK, 'AXEnhancedUserInterface')
     assert_equal false, AX.process_ax_data(ret)
   end
   # @todo
   # def test_works_with_boolean_true
   # end
   def test_works_with_a_new_element
-    mb  = AX.raw_attr_of_element(AX::FINDER.ref, KAXMenuBarAttribute)
+    mb  = AX.raw_attr_of_element(FINDER, KAXMenuBarAttribute)
     ret = AX.process_ax_data(mb)
     assert_instance_of AX::MenuBar, ret
   end
   def test_works_with_array_of_elements
-    ret = AX.raw_attr_of_element(AX::DOCK.ref, KAXChildrenAttribute).first
+    ret = AX.raw_attr_of_element(DOCK, KAXChildrenAttribute).first
     assert_kind_of AX::Element, AX.process_ax_data(ret)
   end
   # @todo this type takes a few steps to get to
@@ -61,12 +61,12 @@ class TestAXProcessAXData < MiniTest::Unit::TestCase
   #  def test_works_with_array_of_numbers
   #  end
   def test_works_with_a_size
-    menu_bar = AX.raw_attr_of_element(AX::FINDER.ref, KAXMenuBarAttribute)
-    ret = AX.raw_attr_of_element(menu_bar, KAXSizeAttribute)
+    mb  = AX.raw_attr_of_element(FINDER, KAXMenuBarAttribute)
+    ret = AX.raw_attr_of_element(mb, KAXSizeAttribute)
     assert_instance_of CGSize, AX.process_ax_data(ret)
   end
   def test_works_with_a_point
-    menu_bar = AX.raw_attr_of_element(AX::FINDER.ref, KAXMenuBarAttribute)
+    menu_bar = AX.raw_attr_of_element(FINDER, KAXMenuBarAttribute)
     ret = AX.raw_attr_of_element(menu_bar, KAXPositionAttribute)
     assert_instance_of CGPoint, AX.process_ax_data(ret)
   end
@@ -77,7 +77,7 @@ class TestAXProcessAXData < MiniTest::Unit::TestCase
   # def test_works_with_a_rect
   # end
   def test_works_with_strings
-    ret = AX.raw_attr_of_element(AX::DOCK.ref, KAXTitleAttribute)
+    ret = AX.raw_attr_of_element(DOCK, KAXTitleAttribute)
     assert_kind_of NSString, AX.process_ax_data(ret)
   end
 end
@@ -126,7 +126,7 @@ class TestAXHierarchy < MiniTest::Unit::TestCase
 end
 
 class TestAXAttrsOfElement < MiniTest::Unit::TestCase
-  def setup; @attrs = AX.attrs_of_element(AX::DOCK.ref); end
+  def setup; @attrs = AX.attrs_of_element(DOCK); end
   def test_returns_array_of_strings
     assert_instance_of String, @attrs.first
   end
@@ -139,14 +139,17 @@ end
 
 class TestAXActionsOfElement < MiniTest::Unit::TestCase
   def test_works_when_there_are_no_actions
-    assert_empty AX.actions_of_element(AX::DOCK.ref)
+    assert_empty AX.actions_of_element(DOCK)
   end
   def test_returns_array_of_strings
-    actions = AX.actions_of_element(AX::DOCK.application_dock_item.ref)
-    assert_instance_of String, actions.first
+    list = AX.raw_attr_of_element(DOCK,KAXChildrenAttribute).first
+    app  = AX.raw_attr_of_element(list,KAXChildrenAttribute).first
+    assert_instance_of String, AX.actions_of_element(app).first
   end
   def test_make_sure_certain_actions_are_present
-    actions = AX.actions_of_element(AX::DOCK.application_dock_item.ref)
+    list = AX.raw_attr_of_element(DOCK,KAXChildrenAttribute).first
+    app  = AX.raw_attr_of_element(list,KAXChildrenAttribute).first
+    actions = AX.actions_of_element(app)
     assert actions.include?(KAXPressAction)
     assert actions.include?(KAXShowMenuAction)
   end
@@ -156,18 +159,18 @@ class TestAXLogAXCall < MiniTest::Unit::TestCase
   def setup; super; AX.log.level = Logger::DEBUG; end
   def teardown; AX.log.level = Logger::WARN; end
   def test_code_is_returned
-    assert_equal KAXErrorIllegalArgument, AX.log_ax_call(AX::DOCK.ref, KAXErrorIllegalArgument)
-    assert_equal KAXErrorAPIDisabled, AX.log_ax_call(AX::DOCK.ref, KAXErrorAPIDisabled)
-    assert_equal KAXErrorSuccess, AX.log_ax_call(AX::DOCK.ref, KAXErrorSuccess)
+    assert_equal KAXErrorIllegalArgument, AX.log_ax_call(DOCK, KAXErrorIllegalArgument)
+    assert_equal KAXErrorAPIDisabled, AX.log_ax_call(DOCK, KAXErrorAPIDisabled)
+    assert_equal KAXErrorSuccess, AX.log_ax_call(DOCK, KAXErrorSuccess)
   end
   def test_logs_nothing_for_success_case
-    AX.log_ax_call(AX::DOCK.ref, KAXErrorSuccess)
+    AX.log_ax_call(DOCK, KAXErrorSuccess)
     assert_empty @log_output.string
   end
   def test_looks_up_code_properly
-    AX.log_ax_call(AX::DOCK.ref, KAXErrorAPIDisabled)
+    AX.log_ax_call(DOCK, KAXErrorAPIDisabled)
     assert_match /API Disabled/, @log_output.string
-    AX.log_ax_call(AX::DOCK.ref, KAXErrorNotImplemented)
+    AX.log_ax_call(DOCK, KAXErrorNotImplemented)
     assert_match /Not Implemented/, @log_output.string
   end
 end
