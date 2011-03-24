@@ -4,11 +4,8 @@ class TestNSArrayMethodMissing < MiniTest::Unit::TestCase
   def test_delegates_up_if_array_is_not_composed_of_elements
     assert_raises NoMethodError do [1,2].title_ui_element end
   end
-
-  def test_actions_are_executed
-    skip 'This test is too invasive, need to find another way or add a test option'
-  end
-
+  #  def test_actions_are_executed
+  #  end
   def test_not_plural_not_predicate
     refute_empty ELEMENTS.url.compact
   end

@@ -12,10 +12,8 @@ class TestAXElementMethodMissing < MiniTest::Unit::TestCase
   def test_finds_attributes
     assert_equal 'Dock', AX::DOCK.title
   end
-
-  def test_finds_actions
-    skip 'This test is too invasive, need to find another way or add a test option'
-  end
+  # def test_finds_actions
+  # end
 end
 
 class TestAXElementAttributeWritable < MiniTest::Unit::TestCase
