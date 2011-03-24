@@ -22,8 +22,8 @@ module AX
     # AXUIElementRef into some kind of AX::Element object.
     def process_ax_data value
       return if value.nil?
-      id  = ATTR_MASSAGERS[CFGetTypeID(value)]
-      id  ? self.send(id, value) : value
+      id = ATTR_MASSAGERS[CFGetTypeID(value)]
+      id ? self.send(id, value) : value
     end
 
     ##
