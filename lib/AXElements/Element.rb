@@ -61,7 +61,7 @@ class Element
 
   ##
   # Focus an element on the screen, if possible.
-  def get_focus
+  def set_focus
     raise NoMethodError unless attributes.include?(KAXFocusedAttribute)
     self.set_attribute(KAXFocusedAttribute, true)
   end
@@ -166,8 +166,8 @@ class Element
   def respond_to? name
     pattern = matcher(name)
     return true if (attributes + actions).find { |meth| meth.match(pattern) }
-    return attributes.include?(KAXFocusedAttribute) if name == :get_focus
     return attributes.include?(KAXValueAttribute)   if name == :value=
+    return attributes.include?(KAXFocusedAttribute) if name == :set_focus
     super
   end
 

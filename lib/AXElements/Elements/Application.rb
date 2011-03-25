@@ -65,11 +65,11 @@ class Application < AX::Element
   # @todo This method needs a fall back procedure if the app does not
   #       have a dock icon
   #
-  # The inherited {Element#get_focus} will not work for applications,
+  # The inherited {Element#set_focus} will not work for applications,
   # so we will just get focus by "clicking" the dock icon for the app.
   #
   # @return [Boolean] true if successful, otherwise unpredictable
-  def get_focus
+  def set_focus
     AX::DOCK.list.application_dock_item(title: title).press
   end
 
@@ -79,7 +79,7 @@ class Application < AX::Element
   #
   # A macro for showing the About window for an app
   def show_about_window
-    self.get_focus
+    self.set_focus
     self.menu_bar_item(title:(self.title)).press
     self.menu_bar.menu_item(title: "About #{self.title}").press
   end
