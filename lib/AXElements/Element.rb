@@ -67,6 +67,10 @@ class Element
   end
 
   ##
+  # @todo move this down to method_missing by generalizing all setter
+  #       cases by looking for a trailing =, which delegates to #set_attr
+  #       and then set attr has to check writability
+  #
   # Set the value of an element that has a value, such as a text box or
   # a slider. You need to be weary of the type that the value is expected
   # to be.
