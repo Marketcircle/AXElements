@@ -42,7 +42,7 @@ class Element
       raise ArgumentError, "#{attr} is not an attribute of this #{self.class}"
     end
     code = AXUIElementIsAttributeSettable( @ref, method_name, ptr )
-    log_ax_call(@ref, code)
+    AX.log_ax_call @ref, code
     ptr[0]
   end
 
@@ -85,7 +85,7 @@ class Element
   # @return [Boolean] true if successful
   def perform_action action_name
     code = AXUIElementPerformAction( @ref, action_name )
-    log_ax_call( @ref, code ) == 0
+    AX.log_ax_call( @ref, code ) == 0
   end
 
   ##
