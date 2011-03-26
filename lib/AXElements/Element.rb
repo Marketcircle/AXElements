@@ -195,20 +195,19 @@ class Element
     /#{name.to_s.gsub(/_|\?$/, '')}$/i
   end
 
+  def attribute_for       sym; constant_for sym, attributes;       end
+  def action_for          sym; constant_for sym, actions;          end
+
+  ##
+  # Match a symbol/string as a suffix of an action constant
   # @return [String,nil]
-  def attribute_for_symbol sym
+  def constant_for sym, array
     pattern = matcher(sym)
-    matches = attributes.find_all { |attr| attr.match(pattern) }
+    matches = array.find_all { |const| const.match(pattern) }
     unless matches.empty?
       matches.sort_by(&:length) if matches.size > 1
       matches.first
     end
-  end
-
-  # @return [String,nil]
-  def action_for_symbol sym
-    pattern = matcher(sym)
-    actions.find { |action| action.match(pattern) }
   end
 
 end
