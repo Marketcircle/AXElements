@@ -47,6 +47,17 @@ class Element
   end
 
   ##
+
+  ##
+  # @todo merge this into other places once I understand it more,
+  #       right now it would just add a lot of overhead
+  def get_param_attribute attr, param
+    @param_attrs ||= AX.param_attrs_of_element(@ref)
+    raise NoMethodError, "#{self.class} has no paramterized attrs" unless @param_attrs
+    raise ArgumentError, "#{attr} not found" unless @param_attrs.include? attr
+    return AX.param_attr_of_element( @ref, attr, param )
+  end
+
   # Like the {#perform_action} method, we cannot make any assumptions
   # about the state of the program after you have set a value; at
   # least not in the general case.

@@ -19,6 +19,15 @@ module AX
       ptr[0]
     end
 
+    # @param [AXUIElementRef] element
+    # @param [String] attr an attribute constant
+    def raw_param_attr_of_element element, attr, param
+      ptr  = Pointer.new(:id)
+      code = AXUIElementCopyParameterizedAttributeValue( element, attr, param, ptr )
+      log_ax_call element, code
+      ptr[0]
+    end
+
     ##
     # Takes a return value from {#raw_attr_of_element} and, if required,
     # converts the data to something more usable.
@@ -39,6 +48,16 @@ module AX
     # @param [String] attr an attribute constant
     def attr_of_element element, attr
       process_ax_data raw_attr_of_element(element, attr)
+    end
+
+    ##
+    # Fetch the data from a parameterized attribute and process it into
+    # something useful.
+    #
+    # @param [AXUIElementRef] element
+    # @param [String] attr an attribute constant
+    def param_attr_of_element element, attr, param
+      process_ax_data raw_param_attr_of_element(element, attr, param)
     end
 
     ##
@@ -99,6 +118,15 @@ module AX
     def attrs_of_element element
       array_ptr = Pointer.new( '^{__CFArray}' )
       code = AXUIElementCopyAttributeNames( element, array_ptr )
+      log_ax_call element, code
+      array_ptr[0]
+    end
+
+    # @param [AXUIElementRef] element low level accessibility object
+    # @return [Array<String>]
+    def param_attrs_of_element element
+      array_ptr = Pointer.new( '^{__CFArray}' )
+      code = AXUIElementCopyParameterizedAttributeNames( element, array_ptr )
       log_ax_call element, code
       array_ptr[0]
     end
