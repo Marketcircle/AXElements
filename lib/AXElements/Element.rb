@@ -42,6 +42,13 @@ class Element
   end
 
   ##
+  # @todo should we check existence to be nice?
+  #
+  # @param attr an attribute constant
+  def get_attribute attr
+#    raise ArgumentError, "#{attr} not found" unless attributes.include? attr
+    AX.attr_of_element( @ref, attr )
+  end
 
   ##
   # @todo merge this into other places once I understand it more,
