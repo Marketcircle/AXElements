@@ -32,16 +32,11 @@ class Element
   def get_attribute attr
     AX.attr_of_element(@ref, attr)
   end
-
-  ##
-  # @param [Symbol] attr
-  # @return [Boolean]
+  # @param attr an attribute constant
   def attribute_writable? attr
+    raise ArgumentError, "#{attr} not found" unless attributes.include? attr
     ptr  = Pointer.new('B')
-    unless method_name = attribute_for_symbol(attr)
-      raise ArgumentError, "#{attr} is not an attribute of this #{self.class}"
-    end
-    code = AXUIElementIsAttributeSettable( @ref, method_name, ptr )
+    code = AXUIElementIsAttributeSettable( @ref, attr, ptr )
     AX.log_ax_call @ref, code
     ptr[0]
   end
