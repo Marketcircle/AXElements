@@ -85,15 +85,6 @@ class Element
   #       on attributes and objects; verification will be left to testing
   #       suites
   #
-  # Set the value of an element that has a value, such as a text box or
-  # a slider. You need to be weary of the type that the value is expected
-  # to be.
-  def value= val
-    raise NoMethodError unless attributes.include?(KAXFocusedAttribute)
-    self.set_attribute(KAXValueAttribute, val)
-  end
-
-  ##
   # Ideally this method would return a reference to `self`, but since
   # this method inherently causes state change, the reference to `self`
   # may no longer be valid. An example of this would be pressing the
@@ -127,8 +118,10 @@ class Element
   # @example Contrived multi-element search with filtering
   #  window.buttons(title:'New Project', enabled?:true)
   def method_missing method, *args
-    attr = attribute_for_symbol(method)
-    return self.get_attribute(attr) if attr
+    set  = method.to_s.chomp! '='
+    attr = attribute_for method
+    return set_attribute(attr, args.first) if set && attr
+    return get_attribute(attr)             if attr
 
     action = action_for_symbol(method)
     return self.perform_action(action) if action
@@ -173,6 +166,8 @@ class Element
   end
 
   ##
+  # @todo respond appropriately for setter type methods
+  #
   # This helps a bit with regards to the dynamic attribute and action
   # lookups, but will return false on potential search names.
   #
@@ -180,7 +175,6 @@ class Element
   def respond_to? name
     pattern = matcher(name)
     return true if (attributes + actions).find { |meth| meth.match(pattern) }
-    return attributes.include?(KAXValueAttribute)   if name == :value=
     return attributes.include?(KAXFocusedAttribute) if name == :set_focus
     super
   end
