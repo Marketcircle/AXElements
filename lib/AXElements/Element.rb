@@ -28,10 +28,6 @@ class Element
     @pid ||= ( ptr = Pointer.new 'i' ; AXUIElementGetPid( @ref, ptr ) ; ptr[0] )
   end
 
-  # @param [String] attr an attribute constant
-  def get_attribute attr
-    AX.attr_of_element(@ref, attr)
-  end
   # @param attr an attribute constant
   def attribute_writable? attr
     raise ArgumentError, "#{attr} not found" unless attributes.include? attr
@@ -60,6 +56,7 @@ class Element
     return AX.param_attr_of_element( @ref, attr, param )
   end
 
+  ##
   # Like the {#perform_action} method, we cannot make any assumptions
   # about the state of the program after you have set a value; at
   # least not in the general case.
@@ -67,6 +64,7 @@ class Element
   # @param [String] attr an attribute constant
   # @return the value that you set is returned
   def set_attribute attr, value
+    raise ArgumentError, "#{attr} not writable" unless attribute_writable? attr
     code = AXUIElementSetAttributeValue( @ref, attr, value )
     AX.log_ax_call @ref, code
     value
@@ -75,8 +73,7 @@ class Element
   ##
   # Focus an element on the screen, if possible.
   def set_focus
-    raise NoMethodError unless attributes.include?(KAXFocusedAttribute)
-    self.set_attribute(KAXFocusedAttribute, true)
+    set_attribute KAXFocusedAttribute, true
   end
 
   ##
@@ -92,15 +89,16 @@ class Element
   # may no longer be valid. An example of this would be pressing the
   # close button on a window.
   #
-  # @param [String] action_name an action constant
+  # @param [String] name an action constant
   # @return [Boolean] true if successful
-  def perform_action action_name
-    code = AXUIElementPerformAction( @ref, action_name )
+  def perform_action name
+    raise ArgumentError, "#{name} not found" unless actions.include?(name)
+    code = AXUIElementPerformAction( @ref, name )
     AX.log_ax_call( @ref, code ) == 0
   end
 
   ##
-  # We use {#method missing} to dynamically handle requests to, in the
+  # We use {#method_missing} to dynamically handle requests to, in the
   # following order, lookup attributes, perform actions, or search for
   # elements in the view hierarchy.
   #
@@ -125,28 +123,29 @@ class Element
     return set_attribute(attr, args.first) if set && attr
     return get_attribute(attr)             if attr
 
-    action = action_for_symbol(method)
-    return self.perform_action(action) if action
+    action = action_for method
+    return perform_action(action) if action
 
-    if attributes.index(KAXChildrenAttribute)
-      return self.search(method, args.first)
-    end
-
+    return search(method, args.first) if attributes.include? KAXChildrenAttribute
     super
   end
 
   ##
-  # Needed to override inherited {Kernel#raise} so that the raise action works,
-  # but in such a way that the original {#raise} also works.
+  # @todo moving dynamic action calls out of the class will fix this
+  # @todo what about when raise is an action and we want to raise an error?
+  #
+  # Needed to override inherited {Kernel#raise} so that the raise action
+  # works, but in such a way that the original {#raise} also works.
   def raise *args
-    self.method_missing(:raise) || super
+    super unless actions.include? KAXRaiseAction
+    perform_action KAXRaiseAction
   end
 
   ##
   # Needed to override inherited NSObject#description. If you want a
   # description of the object try using {#inspect}.
   def description
-    self.method_missing(:description)
+    self.method_missing :description
   end
 
   ##
@@ -180,6 +179,12 @@ class Element
     return attributes.include?(KAXFocusedAttribute) if name == :set_focus
     super
   end
+
+  ##
+  # @todo implement this method
+  # def methods
+  #   super
+  # end
 
 
   protected
