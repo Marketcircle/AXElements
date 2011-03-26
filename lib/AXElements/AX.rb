@@ -33,7 +33,7 @@ module AX
     # @param [AXUIElementRef] element
     # @param [String] attr an attribute constant
     def attr_of_element element, attr
-      process_ax_data( raw_attr_of_element(element, attr) )
+      process_ax_data raw_attr_of_element(element, attr)
     end
 
     ##
