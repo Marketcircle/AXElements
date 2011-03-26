@@ -1,4 +1,4 @@
-class TestAXElement < MinitTest::Unit::TestCase
+class TestAXElement < MiniTest::Unit::TestCase
   def test_can_search
     assert AX::Element.instance_methods.include?(:search)
   end
