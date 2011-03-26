@@ -43,7 +43,7 @@ module ArrayAXElementExtensions
 end
 
 
-# Monkey patches on top of Array
+# Monkey patches on top of NSArray
 class NSArray
   include ArrayAXElementExtensions
 end
