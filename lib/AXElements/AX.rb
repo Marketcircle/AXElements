@@ -5,6 +5,11 @@ module AX
     # @return [Regexp]
     attr_reader :prefix
 
+    ##
+    # @todo AXUIElementCopyMultipleAttributeValues could be used
+    #       to speed up access if we turn the second argument into
+    #       a vararg
+    #
     # @param [AXUIElementRef] element
     # @param [String] attr an attribute constant
     def raw_attr_of_element element, attr

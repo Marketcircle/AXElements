@@ -67,9 +67,12 @@ class Element
   end
 
   ##
-  # @todo move this down to method_missing by generalizing all setter
-  #       cases by looking for a trailing =, which delegates to #set_attr
-  #       and then set attr has to check writability
+  # @todo Actions and attribute setters should be the first step in
+  #       making a DSL; that way the responsibility of {#method_missing}
+  #       can be reduced to information retrieval (attributes.searching),
+  #       and the DSL will be centered around calling actions and setters
+  #       on attributes and objects; verification will be left to testing
+  #       suites
   #
   # Set the value of an element that has a value, such as a text box or
   # a slider. You need to be weary of the type that the value is expected
