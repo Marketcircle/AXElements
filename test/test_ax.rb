@@ -26,12 +26,22 @@ class TestAXRawAttrOfElement < MiniTest::Unit::TestCase
   end
 end
 
+# @todo this is a bit too invasive
+# class TestAXRawParamAttrOfElement < MiniTest::Unit::TestCase
+# end
+
 class TestAXAttrOfElement < MiniTest::Unit::TestCase
   def test_does_not_return_raw_values
     ret = AX.attr_of_element(DOCK, KAXChildrenAttribute)
     assert_kind_of AX::Element, ret.first
   end
 end
+
+# @todo this is a bit too invasive
+# class TestAXAttrOfElement < MiniTest::Unit::TestCase
+#   def test_does_not_return_raw_values
+#   end
+# end
 
 class TestAXProcessAXData < MiniTest::Unit::TestCase
   def test_works_with_nil_values
@@ -136,6 +146,14 @@ class TestAXAttrsOfElement < MiniTest::Unit::TestCase
     assert @attrs.include?(KAXTitleAttribute)
   end
 end
+
+# @todo this requires me to be more invasive
+# class TestAXParamAttrsOfElement < MiniTest::Unit::TestCase
+#   def test_returns_array_if_element_has_param_attributes
+#   end
+#   def test_make_sure_certain_attributes_are_present
+#   end
+# end
 
 class TestAXActionsOfElement < MiniTest::Unit::TestCase
   def test_works_when_there_are_no_actions

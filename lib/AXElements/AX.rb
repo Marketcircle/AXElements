@@ -123,7 +123,8 @@ module AX
     end
 
     # @param [AXUIElementRef] element low level accessibility object
-    # @return [Array<String>]
+    # @return [Array<String>,nil] nil if the element has no
+    #   parameterized attributes
     def param_attrs_of_element element
       array_ptr = Pointer.new( '^{__CFArray}' )
       code = AXUIElementCopyParameterizedAttributeNames( element, array_ptr )
