@@ -32,23 +32,16 @@ end
 ###
 # Gem stuff
 
-def build_gem(spec_name)
-  require 'rubygems/builder'
-  spec = Gem::Specification.load(spec_name)
-  Gem::Builder.new(spec).build
-end
+require 'rubygems'
+require 'rubygems/builder'
+require 'rubygems/installer'
+spec = Gem::Specification.load('AXElements.gemspec')
 
 desc 'Build the gem'
-task :build do
-  build_gem 'AXElements.gemspec'
-end
+task :build do Gem::Builder.new(spec).build end
 
 desc 'Build the gem and install it'
-task :install => [:build] do
-  gem_name = build_gem 'AXElements.gemspec'
-  sh "gem install #{gem_name}"
-end
-
+task :install => :build do Gem::Installer.new(spec.file_name).install end
 
 ###
 # Documentation
