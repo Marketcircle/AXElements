@@ -15,19 +15,12 @@ task :clean do
   end
 end
 
-###
-# Test
-
 require 'rake/testtask'
 Rake::TestTask.new do |t|
   t.libs << 'test'
   t.pattern = 'test/**/*.rb'
   t.verbose = true
 end
-
-
-###
-# Gem stuff
 
 require 'rubygems'
 require 'rubygems/builder'
@@ -40,16 +33,10 @@ task :build do Gem::Builder.new(spec).build end
 desc 'Build the gem and install it'
 task :install => :build do Gem::Installer.new(spec.file_name).install end
 
-###
-# Documentation
-
-# require 'rubygems'
 # require 'yard'
 # YARD::Rake::YardocTask.new
 
-# namespace :yard do
-#   desc 'Generate Graphviz object graph'
-#   task :garden do
-#     sh 'yard graph --full --dependencies --dot="-Tpng:quartz" -f docs/images/AX.png'
-#   end
+# desc 'Generate Graphviz object graph'
+# task :garden do
+#   sh 'yard graph --full --dependencies --dot="-Tpng:quartz" -f docs/images/AX.png'
 # end
