@@ -6,9 +6,6 @@ Rake::CompileTask.new do |t|
   t.files = FileList["lib/**/*.rb"]
   t.verbose = true
 end
-Rake::CompileTask.new(:compile_deps) do |t|
-  t.files = FileList["vendor/**/*.rb"]
-end
 
 desc 'Clean MacRuby binaries'
 task :clean do
