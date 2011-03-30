@@ -283,14 +283,12 @@ module AX
     # @param [CGPoint] point screen position in Cocoa screen coordinates
     # @return [CGPoint]
     def carbon_point_from_cocoa_point point
-      carbon_point = nil
       NSScreen.screens.each { |screen|
         if NSPointInRect(point, screen.frame)
-          height       = screen.frame.size.height
-          carbon_point = CGPoint.new( point.x, (height - point.y - 1) )
+          height = screen.frame.size.height
+          return CGPoint.new( point.x, (height - point.y - 1) )
         end
       }
-      carbon_point
     end
 
   end
