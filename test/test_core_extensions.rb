@@ -40,16 +40,19 @@ class TestNSMutableStringCamelizeBang < MiniTest::Unit::TestCase
 end
 
 class TestNSMutableStringPredicate < MiniTest::Unit::TestCase
-  def test_predicate_returns_true_if_string_ends_with_a_question_mark
+  def test_true_if_string_ends_with_a_question_mark
     assert 'test?'.predicate?
   end
-  def test_predicate_returns_false_if_the_string_does_not_end_with_a_question_mark
-    refute 'test'.predicate?
+  def test_false_if_the_string_does_not_end_with_a_question_mark
     refute 'tes?t'.predicate?
     refute 'te?st'.predicate?
     refute 't?est'.predicate?
     refute '?test'.predicate?
   end
+  def test_false_if_the_string_has_no_question_mark
+    refute 'test'.predicate?
+  end
+end
 
 class TestCGPointCarbonizeBang < MiniTest::Unit::TestCase
   def test_origin_in_cocoa_is_bottom_left_in_carbon
