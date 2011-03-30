@@ -89,6 +89,8 @@ class TestAXElementMethodMissing < MiniTest::Unit::TestCase
   # end
   # def test_does_not_search_if_no_kids
   # end
+  # def bench_attribute_lookup_is_linear
+  # end
 end
 
 class TestAXElementRaise < MiniTest::Unit::TestCase

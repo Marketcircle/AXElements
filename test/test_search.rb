@@ -17,3 +17,9 @@ class TestAXElementSearch < MiniTest::Unit::TestCase
     assert_instance_of AX::List, ret.first
   end
 end
+
+# @todo test #search
+# is breadth first
+# plural works
+# singular works
+# assert performance
