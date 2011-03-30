@@ -77,8 +77,7 @@ module AX
     #
     # @return [AX::Element]
     def element_under_mouse
-      mouse_point = carbon_point_from_cocoa_point(NSEvent.mouseLocation)
-      element_at_position mouse_point
+      element_at_position NSEvent.mouseLocation.carbonize!
     end
 
     ##
@@ -273,22 +272,6 @@ module AX
       ptr      = Pointer.new( AXBoxType[box_type].type )
       AXValueGetValue( value, box_type, ptr )
       ptr[0]
-    end
-
-    ##
-    # Take a point that uses the bottom left of the screen as the origin
-    # and returns a point that uses the top left of the screen as the
-    # origin.
-    #
-    # @param [CGPoint] point screen position in Cocoa screen coordinates
-    # @return [CGPoint]
-    def carbon_point_from_cocoa_point point
-      NSScreen.screens.each { |screen|
-        if NSPointInRect(point, screen.frame)
-          height = screen.frame.size.height
-          return CGPoint.new( point.x, (height - point.y - 1) )
-        end
-      }
     end
 
   end

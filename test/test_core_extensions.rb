@@ -50,4 +50,33 @@ class TestNSMutableStringPredicate < MiniTest::Unit::TestCase
     refute 't?est'.predicate?
     refute '?test'.predicate?
   end
+
+class TestCGPointCarbonizeBang < MiniTest::Unit::TestCase
+  def test_origin_in_cocoa_is_bottom_left_in_carbon
+    point = CGPointZero.dup.carbonize!
+    assert_equal NSScreen.mainScreen.frame.size.height, point.y
+  end
+  # @todo is this test too naively implemented?
+  def test_middle_of_screen_is_still_middle_of_screen
+    frame = NSScreen.mainScreen.frame
+    point = frame.origin
+    point.x = frame.size.width / 2
+    point.y = frame.size.height / 2
+    assert_equal point, point.dup.carbonize!
+  end
+  # @todo this test needs to be broken up
+  def test_works_when_point_is_on_a_secondary_screen
+    skip 'You need a second monitor for this test' if NSScreen.screens.size < 2
+    main_screen_width = NSScreen.mainScreen.frame.size.width
+    NSScreen.screens.each { |screen|
+      if screen.frame.origin.x >= main_screen_width || screen.frame.origin.x < 0
+        point = CGPoint.new(screen.frame.origin.x,0).carbonize!
+        assert_equal screen.frame.size.height, point.y
+      end
+      if screen.frame.origin.y < 0
+        point = CGPoint.new(0,screen.frame.origin.y).carbonize!
+        assert_equal screen.frame.size.height, point.y
+      end
+    }
+  end
 end

@@ -74,3 +74,28 @@ class NSMutableString
   end
 
 end
+
+
+class CGPoint
+
+  ##
+  # Assumes the point represents something on the screen with the origin
+  # in the bottom left and then translates the point to be in the same
+  # place on screen if the origin were in the top left.
+  #
+  # This method will return nil if the co-ordinates cannot be translated.
+  #
+  # @param [CGPoint] point screen position in Cocoa screen coordinates
+  # @return [CGPoint,nil]
+  def carbonize!
+    NSScreen.screens.each { |screen|
+      if NSPointInRect(self, screen.frame)
+        self.y = screen.frame.size.height - self.y
+        return self
+      end
+    }
+  end
+  alias_method :carbon!,    :carbonize!
+  alias_method :carbonify!, :carbonize!
+
+end
