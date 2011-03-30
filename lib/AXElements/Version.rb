@@ -6,7 +6,7 @@ require   'logger'
 # The module should NEVER return something from the lower levels.
 # To help with this, the module includes a few handy methods.
 module AX
-  VERSION   = '0.2.1'
+  VERSION   = '0.3.0'
   CODE_NAME = 'Tiger Blood'
 
   class << self
