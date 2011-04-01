@@ -7,18 +7,6 @@ require   'AXElements/CoreExtensions'
 # @todo Random background movements (for a truer simulation)
 module Mouse
 
-  FPS     = 120.0
-  QUANTUM = Rational(1.0,FPS)
-
-  def current_position
-    NSEvent.mouseLocation.carbonize!
-  end
-
-  def post event
-    CGEventPost( KCGHIDEventTap, event )
-    sleep QUANTUM
-  end
-
   def move_to point, duration = 0.2
     current = current_position
     steps = (FPS * duration).floor
@@ -81,6 +69,13 @@ module Mouse
 
 
   private
+
+  FPS     = 120
+  QUANTUM = Rational(1, FPS)
+
+  def current_position
+    NSEvent.mouseLocation.carbonize!
+  end
 
   def left_cilck_down point
     post mouse_event( KCGEventLeftMouseDown, point, KCGMouseButtonLeft )
