@@ -4,7 +4,8 @@ require   'AXElements/CoreExtensions'
 ##
 # @todo Add inertial scrolling abilities
 # @todo Bezier paths for movements
-# @todo Random background movements (for a truer simulation)
+# @todo Random background movements
+# @todo Less discrimination against left handed people
 module Mouse
 
   def move_to point, duration = 0.2
@@ -57,11 +58,19 @@ module Mouse
     end
   end
 
+  ##
+  # Left click, defaults to clicking at the current position.
+  #
+  # @param [CGPoint] point
   def click point = current_position
     left_click_down point
     left_click_up   point
   end
 
+  ##
+  # Right click, defaults to clicking at the current position.
+  #
+  # @param [CGPoint] point
   def right_click point = current_position
     right_click_down point
     right_click_up   point
