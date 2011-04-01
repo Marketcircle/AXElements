@@ -86,6 +86,15 @@ module Mouse
     NSEvent.mouseLocation.carbonize!
   end
 
+  def mouse_event action, point, object
+    CGEventCreateMouseEvent( nil, action, point, object )
+  end
+
+  def post event
+    CGEventPost( KCGHIDEventTap, event )
+    sleep QUANTUM
+  end
+
   def left_cilck_down point
     post mouse_event( KCGEventLeftMouseDown, point, KCGMouseButtonLeft )
   end
@@ -100,8 +109,11 @@ module Mouse
     post mouse_event( KCGEventRightMouseUp,   point, KCGMouseButtonRight )
   end
 
-  def mouse_event action, point, object
-    CGEventCreateMouseEvent(nil,action,point,object)
+  def click_down button, point
+    post mouse_event( KCGEventOtherMouseDown, point, button )
+  end
+  def click_up button, point
+    post mouse_event( KCGEventOtherMouseUp,   point, button )
   end
 
 end
