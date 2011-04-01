@@ -69,4 +69,25 @@ module Mouse
     end
   end
 
+
+  private
+
+  def left_cilck_down point
+    post mouse_event( KCGEventLeftMouseDown, point, KCGMouseButtonLeft )
+  end
+  def left_click_up point
+    post mouse_event( KCGEventLeftMouseUp,   point, KCGMouseButtonLeft )
+  end
+
+  def right_click_down point
+    post mouse_event( KCGEventRightMouseDown, point, KCGMouseButtonRight )
+  end
+  def right_click_up point
+    post mouse_event( KCGEventRightMouseUp,   point, KCGMouseButtonRight )
+  end
+
+  def mouse_event action, point, object
+    CGEventCreateMouseEvent(nil,action,point,object)
+  end
+
 end
