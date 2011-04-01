@@ -37,7 +37,7 @@ module Mouse
   # Ideally this can be abbreviated to #left_mouse_down, #drag, #left_mouse_up
   def drag_to point, duration
     current = current_position
-    post CGEventCreateMouseEvent(nil,KCGEventLeftMouseDown,current,KCGMouseButtonLeft)
+    left_click_down(current)
     steps = (FPS * duration).floor
     xstep = ((point.x - current.x) / steps)
     ystep = ((point.y - current.y) / steps)
@@ -48,7 +48,7 @@ module Mouse
     end
     $stderr.puts 'Not moving anywhere' if current == point
     post CGEventCreateMouseEvent(nil,KCGEventLeftMouseDragged,point,KCGMouseButtonLeft)
-    post CGEventCreateMouseEvent(nil,KCGEventLeftMouseUp,point,KCGMouseButtonLeft)
+    left_click_up(point)
   end
 
   ##
@@ -67,6 +67,16 @@ module Mouse
       post CGEventCreateScrollWheelEvent(nil,units,1,scroll)
       current += (scroll.to_f)/amount
     end
+  end
+
+  def click point = current_position
+    left_click_down point
+    left_click_up   point
+  end
+
+  def right_click point = current_position
+    right_click_down point
+    right_click_up   point
   end
 
 
