@@ -37,12 +37,6 @@ class TestAXAttrOfElement < MiniTest::Unit::TestCase
   end
 end
 
-# @todo this is a bit too invasive
-# class TestAXAttrOfElement < MiniTest::Unit::TestCase
-#   def test_does_not_return_raw_values
-#   end
-# end
-
 class TestAXProcessAXData < MiniTest::Unit::TestCase
   def test_works_with_nil_values
     ret = AX.raw_attr_of_element(DOCK, KAXFocusedUIElementAttribute)
