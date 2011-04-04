@@ -1,8 +1,6 @@
 module AX
 class Element
 
-  # @group Porcelain
-
   ##
   # @todo allow regex matching when filtering string attributes
   # @todo decide whether plural or singular search before entering
@@ -68,8 +66,6 @@ class Element
     return search_results if element_type.to_s[-1] == 's'
     return search_results.first
   end
-
-  # @endgroup
 
 end
 end
