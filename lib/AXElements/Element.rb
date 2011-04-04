@@ -10,18 +10,19 @@ module AX
 # The abstract base class for all accessibility objects.
 class Element
 
-  # @return [Array<String>] cache of available attributes
-  attr_reader :attributes
-
-  # @return [Array<String>] cache of available actions
-  attr_reader :actions
-
   # @param [AXUIElementRef] element
   def initialize element
-    @ref        = element
-    @attributes = AX.attrs_of_element(element)
-    @actions    = AX.actions_of_element(element)
+    @ref = element
   end
+
+  # @return [Array<String>] cache of available attributes
+  def attributes; @attributes ||= AX.attrs_of_element(@ref); end
+
+  # @return [Array<String>] cache of available actions
+  def actions; @actions ||= AX.actions_of_element(@ref); end
+
+  # @return [Array<String>] cache of available actions
+  def param_attributes;  @param_attributes ||= AX.param_attrs_of_element(@ref); end
 
   # @return [Fixnum]
   def pid
@@ -50,7 +51,6 @@ class Element
   # @todo merge this into other places once I understand it more,
   #       right now it would just add a lot of overhead
   def get_param_attribute attr, param
-    @param_attrs ||= AX.param_attrs_of_element(@ref)
     raise NoMethodError, "#{self.class} has no paramterized attrs" unless @param_attrs
     raise ArgumentError, "#{attr} not found" unless @param_attrs.include? attr
     return AX.param_attr_of_element( @ref, attr, param )
