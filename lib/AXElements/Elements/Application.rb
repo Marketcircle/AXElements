@@ -60,7 +60,7 @@ class Application < AX::Element
   #
   # @return [Boolean] true if successful, otherwise unpredictable
   def set_focus
-    AX::DOCK.list.application_dock_item(title: title).press
+    AX::DOCK.application_dock_item(title: title).perform_action(:press)
   end
 
   ##
