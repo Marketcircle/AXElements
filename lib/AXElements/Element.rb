@@ -86,12 +86,11 @@ class Element
   ##
   # @todo search param attributes?
   #
-  ##
   # We use {#method_missing} to dynamically handle requests to, in the
-  # following order, lookup attributes, perform actions, or search for
-  # elements in the view hierarchy.
+  # following order, lookup attributes, or search for elements in the
+  # view hierarchy.
   #
-  # Failing all three lookups, this method calls `super`.
+  # Failing both lookups, this method calls `super`.
   #
   # @example Attribute lookup of an element
   #  mail   = AX::Application.application_with_bundle_identifier 'com.apple.mail'
@@ -107,38 +106,23 @@ class Element
   # @example Contrived multi-element search with filtering
   #  window.buttons(title:'New Project', enabled?:true)
   def method_missing method, *args
-    set  = method.to_s.chomp! '='
     attr = attribute_for method
-    return set_attribute(attr, args.first) if set && attr
-    return get_attribute(attr)             if attr
-
-    action = action_for method
-    return perform_action(action) if action
-
-    return search(method, args.first) if attributes.include? KAXChildrenAttribute
+    return AX.attr_of_element(@ref, attr) if attr
+    return search(method, args.first) if attributes.include?(KAXChildrenAttribute)
     super
   end
 
   ##
-  # @todo moving dynamic action calls out of the class will fix this
-  # @todo what about when raise is an action and we want to raise an error?
-  #
-  # Needed to override inherited {Kernel#raise} so that the raise action
-  # works, but in such a way that the original {#raise} also works.
-  def raise *args
-    super unless actions.include? KAXRaiseAction
-    perform_action KAXRaiseAction
+  # Overriden to produce cleaner output.
+  def inspect
+    nice_methods = attributes.map { |name|
+      name.sub(AX.prefix) { $1 }
+    }
+    "\#<#{self.class} @methods=#{nice_methods}>"
   end
 
   ##
-  # Needed to override inherited NSObject#description. If you want a
-  # description of the object try using {#inspect}.
-  def description
-    self.method_missing :description
-  end
-
-  ##
-  # @todo finish this method
+  # @todo FINISH THIS METHOD
   #
   # A more expensive {#inspect} where we actually look up the
   # values for each attribute and format the output nicely.
@@ -147,33 +131,22 @@ class Element
   end
 
   ##
-  # Method is overriden to produce cleaner output.
-  def inspect
-    nice_methods = (attributes + actions).map { |name|
-      name.sub(AX.prefix) { $1 }
-    }
-    "\#<#{self.class} @methods=#{nice_methods}>"
-  end
-
-  ##
-  # @todo respond appropriately for setter type methods
-  #
-  # This helps a bit with regards to the dynamic attribute and action
-  # lookups, but will return false on potential search names.
-  #
-  # @param [Symbol] name
+  # Overriden to respond properly with regards to the dynamic
+  # attribute lookups, but will return false on potential
+  # search names.
   def respond_to? name
     pattern = matcher(name)
-    return true if (attributes + actions).find { |meth| meth.match(pattern) }
-    return attributes.include?(KAXFocusedAttribute) if name == :set_focus
+    return true if attributes.find { |meth| meth.match(pattern) }
     super
   end
 
   ##
-  # @todo implement this method
-  # def methods
-  #   super
-  # end
+  # @todo FINISH THIS METHOD
+  #
+  # Like {#respond_to?}, this is overriden to include attribute methods.
+  def methods include_super = false, include_objc_super = false
+    super
+  end
 
 
   protected
