@@ -24,7 +24,7 @@ class Element
 
   # @return [Fixnum]
   def pid
-    @pid ||= ( ptr = Pointer.new 'i' ; AXUIElementGetPid( @ref, ptr ) ; ptr[0] )
+    @pid ||= AX.pid_of_element( @ref )
   end
 
   # @param [Symbol] attr

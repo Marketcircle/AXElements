@@ -154,6 +154,19 @@ module AX
     end
 
 
+    ##
+    # Get the PID of the application that an element belongs to.
+    #
+    # @param [AXUIElementRef] element
+    # @return [Fixnum]
+    def pid_of_element element
+      ptr  = Pointer.new 'i'
+      code = AXUIElementGetPid( @ref, ptr )
+      log_ax_call element, code
+      ptr[0]
+    end
+
+
     private
 
     ##
