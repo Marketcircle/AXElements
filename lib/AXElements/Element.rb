@@ -195,8 +195,9 @@ class Element
     /#{name.to_s.gsub(/_|\?$/, '')}$/i
   end
 
-  def attribute_for       sym; constant_for sym, attributes;       end
-  def action_for          sym; constant_for sym, actions;          end
+  def attribute_for sym;       constant_for sym, attributes;       end
+  def action_for sym;          constant_for sym, actions;          end
+  def param_attribute_for sym; constant_for sym, param_attributes; end
 
   ##
   # Match a symbol/string as a suffix of an action constant
