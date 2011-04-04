@@ -1,4 +1,3 @@
-require 'AXElements/Element/Searching'
 require 'AXElements/Element/Notifications'
 
 module AX
@@ -81,6 +80,49 @@ class Element
   # description of the object try using {#inspect}.
   def description
     self.method_missing :description
+  end
+
+  ##
+  # @todo allow regex matching when filtering string attributes
+  # @todo decide whether plural or singular search before entering
+  #       the main loop
+  # @todo make search much faster by not wrapping child classes
+  # @todo refactor searching, perhaps make an iterator
+  #
+  # Perform a breadth first search through the view hierarchy rooted at
+  # the current element.
+  #
+  # See the documentation page [Searching](file/Searching.markdown)
+  # on the details of how to search.
+  #
+  # @example Find the dock item for the Finder app
+  #  AX::DOCK.search( :application_dock_item, title: 'Finder' )
+  #
+  # @param [Symbol,String] element_type
+  # @param [Hash{Symbol=>Object}] filters
+  # @return [AX::Element,nil,Array<AX::Element>,Array<>]
+  def search element_type, filters = {}
+    element_type   = element_type.to_s
+    class_const    = element_type.camelize!
+    elements       = AX.attr_of_element(@ref, KAXChildrenAttribute)
+    search_results = []
+
+    until elements.empty?
+      element          = elements.shift
+      primary_filter ||= AX.plural_const_get(class_const)
+
+      if element.attributes.include?(KAXChildrenAttribute)
+        elements.concat( element.get_attribute :children )
+      end
+
+      next unless element.class == primary_filter
+      next if filters.find { |filter,value| element.send(filter) != value }
+
+      return element unless element_type[-1] == 's'
+      search_results << element
+    end
+
+    element_type[-1] == 's' ? search_results : nil
   end
 
   ##
