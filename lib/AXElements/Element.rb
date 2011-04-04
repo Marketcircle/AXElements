@@ -1,6 +1,5 @@
 require 'AXElements/Element/Searching'
 require 'AXElements/Element/Notifications'
-require 'AXElements/Element/Clicking'
 
 module AX
 
