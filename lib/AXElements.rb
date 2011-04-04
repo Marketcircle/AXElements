@@ -16,6 +16,7 @@ end
 
 require 'AXElements/Version'
 require 'AXElements/CoreExtensions'
+require 'AXElements/Actions'
 require 'AXElements/Element'
 require 'AXElements/Elements/Application'
 require 'AXElements/AX'
