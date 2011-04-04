@@ -74,6 +74,11 @@ class Application < AX::Element
     self.menu_bar.menu_item(title: "About #{self.title}").press
   end
 
+  def set_attribute attr, value
+    set_focus if attr == :focused
+    super
+  end
+
   ##
   # Create and return a notification observer for the object's application.
   # This method is almost never directly called, it is instead called by
