@@ -15,23 +15,51 @@ module AX
       process_ax_data raw_attr_of_element(element, attr)
     end
 
-    # @param [AXUIElementRef] element
-    end
-
     ##
+    # Preform an action on an element.
     #
+    # @param [AXUIElementRef] element
+    # @param [String] action an action constant
+    # @return [Boolean] true if successful
+    def perform_action_of_element element, action
+      code = AXUIElementPerformAction( @ref, name )
+      log_ax_call( @ref, code ) == 0
     end
 
     ##
+    # Fetch the data from a parameterized attribute and process it into
+    # something useful.
     #
     # @param [AXUIElementRef] element
     # @param [String] attr an attribute constant
+    def param_attr_of_element element, attr, param
+      process_ax_data raw_param_attr_of_element(element, attr, param)
     end
 
     ##
+    # Check if an attribute of an element is writable.
     #
     # @param [AXUIElementRef] element
     # @param [String] attr an attribute constant
+    def attr_of_element_writable? element, attr
+      ptr  = Pointer.new('B')
+      code = AXUIElementIsAttributeSettable( element, attr, ptr )
+      log_ax_call element, code
+      ptr[0]
+    end
+
+    ##
+    # Set the value of an attribute. This method does not check
+    # if the attribute is writable.
+    #
+    # @param [AXUIElementRef] element
+    # @param [String] attr an attribute constant
+    # @param [Object] value the new value to set on the attribute
+    # @return [Object] returns the value that was set
+    def set_attr_of_element element, attr, value
+      code = AXUIElementSetAttributeValue( element, attr, value )
+      log_ax_call element, code
+      value
     end
 
     ##
