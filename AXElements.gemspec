@@ -9,10 +9,11 @@ Gem::Specification.new do |s|
   s.rubygems_version          = Gem::VERSION
   s.requirements              = ['BridgeSupport Preview 3']
 
-  s.summary       = 'An abstraction on top of the Mac OS X Accessibility APIs'
+  s.summary       = 'A DSL for automating GUI manipulation'
   s.description   = <<-EOS
-Takes advantage of the new Bridge Support in Mac OS X Lion to build an object
-oriented framework from the low level CoreFoundation API for accessibility.
+AXElements is a DSL abstraction on top of the Mac OS X Accessibility Framework
+that allows code to be written in a very natural and declarative style that
+describes user interactions.
   EOS
   s.authors       = ['Mark Rada']
   s.email         = 'mrada@marketcircle.com'

@@ -1,24 +1,53 @@
 AXElements
 ===================
 
-AXElements is an abstraction layer on top of the Mac OS X
-Accessibility Framework that makes it behave in an object oriented
-manner.
+AXElements is a DSL abstraction built on top of the Mac OS X
+Accessibility Framework that allows code to be written in a very
+natural and declarative style that describes user interactions.
 
-The framework is optimized for writing tests that require some level
-of automatic GUI manipulation, whether it be  finding controls on the
-screen, typing, clicking, or the various other ways in which a user
-can interact with the computer.
+The framework is optimized for writing tests that require automatic
+GUI manipulation, whether it be  finding controls on the screen,
+typing, clicking, or the various other ways in which a user can
+interact with the computer.
+
 
 Getting Started
 ===============
 
+Though it is not required, it would be beneficial to first read
+Apple's
+[Accessibility Overview](http://developer.apple.com/library/mac/#documentation/Accessibility/Conceptual/AccessibilityMacOSX/OSXAXModel/OSXAXmodel.html).
+
 The entry point to using this framework is the accessibility object,
-which is a descendant of the {AX::Element} class, such as the
+which is always descendant of the {AX::Element} class, such as the
 {AX::Application} class.
-The first thing you need to do is get a reference to the existing
+
+There are a few ways to get a reference to an accessibility object:
+* Start with a constant
+* Create a new accessibility object representing an application
+* Get the accessibility object at an arbitrary point on the screen
+* Get the accessibility object under the mouse
 
 ![Class Diagram](images/AX.png)
+
+The most common way to start is by creating a new object that
+represents an application.
+
+    AX::Application.application_with_bundle_identifier 'com.apple.mail'
+
+
+Concepts
+========
+
+The important thing to note from the previous section is the idea of
+changing state and then verifying it.
+
+Mouse Stuff
+===========
+
+All the different ways in which you can click on an object. See
+[Mouse Events](./MouseEvents.markdown) for more detailed documentation
+on how to manipulate the mouse.
 
 Tools
 =====
