@@ -41,19 +41,23 @@ module Mouse
   end
 
   ##
+  # @todo Need to double check to see if I introduce any inaccuracies.
+  #
   # Scrolling too much or too little in a period of time will cause the
-  # animation to look weird.
+  # animation to look weird, possibly causing the app to mess things up.
   #
-  # Needs to support an additional argument for units (lines or pixels).
-  #
-  # Amount should be positive to scroll up or negative to scroll down.
-  def scroll amount, duration = 0.2, units = KCGScrollEventUnitLine
+  # @param [Fixnum] amount number of pixels/lines to scroll; positive
+  #                        to scroll up or negative to scroll down
+  # @param [Float] duration animation duration, in seconds
+  # @param [Fixnum] units :line scrolls by line, :pixel scrolls by pixel
+  def scroll amount, duration = 0.2, units = :line
+    units   = unit_constant_for units
     steps   = (FPS * duration).floor
     current = 0.0
     steps.times do |step|
       done     = (step+1).to_f / steps
       scroll   = ((done - current)*amount).floor
-      post CGEventCreateScrollWheelEvent(nil,units,1,scroll)
+      post scroll_event( units, scroll )
       current += (scroll.to_f)/amount
     end
   end
@@ -90,6 +94,12 @@ module Mouse
     CGEventCreateMouseEvent( nil, action, point, object )
   end
 
+  def scroll_event units, amount
+    # the fixnum arg represents the number of scroll wheels
+    # on the mouse we are simulating (up to 3)
+    CGEventCreateScrollWheelEvent( nil, units, 1, amount )
+  end
+
   def post event
     CGEventPost( KCGHIDEventTap, event )
     sleep QUANTUM
@@ -114,6 +124,14 @@ module Mouse
   end
   def click_up button, point
     post mouse_event( KCGEventOtherMouseUp,   point, button )
+  end
+
+  def unit_constant_for units
+    case units
+    when :line  then KCGScrollEventUnitLine
+    when :pixel then KCGScrollEventUnitPixel
+    else raise ArgumentError, "#{units} is not a valid unit"
+    end
   end
 
 end
