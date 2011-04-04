@@ -22,8 +22,8 @@ module AX
     # @param [String] action an action constant
     # @return [Boolean] true if successful
     def perform_action_of_element element, action
-      code = AXUIElementPerformAction( @ref, name )
-      log_ax_call( @ref, code ) == 0
+      code = AXUIElementPerformAction( element, action )
+      log_ax_call( element, code ) == 0
     end
 
     ##
