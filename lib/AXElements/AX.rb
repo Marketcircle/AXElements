@@ -1,5 +1,7 @@
 module AX
 
+  ##
+  # Wrappers around the lower level AXUIElement functions.
   class << self
 
     # @todo Should this be private?

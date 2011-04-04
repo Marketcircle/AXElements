@@ -126,7 +126,7 @@ class Element
   end
 
   ##
-  # @todo search param attributes?
+  # @todo search param attributes
   #
   # We use {#method_missing} to dynamically handle requests to, in the
   # following order, lookup attributes, or search for elements in the

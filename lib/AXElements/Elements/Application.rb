@@ -82,7 +82,7 @@ class Application < AX::Element
   # This method is almost never directly called, it is instead called by
   # {Traits::Notifications#wait_for_notification}.
   #
-  # @param [Proc] callback
+  # @param [Method,Proc] callback
   # @return [AXObserverRef]
   def observer callback
     observer = Pointer.new '^{__AXObserver}'
