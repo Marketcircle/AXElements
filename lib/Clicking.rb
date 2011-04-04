@@ -8,36 +8,24 @@ require   'AXElements/CoreExtensions'
 # @todo Less discrimination against left handed people
 module Mouse
 
+  ##
+  # Move the mouse from wherever it is to any given point.
+  #
+  # @param [CGPoint] point
+  # @param [Float] duration animation duration, in seconds
   def move_to point, duration = 0.2
-    current = current_position
-    steps = (FPS * duration).floor
-    xstep = ((point.x - current.x) / steps)
-    ystep = ((point.y - current.y) / steps)
-    steps.times do
-      current.x += xstep
-      current.y += ystep
-      post CGEventCreateMouseEvent(nil,KCGEventMouseMoved,current,KCGMouseButtonLeft)
-    end
-    $stderr.puts 'Not moving anywhere' if current == point
-    post CGEventCreateMouseEvent(nil,KCGEventMouseMoved,point,KCGMouseButtonLeft)
+    move( current_position, point, duration )
   end
 
   ##
-  # Ideally this can be abbreviated to #left_mouse_down, #drag, #left_mouse_up
-  def drag_to point, duration
-    current = current_position
-    left_click_down(current)
-    steps = (FPS * duration).floor
-    xstep = ((point.x - current.x) / steps)
-    ystep = ((point.y - current.y) / steps)
-    steps.times do
-      current.x += xstep
-      current.y += ystep
-      post CGEventCreateMouseEvent(nil,KCGEventLeftMouseDragged,current,KCGMouseButtonLeft)
-    end
-    $stderr.puts 'Not moving anywhere' if current == point
-    post CGEventCreateMouseEvent(nil,KCGEventLeftMouseDragged,point,KCGMouseButtonLeft)
-    left_click_up(point)
+  # Click and drag from wherever it is to any given point.
+  #
+  # @param [CGPoint] point
+  # @param [Float] duration animation duration, in seconds
+  def drag_to point, duration = 0.2
+    left_click_down( current_position )
+    left_drag(       current_position, point, duration )
+    left_click_up(   point )
   end
 
   ##
@@ -103,6 +91,27 @@ module Mouse
   def post event
     CGEventPost( KCGHIDEventTap, event )
     sleep QUANTUM
+  end
+
+  def animate_event event, button, from, to, duration
+    steps = (FPS * duration).floor
+    xstep = ((to.x - from.x) / steps)
+    ystep = ((to.y - from.y) / steps)
+    steps.times do
+      from.x += xstep
+      from.y += ystep
+      post mouse_event( event, from, button )
+    end
+    $stderr.puts 'Not moving anywhere' if current == point
+    post mouse_event( event, to, button )
+  end
+
+  def move from, to, duration
+    animate_event( KCGEventMouseMoved, KCGMouseButtonLeft, from, to, duration )
+  end
+
+  def left_drag from, to, duration
+    animate_event( KCGEventLeftMouseDragged, KCGMouseButtonLeft, from, to, duration )
   end
 
   def left_cilck_down point
