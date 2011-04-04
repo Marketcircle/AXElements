@@ -2,6 +2,7 @@ module AX
 
   class << self
 
+    # @todo Should this be private?
     # @return [Regexp]
     attr_reader :prefix
 
@@ -156,7 +157,7 @@ module AX
     private
 
     ##
-    # @todo print view hierarchy using {#pretty_print}
+    # @todo print view hierarchy using {Element#pretty_print}
     #
     # Uses the call stack and error code to log a message that might be
     # helpful in debugging.
@@ -298,6 +299,8 @@ module AX
 
     ##
     # @todo Consider mapping in all cases to avoid returning a CFArray
+    #
+    # We assume a homogeneous array.
     #
     # @return [Array,nil]
     def array_attribute vals
