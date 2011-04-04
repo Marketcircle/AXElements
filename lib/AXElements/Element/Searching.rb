@@ -48,7 +48,6 @@ class Element
     elements         = self.children # seed the search array
     search_results   = []
     class_const      = element_type.to_s.camelize!
-    filters        ||= {}
 
     until elements.empty?
       element          = elements.shift
