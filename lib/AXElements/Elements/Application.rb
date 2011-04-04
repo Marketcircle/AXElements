@@ -30,17 +30,7 @@ class Application < AX::Element
         launch_application bundle
         sleep sleep_time
       end
-      application_for_pid( apps.first.processIdentifier )
-    end
-
-    ##
-    # You can call this method to create the application object if the app is
-    # already running; otherwise the object creation will fail.
-    #
-    # @param [Fixnum] pid The process identifier for the application you want
-    # @return [AX::Application]
-    def self.application_for_pid pid
-      AX.process_ax_data( AXUIElementCreateApplication(pid) )
+      AX.application_for_pid( apps.first.processIdentifier )
     end
 
 

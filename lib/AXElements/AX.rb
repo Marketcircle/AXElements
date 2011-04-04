@@ -143,6 +143,15 @@ module AX
     end
 
     ##
+    # You can call this method to create the application object if the
+    # app is already running; otherwise the object creation will fail.
+    #
+    # @param [Fixnum] pid The process identifier for the application you want
+    # @return [AX::Application]
+    def application_for_pid pid
+      process_ax_data( AXUIElementCreateApplication(pid) )
+    end
+
 
     private
 
