@@ -5,39 +5,20 @@ class Element
   # @todo allow regex matching when filtering string attributes
   # @todo decide whether plural or singular search before entering
   #       the main loop
-  # @todo consider adding safety check for children existence
-  # @todo move most of the documentation for this method to its own
-  #       file in /docs
   # @todo make search much faster by not wrapping child classes
   #
   # @note You are expected to make sure you are not calling {#search} on
   #       an object that has no children, you will cause an infinite loop
   #       if you do not.
   #
-  # Search works by looking at the child elements of the current element,
-  # and possibily at the children of the children elements, and so on and
-  # so forth in a breadth first search through the UI hierarchy rooted at
-  # the current node.
+  # Perform a breadth first search through the view hierarchy rooted at
+  # the current element.
   #
-  # There are two features of the search that are important with regards
-  # results of the search: pluralization and filtering.
+  # See the documentation page [Searching](file/Searching.markdown)
+  # on the details of how to search.
   #
-  # Filtering is the important part of a search. The first argument of this
-  # method, the element_type, is the first, and only mandatory, filter; the
-  # element_type filters on the class of an element.
-  #
-  # Additional filters are specified as key/value pairs, where the key is a
-  # method to call on a child element and the value must match or the child
-  # does not match the search. You can attach as many filters as you want.
-  #
-  # The other search feature is pluralization, which is when an 's' is
-  # appended to the element_type that you are searching for; this causes
-  # the search to assume that you wanted every element in the UI hierarchy
-  # that meets the filtering criteria. It be used to make sure items are
-  # no longer on screen.
-  #
-  # If you do not pluralize, then the first element that meets all the
-  # filtering criteria will be returned.
+  # @example Find the dock item for the Finder app
+  #  AX::DOCK.search( :application_dock_item, title: 'Finder' )
   #
   # @param [Symbol] element_type
   # @param [Hash{Symbol=>Object}] filters
