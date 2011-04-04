@@ -19,7 +19,7 @@ module ArrayAXElementExtensions
   # various types of {AX::Element} objects that may not have the same
   # attributes or you could trigger a {NoMethodError}.
   def method_missing method, *args
-    return super                 if empty? || !(first.kind_of?(AX::Element))
+    return super                 unless first.kind_of?(AX::Element)
     return map(&method)          if first.respond_to?(method)
     singular_method              =  singularized_method_name(method)
     return map(&singular_method) if first.respond_to?(singular_method)
