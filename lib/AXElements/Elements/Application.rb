@@ -64,16 +64,15 @@ class Application < AX::Element
   end
 
   ##
-  # @todo Since this does not use internal state, it is a candidate to be
-  #       moved to a utility class
-  #
-  # A macro for showing the About window for an app
+  # A macro for showing the About window for an app.
   def show_about_window
     self.set_focus
     self.menu_bar_item(title:(self.title)).press
     self.menu_bar.menu_item(title: "About #{self.title}").press
   end
 
+  ##
+  # Overriden to handle the {#set_focus} case.
   def set_attribute attr, value
     set_focus if attr == :focused
     super
@@ -94,7 +93,7 @@ class Application < AX::Element
   end
 
   ##
-  # Override the base class to make sure the pid is included
+  # Override the base class to make sure the pid is included.
   def inspect
     (super).sub />$/, " @pid=#{self.pid}>"
   end
