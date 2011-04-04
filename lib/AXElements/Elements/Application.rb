@@ -105,6 +105,7 @@ class Application < AX::Element
   # @todo a small parser to generate the actual sequence of key presses to
   #       simulate. Most likely just going to extend built in string escape
   #       sequences if possible
+  # @todo Move this out, or mirror it, in Kernel
   # @note This method only handles lower case letters, spaces, tabs, and
   #       the escape key right now.
   #
