@@ -6,41 +6,6 @@ module AX
     attr_reader :prefix
 
     ##
-    # @todo AXUIElementCopyMultipleAttributeValues could be used
-    #       to speed up access if we turn the second argument into
-    #       a vararg
-    #
-    # @param [AXUIElementRef] element
-    # @param [String] attr an attribute constant
-    def raw_attr_of_element element, attr
-      ptr  = Pointer.new(:id)
-      code = AXUIElementCopyAttributeValue( element, attr, ptr )
-      log_ax_call element, code
-      ptr[0]
-    end
-
-    # @param [AXUIElementRef] element
-    # @param [String] attr an attribute constant
-    def raw_param_attr_of_element element, attr, param
-      ptr  = Pointer.new(:id)
-      code = AXUIElementCopyParameterizedAttributeValue( element, attr, param, ptr )
-      log_ax_call element, code
-      ptr[0]
-    end
-
-    ##
-    # Takes a return value from {#raw_attr_of_element} and, if required,
-    # converts the data to something more usable.
-    #
-    # Generally, used to process an AXValue into a CGPoint or an
-    # AXUIElementRef into some kind of AX::Element object.
-    def process_ax_data value
-      return if value.nil?
-      id = ATTR_MASSAGERS[CFGetTypeID(value)]
-      id ? self.send(id, value) : value
-    end
-
-    ##
     # Fetch the data from an attribute and process it into something
     # useful.
     #
@@ -50,14 +15,23 @@ module AX
       process_ax_data raw_attr_of_element(element, attr)
     end
 
+    # @param [AXUIElementRef] element
+    end
+
     ##
-    # Fetch the data from a parameterized attribute and process it into
-    # something useful.
+    #
+    end
+
+    ##
     #
     # @param [AXUIElementRef] element
     # @param [String] attr an attribute constant
-    def param_attr_of_element element, attr, param
-      process_ax_data raw_param_attr_of_element(element, attr, param)
+    end
+
+    ##
+    #
+    # @param [AXUIElementRef] element
+    # @param [String] attr an attribute constant
     end
 
     ##
@@ -141,6 +115,10 @@ module AX
     end
 
     ##
+
+    private
+
+    ##
     # @todo print view hierarchy using {#pretty_print}
     #
     # Uses the call stack and error code to log a message that might be
@@ -158,8 +136,40 @@ module AX
       code
     end
 
+    ##
+    # @todo AXUIElementCopyMultipleAttributeValues could be used
+    #       to speed up access if we turn the second argument into
+    #       a vararg
+    #
+    # @param [AXUIElementRef] element
+    # @param [String] attr an attribute constant
+    def raw_attr_of_element element, attr
+      ptr  = Pointer.new(:id)
+      code = AXUIElementCopyAttributeValue( element, attr, ptr )
+      log_ax_call element, code
+      ptr[0]
+    end
 
-    private
+    # @param [AXUIElementRef] element
+    # @param [String] attr an attribute constant
+    def raw_param_attr_of_element element, attr, param
+      ptr  = Pointer.new(:id)
+      code = AXUIElementCopyParameterizedAttributeValue( element, attr, param, ptr )
+      log_ax_call element, code
+      ptr[0]
+    end
+
+    ##
+    # Takes a return value from {#raw_attr_of_element} and, if required,
+    # converts the data to something more usable.
+    #
+    # Generally, used to process an AXValue into a CGPoint or an
+    # AXUIElementRef into some kind of AX::Element object.
+    def process_ax_data value
+      return if value.nil?
+      id = ATTR_MASSAGERS[CFGetTypeID(value)]
+      id ? self.send(id, value) : value
+    end
 
     ##
     # A mapping of the AXError constants to human readable strings.
