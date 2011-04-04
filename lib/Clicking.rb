@@ -6,6 +6,7 @@ require   'AXElements/CoreExtensions'
 # @todo Bezier paths for movements
 # @todo Random background movements
 # @todo Less discrimination against left handed people
+# @todo A more intelligent default duration
 module Mouse
 
   ##
