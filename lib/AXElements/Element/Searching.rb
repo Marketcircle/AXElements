@@ -33,10 +33,8 @@ class Element
   # The other search feature is pluralization, which is when an 's' is
   # appended to the element_type that you are searching for; this causes
   # the search to assume that you wanted every element in the UI hierarchy
-  # that meets the filtering criteria. However, this causes the search to be
-  # very slow (~1 second) and is meant more for prototying tests and
-  # debugging broken tests, but can also be used to make sure items are no
-  # longer on screen.
+  # that meets the filtering criteria. It be used to make sure items are
+  # no longer on screen.
   #
   # If you do not pluralize, then the first element that meets all the
   # filtering criteria will be returned.
@@ -45,25 +43,26 @@ class Element
   # @param [Hash{Symbol=>Object}] filters
   # @return [AX::Element,nil,Array<AX::Element>,Array<>]
   def search element_type, filters = {}
-    elements         = self.children # seed the search array
-    search_results   = []
-    class_const      = element_type.to_s.camelize!
+    elements       = AX.attr_of_element(@ref, KAXChildrenAttribute)
+    search_results = []
+    class_const    = element_type.to_s.camelize!
 
     until elements.empty?
       element          = elements.shift
       primary_filter ||= AX.plural_const_get(class_const)
 
-      elements.concat(element.children) if element.attributes.include?(KAXChildrenAttribute)
+      if element.attributes.include?(KAXChildrenAttribute)
+        elements.concat( element.get_attribute :children )
+      end
 
       next unless element.class == primary_filter
-      next if filters.find { |filter| element.send(filter[0]) != filter[1] }
+      next if filters.find { |filter,value| element.send(filter) != value }
 
       return element unless element_type.to_s[-1] == 's'
       search_results << element
     end
 
-    return search_results if element_type.to_s[-1] == 's'
-    return search_results.first
+    element_type.to_s[-1] == 's' ? search_results : nil
   end
 
 end
