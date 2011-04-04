@@ -2,10 +2,15 @@ Keyboard Events
 ===============
 
 In some cases you cannot, or do not want to,  set the value of a field
-directly by assigning to it's value attribute. In these cases you can
-post keyboard events to an application object.
+directly by assigning to the accessibility object's value
+attribute. In these cases you can post keyboard events to an
+application object.
 
 Keyboard events must be posted to an application object.
+
+Key codes are independant of the layout in the sense that they are
+absolute key positions on the keyboard and that different layouts will
+fuck things up differently.
 
 Escape Sequences
 ----------------
