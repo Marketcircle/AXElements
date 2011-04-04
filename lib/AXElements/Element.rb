@@ -28,61 +28,14 @@ class Element
     @pid ||= ( ptr = Pointer.new 'i' ; AXUIElementGetPid( @ref, ptr ) ; ptr[0] )
   end
 
-  # @param attr an attribute constant
-  def attribute_writable? attr
-    raise ArgumentError, "#{attr} not found" unless attributes.include? attr
-    ptr  = Pointer.new('B')
-    code = AXUIElementIsAttributeSettable( @ref, attr, ptr )
-    AX.log_ax_call @ref, code
-    ptr[0]
-  end
-
-  ##
-  # @todo should we check existence to be nice?
-  #
-  # @param attr an attribute constant
+  # @param [Symbol] attr
   def get_attribute attr
-#    raise ArgumentError, "#{attr} not found" unless attributes.include? attr
-    AX.attr_of_element( @ref, attr )
+    attribute = attribute_for attr
+    raise ArgumentError, "#{attr} is not an attribute" unless attribute
+    AX.attr_of_element( @ref, attribute )
   end
 
   ##
-  # @todo merge this into other places once I understand it more,
-  #       right now it would just add a lot of overhead
-  def get_param_attribute attr, param
-    raise NoMethodError, "#{self.class} has no paramterized attrs" unless @param_attrs
-    raise ArgumentError, "#{attr} not found" unless @param_attrs.include? attr
-    return AX.param_attr_of_element( @ref, attr, param )
-  end
-
-  ##
-  # Like the {#perform_action} method, we cannot make any assumptions
-  # about the state of the program after you have set a value; at
-  # least not in the general case.
-  #
-  # @param [String] attr an attribute constant
-  # @return the value that you set is returned
-  def set_attribute attr, value
-    raise ArgumentError, "#{attr} not writable" unless attribute_writable? attr
-    code = AXUIElementSetAttributeValue( @ref, attr, value )
-    AX.log_ax_call @ref, code
-    value
-  end
-
-  ##
-  # Focus an element on the screen, if possible.
-  def set_focus
-    set_attribute KAXFocusedAttribute, true
-  end
-
-  ##
-  # @todo Actions and attribute setters should be the first step in
-  #       making a DSL; that way the responsibility of {#method_missing}
-  #       can be reduced to information retrieval (attributes.searching),
-  #       and the DSL will be centered around calling actions and setters
-  #       on attributes and objects; verification will be left to testing
-  #       suites
-  #
   # Ideally this method would return a reference to `self`, but since
   # this method inherently causes state change, the reference to `self`
   # may no longer be valid. An example of this would be pressing the
@@ -91,11 +44,48 @@ class Element
   # @param [String] name an action constant
   # @return [Boolean] true if successful
   def perform_action name
-    raise ArgumentError, "#{name} not found" unless actions.include?(name)
-    code = AXUIElementPerformAction( @ref, name )
-    AX.log_ax_call( @ref, code ) == 0
+    action = action_for name
+    raise ArgumentError, "#{name} is not an action" unless action
+    AX.perform_action_of_element( @ref, action )
   end
 
+  ##
+  # @todo merge this into {#method_missing} other places once I understand
+  #       it more, right now it would just add a lot of overhead
+  #
+  # @param [Symbol] attr
+  def get_param_attribute attr, param
+    attribute = param_attribute_for attr
+    raise ArgumentError, "#{attr} is not a parameterized attribute" unless attribute
+    AX.param_attr_of_element( @ref, attribute, param )
+  end
+
+  ##
+  # We cannot make any assumptions about the state of the program after
+  # you have set a value; at least not in the general case.
+  #
+  # @param [String] attr an attribute constant
+  # @return the value that you set is returned
+  def set_attribute attr, value
+    attribute = attribute_for attr
+    raise ArgumentError, "#{attr} is not an attribute" unless attribute
+    unless AX.attr_of_element_writable?(attribute)
+      raise ArgumentError, "#{attr} not writable"
+    end
+    AX.set_attr_of_element( @ref, attr, value )
+    value
+  end
+
+  ##
+  # Needed to override inherited {NSObject#description}. If you want a
+  # description of the object try using {#inspect}.
+  def description
+    self.method_missing :description
+  end
+
+  ##
+  # @todo search param attributes?
+  #
   ##
   # We use {#method_missing} to dynamically handle requests to, in the
   # following order, lookup attributes, perform actions, or search for
