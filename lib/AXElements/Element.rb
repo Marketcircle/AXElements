@@ -8,11 +8,12 @@ class Element
 
   # @param [AXUIElementRef] element
   def initialize element
-    @ref = element
+    @ref        = element
+    @attributes = AX.attrs_of_element(element)
   end
 
   # @return [Array<String>] cache of available attributes
-  def attributes; @attributes ||= AX.attrs_of_element(@ref); end
+  attr_reader :attributes
 
   # @return [Array<String>] cache of available actions
   def actions; @actions ||= AX.actions_of_element(@ref); end
