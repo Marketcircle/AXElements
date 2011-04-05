@@ -185,7 +185,7 @@ module AX
     # @yieldparam [String] notif the name of the notification
     # @yieldreturn [Boolean] determines if the script should continue or wait
     # @return [Boolean] true if the notification was received, otherwise false
-    def wait_for_notification element, notif, timeout = 10
+    def wait_for_notification element, notif, timeout
       @notif_proc = Proc.new if block_given?
       observer    = notification_observer element, method(:notif_method)
 
