@@ -248,7 +248,7 @@ class << AX
   # @param [Fixnum] pid The process identifier for the application you want
   # @return [AX::Application]
   def application_for_pid pid
-    process_ax_data( AXUIElementCreateApplication(pid) )
+    element_attribute( AXUIElementCreateApplication(pid) )
   end
 
   # @group Misc.
@@ -474,11 +474,10 @@ class << AX
   # @param [Method,Proc] callback
   # @return [AXObserverRef]
   def notification_observer element, callback
-    app      = application_for_pid(pid_of_element element)
-    observer = Pointer.new '^{__AXObserver}'
-    code     = AXObserverCreate(pid_of_element(element), callback, observer)
+    ptr  = Pointer.new '^{__AXObserver}'
+    code = AXObserverCreate( pid_of_element(element), callback, ptr )
     log_ax_call element, code
-    observer[0]
+    ptr[0]
   end
 
   ##
@@ -490,7 +489,7 @@ class << AX
   # @param [AX::Element] element
   # @param [String] notif
   def register_notif_callback observer, element, notif
-    code = AXObserverAddNotification(observer, @ref, notif, nil)
+    code = AXObserverAddNotification( observer, element, notif, nil )
     log_ax_call element, code
   end
 
