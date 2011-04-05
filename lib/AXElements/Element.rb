@@ -1,5 +1,3 @@
-require 'AXElements/Element/Notifications'
-
 module AX
 
 ##
