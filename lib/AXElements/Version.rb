@@ -2,9 +2,6 @@ require   'logger'
 
 ##
 # A module for all the different accessibility roles.
-# Inside the module, we should always try to work with the lower level APIs.
-# The module should NEVER return something from the lower levels.
-# To help with this, the module includes a few handy methods.
 module AX
   VERSION   = '0.3.0'
   CODE_NAME = 'Tiger Blood'
