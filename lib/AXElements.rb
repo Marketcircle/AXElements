@@ -16,7 +16,8 @@ end
 
 require 'AXElements/Version'
 require 'AXElements/CoreExtensions'
+require 'AXElements/AXSingletonMethods'
 require 'AXElements/Actions'
 require 'AXElements/Element'
 require 'AXElements/Elements/Application'
-require 'AXElements/AX'
+require 'AXElements/AXConstants'
