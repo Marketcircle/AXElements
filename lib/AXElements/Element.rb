@@ -154,6 +154,10 @@ class Element
     super
   end
 
+  def wait_for_notification notif, timeout = 10
+    AX.wait_for_notification( @ref, notif, timeout )
+  end
+
   ##
   # Overriden to produce cleaner output.
   def inspect
