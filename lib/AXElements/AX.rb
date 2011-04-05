@@ -69,6 +69,38 @@ module AX
     # @todo consider using the rails inflector
     #
     # Chomps off a trailing 's' if there is one and then looks up the constant.
+    ##
+    # @todo look at CGEventKeyboardSetUnicodeString for posting events
+    #       without needing the keycodes
+    # @todo look at UCKeyTranslate for working with different keyboard
+    #       layouts
+    # @todo a small parser to generate the actual sequence of key presses to
+    #       simulate. Most likely just going to extend built in string escape
+    #       sequences if possible
+    # @todo Move this out, or mirror it, in Kernel
+    # @note This method only handles lower case letters, spaces, tabs, and
+    #       the escape key right now.
+    #
+    # In cases where you need (or want) to simulate keyboard input, such as
+    # triggering hotkeys, you will need to use this method.
+    #
+    # See the documentation page [KeyboardEvents](file/KeyboardEvents.markdown)
+    # on how to encode strings, as well as other details on using methods
+    # from this module.
+    #
+    # @param [AXUIElementRef] element an application to post the event to
+    # @param [String] string the string you want typed on the screen
+    # @return [Boolean] true unless something goes horribly wrong
+    def post_kb_event element, string
+      string.each_char { |char|
+        key_code = KEYCODE_MAP[char]
+        code = AXUIElementPostKeyboardEvent(element, 0, key_code, true)
+        log_ax_call element, code
+        code = AXUIElementPostKeyboardEvent(element, 0, key_code, false)
+        log_ax_call element, code
+      }
+      true
+    end
     #
     # @param [#to_s] const
     # @return [Class,nil] the class if it exists, else returns nil
@@ -237,6 +269,22 @@ module AX
 
 
     private
+
+    # Map keyboard characters to their keycodes
+    # @return [Hash{String=>Fixnum}]
+    KEYCODE_MAP = {
+      # Letters
+      'a' => 0,  'b' => 11, 'c' => 8,  'd' => 2,  'e' => 14, 'f' => 3,
+      'g' => 5,  'h' => 4,  'i' => 34, 'j' => 38, 'k' => 40, 'l' => 37,
+      'm' => 46, 'n' => 45, 'o' => 31, 'p' => 35, 'q' => 12, 'r' => 15,
+      's' => 1,  't' => 17, 'u' => 32, 'v' => 9,  'w' => 13, 'x' => 7,
+      'y' => 16, 'z' => 6,
+      # Numbers
+      '1' => 18, '2' => 19, '3' => 20, '4' => 21, '5' => 23, '6' => 22,
+      '7' => 26, '8' => 28, '9' => 25, '0' => 29,
+      # Misc.
+      "\t" => 48, ' ' => 49, "\e"=> 53
+    }
 
     ##
     # @todo print view hierarchy using {Element#pretty_print}
