@@ -8,6 +8,17 @@ module AX
     # @return [Regexp]
     attr_reader :prefix
 
+    # @group Attributes
+
+    # @param [AXUIElementRef] element low level accessibility object
+    # @return [Array<String>]
+    def attrs_of_element element
+      array_ptr = Pointer.new( '^{__CFArray}' )
+      code = AXUIElementCopyAttributeNames( element, array_ptr )
+      log_ax_call element, code
+      array_ptr[0]
+    end
+
     ##
     # Fetch the data from an attribute and process it into something
     # useful.
@@ -16,27 +27,6 @@ module AX
     # @param [String] attr an attribute constant
     def attr_of_element element, attr
       process_ax_data raw_attr_of_element(element, attr)
-    end
-
-    ##
-    # Preform an action on an element.
-    #
-    # @param [AXUIElementRef] element
-    # @param [String] action an action constant
-    # @return [Boolean] true if successful
-    def perform_action_of_element element, action
-      code = AXUIElementPerformAction( element, action )
-      log_ax_call( element, code ) == 0
-    end
-
-    ##
-    # Fetch the data from a parameterized attribute and process it into
-    # something useful.
-    #
-    # @param [AXUIElementRef] element
-    # @param [String] attr an attribute constant
-    def param_attr_of_element element, attr, param
-      process_ax_data raw_param_attr_of_element(element, attr, param)
     end
 
     ##
@@ -65,10 +55,28 @@ module AX
       value
     end
 
+    # @group Actions
+
+    # @param [AXUIElementRef] element low level accessibility object
+    # @return [Array<String>]
+    def actions_of_element element
+      array_ptr = Pointer.new( '^{__CFArray}' )
+      code = AXUIElementCopyActionNames( element, array_ptr )
+      log_ax_call element, code
+      array_ptr[0]
+    end
+
     ##
-    # @todo consider using the rails inflector
+    # Preform an action on an element.
     #
-    # Chomps off a trailing 's' if there is one and then looks up the constant.
+    # @param [AXUIElementRef] element
+    # @param [String] action an action constant
+    # @return [Boolean] true if successful
+    def perform_action_of_element element, action
+      code = AXUIElementPerformAction( element, action )
+      log_ax_call( element, code ) == 0
+    end
+
     ##
     # @todo look at CGEventKeyboardSetUnicodeString for posting events
     #       without needing the keycodes
@@ -101,12 +109,29 @@ module AX
       }
       true
     end
+
+    # @group Parameterized Attributes
+
+    # @param [AXUIElementRef] element low level accessibility object
+    # @return [Array<String>,nil] nil if the element has no
+    #   parameterized attributes
+    def param_attrs_of_element element
+      array_ptr = Pointer.new( '^{__CFArray}' )
+      code = AXUIElementCopyParameterizedAttributeNames( element, array_ptr )
+      log_ax_call element, code
+      array_ptr[0]
+    end
+
+    ##
+    # Fetch the data from a parameterized attribute and process it into
+    # something useful.
     #
-    # @param [#to_s] const
-    # @return [Class,nil] the class if it exists, else returns nil
-    def plural_const_get const
-      const = const.to_s.chomp 's'
-      return const_get const if const_defined? const
+    # @param [AXUIElementRef] element
+    # @param [String] attr an attribute constant
+    def param_attr_of_element element, attr, param
+      process_ax_data raw_param_attr_of_element(element, attr, param)
+    end
+
     # @group Notifications
 
     ##
@@ -176,6 +201,8 @@ module AX
       CFRunLoopRunInMode( KCFRunLoopDefaultMode, timeout, false ) == 2
     end
 
+    # @group Dynamic Elements
+
     ##
     # Finds the current mouse position and then calls {#element_at_position}.
     #
@@ -216,34 +243,6 @@ module AX
       return elements
     end
 
-    # @param [AXUIElementRef] element low level accessibility object
-    # @return [Array<String>]
-    def attrs_of_element element
-      array_ptr = Pointer.new( '^{__CFArray}' )
-      code = AXUIElementCopyAttributeNames( element, array_ptr )
-      log_ax_call element, code
-      array_ptr[0]
-    end
-
-    # @param [AXUIElementRef] element low level accessibility object
-    # @return [Array<String>,nil] nil if the element has no
-    #   parameterized attributes
-    def param_attrs_of_element element
-      array_ptr = Pointer.new( '^{__CFArray}' )
-      code = AXUIElementCopyParameterizedAttributeNames( element, array_ptr )
-      log_ax_call element, code
-      array_ptr[0]
-    end
-
-    # @param [AXUIElementRef] element low level accessibility object
-    # @return [Array<String>]
-    def actions_of_element element
-      array_ptr = Pointer.new( '^{__CFArray}' )
-      code = AXUIElementCopyActionNames( element, array_ptr )
-      log_ax_call element, code
-      array_ptr[0]
-    end
-
     ##
     # You can call this method to create the application object if the
     # app is already running; otherwise the object creation will fail.
@@ -254,6 +253,19 @@ module AX
       process_ax_data( AXUIElementCreateApplication(pid) )
     end
 
+    # @group Misc.
+
+    ##
+    # @todo consider using the rails inflector
+    #
+    # Chomps off a trailing 's' if there is one and then looks up the constant.
+    #
+    # @param [#to_s] const
+    # @return [Class,nil] the class if it exists, else returns nil
+    def plural_const_get const
+      const = const.to_s.chomp 's'
+      return const_get const if const_defined? const
+    end
 
     ##
     # Get the PID of the application that an element belongs to.
@@ -266,6 +278,8 @@ module AX
       log_ax_call element, code
       ptr[0]
     end
+
+    # @endgroup
 
 
     private
