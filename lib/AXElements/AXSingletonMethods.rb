@@ -220,11 +220,11 @@ class << AX
   # @param [CGPoint] point
   # @return [AX::Element]
   def element_at_position point
-    element = Pointer.new( '^{__AXUIElement}' )
+    ptr     = Pointer.new( '^{__AXUIElement}' )
     system  = AXUIElementCreateSystemWide()
-    code = AXUIElementCopyElementAtPosition( system, point.x, point.y, element )
+    code    = AXUIElementCopyElementAtPosition( system, point.x, point.y, ptr )
     log_ax_call system, code
-    element_attribute element[0]
+    element_attribute ptr[0]
   end
 
   ##
