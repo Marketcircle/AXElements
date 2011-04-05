@@ -78,20 +78,6 @@ class Application < AX::Element
   end
 
   ##
-  # Create and return a notification observer for the object's application.
-  # This method is almost never directly called, it is instead called by
-  # {Traits::Notifications#wait_for_notification}.
-  #
-  # @param [Method,Proc] callback
-  # @return [AXObserverRef]
-  def observer callback
-    observer = Pointer.new '^{__AXObserver}'
-    code = AXObserverCreate( pid, callback, observer )
-    AX.log_ax_call( @ref, code )
-    observer[0]
-  end
-
-  ##
   # Override the base class to make sure the pid is included.
   def inspect
     (super).sub />$/, " @pid=#{self.pid}>"

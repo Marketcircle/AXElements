@@ -75,6 +75,73 @@ module AX
     def plural_const_get const
       const = const.to_s.chomp 's'
       return const_get const if const_defined? const
+    # @group Notifications
+
+    ##
+    # @todo turn this into a proc and dispatch it from within
+    #       the {#wait_for_notification} method (waiting on MacRuby bug),
+    #       or move this method to its own class
+    # @todo desperately needs refactoring
+    #
+    # Do not call this method directly. It will be called automatically
+    # when a notification is triggered.
+    #
+    # @param [AXObserverRef] observer the observer being notified
+    # @param [AXUIElementRef] element the element being referenced
+    # @param [String] notif the notification name
+    # @param [Object] refcon some context object that you can pass around
+    def notif_method observer, element, notif, refcon
+      should_stop_waiting   = true
+      if @notif_proc
+        should_stop_waiting = @notif_proc.call(process_ax_data(element), notif)
+        @notif_proc         = nil
+      end
+      return unless should_stop_waiting
+
+      run_loop   = CFRunLoopGetCurrent()
+      app_source = AXObserverGetRunLoopSource( observer )
+      CFRunLoopRemoveSource( run_loop, app_source, KCFRunLoopDefaultMode )
+      CFRunLoopStop(run_loop)
+    end
+
+    ##
+    # @todo kAXUIElementDestroyedNotification look at it for catching
+    #       windows that disappear
+    # @todo mirror this method in Kernel
+    # @note This method is not thread safe right now
+    #
+    # [Notifications](../../file/Notifications.markdown) are a way to put
+    # non-polling delays into your scripts (sorta).
+    #
+    # Pause execution of the program until a notification is received or a
+    # timeout occurs.
+    #
+    # You can optionally pass a block to this method to validate the
+    # notification.
+    #
+    # @param [String] notif the name of the notification
+    # @param [Float] timeout
+    # @yield Validate the notification; the block should return truthy if
+    #        the notification is expected and the script can stop waiting,
+    #        otherwise should return falsy.
+    # @yieldparam [AX::Element] element the element that sent the notification
+    # @yieldparam [String] notif the name of the notification
+    # @yieldreturn [Boolean] determines if the script should continue or wait
+    # @return [Boolean] true if the notification was received, otherwise false
+    def wait_for_notification element, notif, timeout = 10
+      @notif_proc = Proc.new if block_given?
+      observer    = notification_observer element, method(:notif_method)
+
+      run_loop     = CFRunLoopGetCurrent()
+      app_run_loop = AXObserverGetRunLoopSource( observer )
+
+      register_notif_callback( observer, element, notif )
+      CFRunLoopAddSource( run_loop, app_run_loop, KCFRunLoopDefaultMode )
+
+      # use RunInMode because it has timeout functionality; this method
+      # actually has 4 return values, but only two codes will occur under
+      # regular circumstances
+      CFRunLoopRunInMode( KCFRunLoopDefaultMode, timeout, false ) == 2
     end
 
     ##
@@ -337,6 +404,34 @@ module AX
       ptr      = Pointer.new( AXBoxType[box_type].type )
       AXValueGetValue( value, box_type, ptr )
       ptr[0]
+    end
+
+    ##
+    # Create and return a notification observer for the object's application.
+    # This method is almost never directly called, it is instead called by
+    # {Traits::Notifications#wait_for_notification}.
+    #
+    # @param [Method,Proc] callback
+    # @return [AXObserverRef]
+    def notification_observer element, callback
+      app      = application_for_pid(pid_of_element element)
+      observer = Pointer.new '^{__AXObserver}'
+      code     = AXObserverCreate(pid_of_element(element), callback, observer)
+      log_ax_call element, code
+      observer[0]
+    end
+
+    ##
+    # @todo Consider exposing the refcon argument
+    #
+    # Setup a callback for an accessibility notification.
+    #
+    # @param [AXObserverRef] observer
+    # @param [AX::Element] element
+    # @param [String] notif
+    def register_notif_callback observer, element, notif
+      code = AXObserverAddNotification(observer, @ref, notif, nil)
+      log_ax_call element, code
     end
 
   end
