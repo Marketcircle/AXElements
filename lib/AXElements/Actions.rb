@@ -63,4 +63,10 @@ module Kernel
     arg.kind_of?(AX::Element) ? arg.perform_action(:raise) : ax_raise(*args)
   end
 
+
+  # @param [#to_s] string
+  # @param [AX::Application] app
+  def type string, app = AX::SYSTEM
+    app.post_kb_event string.to_s
+  end
 end
