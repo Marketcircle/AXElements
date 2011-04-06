@@ -33,6 +33,6 @@ describes user interactions.
     Dir.glob('docs/**/*')
 
   s.add_development_dependency 'minitest-macruby-pride',  ['~> 2.1.2']
-  s.add_development_dependency 'yard',                    ['~> 0.6.4']
+  s.add_development_dependency 'yard',                    ['~> 0.6.6']
   s.add_development_dependency 'bluecloth',               ['~> 2.0.11']
 end

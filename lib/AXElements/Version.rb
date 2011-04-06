@@ -16,7 +16,7 @@ module AX
 
   EMBEDDED_DEPENDENCIES = {
     'i18n'          => '0.5.0',
-    'activesupport' => '3.0.5'
+    'activesupport' => '3.0.6'
   }
 
   # Specify load paths to get around needing rubygems
