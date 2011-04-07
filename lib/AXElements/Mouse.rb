@@ -104,7 +104,7 @@ class << self
       from.y += ystep
       post mouse_event( event, from, button )
     end
-    $stderr.puts 'Not moving anywhere' if current == point
+    $stderr.puts 'Not moving anywhere' if from == to
     post mouse_event( event, to, button )
   end
 
