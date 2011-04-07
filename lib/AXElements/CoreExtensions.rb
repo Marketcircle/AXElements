@@ -1,7 +1,6 @@
 require 'active_support/inflector'
 
 class NSArray
-
   ##
   # Equivalent to `#[1]`
   def second
@@ -49,34 +48,33 @@ class NSArray
     method = method.to_s
     (method.predicate? ? method[0..-1] : method).singularize.to_sym
   end
-
 end
 
 
-##
-# Extensions to the String class.
 class NSMutableString
-
   ##
   # Returns the upper camel case version of the string. The string
-  # is assumed to be in snake_case, but should return an unchanged
-  # string if the string is already in camel case.
+  # is assumed to be in snake_case, but still works on a string that
+  # is already in camel case.
   #
   # I chose to make this method update the string in place as it
   # is a fairly hot method and should perform well; by running in
   # place we save an allocation (which is slow on MacRuby right now).
-  # @return [String]
+  #
+  # @return [String] returns `self`
   def camelize!
     gsub! /(?:^|_)(.)/ do $1.upcase end
   end
+end
 
+
+class NSString
   ##
-  # Tells you if the symbol would be a predicate method by
-  # checking if it ends with a question mark '?'.
+  # Used to test a symbol/string representing a method name.
+  # Returns `true` if the string ends with a '?".
   def predicate?
-    match( /\?$/ ) != nil
+    self[-1] == '?'
   end
-
 end
 
 

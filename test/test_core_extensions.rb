@@ -34,11 +34,11 @@ class TestNSArrayMethodMissing < MiniTest::Unit::TestCase
   def test_simple_attribute
     refute_empty ELEMENTS.url.compact
   end
-  def test_naturally_plural_attribute
-    refute_empty ELEMENTS.children.compact
-  end
   def test_artificially_plural_attribute
     refute_empty ELEMENTS.urls.compact
+  end
+  def test_naturally_plural_attribute
+    refute_empty ELEMENTS.children.compact
   end
   def test_predicate_method
     refute_empty ELEMENTS.application_running?.compact
@@ -58,7 +58,7 @@ class TestNSMutableStringCamelizeBang < MiniTest::Unit::TestCase
   end
 end
 
-class TestNSMutableStringPredicate < MiniTest::Unit::TestCase
+class TestNSStringPredicate < MiniTest::Unit::TestCase
   def test_true_if_string_ends_with_a_question_mark
     assert 'test?'.predicate?
   end
