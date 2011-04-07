@@ -73,8 +73,8 @@ class Application < AX::Element
   ##
   # Overriden to handle the {#set_focus} case.
   def set_attribute attr, value
-    set_focus if attr == :focused
-    super
+    return set_focus if attr == :focused
+    return super
   end
 
   ##
