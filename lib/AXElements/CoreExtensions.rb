@@ -98,4 +98,25 @@ class CGPoint
   alias_method :carbon!,    :carbonize!
   alias_method :carbonify!, :carbonize!
 
+  ##
+  # Get the center point in a rectangle.
+  #
+  # @param [CGRect] rect
+  # @return [CGPoint]
+  def self.center_of_rect rect
+    CGPoint.center rect.origin, rect.size
+  end
+
+  ##
+  # Get in the center of a size with an origin.
+  #
+  # @param [CGPoint] origin
+  # @param [CGSize] size
+  # @return [CGPoint]
+  def self.center origin, size
+    x = origin.x + (size.width / 2)
+    y = origin.y + (size.height / 2)
+    CGPoint.new(x, y)
+  end
+
 end
