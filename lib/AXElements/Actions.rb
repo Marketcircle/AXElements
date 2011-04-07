@@ -1,3 +1,5 @@
+require 'AXElements/Mouse'
+
 ##
 # The idea here is to pull actions out from an object.
 # The implementation is optimized under the assumption that you will
