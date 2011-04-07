@@ -1,9 +1,9 @@
 AXElements
 ==========
 
-A layer above the Mac OS X Accessibility APIs to make accessibility objects behave
-like objects in a very dynamic way.
-
+AXElements is a DSL abstraction on top of the Mac OS X Accessibility Framework
+that allows code to be written in a very natural and declarative style that
+describes user interactions.
 
 Contributing to AXElements
 ==========================
