@@ -25,11 +25,7 @@ class Application < AX::Element
     # @param [Float] timeout how long to wait between polling
     # @return [AX::Application]
     def self.application_with_bundle_identifier bundle, sleep_time = 2
-      while (apps = NSRunningApplication.runningApplicationsWithBundleIdentifier bundle).empty?
-        launch_application bundle
-        sleep sleep_time
-      end
-      AX.application_for_pid( apps.first.processIdentifier )
+      AX.application_for_bundle_identifier bundle, sleep_time
     end
 
 

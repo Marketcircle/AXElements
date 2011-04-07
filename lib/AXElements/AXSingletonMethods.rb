@@ -228,8 +228,6 @@ class << AX
   end
 
   ##
-  # @todo should this take a lower level object?
-  #
   # Get a list of elements, starting with the element you gave and riding
   # all the way up the hierarchy to the top level (should be the Application).
   #
@@ -249,6 +247,32 @@ class << AX
   # @return [AX::Application]
   def application_for_pid pid
     element_attribute( AXUIElementCreateApplication(pid) )
+  end
+
+  ##
+  # @todo Find a way for this method to work without sleeping;
+  #       consider looping begin/rescue/end until AX starts up
+  # @todo Search NSWorkspace.sharedWorkspace.runningApplications ?
+  # @todo add another app launching method using app names
+  #
+  # This is the standard way of creating an application object. It will
+  # launch the app if it is not already running and then create the
+  # accessibility object.
+  #
+  # However, this method is a HUGE hack in cases where the app is not
+  # already running; I've tried to register for notifications, launch
+  # synchronously, etc., but there is always a problem with accessibility
+  # not being ready. Hopefully this problem will go away on Lion...
+  #
+  # @param [String] bundle
+  # @param [Float] timeout how long to wait between polling
+  # @return [AX::Application]
+  def application_with_bundle_identifier bundle, sleep_time
+    while (apps = NSRunningApplication.runningApplicationsWithBundleIdentifier bundle).empty?
+      launch_application bundle
+      sleep sleep_time
+    end
+    application_for_pid( apps.first.processIdentifier )
   end
 
   # @group Misc.
