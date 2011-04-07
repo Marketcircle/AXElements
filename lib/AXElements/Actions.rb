@@ -67,6 +67,6 @@ module Kernel
   # @param [#to_s] string
   # @param [AX::Application] app
   def type string, app = AX::SYSTEM
-    app.post_kb_event string.to_s
+    app.post_kb_string string.to_s
   end
 end

@@ -83,8 +83,8 @@ class Application < AX::Element
     (super).sub />$/, " @pid=#{self.pid}>"
   end
 
-  def post_kb_event string
-    AX.post_kb_event( @ref, string )
+  def post_kb_string string
+    AX.post_kb_string( @ref, string )
   end
 
 end

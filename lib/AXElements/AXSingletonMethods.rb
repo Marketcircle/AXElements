@@ -97,7 +97,7 @@ class << AX
   # @param [AXUIElementRef] element an application to post the event to
   # @param [String] string the string you want typed on the screen
   # @return [Boolean] true unless something goes horribly wrong
-  def post_kb_event element, string
+  def post_kb_string element, string
     string.each_char { |char|
       key_code = KEYCODE_MAP[char]
       code = AXUIElementPostKeyboardEvent(element, 0, key_code, true)
