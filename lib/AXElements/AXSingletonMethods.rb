@@ -267,7 +267,7 @@ class << AX
   # @param [String] bundle
   # @param [Float] timeout how long to wait between polling
   # @return [AX::Application]
-  def application_with_bundle_identifier bundle, sleep_time
+  def application_for_bundle_identifier bundle, sleep_time
     while (apps = NSRunningApplication.runningApplicationsWithBundleIdentifier bundle).empty?
       launch_application bundle
       sleep sleep_time
