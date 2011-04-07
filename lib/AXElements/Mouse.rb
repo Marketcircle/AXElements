@@ -8,6 +8,7 @@ require   'AXElements/CoreExtensions'
 # @todo Less discrimination against left handed people
 # @todo A more intelligent default duration
 module Mouse
+class << self
 
   ##
   # Move the mouse from wherever it is to any given point.
@@ -144,4 +145,5 @@ module Mouse
     end
   end
 
+end
 end
