@@ -17,7 +17,7 @@ class NSArray
   alias_method :ax_array_method_missing, :method_missing
   ##
   # If the array contains {AX::Element} objects and the method name
-  # belongs to an attribute or action then the method will be mapped
+  # belongs to an attribute then the method will be mapped
   # across the array. In this case, you can artificially pluralize
   # the attribute name and the lookup will singularize the method name
   # for you.
@@ -29,12 +29,10 @@ class NSArray
   # various types of {AX::Element} objects that may not have the same
   # attributes or you could trigger a {NoMethodError}.
   def method_missing method, *args
-    unless first.kind_of?(AX::Element)
-      return ax_array_method_missing(method, *args)
+    if first.kind_of?(AX::Element)
+      return map(&method) if first.respond_to?(method)
+      return map(&singularized_method_name(method))
     end
-    return map(&method)          if first.respond_to?(method)
-    singular_method              =  singularized_method_name(method)
-    return map(&singular_method) if first.respond_to?(singular_method)
     ax_array_method_missing(method, *args)
   end
 
