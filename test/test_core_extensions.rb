@@ -1,29 +1,48 @@
+class TestNSArrayAccessors < MiniTest::Unit::TestCase
+  def test_second_returns_second_from_array
+    [[1,2],[:one,:two]].each { |array|
+      assert_equal array.last, NSArray.arrayWithArray(array).second
+      assert_equal array.last, array.second
+    }
+  end
+  def test_second_returns_nil_from_array_of_one
+    [[1], [:one]].each { |array|
+      assert_nil NSArray.arrayWithArray(array).second
+      assert_nil array.second
+    }
+  end
+
+  def test_second_returns_second_from_array
+    [[1,2,3],[:one,:two,:three]].each { |array|
+      assert_equal array.last, NSArray.arrayWithArray(array).third
+      assert_equal array.last, array.third
+    }
+  end
+  def test_second_returns_nil_from_array_of_two
+    [[1,2], [:one,:two]].each { |array|
+      assert_nil NSArray.arrayWithArray(array).third
+      assert_nil array.third
+    }
+  end
+end
+
 class TestNSArrayMethodMissing < MiniTest::Unit::TestCase
   ELEMENTS = AX::DOCK.list.application_dock_items
   def test_delegates_up_if_array_is_not_composed_of_elements
-    assert_raises NoMethodError do [1,2].title_ui_element end
+    assert_raises NoMethodError do [1].title_ui_element end
   end
-  # @todo this test is too invasive right now
-  # def test_actions_are_executed
-  # end
-  def test_not_plural_not_predicate
+  def test_simple_attribute
     refute_empty ELEMENTS.url.compact
   end
-  def test_plural_not_predicate
+  def test_naturally_plural_attribute
     refute_empty ELEMENTS.children.compact
   end
-  def test_artificially_plural_not_predicate
+  def test_artificially_plural_attribute
     refute_empty ELEMENTS.urls.compact
   end
-  def test_not_plural_predicate
+  def test_predicate_method
     refute_empty ELEMENTS.application_running?.compact
   end
-  # predicate names are general past tense and sound silly when
-  # I try to pluralize them, so these tests are not needed
-  # def test_plural_predicate
-  # end
-  # def test_artificially_plural_predicate
-  # end
 end
 
 class TestNSMutableStringCamelizeBang < MiniTest::Unit::TestCase
