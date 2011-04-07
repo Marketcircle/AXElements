@@ -70,6 +70,14 @@ module Kernel
     app.post_kb_string string.to_s
   end
 
+
+  # @param [String] notif
+  # @param [AX::Element] element
+  def wait_for_notification notif, from: element
+    element.wait_for_notification notif
+  end
+
+
   ##
   # @todo documentation
   # @overload move_mouse_to(element)

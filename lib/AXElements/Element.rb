@@ -153,6 +153,13 @@ class Element
     super
   end
 
+  ##
+  # Optimized under the assumption that you will be passing a block much
+  # less frequently than not.
+  # @yield
+  # @yieldreturn [Boolean]
+  # @param [String] notif
+  # @param [Float] timeout
   def wait_for_notification notif, timeout = 10
     AX.wait_for_notification( @ref, notif, timeout )
   end
