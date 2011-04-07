@@ -1,8 +1,6 @@
 require 'active_support/inflector'
 
-##
-# Overrides for the Array class that makes it possible to
-module ArrayAXElementExtensions
+class NSArray
 
   ##
   # Equivalent to `#[1]`
@@ -16,6 +14,7 @@ module ArrayAXElementExtensions
     at(2)
   end
 
+  alias_method :ax_array_method_missing, :method_missing
   ##
   # If the array contains {AX::Element} objects and the method name
   # belongs to an attribute or action then the method will be mapped
@@ -30,11 +29,13 @@ module ArrayAXElementExtensions
   # various types of {AX::Element} objects that may not have the same
   # attributes or you could trigger a {NoMethodError}.
   def method_missing method, *args
-    return super                 unless first.kind_of?(AX::Element)
+    unless first.kind_of?(AX::Element)
+      return ax_array_method_missing(method, *args)
+    end
     return map(&method)          if first.respond_to?(method)
     singular_method              =  singularized_method_name(method)
     return map(&singular_method) if first.respond_to?(singular_method)
-    super
+    ax_array_method_missing(method, *args)
   end
 
 
@@ -51,12 +52,6 @@ module ArrayAXElementExtensions
     (method.predicate? ? method[0..-1] : method).singularize.to_sym
   end
 
-end
-
-
-# Monkey patches on top of NSArray
-class NSArray
-  include ArrayAXElementExtensions
 end
 
 
