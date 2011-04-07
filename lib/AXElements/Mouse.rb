@@ -116,7 +116,7 @@ class << self
     animate_event( KCGEventLeftMouseDragged, KCGMouseButtonLeft, from, to, duration )
   end
 
-  def left_cilck_down point
+  def left_click_down point
     post mouse_event( KCGEventLeftMouseDown, point, KCGMouseButtonLeft )
   end
   def left_click_up point
