@@ -69,4 +69,54 @@ module Kernel
   def type string, app = AX::SYSTEM
     app.post_kb_string string.to_s
   end
+
+  ##
+  # @todo documentation
+  # @overload move_mouse_to(element)
+  #   Move the mouse to a UI element
+  #  @param [AX::Element] arg
+  # @overload move_mouse_to(point)
+  #  Move the mouse to an arbitrary point
+  #  @param [CGPoint] arg
+  def move_mouse_to arg
+    arg = CGPoint.center(arg.position, arg.size) if arg.kind_of?(AX::Element)
+    Mouse.move_to arg
+  end
+
+  ##
+  # There are many reasons why you would want to cause a drag event
+  # with the mouse. Perhaps you want to drag an object to another
+  # place, or maybe you want to hightlight an area of the screen.
+  #
+  # In the most general of cases, you are alawys dragging to a point,
+  # but having to specify the point yourself is not very helpful.
+  #
+  # We try to inspect the arguments of this method in order to better
+  # determine what it is you want.
+  #
+  # If you want to
+  def drag_mouse_to element
+    raise NotImplementedError
+  end
+
+  ##
+  # @todo You really want to be able to pass a scroll bar element
+  #       and have the API move the mouse to the appropriate area
+  #       and then run the scroll event(s).
+  # @todo Need to expose the units option
+  def scroll lines, element = nil
+    move_mouse_to element if element
+    Mouse.scroll lines
+  end
+
+  def click element = nil
+    move_mouse_to element if element
+    Mouse.click
+  end
+
+  def right_click element = nil
+    move_mouse_to element if element
+    Mouse.right_click
+  end
+
 end
