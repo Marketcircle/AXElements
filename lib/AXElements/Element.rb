@@ -110,6 +110,7 @@ class Element
       element          = elements.shift
       primary_filter ||= AX.plural_const_get(class_const)
 
+      # this can optimized significantly if needed
       if element.attributes.include?(KAXChildrenAttribute)
         elements.concat( element.get_attribute :children )
       end

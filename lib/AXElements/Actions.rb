@@ -1,9 +1,12 @@
 require 'AXElements/Mouse'
 
 ##
-# The idea here is to pull actions out from an object.
-# The implementation is optimized under the assumption that you will
-# only call a single action on an object and then throw it away.
+# @todo Allow the animation duration to be overridden
+# @note The API here is alpha, I need to get a better feel for how it
+#       should work.
+#
+# The idea here is to pull actions out from an object and put them
+# in front of object to give AXElements more of a DSL feel.
 module Kernel
 
   ##
@@ -43,6 +46,8 @@ module Kernel
 
   alias_method :ax_method_missing, :method_missing
   ##
+  # @todo mouse manipulation, search Mouse namespace first
+  #
   # Ideally this method would return a reference to `self`, but since
   # this method inherently causes state change, the reference to `self`
   # may no longer be valid. An example of this would be pressing the
