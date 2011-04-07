@@ -1,9 +1,20 @@
-require 'active_support/core_ext/array/access'
 require 'active_support/inflector'
 
 ##
 # Overrides for the Array class that makes it possible to
 module ArrayAXElementExtensions
+
+  ##
+  # Equivalent to `#[1]`
+  def second
+    at(1)
+  end
+
+  ##
+  # Equivalent to `#[2]`
+  def third
+    at(2)
+  end
 
   ##
   # If the array contains {AX::Element} objects and the method name
