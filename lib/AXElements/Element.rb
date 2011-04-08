@@ -105,6 +105,7 @@ class Element
     class_const    = element_type.camelize!
     elements       = AX.attr_of_element(@ref, KAXChildrenAttribute)
     search_results = []
+    filters      ||= {}
 
     until elements.empty?
       element          = elements.shift
