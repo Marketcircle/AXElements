@@ -79,7 +79,6 @@ end
 
 
 class CGPoint
-
   ##
   # Assumes the point represents something on the screen with the origin
   # in the bottom left and then translates the point to be in the same
@@ -90,12 +89,13 @@ class CGPoint
   # @param [CGPoint] point screen position in Cocoa screen coordinates
   # @return [CGPoint,nil]
   def carbonize!
-    NSScreen.screens.each { |screen|
+    NSScreen.screens.each do |screen|
       if NSPointInRect(self, screen.frame)
         self.y = screen.frame.size.height - self.y
         return self
       end
-    }
+    end
+    nil
   end
   alias_method :carbon!,    :carbonize!
   alias_method :carbonify!, :carbonize!
@@ -116,9 +116,8 @@ class CGPoint
   # @param [CGSize] size
   # @return [CGPoint]
   def self.center origin, size
-    x = origin.x + (size.width / 2)
-    y = origin.y + (size.height / 2)
+    x = origin.x + ((size.width  - origin.x) / 2.0)
+    y = origin.y + ((size.height - origin.y) / 2.0)
     CGPoint.new(x, y)
   end
-
 end

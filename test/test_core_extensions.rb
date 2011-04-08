@@ -73,32 +73,108 @@ class TestNSStringPredicate < MiniTest::Unit::TestCase
   end
 end
 
-class TestCGPointCarbonizeBang < MiniTest::Unit::TestCase
+class TestCGPointExtensions < MiniTest::Unit::TestCase
+  SCREENS     = NSScreen.screens
+  MAIN_SCREEN = NSScreen.mainScreen
+end
+
+class TestCGPointCarbonizeBang < TestCGPointExtensions
+  def test_nil_if_coordinates_not_on_any_screen
+    frames    = SCREENS.map(&:frame)
+    max_x     = frames.map(&:origin).map(&:x)    .max
+    max_width = frames.map(&:size)  .map(&:width).max
+    assert_nil CGPoint.new(max_x + max_width + 1, 0).carbonize!
+  end
   def test_origin_in_cocoa_is_bottom_left_in_carbon
     point = CGPointZero.dup.carbonize!
-    assert_equal NSScreen.mainScreen.frame.size.height, point.y
+    assert_equal MAIN_SCREEN.frame.size.height, point.y
   end
-  # @todo is this test too naively implemented?
   def test_middle_of_screen_is_still_middle_of_screen
-    frame = NSScreen.mainScreen.frame
+    frame = MAIN_SCREEN.frame
     point = frame.origin
     point.x = frame.size.width / 2
     point.y = frame.size.height / 2
     assert_equal point, point.dup.carbonize!
   end
-  # @todo this test needs to be broken up
-  def test_works_when_point_is_on_a_secondary_screen
-    skip 'You need a second monitor for this test' if NSScreen.screens.size < 2
-    main_screen_width = NSScreen.mainScreen.frame.size.width
-    NSScreen.screens.each { |screen|
-      if screen.frame.origin.x >= main_screen_width || screen.frame.origin.x < 0
-        point = CGPoint.new(screen.frame.origin.x,0).carbonize!
-        assert_equal screen.frame.size.height, point.y
-      end
-      if screen.frame.origin.y < 0
-        point = CGPoint.new(0,screen.frame.origin.y).carbonize!
-        assert_equal screen.frame.size.height, point.y
-      end
-    }
+  def test_origin_on_secondary_screen_is_bottom_left_of_secondary_screen
+    skip 'You need multiple monitors for this test' if SCREENS.size < 2
+    SCREENS.each do |screen|
+      frame = screen.frame
+      point = frame.origin.dup.carbonize!
+      assert_equal (frame.size.height - frame.origin.y), point.y, screen.frame.inspect
+    end
+  end
+  def test_middle_of_secondary_screen_is_still_middle_of_secondary_screen
+    skip 'You need multiple monitors for this test' if SCREENS.size < 2
+    SCREENS.each do |screen|
+      frame = screen.frame
+      point = frame.origin
+      point.x = frame.size.width / 2
+      point.y = frame.size.height / 2
+      assert_equal point, point.dup.carbonize!
+    end
+  end
+end
+
+class TestCGPointCenterOfRect < TestCGPointExtensions
+  def test_unaltered_with_cgrectzero
+    assert_equal CGPointZero, CGPoint.center_of_rect(CGRectZero)
+  end
+  def test_middle_of_screen
+    frame = MAIN_SCREEN.frame
+    point = frame.origin.dup
+    point.x = frame.size.width / 2
+    point.y = frame.size.height / 2
+    assert_equal point, CGPoint.center_of_rect(frame)
+  end
+  def test_simple_square_starting_at_origin
+    rect  = CGRect.new( CGPoint.new(0.0, 0.0), CGSize.new(2.0, 2.0))
+    point = CGPoint.center_of_rect(rect)
+    assert_equal 1.0, point.x
+    assert_equal 1.0, point.y
+  end
+  def test_simple_square_not_at_origin
+    rect  = CGRect.new( CGPoint.new(1.0,1.0), CGSize.new(6.0,6.0) )
+    point = CGPoint.center_of_rect(rect)
+    assert_equal 3.5, point.x
+    assert_equal 3.5, point.y
+  end
+  def test_rect_not_at_origin
+    rect  = CGRect.new( CGPoint.new(1.0,2.0), CGSize.new(6.0,10.0) )
+    point = CGPoint.center_of_rect(rect)
+    assert_equal 3.5, point.x
+    assert_equal 6.0, point.y
+  end
+  def test_rect_with_negative_values
+    rect  = CGRect.new( CGPoint.new(-1.0,-2.0), CGSize.new(6.0,10.0) )
+    point = CGPoint.center_of_rect(rect)
+    assert_equal 2.5, point.x
+    assert_equal 4.0, point.y
+  end
+end
+
+class TestCGPointCenter < TestCGPointExtensions
+  def test_unaltered_with_cgrectzero
+    assert_equal CGPointZero, CGPoint.center(CGPointZero, CGSizeZero)
+  end
+  def test_simple_square_starting_at_origin
+    point = CGPoint.center(CGPoint.new(0.0, 0.0), CGSize.new(2.0, 2.0))
+    assert_equal 1.0, point.x
+    assert_equal 1.0, point.y
+  end
+  def test_simple_square_not_at_origin
+    point = CGPoint.center( CGPoint.new(1.0,1.0), CGSize.new(6.0,6.0) )
+    assert_equal 3.5, point.x
+    assert_equal 3.5, point.y
+  end
+  def test_rect_not_at_origin
+    point = CGPoint.center( CGPoint.new(1.0,2.0), CGSize.new(6.0,10.0) )
+    assert_equal 3.5, point.x
+    assert_equal 6.0, point.y
+  end
+  def test_rect_with_negative_values
+    point = CGPoint.center( CGPoint.new(-1.0,-2.0), CGSize.new(6.0,10.0) )
+    assert_equal 2.5, point.x
+    assert_equal 4.0, point.y
   end
 end
