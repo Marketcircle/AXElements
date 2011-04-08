@@ -2,10 +2,6 @@
 # Wrappers around the lower level AXUIElement functions.
 class << AX
 
-  # @todo Should this be private?
-  # @return [Regexp]
-  attr_reader :prefix
-
   # @group Attributes
 
   # @param [AXUIElementRef] element low level accessibility object

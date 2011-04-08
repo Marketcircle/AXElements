@@ -1,5 +1,11 @@
 module AX
 
+  class << self
+    # @todo Should this be private?
+    # @return [Regexp]
+    attr_reader :prefix
+  end
+
   @prefix = /[A-Z]+([A-Z][a-z])/
 
   # @return [AX::SystemWide]
