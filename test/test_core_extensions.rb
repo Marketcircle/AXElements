@@ -127,27 +127,28 @@ class TestCGPointCenterOfRect < TestCGPointExtensions
     point.y = frame.size.height / 2
     assert_equal point, CGPoint.center_of_rect(frame)
   end
+
+  def center_of_rect origin_x, origin_y, width, height
+    rect = CGRect.new(CGPoint.new(origin_x,origin_y), CGSize.new(width,height))
+    CGPoint.center_of_rect(rect)
+  end
   def test_simple_square_starting_at_origin
-    rect  = CGRect.new( CGPoint.new(0.0, 0.0), CGSize.new(2.0, 2.0))
-    point = CGPoint.center_of_rect(rect)
+    point = center_of_rect(0.0, 0.0, 2.0, 2.0)
     assert_equal 1.0, point.x
     assert_equal 1.0, point.y
   end
   def test_simple_square_not_at_origin
-    rect  = CGRect.new( CGPoint.new(1.0,1.0), CGSize.new(6.0,6.0) )
-    point = CGPoint.center_of_rect(rect)
+    point = center_of_rect(1.0, 1.0, 6.0, 6.0)
     assert_equal 3.5, point.x
     assert_equal 3.5, point.y
   end
   def test_rect_not_at_origin
-    rect  = CGRect.new( CGPoint.new(1.0,2.0), CGSize.new(6.0,10.0) )
-    point = CGPoint.center_of_rect(rect)
+    point = center_of_rect(1.0, 2.0, 6.0, 10.0)
     assert_equal 3.5, point.x
     assert_equal 6.0, point.y
   end
   def test_rect_with_negative_values
-    rect  = CGRect.new( CGPoint.new(-1.0,-2.0), CGSize.new(6.0,10.0) )
-    point = CGPoint.center_of_rect(rect)
+    point = center_of_rect(-1.0, -2.0, 6.0, 10.0)
     assert_equal 2.5, point.x
     assert_equal 4.0, point.y
   end
@@ -157,23 +158,27 @@ class TestCGPointCenter < TestCGPointExtensions
   def test_unaltered_with_cgrectzero
     assert_equal CGPointZero, CGPoint.center(CGPointZero, CGSizeZero)
   end
+
+  def center origin_x, origin_y, width, height
+    CGPoint.center(CGPoint.new(origin_x,origin_y), CGSize.new(width,height))
+  end
   def test_simple_square_starting_at_origin
-    point = CGPoint.center(CGPoint.new(0.0, 0.0), CGSize.new(2.0, 2.0))
+    point = center(0.0, 0.0, 2.0, 2.0)
     assert_equal 1.0, point.x
     assert_equal 1.0, point.y
   end
   def test_simple_square_not_at_origin
-    point = CGPoint.center( CGPoint.new(1.0,1.0), CGSize.new(6.0,6.0) )
+    point = center(1.0, 1.0, 6.0, 6.0)
     assert_equal 3.5, point.x
     assert_equal 3.5, point.y
   end
   def test_rect_not_at_origin
-    point = CGPoint.center( CGPoint.new(1.0,2.0), CGSize.new(6.0,10.0) )
+    point = center(1.0, 2.0, 6.0, 10.0)
     assert_equal 3.5, point.x
     assert_equal 6.0, point.y
   end
   def test_rect_with_negative_values
-    point = CGPoint.center( CGPoint.new(-1.0,-2.0), CGSize.new(6.0,10.0) )
+    point = center(-1.0, -2.0, 6.0, 10.0)
     assert_equal 2.5, point.x
     assert_equal 4.0, point.y
   end
