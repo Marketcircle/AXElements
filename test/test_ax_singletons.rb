@@ -1,18 +1,3 @@
-class TestAXPrefix < MiniTest::Unit::TestCase
-  def test_removes_ax_prefix
-    ret = 'AXButton'.sub(AX.prefix) { $1 }
-    assert_equal 'Button', ret
-  end
-  def test_removes_other_prefxexs
-    ret = 'MCButton'.sub(AX.prefix) { $1 }
-    assert_equal 'Button', ret
-  end
-  def test_removes_combination_prefixes
-    ret = 'AXMCButton'.sub(AX.prefix) { $1 }
-    assert_equal 'Button', ret
-  end
-end
-
 class TestAXRawAttrOfElement < MiniTest::Unit::TestCase
   def test_returns_raw_values
     ret = AX.raw_attr_of_element(DOCK, KAXChildrenAttribute)
@@ -184,29 +169,5 @@ class TestAXLogAXCall < MiniTest::Unit::TestCase
     assert_match /API Disabled/, @log_output.string
     AX.log_ax_call(DOCK, KAXErrorNotImplemented)
     assert_match /Not Implemented/, @log_output.string
-  end
-end
-
-class TestAXSYSTEM < MiniTest::Unit::TestCase
-  def test_is_the_system_wide_object
-    assert_instance_of AX::SystemWide, AX::SYSTEM
-  end
-end
-
-class TestAXDOCK < MiniTest::Unit::TestCase
-  def test_dock_is_an_application
-    assert_instance_of AX::Application, AX::DOCK
-  end
-  def test_is_the_dock_application
-    assert_equal 'Dock', AX::DOCK.title
-  end
-end
-
-class TestAXFinder < MiniTest::Unit::TestCase
-  def test_finder_is_an_application
-    assert_instance_of AX::Application, AX::FINDER
-  end
-  def test_is_the_finder_application
-    assert_equal 'Finder', AX::FINDER.title
   end
 end
