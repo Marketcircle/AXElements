@@ -7,10 +7,10 @@ class << AX
   # @param [AXUIElementRef] element low level accessibility object
   # @return [Array<String>]
   def attrs_of_element element
-    array_ptr = Pointer.new( '^{__CFArray}' )
-    code = AXUIElementCopyAttributeNames( element, array_ptr )
+    ptr = Pointer.new( '^{__CFArray}' )
+    code = AXUIElementCopyAttributeNames( element, ptr )
     log_ax_call element, code
-    array_ptr[0]
+    ptr[0]
   end
 
   ##
