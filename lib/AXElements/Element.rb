@@ -42,9 +42,9 @@ class Element
   # @param [String] name an action constant
   # @return [Boolean] true if successful
   def perform_action name
-    action = action_for name
-    raise ArgumentError, "#{name} is not an action" unless action
-    AX.perform_action_of_element( @ref, action )
+    real_action = action_for name
+    raise ArgumentError, "#{name} is not an action" unless real_action
+    action(real_action)
   end
 
   ##
@@ -53,9 +53,9 @@ class Element
   #
   # @param [Symbol] attr
   def get_param_attribute attr, param
-    attribute = param_attribute_for attr
-    raise ArgumentError, "#{attr} is not a parameterized attribute" unless attribute
-    AX.param_attr_of_element( @ref, attribute, param )
+    real_attribute = param_attribute_for attr
+    raise ArgumentError, "#{attr} is not a parameterized attribute" unless real_attribute
+    param_attribute(real_attribute, param)
   end
 
   ##
@@ -65,12 +65,12 @@ class Element
   # @param [String] attr an attribute constant
   # @return the value that you set is returned
   def set_attribute attr, value
-    attribute = attribute_for attr
-    raise ArgumentError, "#{attr} is not an attribute" unless attribute
-    unless AX.attr_of_element_writable?(attribute)
+    real_attribute = attribute_for attr
+    raise ArgumentError, "#{attr} is not an attribute" unless real_attribute
+    unless AX.attr_of_element_writable?(real_attribute)
       raise ArgumentError, "#{attr} not writable"
     end
-    AX.set_attr_of_element( @ref, attr, value )
+    self.send(:attribute=, real_attribute, value)
     value
   end
 
@@ -206,18 +206,17 @@ class Element
   protected
 
   ##
-  # @todo Should I provide {#action}, {#param_attribute}, etc. for the
-  #       sake of consistency?
-  #
   # A short path when you have the exact name of the attribute you want
   # to retrieve the value of.
   #
-  # This API is exposed for the sake of making search much faster.
-  #
-  # @param [String] name an attribute constant
-  def attribute name
-    AX.attr_of_element(@ref, name)
-  end
+  # This API exists for the sake of making search much faster.
+  def attribute name; AX.attr_of_element( @ref, name ); end
+  # This API exists to be consistent with {#attribute}.
+  def action name; AX.perform_action_of_element( @ref, name ); end
+  # This API exists to be consistent with {#attribute}.
+  def param_attribute name, param; AX.param_attr_of_element( @ref, name, param ); end
+  # This API exists to be consistent with {#attribute}.
+  def attribute= name, value; AX.set_attr_of_element( @ref, name, value ); end
 
   ##
   # Make a regexp that can match against the proper attributes
