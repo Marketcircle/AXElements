@@ -28,9 +28,9 @@ class Element
 
   # @param [Symbol] attr
   def get_attribute attr
-    attribute = attribute_for attr
-    raise ArgumentError, "#{attr} is not an attribute" unless attribute
-    AX.attr_of_element( @ref, attribute )
+    real_attribute = attribute_for attr
+    raise ArgumentError, "#{attr} is not an attribute" unless real_attribute
+    attribute(real_attribute)
   end
 
   ##
@@ -204,6 +204,20 @@ class Element
 
 
   protected
+
+  ##
+  # @todo Should I provide {#action}, {#param_attribute}, etc. for the
+  #       sake of consistency?
+  #
+  # A short path when you have the exact name of the attribute you want
+  # to retrieve the value of.
+  #
+  # This API is exposed for the sake of making search much faster.
+  #
+  # @param [String] name an attribute constant
+  def attribute name
+    AX.attr_of_element(@ref, name)
+  end
 
   ##
   # Make a regexp that can match against the proper attributes
