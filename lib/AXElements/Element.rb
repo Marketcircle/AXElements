@@ -19,7 +19,7 @@ class Element
   def actions; @actions ||= AX.actions_of_element(@ref); end
 
   # @return [Array<String>] cache of available actions
-  def param_attributes;  @param_attributes ||= AX.param_attrs_of_element(@ref); end
+  def param_attributes; @param_attributes ||= AX.param_attrs_of_element(@ref); end
 
   # @return [Fixnum]
   def pid
