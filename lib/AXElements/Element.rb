@@ -103,7 +103,7 @@ class Element
   def search element_type, filters = {}
     element_type   = element_type.to_s
     class_const    = element_type.camelize!
-    elements       = AX.attr_of_element(@ref, KAXChildrenAttribute)
+    elements       = attribute(KAXChildrenAttribute)
     search_results = []
     filters      ||= {}
 
@@ -111,9 +111,8 @@ class Element
       element          = elements.shift
       primary_filter ||= AX.plural_const_get(class_const)
 
-      # this can optimized significantly if needed
       if element.attributes.include?(KAXChildrenAttribute)
-        elements.concat( element.get_attribute :children )
+        elements.concat element.send(:attribute, KAXChildrenAttribute)
       end
 
       next unless element.class == primary_filter
