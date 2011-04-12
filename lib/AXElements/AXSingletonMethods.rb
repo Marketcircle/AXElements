@@ -257,13 +257,19 @@ class << AX
   # synchronously, etc., but there is always a problem with accessibility
   # not being ready. Hopefully this problem will go away on Lion...
   #
+  # If this method fails to find an app with the appropriate bundle
+  # identifier then it will return nil, eventually.
+  #
   # @param [String] bundle
   # @param [Float] timeout how long to wait between polling
-  # @return [AX::Application]
+  # @return [AX::Application,nil]
   def application_for_bundle_identifier bundle, sleep_time
+    sleep_count = 0
     while (apps = NSRunningApplication.runningApplicationsWithBundleIdentifier bundle).empty?
       launch_application bundle
+      return if sleep_count > 10
       sleep sleep_time
+      sleep_count += 1
     end
     application_for_pid( apps.first.processIdentifier )
   end
