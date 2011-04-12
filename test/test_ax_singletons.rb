@@ -9,6 +9,11 @@ class TestAX < MiniTest::Unit::TestCase
   DOCK     = AXUIElementCreateApplication(pid_for_app 'Dock')
   FINDER   = AXUIElementCreateApplication(pid_for_app 'Finder')
 
+  # HACK! forgive me
+  DOCK_LIST = AX.attr_of_element(DOCK, KAXChildrenAttribute).first
+  app       = DOCK_LIST.send(:attribute, KAXChildrenAttribute).first
+  DOCK_APP  = app.instance_variable_get(:@ref)
+
   def with_full_logging
     AX.log.level = Logger::DEBUG
     yield
@@ -110,10 +115,7 @@ end
 
 class TestAXElementAttributeWritable < TestAX
   def test_true_for_writable_attribute
-    list = AX.attr_of_element(DOCK, KAXChildrenAttribute).first
-    app  = list.get_attribute(:children).first
-    ref  = app.instance_variable_get(:@ref) # HACK! forgive me
-    assert AX.attr_of_element_writable?(ref, KAXSelectedAttribute)
+    assert AX.attr_of_element_writable?(DOCK_APP, KAXSelectedAttribute)
   end
   def test_false_for_non_writable_attribute
     refute AX.attr_of_element_writable?(DOCK, KAXTitleAttribute)
@@ -130,6 +132,17 @@ end
 
 class TestAXSetAttrOfElement < TestAX
   def test_
+class TestAXActionsOfElement < TestAX
+  def test_works_when_there_are_no_actions
+    assert_empty AX.actions_of_element(DOCK)
+  end
+  def test_returns_array_of_strings
+    assert_instance_of String, AX.actions_of_element(DOCK_APP).first
+  end
+  def test_make_sure_certain_actions_are_present
+    actions = AX.actions_of_element(DOCK_APP)
+    assert actions.include?(KAXPressAction)
+    assert actions.include?(KAXShowMenuAction)
   end
 end
 
@@ -145,23 +158,6 @@ end
 #   end
 # end
 
-class TestAXActionsOfElement < MiniTest::Unit::TestCase
-  def test_works_when_there_are_no_actions
-    assert_empty AX.actions_of_element(DOCK)
-  end
-  def test_returns_array_of_strings
-    list = AX.raw_attr_of_element(DOCK,KAXChildrenAttribute).first
-    app  = AX.raw_attr_of_element(list,KAXChildrenAttribute).first
-    assert_instance_of String, AX.actions_of_element(app).first
-  end
-  def test_make_sure_certain_actions_are_present
-    list = AX.raw_attr_of_element(DOCK,KAXChildrenAttribute).first
-    app  = AX.raw_attr_of_element(list,KAXChildrenAttribute).first
-    actions = AX.actions_of_element(app)
-    assert actions.include?(KAXPressAction)
-    assert actions.include?(KAXShowMenuAction)
-  end
-end
 
 class TestAXLogAXCall < MiniTest::Unit::TestCase
   def setup; super; AX.log.level = Logger::DEBUG; end
