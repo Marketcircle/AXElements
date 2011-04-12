@@ -95,10 +95,8 @@ class << AX
   def post_kb_string element, string
     string.each_char { |char|
       key_code = KEYCODE_MAP[char]
-      code = AXUIElementPostKeyboardEvent(element, 0, key_code, true)
-      log_ax_call element, code
-      code = AXUIElementPostKeyboardEvent(element, 0, key_code, false)
-      log_ax_call element, code
+      post_kb_key(element, key_code, true)
+      post_kb_key(element, key_code, false)
     }
     true
   end
@@ -304,6 +302,11 @@ class << AX
     # Misc.
     "\t" => 48, ' ' => 49, "\e"=> 53
   }
+
+  def post_kb_key element, key_code, state
+    code = AXUIElementPostKeyboardEvent(element, 0, key_code, state)
+    log_ax_call element, code
+  end
 
   ##
   # @todo print view hierarchy using {Element#pretty_print}
