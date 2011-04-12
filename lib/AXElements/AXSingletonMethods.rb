@@ -274,18 +274,6 @@ class << AX
   # @group Misc.
 
   ##
-  # @todo consider using the rails inflector
-  #
-  # Chomps off a trailing 's' if there is one and then looks up the constant.
-  #
-  # @param [#to_s] const
-  # @return [Class,nil] the class if it exists, else returns nil
-  def plural_const_get const
-    const = const.to_s.chomp 's'
-    return const_get const if const_defined? const
-  end
-
-  ##
   # Get the PID of the application that an element belongs to.
   #
   # @param [AXUIElementRef] element

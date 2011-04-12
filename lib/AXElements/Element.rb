@@ -89,6 +89,7 @@ class Element
   #       the main loop
   # @todo make search much faster by not wrapping child classes
   # @todo refactor searching, perhaps make an iterator
+  # @todo consider using the rails inflector for pluralization checking
   #
   # Perform a breadth first search through the view hierarchy rooted at
   # the current element.
@@ -104,14 +105,14 @@ class Element
   # @return [AX::Element,nil,Array<AX::Element>,Array<>]
   def search element_type, filters = {}
     element_type   = element_type.to_s
-    class_const    = element_type.camelize!
+    class_const    = element_type.camelize!.chomp('s')
     elements       = attribute(KAXChildrenAttribute)
     search_results = []
     filters      ||= {}
 
     until elements.empty?
       element          = elements.shift
-      primary_filter ||= AX.plural_const_get(class_const)
+      primary_filter ||= (AX.const_get(class_const) if AX.const_defined?(class_const))
 
       if element.attributes.include?(KAXChildrenAttribute)
         elements.concat element.send(:attribute, KAXChildrenAttribute)
