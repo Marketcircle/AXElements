@@ -222,3 +222,21 @@ class TestAXHierarchy < TestAX
     assert_instance_of AX::Application,         RET.third
   end
 end
+
+class TestAXLogAXCall < TestAX
+  def test_code_is_returned
+    assert_equal KAXErrorIllegalArgument, AX.send(:log_ax_call, DOCK, KAXErrorIllegalArgument)
+    assert_equal KAXErrorAPIDisabled, AX.send(:log_ax_call, DOCK, KAXErrorAPIDisabled)
+    assert_equal KAXErrorSuccess, AX.send(:log_ax_call, DOCK, KAXErrorSuccess)
+  end
+  def test_logs_nothing_for_success_case
+    with_full_logging { AX.send(:log_ax_call, DOCK, KAXErrorSuccess) }
+    assert_empty @log_output.string
+  end
+  def test_looks_up_code_properly
+    with_full_logging { AX.send(:log_ax_call, DOCK, KAXErrorAPIDisabled) }
+    assert_match /API Disabled/, @log_output.string
+    with_full_logging { AX.send(:log_ax_call, DOCK, KAXErrorNotImplemented) }
+    assert_match /Not Implemented/, @log_output.string
+  end
+end
