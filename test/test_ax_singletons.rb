@@ -131,7 +131,13 @@ class TestAXElementAttributeWritable < TestAX
 end
 
 class TestAXSetAttrOfElement < TestAX
-  def test_
+  # @todo these tests require me to go deep into a UI
+  # def test_set_a_text_fields_value
+  # end
+  # def test_set_a_radio_button
+  # end
+end
+
 class TestAXActionsOfElement < TestAX
   def test_works_when_there_are_no_actions
     assert_empty AX.actions_of_element(DOCK)
@@ -146,35 +152,73 @@ class TestAXActionsOfElement < TestAX
   end
 end
 
-# class TestAXPluralConstGet < MiniTest::Unit::TestCase
-#   def test_finds_things_that_are_not_pluralized
-#     refute_nil AX.plural_const_get( 'Application' )
+class TestAXPerformActionOfElement < TestAX
+  def dock_kids
+    AX.attr_of_element(DOCK_APP, KAXChildrenAttribute)
+  end
+
+  def test_performs_an_action
+    before_action_kid_count = dock_kids.count
+    AX.perform_action_of_element(DOCK_APP, KAXShowMenuAction)
+    assert dock_kids.count > before_action_kid_count
+  end
+end
+
+# # @todo these need to go pretty deep
+# class TestAXPostKBString < TestAX
+#   def test_post_to_system
 #   end
-#   def test_finds_things_that_are_pluralized_with_an_s
-#     refute_nil AX.plural_const_get( 'Applications' )
-#   end
-#   def test_returns_nil_if_the_class_does_not_exist
-#     assert_nil AX.plural_const_get( 'NonExistant' )
+#   def test_post_to_finder
 #   end
 # end
 
+# # @todo things with parameterized attributes are deep down
+# class TestAXParamAttrsOfElement < TestAX
+# end
+# class TestAXParamAttrOfElement < TestAX
+# end
 
-class TestAXLogAXCall < MiniTest::Unit::TestCase
-  def setup; super; AX.log.level = Logger::DEBUG; end
-  def teardown; AX.log.level = Logger::WARN; end
-  def test_code_is_returned
-    assert_equal KAXErrorIllegalArgument, AX.log_ax_call(DOCK, KAXErrorIllegalArgument)
-    assert_equal KAXErrorAPIDisabled, AX.log_ax_call(DOCK, KAXErrorAPIDisabled)
-    assert_equal KAXErrorSuccess, AX.log_ax_call(DOCK, KAXErrorSuccess)
+# @todo this is totally broken right now
+# class TestAXWaitForNotification < TestAX
+#   def test_wait_for_finder_prefs
+#     got_notification = false
+#     AX::FINDER.show_about_window
+#     AX.wait_for_notification(FINDER, KAXWindowCreatedNotification, 1.0) {
+#       |element, notif|
+#       got_notification = true if element.is_a?('AX::StandardWindow')
+#     }
+#     assert got_notification
+#   end
+#   def test_waits_the_given_timeout
+#   end
+# end
+
+class TestAXElementUnderMouse < MiniTest::Unit::TestCase
+  def test_returns_some_kind_of_ax_element
+    assert_kind_of AX::Element, AX.element_under_mouse
   end
-  def test_logs_nothing_for_success_case
-    AX.log_ax_call(DOCK, KAXErrorSuccess)
-    assert_empty @log_output.string
+  # @todo need to manipulate the mouse and put it in some
+  #       well known locations and make sure I get the right
+  #       element created
+end
+
+class TestAXElementAtPosition < MiniTest::Unit::TestCase
+  def test_returns_a_menubar_for_coordinates_10_0
+    item = AX.element_at_position( CGPoint.new(10, 0) )
+    assert_instance_of AX::MenuBarItem, item
   end
-  def test_looks_up_code_properly
-    AX.log_ax_call(DOCK, KAXErrorAPIDisabled)
-    assert_match /API Disabled/, @log_output.string
-    AX.log_ax_call(DOCK, KAXErrorNotImplemented)
-    assert_match /Not Implemented/, @log_output.string
+end
+
+class TestAXHierarchy < TestAX
+  RET = AX.hierarchy( DOCK_APP )
+  def test_returns_array_of_elements
+    assert_instance_of Array, RET
+    assert_kind_of     AX::Element, RET.first
+  end
+  def test_correctness
+    assert_equal 3, RET.size
+    assert_instance_of AX::ApplicationDockItem, RET.first
+    assert_instance_of AX::List,                RET.second
+    assert_instance_of AX::Application,         RET.third
   end
 end
