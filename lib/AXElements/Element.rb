@@ -158,8 +158,12 @@ class Element
   end
 
   ##
+  # @todo Need to provide a nice interface for taking notif names
+  #       (i.e. `:window_created` instead of `KAXWindowCreatedNotification`)
+  #
   # Optimized under the assumption that you will be passing a block much
   # less frequently than not.
+  #
   # @yield
   # @yieldreturn [Boolean]
   # @param [String] notif
@@ -169,6 +173,8 @@ class Element
   end
 
   ##
+  # @todo Move prefix stripping to the AX module.
+  #
   # Overriden to produce cleaner output.
   def inspect
     nice_methods = attributes.map { |name|

@@ -1,4 +1,7 @@
 ##
+# @todo Add a method that takes an array of constants and returns
+#       the "ruby" name for the constant (i.e. 'AXWindow' becomes 'Window')
+#
 # Wrappers around the lower level AXUIElement functions.
 class << AX
 
@@ -155,7 +158,12 @@ class << AX
   ##
   # @todo kAXUIElementDestroyedNotification look at it for catching
   #       windows that disappear
-  # @todo mirror this method in Kernel
+  # @todo Provide an interface that takes a PID instead of an element?
+  # @todo This method needs to change to work properly; there needs to
+  #       be two steps to waiting for notification: registration and
+  #       then waiting. This is so you can guarantee that the registration
+  #       happens before the event. Otherwise this only works in cases
+  #       where the notif triggering is async.
   # @note This method is not thread safe right now
   #
   # [Notifications](../../file/Notifications.markdown) are a way to put

@@ -25,7 +25,7 @@ class Application < AX::Element
     # @param [Float] timeout how long to wait between polling
     # @return [AX::Application]
     def self.application_with_bundle_identifier bundle, sleep_time = 2
-      AX.application_for_bundle_identifier bundle, sleep_time
+      AX.application_for_bundle_identifier(bundle, sleep_time)
     end
 
 
@@ -48,7 +48,7 @@ class Application < AX::Element
 
   ##
   # @todo This method needs a fall back procedure if the app does not
-  #       have a dock icon
+  #       have a dock icon (i.e. the dock doesn't have a dock icon)
   #
   # The inherited {Element#set_focus} will not work for applications,
   # so we will just get focus by "clicking" the dock icon for the app.
