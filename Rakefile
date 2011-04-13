@@ -40,3 +40,9 @@ task :install => :build do Gem::Installer.new(spec.file_name).install end
 # task :garden do
 #   sh 'yard graph --full --dependencies --dot="-Tpng:quartz" -f docs/images/AX.png'
 # end
+
+desc 'Start up IRb with AXElements loaded'
+task :console do
+  irb = ENV['RUBY_VERSION'] ? 'irb' : 'macirb'
+  sh "#{irb} -Ilib -rAXElements"
+end
