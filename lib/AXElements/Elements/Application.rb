@@ -59,11 +59,14 @@ class Application < AX::Element
   end
 
   ##
+  # @todo return the element for the window?
+  #
   # A macro for showing the About window for an app.
   def show_about_window
     self.set_focus
-    self.menu_bar_item(title:(self.title)).press
-    self.menu_bar.menu_item(title: "About #{self.title}").press
+    Kernel.press self.menu_bar_item(title:(self.title))
+    Kernel.press self.menu_bar.menu_item(title: "About #{self.title}")
+  end
   end
 
   ##
