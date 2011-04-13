@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 module AX
 
 ##
@@ -67,6 +68,16 @@ class Application < AX::Element
     Kernel.press self.menu_bar_item(title:(self.title))
     Kernel.press self.menu_bar.menu_item(title: "About #{self.title}")
   end
+
+  ##
+  # @todo return the element for the window?
+  # @todo handle cases where an app has no prefs?
+  #
+  # A macro for showing the About window for an app.
+  def show_preferences_window
+    self.set_focus
+    Kernel.press self.menu_bar_item(title:(self.title))
+    Kernel.press self.menu_bar.menu_item(title:'Preferences…')
   end
 
   ##
