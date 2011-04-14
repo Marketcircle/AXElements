@@ -419,8 +419,7 @@ class << AX
   # @param [#to_sym] const the value you want as a constant
   # @return [Class] a reference to the class being looked up
   def new_const_get const
-    return const_get const if const_defined? const
-    create_ax_class const
+    const_defined?(const) ? const_get(const) : create_ax_class(const)
   end
 
   ##
