@@ -6,13 +6,13 @@ class TestAX < MiniTest::Unit::TestCase
     end
   end
 
-  DOCK     = AXUIElementCreateApplication(pid_for_app 'Dock')
-  FINDER   = AXUIElementCreateApplication(pid_for_app 'Finder')
+  DOCK         = AXUIElementCreateApplication(pid_for_app 'Dock')
+  FINDER       = AXUIElementCreateApplication(pid_for_app 'Finder')
 
   # HACK! forgive me
-  DOCK_LIST = AX.attr_of_element(DOCK, KAXChildrenAttribute).first
-  app       = DOCK_LIST.send(:attribute, KAXChildrenAttribute).first
-  DOCK_APP  = app.instance_variable_get(:@ref)
+  DOCK_LIST    = AX.attr_of_element(DOCK, KAXChildrenAttribute).first
+  DOCK_APP     = DOCK_LIST.send(:attribute, KAXChildrenAttribute).first
+  RAW_DOCK_APP = DOCK_APP.instance_variable_get(:@ref)
 
   def with_full_logging
     AX.log.level = Logger::DEBUG
@@ -115,7 +115,7 @@ end
 
 class TestAXElementAttributeWritable < TestAX
   def test_true_for_writable_attribute
-    assert AX.attr_of_element_writable?(DOCK_APP, KAXSelectedAttribute)
+    assert AX.attr_of_element_writable?(RAW_DOCK_APP, KAXSelectedAttribute)
   end
   def test_false_for_non_writable_attribute
     refute AX.attr_of_element_writable?(DOCK, KAXTitleAttribute)
@@ -143,10 +143,10 @@ class TestAXActionsOfElement < TestAX
     assert_empty AX.actions_of_element(DOCK)
   end
   def test_returns_array_of_strings
-    assert_instance_of String, AX.actions_of_element(DOCK_APP).first
+    assert_instance_of String, AX.actions_of_element(RAW_DOCK_APP).first
   end
   def test_make_sure_certain_actions_are_present
-    actions = AX.actions_of_element(DOCK_APP)
+    actions = AX.actions_of_element(RAW_DOCK_APP)
     assert actions.include?(KAXPressAction)
     assert actions.include?(KAXShowMenuAction)
   end
@@ -154,12 +154,12 @@ end
 
 class TestAXPerformActionOfElement < TestAX
   def dock_kids
-    AX.attr_of_element(DOCK_APP, KAXChildrenAttribute)
+    AX.attr_of_element(RAW_DOCK_APP, KAXChildrenAttribute)
   end
 
   def test_performs_an_action
     before_action_kid_count = dock_kids.count
-    AX.perform_action_of_element(DOCK_APP, KAXShowMenuAction)
+    AX.perform_action_of_element(RAW_DOCK_APP, KAXShowMenuAction)
     assert dock_kids.count > before_action_kid_count
   end
 end
