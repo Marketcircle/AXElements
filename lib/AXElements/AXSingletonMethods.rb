@@ -164,7 +164,8 @@ class << AX
   #       then waiting. This is so you can guarantee that the registration
   #       happens before the event. Otherwise this only works in cases
   #       where the notif triggering is async.
-  # @note This method is not thread safe right now
+  # @note This method is not thread safe right now, it is the only class
+  #       method in AX that uses stored state
   #
   # [Notifications](../../file/Notifications.markdown) are a way to put
   # non-polling delays into your scripts (sorta).
