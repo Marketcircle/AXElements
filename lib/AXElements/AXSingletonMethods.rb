@@ -445,12 +445,13 @@ class << AX
   # @return [String]
   def class_name element
     attrs = attrs_of_element(element)
-    [KAXSubroleAttribute,KAXRoleAttribute].map { |attr|
+    [KAXSubroleAttribute,KAXRoleAttribute].each { |attr|
       if attrs.include?(attr)
-          value = raw_attr_of_element(element, attr)
+        value = raw_attr_of_element(element, attr)
         return value if value
       end
     }
+    raise "Found an element that has no role: #{CFShow(element)}"
   end
 
   ##
