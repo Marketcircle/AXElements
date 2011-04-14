@@ -6,8 +6,11 @@ class TestAX < MiniTest::Unit::TestCase
     end
   end
 
-  DOCK         = AXUIElementCreateApplication(pid_for_app 'Dock')
-  FINDER       = AXUIElementCreateApplication(pid_for_app 'Finder')
+  APPS         = NSWorkspace.sharedWorkspace.runningApplications
+  DOCK_PID     = pid_for_app 'Dock'
+  DOCK         = AXUIElementCreateApplication(DOCK_PID)
+  FINDER_PID   = pid_for_app 'Finder'
+  FINDER       = AXUIElementCreateApplication(FINDER_PID)
 
   # HACK! forgive me
   DOCK_LIST    = AX.attr_of_element(DOCK, KAXChildrenAttribute).first
@@ -220,6 +223,29 @@ class TestAXHierarchy < TestAX
     assert_instance_of AX::ApplicationDockItem, RET.first
     assert_instance_of AX::List,                RET.second
     assert_instance_of AX::Application,         RET.third
+  end
+end
+
+class TestAXApplicationForPID < TestAX
+  def test_makes_an_app
+    assert_instance_of AX::Application, AX.application_for_pid(FINDER_PID)
+  end
+end
+
+class TestAXApplicationForBundleIdentifier < TestAX
+  BUNDLE_ID = 'com.apple.systemuiserver'
+  def test_makes_an_app
+    ret = AX.application_for_bundle_identifier(BUNDLE_ID, 0)
+    assert_instance_of AX::Application, ret
+  end
+end
+
+class TestAXPIDOfElement < TestAX
+  def test_pid_of_app
+    assert_equal FINDER_PID, AX.pid_of_element(FINDER)
+  end
+  def test_pid_of_dock_app_is_docks_pid
+    assert_equal DOCK_PID, AX.pid_of_element(RAW_DOCK_APP)
   end
 end
 
