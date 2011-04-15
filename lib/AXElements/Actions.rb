@@ -38,7 +38,6 @@ module Kernel
   # @param [Hash] changes
   # @return [nil]
   def set element, changes
-    raise ArgumentError unless element.kind_of?(AX::Element)
     changes.each_pair do |attr_symbol, value|
       element.set_attribute attr_symbol, value
     end
