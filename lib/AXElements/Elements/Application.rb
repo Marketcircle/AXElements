@@ -8,11 +8,6 @@ class Application < AX::Element
   class << self
 
     ##
-    # @todo Find a way for this method to work without sleeping;
-    #       consider looping begin/rescue/end until AX starts up
-    # @todo Search NSWorkspace.sharedWorkspace.runningApplications ?
-    # @todo add another app launching method using app names
-    #
     # This is the standard way of creating an application object. It will
     # launch the app if it is not already running and then create the
     # accessibility object.
