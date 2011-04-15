@@ -56,6 +56,9 @@ class TestNSMutableStringCamelizeBang < MiniTest::Unit::TestCase
     assert_equal 'MethodName',  'MethodName'.camelize!
     assert_equal 'Name',        'Name'.camelize!
   end
+  def test_nil_if_empty_string
+    assert_nil ''.camelize!
+  end
 end
 
 class TestNSStringPredicate < MiniTest::Unit::TestCase

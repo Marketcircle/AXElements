@@ -61,7 +61,9 @@ class NSMutableString
   # is a fairly hot method and should perform well; by running in
   # place we save an allocation (which is slow on MacRuby right now).
   #
-  # @return [String] returns `self`
+  # Returns nil the string was empty.
+  #
+  # @return [String,nil] returns `self`
   def camelize!
     gsub! /(?:^|_)(.)/ do $1.upcase end
   end
