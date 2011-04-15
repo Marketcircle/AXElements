@@ -29,21 +29,6 @@ class Application < AX::Element
       AX.application_for_bundle_identifier(bundle, sleep_time)
     end
 
-
-    private
-
-    ##
-    # This method uses asynchronous method calls to launch applications.
-    #
-    # @param [String] bundle the bundle identifier for the app
-    # @return [Boolean]
-    def self.launch_application bundle
-      AX.log.info "Launching app with bundleID '#{bundle}'"
-      NSWorkspace.sharedWorkspace.launchAppWithBundleIdentifier bundle,
-                                                        options:NSWorkspaceLaunchAsync,
-                                 additionalEventParamDescriptor:nil,
-                                               launchIdentifier:nil
-    end
   end
 
 

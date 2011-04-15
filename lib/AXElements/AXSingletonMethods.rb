@@ -518,4 +518,17 @@ class << AX
     log_ax_call element, code
   end
 
+  ##
+  # This method uses asynchronous method calls to launch applications.
+  #
+  # @param [String] bundle the bundle identifier for the app
+  # @return [Boolean]
+  def launch_application bundle
+    log.info "Launching app with bundleID '#{bundle}'"
+    NSWorkspace.sharedWorkspace.launchAppWithBundleIdentifier bundle,
+                                                      options:NSWorkspaceLaunchAsync,
+                               additionalEventParamDescriptor:nil,
+                                             launchIdentifier:nil
+  end
+
 end
