@@ -238,6 +238,18 @@ class TestAXApplicationForBundleIdentifier < TestAX
     ret = AX.application_for_bundle_identifier(BUNDLE_ID, 0)
     assert_instance_of AX::Application, ret
   end
+  # # @todo this requires launching an app that is not loaded
+  # def test_launches_app_if_not_running
+  #   # skip 'This test is too invasive, need to find another way or add a test option'
+  #   # while true
+  #   #   mails = NSRunningApplication.runningApplicationsWithBundleIdentifier 'com.apple.mail'
+  #   #   break if mails.empty?
+  #   #   mails.first.terminate
+  #   # end
+  #   # AX::Application.application_with_bundle_identifier 'com.apple.mail'
+  #   # mails = NSRunningApplication.runningApplicationsWithBundleIdentifier 'com.apple.mail'
+  #   # mails.should_not be_empty
+  # end
 end
 
 class TestAXPIDOfElement < TestAX
