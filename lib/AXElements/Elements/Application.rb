@@ -48,17 +48,6 @@ class Application < AX::Element
 
 
   ##
-  # @todo This method needs a fall back procedure if the app does not
-  #       have a dock icon (i.e. the dock doesn't have a dock icon)
-  #
-  # The inherited {Element#set_focus} will not work for applications,
-  # so we will just get focus by "clicking" the dock icon for the app.
-  #
-  # @return [Boolean] true if successful, otherwise unpredictable
-  def set_focus
-    AX::DOCK.application_dock_item(title: title).perform_action(:press)
-  end
-
   ##
   # @todo return the element for the window?
   #
@@ -95,6 +84,16 @@ class Application < AX::Element
 
   def post_kb_string string
     AX.post_kb_string( @ref, string )
+  end
+
+
+  private
+
+  ##
+  # @todo This method needs a fall back procedure if the app does not
+  #       have a dock icon (i.e. the dock doesn't have a dock icon)
+  def set_focus
+    AX::DOCK.application_dock_item(title: title).perform_action(:press)
   end
 
 end
