@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 require 'AXElements/Mouse'
 
 ##
@@ -132,6 +133,27 @@ module Kernel
   def right_click element = nil
     move_mouse_to element if element
     Mouse.right_click
+  end
+
+  ##
+  # @todo return the element for the window?
+  #
+  # A macro for showing the About window for an app.
+  def show_about_window_for app
+    app.set_focus
+    press app.menu_bar_item(title:(app.title))
+    press app.menu_bar.menu_item(title: "About #{app.title}")
+  end
+
+  ##
+  # @todo return the element for the window?
+  # @todo handle cases where an app has no prefs?
+  #
+  # A macro for showing the About window for an app.
+  def show_preferences_window_for app
+    app.set_focus
+    press app.menu_bar_item(title:(app.title))
+    press app.menu_bar.menu_item(title:'Preferences…')
   end
 
 end
