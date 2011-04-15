@@ -6,7 +6,7 @@ module AX
     attr_reader :prefix
   end
 
-  @prefix = /[A-Z]+([A-Z][a-z])/
+  @prefix = /^[A-Z]+([A-Z][a-z])/
 
   # @return [AX::SystemWide]
   SYSTEM = element_attribute AXUIElementCreateSystemWide()
