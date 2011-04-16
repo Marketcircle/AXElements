@@ -235,7 +235,8 @@ class Element
   def param_attribute_for sym; constant_for sym, param_attributes; end
 
   ##
-  # Match a symbol to a attribute/action constant a suffix of an action constant
+  # Match a symbol to a attribute/action constant a suffix of an action
+  # constant.
   #
   # @return [String,nil]
   def constant_for sym, array
