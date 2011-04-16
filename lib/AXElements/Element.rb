@@ -69,7 +69,7 @@ class Element
   def set_attribute attr, value
     real_attribute = attribute_for attr
     raise ArgumentError, "#{attr} is not an attribute" unless real_attribute
-    unless AX.attr_of_element_writable?(real_attribute)
+    unless AX.attr_of_element_writable?(@ref, real_attribute)
       raise ArgumentError, "#{attr} not writable"
     end
     self.send(:attribute=, real_attribute, value)
