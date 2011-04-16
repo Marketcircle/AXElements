@@ -1,10 +1,11 @@
 class TestAXPrefix < MiniTest::Unit::TestCase
   def test_removes_ax_prefix; prefix_test 'AXButton', 'Button'; end
-  def test_removes_other_prefxexs; prefix_test 'MCButton', 'Button'; end
-  def test_removes_combination_prefixes; prefix_test 'AXMCButton', 'Button'; end
+  def test_removes_combination_prefixes; prefix_test 'MCAXButton', 'Button'; end
+  def test_works_with_all_caps; prefix_test 'AXURL', 'URL'; end
+  def test_works_with_long_name; prefix_test 'AXIsApplicationRunning', 'IsApplicationRunning'; end
+  def test_is_not_greedy; prefix_test 'AXMAX', 'MAX'; end
   def prefix_test before, after
-    ret = before.sub(AX.prefix) { $1 }
-    assert_equal after, ret
+    assert_equal after, before.sub(AX.prefix, '')
   end
 end
 

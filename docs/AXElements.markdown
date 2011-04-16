@@ -57,3 +57,10 @@ hierarchy is the
 [Accessibility Inspector](file:///Developer/Applications/Utilities/Accessibility%20Tools/).
 The inspector can be used to quickly understand the accessibility
 layout of an app.
+
+## Adding Accessibility To Your Own Apps
+
+If you need/want to add accessibility to your own applications, you
+will need to make sure you follow some simple rules:
+
+* Constants need to have a namespace prefix that ends with AX (e.g. MCAX)
