@@ -1,13 +1,5 @@
 module AX
 
-  class << self
-    # @todo Should this be private?
-    # @return [Regexp]
-    attr_reader :prefix
-  end
-
-  @prefix = /^[A-Z]*?AX/.freeze
-
   # @return [AX::SystemWide]
   SYSTEM = element_attribute AXUIElementCreateSystemWide()
 

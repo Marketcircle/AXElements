@@ -173,11 +173,9 @@ class Element
   end
 
   ##
-  # @todo Move prefix stripping to the AX module.
-  #
   # Overriden to produce cleaner output.
   def inspect
-    nice_methods = attributes.map { |name| name.sub(AX.prefix,'') }
+    nice_methods = attributes.map { |name| AX.strip_prefix name }
     "\#<#{self.class} @methods=#{nice_methods}>"
   end
 
@@ -243,7 +241,7 @@ class Element
   def constant_for sym, array
     suffix = matcher(sym)
     array.find { |const|
-      const.sub(AX.prefix,'').caseInsensitiveCompare(suffix) == NSOrderedSame
+      AX.strip_prefix(const).caseInsensitiveCompare(suffix) == NSOrderedSame
     }
   end
 

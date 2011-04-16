@@ -297,6 +297,15 @@ class << AX
     ptr[0]
   end
 
+  ##
+  # Remove the namespace prefix from an accessibility constant.
+  #
+  # @param [String] constant
+  # @return [String]
+  def strip_prefix constant
+    constant.sub(/^[A-Z]*?AX/, '')
+  end
+
   # @endgroup
 
 
@@ -460,7 +469,7 @@ class << AX
   # @param [AXUIElementRef] element
   # @return [Element]
   def element_attribute element
-    klass = class_name(element).sub(@prefix) { $1 }
+    klass = strip_prefix class_name(element)
     new_const_get(klass).new(element)
   end
 

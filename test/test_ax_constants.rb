@@ -5,7 +5,7 @@ class TestAXPrefix < MiniTest::Unit::TestCase
   def test_works_with_long_name; prefix_test 'AXIsApplicationRunning', 'IsApplicationRunning'; end
   def test_is_not_greedy; prefix_test 'AXMAX', 'MAX'; end
   def prefix_test before, after
-    assert_equal after, before.sub(AX.prefix, '')
+    assert_equal after, AX.strip_prefix(before)
   end
 end
 
