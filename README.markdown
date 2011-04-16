@@ -6,6 +6,16 @@ describes user interactions.
 
 ## General TODO
 
+- better super class choosing when creating classes at run time
+  + a close button should be the subclass of a button, but you may
+  need to also create the button class, but in this case superclass
+  should be the general role of the element
+- tests should never need to call private methods or inspect state
+  that is not normally exposed
+- change AX.perform\_action\_of\_element to AX.action\_of\_element
+  + various other API name changes to make AX have a consistent naming
+  scheme
+- add direct accessors to AX::Element (when the exact constant name is known)
 
 ## Contributing to AXElements
 

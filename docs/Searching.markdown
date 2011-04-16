@@ -14,7 +14,7 @@ results of the search: pluralization and filtering.
 
 Filtering is the important part of a search. The first argument of this
 method, the element\_type, is the first, and only mandatory, filter;
-the element_type filters on the class of an element.
+the element\_type filters on the class of an element.
 
 Additional filters are specified as key/value pairs, where the key is a
 method to call on a child element and the value must match or the child
