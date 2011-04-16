@@ -197,8 +197,7 @@ class Element
   # attribute lookups, but will return false on potential
   # search names.
   def respond_to? name
-    pattern = matcher(name)
-    return true if attributes.find { |meth| meth.match(pattern) }
+    return true if attribute_for(name)
     super
   end
 
@@ -227,10 +226,12 @@ class Element
   def attribute= name, value; AX.set_attr_of_element( @ref, name, value ); end
 
   ##
-  # Make a regexp that can match against the proper attributes
-  # and/or actions for an AX::Element object.
+  # Make a string that should match the suffix of a attribute/action
+  # constant from an AX::Element object.
   def matcher name
-    /#{name.to_s.gsub(/_|\?$/, '')}$/i
+    name = name.to_s
+    name = "Is#{name}" if name.chomp!('?')
+    name.delete('_')
   end
 
   def attribute_for sym;       constant_for sym, attributes;       end
@@ -238,15 +239,14 @@ class Element
   def param_attribute_for sym; constant_for sym, param_attributes; end
 
   ##
-  # Match a symbol/string as a suffix of an action constant
+  # Match a symbol to a attribute/action constant a suffix of an action constant
+  #
   # @return [String,nil]
   def constant_for sym, array
-    pattern = matcher(sym)
-    matches = array.find_all { |const| const.match(pattern) }
-    unless matches.empty?
-      matches.sort_by(&:length) if matches.size > 1
-      matches.first
-    end
+    suffix = matcher(sym)
+    array.find { |const|
+      const.sub(AX.prefix,'').caseInsensitiveCompare(suffix) == NSOrderedSame
+    }
   end
 
 end
