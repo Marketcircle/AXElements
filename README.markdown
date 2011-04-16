@@ -12,6 +12,9 @@ describes user interactions.
   should be the general role of the element
 - tests should never need to call private methods or inspect state
   that is not normally exposed
+  + this can be done by tiering the test suite and relying on API from
+  the lower tier (higher tier tests will not run until after the lower
+  tier finishes and passes)
 - change AX.perform\_action\_of\_element to AX.action\_of\_element
   + various other API name changes to make AX have a consistent naming
   scheme
