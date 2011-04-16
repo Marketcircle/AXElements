@@ -3,7 +3,6 @@ $LOAD_PATH.unshift(File.join(File.dirname(__FILE__), '..', 'vendor_test'))
 
 require 'AXElements'
 require 'StringIO'
-require 'fileutils'
 require 'minitest/autorun'
 
 $init_output = StringIO.new

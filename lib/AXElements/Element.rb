@@ -241,9 +241,9 @@ class Element
   # @return [String,nil]
   def constant_for sym, array
     suffix = matcher(sym)
-    array.find { |const|
+    array.find do |const|
       AX.strip_prefix(const).caseInsensitiveCompare(suffix) == NSOrderedSame
-    }
+    end
   end
 
 end

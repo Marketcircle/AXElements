@@ -36,7 +36,7 @@ module Kernel
   #
   # @param [AX::Element] element
   # @param [Hash] changes
-  # @return [nil]
+  # @return [nil] do not rely on a return value
   def set element, changes
     changes.each_pair do |attr_symbol, value|
       element.set_attribute attr_symbol, value
