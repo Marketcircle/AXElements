@@ -1,5 +1,4 @@
-Keyboard Events
-===============
+# Keyboard Events
 
 In some cases you cannot, or do not want to,  set the value of a field
 directly by assigning to the accessibility object's value
@@ -12,8 +11,7 @@ Key codes are independant of the layout in the sense that they are
 absolute key positions on the keyboard and that different layouts will
 fuck things up differently.
 
-Escape Sequences
-----------------
+## Escape Sequences
 
 A number of custom escape sequences have been added in order to allow easy
 encoding of all key sequences/combinations.

@@ -1,5 +1,4 @@
-Notifications
-=============
+# Notifications
 
 Notifications are a tool that you can use to add a delay in script
 that waits until a certain event happens, such as waiting for a web

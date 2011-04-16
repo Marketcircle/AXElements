@@ -1,5 +1,4 @@
-Searching
-=========
+# Searching
 
 Searching the view hierarchy is the most powerful idea that this
 toolkit provides by _significantly_ simplifying the process of

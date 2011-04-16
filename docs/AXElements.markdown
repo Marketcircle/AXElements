@@ -1,5 +1,4 @@
-AXElements
-===================
+# AXElements
 
 AXElements is a DSL abstraction built on top of the Mac OS X
 Accessibility Framework that allows code to be written in a very
@@ -11,8 +10,7 @@ typing, clicking, or the various other ways in which a user can
 interact with the computer.
 
 
-Getting Started
-===============
+## Getting Started
 
 Though it is not required, it would be beneficial to first read
 Apple's
@@ -36,21 +34,18 @@ represents an application.
     AX::Application.application_with_bundle_identifier 'com.apple.mail'
 
 
-Concepts
-========
+## Concepts
 
 The important thing to note from the previous section is the idea of
 changing state and then verifying it.
 
-Mouse Stuff
-===========
+## Mouse Stuff
 
 All the different ways in which you can click on an object. See
 [Mouse Events](./MouseEvents.markdown) for more detailed documentation
 on how to manipulate the mouse.
 
-Tools
-=====
+## Tools
 
 One of the most helpful tools for understanding the layout of the view
 hierarchy is the
