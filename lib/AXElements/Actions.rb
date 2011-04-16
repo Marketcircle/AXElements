@@ -46,8 +46,6 @@ module Kernel
 
   alias_method :ax_method_missing, :method_missing
   ##
-  # @todo mouse manipulation, search Mouse namespace first
-  #
   # Ideally this method would return a reference to `self`, but since
   # this method inherently causes state change, the reference to `self`
   # may no longer be valid. An example of this would be pressing the
