@@ -6,6 +6,7 @@ module AX
     attr_reader :prefix
   end
 
+  # this does not work with AXURL...fffuuuuuu
   @prefix = /^[A-Z]+([A-Z][a-z])/
 
   # @return [AX::SystemWide]
