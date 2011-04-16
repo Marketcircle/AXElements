@@ -206,9 +206,9 @@ class Element
   # @todo FINISH THIS METHOD
   #
   # Like {#respond_to?}, this is overriden to include attribute methods.
-#  def methods include_super = false, include_objc_super = false
-#    super
-#  end
+  # def methods include_super = false, include_objc_super = false
+  #   super
+  # end
 
 
   protected
