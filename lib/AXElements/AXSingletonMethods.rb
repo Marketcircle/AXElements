@@ -298,12 +298,17 @@ class << AX
   end
 
   ##
-  # Remove the namespace prefix from an accessibility constant.
+  # @note In the case of a predicate name, this will strip the 'Is'
+  #       part of the name if it is present (e.g. AXIsApplicationEnabled
+  #       becomes ApplicationEnabled, and AXEnabled becomes Enabled)
+  #
+  # Duplicates the accessibility constant and removes the namespace prefix
+  # from it (e.g. AXTitle becomes Title).
   #
   # @param [String] constant
   # @return [String]
   def strip_prefix constant
-    constant.sub(/^[A-Z]*?AX/, '')
+    constant.sub(/^[A-Z]*?AX(?:Is)?/, '')
   end
 
   # @endgroup

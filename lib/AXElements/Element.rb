@@ -226,7 +226,7 @@ class Element
   # constant from an AX::Element object.
   def matcher name
     name = name.to_s
-    name = "Is#{name}" if name.chomp!('?')
+    name.chomp!('?')
     name.delete('_')
   end
 
