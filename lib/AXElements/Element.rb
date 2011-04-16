@@ -177,9 +177,7 @@ class Element
   #
   # Overriden to produce cleaner output.
   def inspect
-    nice_methods = attributes.map { |name|
-      name.sub(AX.prefix) { $1 }
-    }
+    nice_methods = attributes.map { |name| name.sub(AX.prefix,'') }
     "\#<#{self.class} @methods=#{nice_methods}>"
   end
 
