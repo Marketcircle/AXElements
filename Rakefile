@@ -22,20 +22,15 @@ task :tier1 => ['test:tier1']
 desc 'Second level of regression tests'
 task :tier2 => [:tier1, 'test:tier2']
 
-desc 'The testing tier tasks'
-namespace :test do
-  require 'rake/testtask'
-  Rake::TestTask.new(:tier1) do |t|
-    t.libs << 'test'
-    t.pattern = 'test/tier1/*.rb'
-    t.ruby_opts = ['-rhelper']
-    t.verbose = true
-  end
-  Rake::TestTask.new(:tier2) do |t|
-    t.libs << 'test'
-    t.pattern = 'test/tier2/*.rb'
-    t.ruby_opts = ['-rhelper']
-    t.verbose = true
+require 'rake/testtask'
+[:tier1, :tier2].each do |tier|
+  namespace :test do
+    Rake::TestTask.new(tier) do |t|
+      t.libs << 'test'
+      t.pattern = "test/#{tier}/*.rb"
+      t.ruby_opts = ['-rhelper']
+      t.verbose = true
+    end
   end
 end
 
