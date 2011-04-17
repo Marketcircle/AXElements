@@ -15,12 +15,30 @@ task :clean do
   end
 end
 
-require 'rake/testtask'
-Rake::TestTask.new do |t|
-  t.libs << 'test'
-  t.pattern = 'test/**/*.rb'
-  t.verbose = true
+
+task :test  => [:tier1, :tier2]
+desc 'First level of regression tests'
+task :tier1 => ['test:tier1']
+desc 'Second level of regression tests'
+task :tier2 => [:tier1, 'test:tier2']
+
+desc 'The testing tier tasks'
+namespace :test do
+  require 'rake/testtask'
+  Rake::TestTask.new(:tier1) do |t|
+    t.libs << 'test'
+    t.pattern = 'test/tier1/*.rb'
+    t.ruby_opts = ['-rhelper']
+    t.verbose = true
+  end
+  Rake::TestTask.new(:tier2) do |t|
+    t.libs << 'test'
+    t.pattern = 'test/tier2/*.rb'
+    t.ruby_opts = ['-rhelper']
+    t.verbose = true
+  end
 end
+
 
 require 'rubygems'
 require 'rubygems/builder'

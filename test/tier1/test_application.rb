@@ -1,6 +1,5 @@
 class TestAXApplication < MiniTest::Unit::TestCase
 
-
   def test_is_subclass_of_element
     assert AX::Application.ancestors.include?(AX::Element)
   end

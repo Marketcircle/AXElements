@@ -1,8 +1,8 @@
-$LOAD_PATH.unshift(File.dirname(__FILE__))
-$LOAD_PATH.unshift(File.join(File.dirname(__FILE__), '..', 'vendor_test'))
-
 require 'AXElements'
+
 require 'StringIO'
+
+$LOAD_PATH.unshift(File.join(File.dirname(__FILE__), '..', 'vendor_test'))
 require 'minitest/autorun'
 
 $init_output = StringIO.new
@@ -17,7 +17,7 @@ end
 
 
 ##
-# Import of minitest/pride from macruby-minitest-pride
+# Import of minitest/pride from minitest-macruby-pride
 class PrideIO
   attr_reader :io
   COLORS = (31..36).to_a
