@@ -9,8 +9,7 @@ end
 desc 'Clean MacRuby binaries'
 task :clean do
   FileList["lib/**/*.rbo"].each do |bin|
-    puts "rm #{bin}"
-    rm bin
+    puts rm bin
   end
 end
 
