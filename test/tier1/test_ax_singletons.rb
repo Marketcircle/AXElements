@@ -1,9 +1,6 @@
 class TestAX < MiniTest::Unit::TestCase
-  class << self
-    def pid_for_app name
-      apps = NSWorkspace.sharedWorkspace.runningApplications
-      apps.find { |app| app.localizedName == name }.processIdentifier
-    end
+  def self.pid_for_app name
+    APPS.find { |app| app.localizedName == name }.processIdentifier
   end
 
   APPS         = NSWorkspace.sharedWorkspace.runningApplications
