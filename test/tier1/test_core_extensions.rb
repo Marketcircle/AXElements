@@ -100,7 +100,7 @@ class TestCGPointCarbonizeBang < TestCGPointExtensions
     assert_equal point, point.dup.carbonize!
   end
   def test_origin_on_secondary_screen_is_bottom_left_of_secondary_screen
-    skip 'You need multiple monitors for this test' if SCREENS.size < 2
+    skip 'You need multiple monitors for this test' if SCREENS.count < 2
     SCREENS.each do |screen|
       frame = screen.frame
       point = frame.origin.dup.carbonize!
@@ -108,7 +108,7 @@ class TestCGPointCarbonizeBang < TestCGPointExtensions
     end
   end
   def test_middle_of_secondary_screen_is_still_middle_of_secondary_screen
-    skip 'You need multiple monitors for this test' if SCREENS.size < 2
+    skip 'You need multiple monitors for this test' if SCREENS.count < 2
     SCREENS.each do |screen|
       frame = screen.frame
       point = frame.origin
