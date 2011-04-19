@@ -1,4 +1,3 @@
-require 'rake'
 task :default => :test
 
 require 'rake/compiletask'
