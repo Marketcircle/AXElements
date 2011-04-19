@@ -108,18 +108,19 @@ class CGPoint
   # @param [CGRect] rect
   # @return [CGPoint]
   def self.center_of_rect rect
-    CGPoint.center rect.origin, rect.size
+    center rect.origin, rect.size
   end
 
   ##
-  # Get in the center of a size with an origin.
+  # Get in the center of a rectangle, specified with an origin and
+  # a size.
   #
   # @param [CGPoint] origin
   # @param [CGSize] size
   # @return [CGPoint]
   def self.center origin, size
-    x = origin.x + ((size.width  - origin.x) / 2.0)
-    y = origin.y + ((size.height - origin.y) / 2.0)
-    CGPoint.new(x, y)
+    x = origin.x + (size.width / 2.0)
+    y = origin.y + (size.height / 2.0)
+    new(x, y)
   end
 end

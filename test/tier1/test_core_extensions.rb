@@ -135,25 +135,30 @@ class TestCGPointCenterOfRect < TestCGPointExtensions
     rect = CGRect.new(CGPoint.new(origin_x,origin_y), CGSize.new(width,height))
     CGPoint.center_of_rect(rect)
   end
-  def test_simple_square_starting_at_origin
+  def test_simple_square_with_origin_at_zero
     point = center_of_rect(0.0, 0.0, 2.0, 2.0)
-    assert_equal 1.0, point.x
-    assert_equal 1.0, point.y
+    assert_equal 1, point.x
+    assert_equal 1, point.y
   end
-  def test_simple_square_not_at_origin
+  def test_simple_square_in_positive_positive_quadrant
     point = center_of_rect(1.0, 1.0, 6.0, 6.0)
-    assert_equal 3.5, point.x
-    assert_equal 3.5, point.y
+    assert_equal 4, point.x
+    assert_equal 4, point.y
   end
-  def test_rect_not_at_origin
+  def test_rect_in_positive_positive_quadrant
     point = center_of_rect(1.0, 2.0, 6.0, 10.0)
-    assert_equal 3.5, point.x
-    assert_equal 6.0, point.y
+    assert_equal 4, point.x
+    assert_equal 7, point.y
   end
-  def test_rect_with_negative_values
-    point = center_of_rect(-1.0, -2.0, 6.0, 10.0)
-    assert_equal 2.5, point.x
-    assert_equal 4.0, point.y
+  def test_rect_in_negative_positive_quadrant
+    point = center_of_rect(-123.0, 25.0, 6.0, 10.0)
+    assert_equal -120, point.x
+    assert_equal 30, point.y
+  end
+  def test_rect_starts_in_negative_positive_quadrant_but_is_in_positive_positive
+    point = center_of_rect(-10.0, 70.0, 20.0, 42.0)
+    assert_equal 0, point.x
+    assert_equal 91, point.y
   end
 end
 
@@ -165,24 +170,29 @@ class TestCGPointCenter < TestCGPointExtensions
   def center origin_x, origin_y, width, height
     CGPoint.center(CGPoint.new(origin_x,origin_y), CGSize.new(width,height))
   end
-  def test_simple_square_starting_at_origin
+  def test_simple_square_with_origin_at_zero
     point = center(0.0, 0.0, 2.0, 2.0)
-    assert_equal 1.0, point.x
-    assert_equal 1.0, point.y
+    assert_equal 1, point.x
+    assert_equal 1, point.y
   end
-  def test_simple_square_not_at_origin
+  def test_simple_square_in_positive_positive_quadrant
     point = center(1.0, 1.0, 6.0, 6.0)
-    assert_equal 3.5, point.x
-    assert_equal 3.5, point.y
+    assert_equal 4, point.x
+    assert_equal 4, point.y
   end
-  def test_rect_not_at_origin
+  def test_rect_in_positive_positive_quadrant
     point = center(1.0, 2.0, 6.0, 10.0)
-    assert_equal 3.5, point.x
-    assert_equal 6.0, point.y
+    assert_equal 4, point.x
+    assert_equal 7, point.y
   end
-  def test_rect_with_negative_values
-    point = center(-1.0, -2.0, 6.0, 10.0)
-    assert_equal 2.5, point.x
-    assert_equal 4.0, point.y
+  def test_rect_in_negative_positive_quadrant
+    point = center(-123.0, 25.0, 6.0, 10.0)
+    assert_equal -120, point.x
+    assert_equal 30, point.y
+  end
+  def test_rect_starts_in_negative_positive_quadrant_but_is_in_positive_positive
+    point = center(-10.0, 70.0, 20.0, 42.0)
+    assert_equal 0, point.x
+    assert_equal 91, point.y
   end
 end
