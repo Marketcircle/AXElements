@@ -137,7 +137,7 @@ module Kernel
   #
   # A macro for showing the About window for an app.
   def show_about_window_for app
-    set app, focused: true
+    set_focus app
     press app.menu_bar_item(title:(app.title))
     press app.menu_bar.menu_item(title: "About #{app.title}")
   end
@@ -148,7 +148,7 @@ module Kernel
   #
   # A macro for showing the About window for an app.
   def show_preferences_window_for app
-    set app, focused: true
+    set_focus app
     press app.menu_bar_item(title:(app.title))
     press app.menu_bar.menu_item(title:'Preferences…')
   end
