@@ -41,7 +41,7 @@ task :install => :build do Gem::Installer.new(spec.file_name).install end
 
 # desc 'Generate Graphviz object graph'
 # task :garden do
-#   sh 'yard graph --full --dependencies --dot="-Tpng:quartz" -f docs/images/AX.png'
+#   sh 'yard graph --full --dependencies --dot="-Tpng:quartz" -f docs/images/AX.dot'
 # end
 
 desc 'Start up IRb with AXElements loaded'

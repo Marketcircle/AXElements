@@ -162,7 +162,7 @@ class << AX
   # @note This method is not thread safe right now, it is the only class
   #       method in AX that uses stored state
   #
-  # [Notifications](../../file/Notifications.markdown) are a way to put
+  # [Notifications](../file/docs/Notifications.markdown) are a way to put
   # non-polling delays into your scripts (sorta).
   #
   # Pause execution of the program until a notification is received or a

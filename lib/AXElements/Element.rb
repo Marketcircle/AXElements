@@ -94,7 +94,7 @@ class Element
   # Perform a breadth first search through the view hierarchy rooted at
   # the current element.
   #
-  # See the documentation page [Searching](file/Searching.markdown)
+  # See the documentation page [Searching](../file/docs/Searching.markdown)
   # on the details of how to search.
   #
   # @example Find the dock item for the Finder app

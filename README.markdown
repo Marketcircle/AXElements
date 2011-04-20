@@ -4,6 +4,11 @@ AXElements is a DSL abstraction on top of the Mac OS X Accessibility Framework
 that allows code to be written in a very natural and declarative style that
 describes user interactions.
 
+## Documentation
+
+AXElements is documented using YARD, and includes a few small
+tutorials in the `docs` directory. The starting point is [here](docs/AXElements.markdown).
+
 ## General TODO
 
 - better super class choosing when creating classes at run time
