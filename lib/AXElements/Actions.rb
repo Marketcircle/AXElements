@@ -23,6 +23,11 @@ module Kernel
   # @todo In order to support the ideal syntax, I will have to alter
   #       Element#method_missing to return a triple (self, attr, value)
   #       in the case when an extra argument is passed.
+  # @todo This needs to have a default key for setting, which is :value
+  #       since you are usually setting the value
+  # @todo We should check if the element can have focus set first, and if
+  #       so then we should set focus first; unless we were setting focus
+  #       in the first place
   #
   # The syntax kinda sucks, and you would think that the #set method should
   # belong to AX::Element, but I think taking it out of the class helps make

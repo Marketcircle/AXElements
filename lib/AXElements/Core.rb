@@ -159,11 +159,6 @@ class << AX
   # @todo kAXUIElementDestroyedNotification look at it for catching
   #       windows that disappear
   # @todo Provide an interface that takes a PID instead of an element?
-  # @todo This method needs to change to work properly; there needs to
-  #       be two steps to waiting for notification: registration and
-  #       then waiting. This is so you can guarantee that the registration
-  #       happens before the event. Otherwise this only works in cases
-  #       where the notif triggering is async.
   # @note This method is not thread safe right now, it is the only class
   #       method in AX that uses stored state
   #

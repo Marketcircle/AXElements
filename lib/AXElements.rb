@@ -1,6 +1,5 @@
 framework 'Cocoa'
 
-# @todo embed the new bridge support?
 # check that the new bridge support exists
 # check that the Accessibility APIs are enabled
 begin
