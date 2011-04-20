@@ -80,10 +80,16 @@ module Kernel
   end
 
 
+  ##
+  # @todo This does not support blocks just yet
+  # @todo Change this to wait_for_notification:from: when the syntax
+  #       is supported by YARD or someone complains, which ever comes
+  #       first.
+  #
   # @param [String] notif
   # @param [AX::Element] element
-  def wait_for_notification notif, from: element
-    element.wait_for_notification notif
+  def wait_for_notification notif, element
+   element.wait_for_notification notif
   end
 
 
