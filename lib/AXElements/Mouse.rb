@@ -1,6 +1,3 @@
-framework 'Cocoa'
-require   'AXElements/CoreExtensions'
-
 ##
 # @todo Add inertial scrolling abilities
 # @todo Bezier paths for movements

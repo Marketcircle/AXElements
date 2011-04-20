@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-require 'AXElements/Mouse'
 
 ##
 # @todo Allow the animation duration to be overridden

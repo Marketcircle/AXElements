@@ -16,10 +16,16 @@ You need to install the latest BridgeSupport preview for AXElements to work.
 end
 
 require 'AXElements/Version'
-require 'AXElements/CoreExtensions'
-require 'AXElements/AXSingletonMethods'
-require 'AXElements/Actions'
+require 'AXElements/MacRubyExtensions'
+require 'AXElements/Mouse'
+
+require 'AXElements/Core'
+
 require 'AXElements/Element'
 require 'AXElements/Elements/Application'
 require 'AXElements/Elements/SystemWide'
-require 'AXElements/AXConstants'
+
+require 'AXElements/Actions'
+require 'AXElements/Singletons'
+
+require 'AXElements/Constants'
