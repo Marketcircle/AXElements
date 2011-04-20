@@ -13,24 +13,16 @@ task :clean do
   end
 end
 
-
-task :test  => [:tier1, :tier2]
-desc 'First level of regression tests'
-task :tier1 => ['test:tier1']
-desc 'Second level of regression tests'
-task :tier2 => [:tier1, 'test:tier2']
-
 require 'rake/testtask'
-[:tier1, :tier2].each do |tier|
-  namespace :test do
-    Rake::TestTask.new(tier) do |t|
-      t.libs << 'test'
-      t.pattern = "test/#{tier}/*.rb"
-      t.ruby_opts = ['-rhelper']
-      t.verbose = true
-    end
+desc 'Run all test suites'
+task :test => ([:tier1, :tier2, :tier3, :tier4].each do |tier|
+  Rake::TestTask.new(tier) do |t|
+    t.libs << 'test'
+    t.pattern = "test/#{tier}/*.rb"
+    t.ruby_opts = ['-rhelper']
+    t.verbose = true
   end
-end
+end)
 
 
 require 'rubygems'
