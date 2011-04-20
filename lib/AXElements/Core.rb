@@ -180,16 +180,24 @@ class << AX
   # @yieldparam [String] notif the name of the notification
   # @yieldreturn [Boolean] determines if the script should continue or wait
   # @return [Boolean] true if the notification was received, otherwise false
-  def wait_for_notification element, notif, timeout
+  def register_for_notif element, notif
     @notif_proc = Proc.new if block_given?
-    observer    = notification_observer element, method(:notif_method)
+    observer    = notif_observer element, method(:notif_method)
 
     run_loop     = CFRunLoopGetCurrent()
     app_run_loop = AXObserverGetRunLoopSource( observer )
 
-    register_notif_callback( observer, element, notif )
+    register_notif_callback observer, element, notif
     CFRunLoopAddSource( run_loop, app_run_loop, KCFRunLoopDefaultMode )
+  end
 
+  ##
+  # Pause execution of the program until a notification is received or a
+  # timeout occurs.
+  #
+  # @param [Float] timeout
+  # @return [Boolean] true if the notification was received, otherwise false
+  def wait_for_notification timeout
     # use RunInMode because it has timeout functionality; this method
     # actually has 4 return values, but only two codes will occur under
     # regular circumstances
