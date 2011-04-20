@@ -116,8 +116,9 @@ class CGPoint
   end
 
   ##
-  # Get in the center of a rectangle, specified with an origin and
-  # a size.
+  # Given the origin and size of a rectangle, with the origin
+  # relative to the screen origin; find the center of the rectangle
+  # with co-ordinates relative to the screen origin.
   #
   # @param [CGPoint] origin
   # @param [CGSize] size
