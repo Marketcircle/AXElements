@@ -1,5 +1,5 @@
---protected
---private
+--no-protected
+--no-private
 --no-cache
 --no-output
 --verbose
