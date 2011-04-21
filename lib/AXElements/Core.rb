@@ -1,7 +1,4 @@
 ##
-# @todo Add a method that takes an array of constants and returns
-#       the "ruby" name for the constant (i.e. 'AXWindow' becomes 'Window')
-#
 # Wrappers around the lower level AXUIElement functions.
 class << AX
 
