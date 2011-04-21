@@ -14,16 +14,17 @@ task :clean do
 end
 
 require 'rake/testtask'
-desc 'Run all test suites'
-task :test => ([:tier1, :tier2, :tier3, :tier4].each do |tier|
-  Rake::TestTask.new(tier) do |t|
+test_suites = ['test:core', 'test:elements', 'test:mouse', 'test:actions']
+test_suites.each do |suite|
+  Rake::TestTask.new(suite) do |t|
     t.libs << 'test'
-    t.pattern = "test/#{tier}/*.rb"
+    t.pattern = "test/#{suite}/*.rb"
     t.ruby_opts = ['-rhelper']
     t.verbose = true
   end
-end)
-
+end
+desc 'Run all test suites'
+task :test => test_suites
 
 require 'rubygems'
 require 'rubygems/builder'
