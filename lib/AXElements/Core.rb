@@ -73,7 +73,7 @@ class << AX
   # @param [AXUIElementRef] element
   # @param [String] action an action constant
   # @return [Boolean] true if successful
-  def perform_action_of_element element, action
+  def action_of_element element, action
     code = AXUIElementPerformAction( element, action )
     log_ax_call( element, code ) == 0
   end
