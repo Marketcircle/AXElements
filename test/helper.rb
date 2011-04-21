@@ -1,7 +1,8 @@
 require 'AXElements'
 require 'StringIO'
 
-$LOAD_PATH.unshift(File.join(File.dirname(__FILE__), '..', 'vendor_test'))
+require 'rubygems'
+gem     'minitest-macruby-pride'
 require 'minitest/autorun'
 require 'minitest/pride'
 
