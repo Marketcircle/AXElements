@@ -15,15 +15,8 @@ tutorials in the `docs` directory. The starting point is [here](docs/AXElements.
   + a close button should be the subclass of a button, but you may
   need to also create the button class, but in this case superclass
   should be the general role of the element
-- tests should never need to call private methods or inspect state
-  that is not normally exposed
-  + this can be done by tiering the test suite and relying on API from
-  the lower tier (higher tier tests will not run until after the lower
-  tier finishes and passes)
-- change AX.perform\_action\_of\_element to AX.action\_of\_element
-  + various other API name changes to make AX have a consistent naming
-  scheme
-- add direct accessors to AX::Element (when the exact constant name is known)
+    * then we can search using #kind_of instead of #is_a, though I am
+    not convinced that this change would be beneficial
 - switch to RedCarpet when YARD supports it
   + remember to update all documentation for new advantages
 

@@ -1,5 +1,12 @@
 ##
-# Wrappers around the lower level AXUIElement functions.
+# The singleton methods for the AX module represent the core layer of
+# abstraction for AXElements.
+#
+# The methods provide a clean Ruby-ish interface to the low level
+# CoreFoundation functions that compose the AXAPI. Doing this we can
+# hide away the need to work with pointers and centralize where logging
+# errors from low level function calls (since CoreFoundation uses a
+# different pattern for that sort of thing).
 class << AX
 
   # @group Attributes
