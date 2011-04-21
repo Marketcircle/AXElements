@@ -286,8 +286,6 @@ class << AX
   end
 
   ##
-  # @todo print view hierarchy using {Element#pretty_print}
-  #
   # Uses the call stack and error code to log a message that might be
   # helpful in debugging.
   #
@@ -298,8 +296,11 @@ class << AX
     return code if code.zero?
     message = AXError[code] || 'UNKNOWN ERROR CODE'
     log.warn "[#{message} (#{code})] while trying #{caller[0]}"
-    log.info "Available attrs/actions were:\n#{attrs_of_element(element)}\n#{actions_of_element(element)}"
+    log.info "Available attributes were:\n#{attrs_of_element(element)}"
+    log.info "Available actions were:\n#{actions_of_element(element)}"
+    # @todo log.info available parameterized attributes
     log.debug "Backtrace: #{caller.description}"
+    # @todo log.debug pp hierarchy element or pp element
     code
   end
 
