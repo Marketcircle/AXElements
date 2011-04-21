@@ -92,14 +92,15 @@ class << AX
   # In cases where you need (or want) to simulate keyboard input, such as
   # triggering hotkeys, you will need to use this method.
   #
-  # See the documentation page [KeyboardEvents](file/KeyboardEvents.markdown)
+  # See the documentation page
+  # [KeyboardEvents](../file/docs/KeyboardEvents.markdown)
   # on how to encode strings, as well as other details on using methods
   # from this module.
   #
   # @param [AXUIElementRef] element an application to post the event to
   # @param [String] string the string you want typed on the screen
   # @return [Boolean] true unless something goes horribly wrong
-  def post_kb_string element, string
+  def keyboard_action element, string
     string.each_char { |char|
       key_code = KEYCODE_MAP[char]
       post_kb_key(element, key_code, true)
