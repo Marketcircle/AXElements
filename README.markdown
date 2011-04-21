@@ -24,6 +24,8 @@ tutorials in the `docs` directory. The starting point is [here](docs/AXElements.
   + various other API name changes to make AX have a consistent naming
   scheme
 - add direct accessors to AX::Element (when the exact constant name is known)
+- switch to RedCarpet when YARD supports it
+  + remember to update all documentation for new advantages
 
 ## Contributing to AXElements
 

@@ -2,6 +2,7 @@ module AX
 
 ##
 # @todo This module needs a better name
+# @todo Load application by name (localized)
 #
 # A collection of helper methods for working with AXElements.
 module Singletons
