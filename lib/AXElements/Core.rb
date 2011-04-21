@@ -307,6 +307,28 @@ class << AX
   end
 
   ##
+  # A mapping of the AXError constants to human readable strings.
+  #
+  # @return [Hash{Fixnum=>String}]
+  AXError = {
+    KAXErrorFailure                           => 'Generic Failure',
+    KAXErrorIllegalArgument                   => 'Illegal Argument',
+    KAXErrorInvalidUIElement                  => 'Invalid UI Element',
+    KAXErrorInvalidUIElementObserver          => 'Invalid UI Element Observer',
+    KAXErrorCannotComplete                    => 'Cannot Complete',
+    KAXErrorAttributeUnsupported              => 'Attribute Unsupported',
+    KAXErrorActionUnsupported                 => 'Action Unsupported',
+    KAXErrorNotificationUnsupported           => 'Notification Unsupported',
+    KAXErrorNotImplemented                    => 'Not Implemented',
+    KAXErrorNotificationAlreadyRegistered     => 'Notification Already Registered',
+    KAXErrorNotificationNotRegistered         => 'Notification Not Registered',
+    KAXErrorAPIDisabled                       => 'API Disabled',
+    KAXErrorNoValue                           => 'No Value',
+    KAXErrorParameterizedAttributeUnsupported => 'Parameterized Attribute Unsupported',
+    KAXErrorNotEnoughPrecision                => 'Not Enough Precision'
+  }
+
+  ##
   # @todo AXUIElementCopyMultipleAttributeValues could be used
   #       to speed up access if we turn the second argument into
   #       a vararg
@@ -342,26 +364,14 @@ class << AX
   end
 
   ##
-  # A mapping of the AXError constants to human readable strings.
+  # Mapping low level type ID numbers to methods to massage useful
+  # objects from data.
   #
-  # @return [Hash{Fixnum=>String}]
-  AXError = {
-    KAXErrorFailure                           => 'Generic Failure',
-    KAXErrorIllegalArgument                   => 'Illegal Argument',
-    KAXErrorInvalidUIElement                  => 'Invalid UI Element',
-    KAXErrorInvalidUIElementObserver          => 'Invalid UI Element Observer',
-    KAXErrorCannotComplete                    => 'Cannot Complete',
-    KAXErrorAttributeUnsupported              => 'Attribute Unsupported',
-    KAXErrorActionUnsupported                 => 'Action Unsupported',
-    KAXErrorNotificationUnsupported           => 'Notification Unsupported',
-    KAXErrorNotImplemented                    => 'Not Implemented',
-    KAXErrorNotificationAlreadyRegistered     => 'Notification Already Registered',
-    KAXErrorNotificationNotRegistered         => 'Notification Not Registered',
-    KAXErrorAPIDisabled                       => 'API Disabled',
-    KAXErrorNoValue                           => 'No Value',
-    KAXErrorParameterizedAttributeUnsupported => 'Parameterized Attribute Unsupported',
-    KAXErrorNotEnoughPrecision                => 'Not Enough Precision'
-  }
+  # @return [Array<Symbol>]
+  ATTR_MASSAGERS = []
+  ATTR_MASSAGERS[AXUIElementGetTypeID()] = :element_attribute
+  ATTR_MASSAGERS[CFArrayGetTypeID()]     = :array_attribute
+  ATTR_MASSAGERS[AXValueGetTypeID()]     = :boxed_attribute
 
   ##
   # Creates new class at run time and puts it into the {AX} namespace.
@@ -387,16 +397,6 @@ class << AX
   def new_const_get const
     const_defined?(const) ? const_get(const) : create_ax_class(const)
   end
-
-  ##
-  # Mapping low level type ID numbers to methods to massage useful
-  # objects from data.
-  #
-  # @return [Array<Symbol>]
-  ATTR_MASSAGERS = []
-  ATTR_MASSAGERS[AXUIElementGetTypeID()] = :element_attribute
-  ATTR_MASSAGERS[CFArrayGetTypeID()]     = :array_attribute
-  ATTR_MASSAGERS[AXValueGetTypeID()]     = :boxed_attribute
 
   ##
   # Figures out what the name of the class of an element should be.
