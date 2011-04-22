@@ -1,7 +1,9 @@
 ##
-# In order to test the core, I have had to independently recreate some
+# In order to test the core, I have had to independently recreated some
 # of the functionality in the core so that I can have the proper
-# arguments to use with methods calls.
+# arguments to use with methods calls. Though we make no attempt to
+# massage return data or report problems when a bad result code is
+# returned.
 class TestAX < MiniTest::Unit::TestCase
 
   def self.pid_for_app name
@@ -12,17 +14,6 @@ class TestAX < MiniTest::Unit::TestCase
   def self.attribute_for element, attr
     ptr = Pointer.new(:id)
     AXUIElementCopyAttributeValue( element, attr, ptr )
-    ptr[0]
-  end
-
-  def self.action_for element, action
-    AXUIElementPerformAction( element, action )
-  end
-
-  def self.element_at_pos point
-    ptr     = Pointer.new( '^{__AXUIElement}' )
-    system  = AXUIElementCreateSystemWide()
-    AXUIElementCopyElementAtPosition( system, point.x, point.y, ptr )
     ptr[0]
   end
 
@@ -43,11 +34,14 @@ class TestAX < MiniTest::Unit::TestCase
   end
 
   def action_for element, action
-    self.class.action_for element, action
+    AXUIElementPerformAction( element, action )
   end
 
   def element_at_pos point
-    self.class.element_at_pos point
+    ptr     = Pointer.new( '^{__AXUIElement}' )
+    system  = AXUIElementCreateSystemWide()
+    AXUIElementCopyElementAtPosition( system, point.x, point.y, ptr )
+    ptr[0]
   end
 
   def finder_dock_item
