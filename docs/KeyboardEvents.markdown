@@ -11,6 +11,11 @@ Key codes are independant of the layout in the sense that they are
 absolute key positions on the keyboard and that different layouts will
 fuck things up differently.
 
+## Behaviour
+
+The method is asynchronous. It appears to type information in at the
+keyboard repeat rate, but I have yet to check that out.
+
 ## Escape Sequences
 
 A number of custom escape sequences have been added in order to allow easy
