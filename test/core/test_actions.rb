@@ -41,9 +41,9 @@ class TestAXPostKBString < TestAX
   # this test can fail for strange keyboard layouts (e.g. programmer's dvorak)
   def test_post_to_system
     spotlight_text_field do |field|
-      string = '123'
+      string = '12'
       AX.keyboard_action( SYSTEM, string )
-      sleep 0.1
+      sleep 0.01
       assert_equal string, attribute_for( field, KAXValueAttribute )
     end
   end
