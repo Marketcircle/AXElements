@@ -63,6 +63,10 @@ class TestAX < MiniTest::Unit::TestCase
     action_for spotlight, KAXPressAction
   end
 
+  def set_attribute_for element, attribute, value
+    AXUIElementSetAttributeValue( element, attribute, value )
+  end
+
   # turn logging on bet
   def with_logging level = Logger::DEBUG
     original_level = AX.log.level
