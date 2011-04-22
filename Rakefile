@@ -19,7 +19,7 @@ test_suites.each do |suite|
   namespace :test do
     Rake::TestTask.new(suite) do |t|
       t.libs << 'test'
-      t.pattern = "test/#{suite}/*.rb"
+      t.pattern = "test/#{suite}/test_*.rb"
       t.ruby_opts = ['-rhelper']
       t.verbose = true
     end
