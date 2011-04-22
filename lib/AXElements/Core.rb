@@ -99,14 +99,13 @@ class << AX
   #
   # @param [AXUIElementRef] element an application to post the event to
   # @param [String] string the string you want typed on the screen
-  # @return [Boolean] true unless something goes horribly wrong
   def keyboard_action element, string
     string.each_char { |char|
       key_code = KEYCODE_MAP[char]
       post_kb_key(element, key_code, true)
       post_kb_key(element, key_code, false)
     }
-    true
+    nil
   end
 
   # @group Parameterized Attributes
