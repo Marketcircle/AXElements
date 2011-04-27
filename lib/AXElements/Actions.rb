@@ -118,8 +118,9 @@ module Kernel
   # determine what it is you want.
   #
   # If you want to
-  def drag_mouse_to element
-    raise NotImplementedError
+  def drag_mouse_to arg
+    arg = CGPoint.center(arg.position, arg.size) if arg.kind_of?(AX::Element)
+    Mouse.drag_to arg
   end
 
   ##
