@@ -57,6 +57,12 @@ class Element
   end
 
   ##
+  # This API exists to be consistent with {#attribute}.
+  def action name
+    AX.action_of_element( @ref, name )
+  end
+
+  ##
   # @todo merge this into {#method_missing} other places once I understand
   #       it more, right now it would just add a lot of overhead
   #
@@ -217,8 +223,6 @@ class Element
 
   protected
 
-  # This API exists to be consistent with {#attribute}.
-  def action name; AX.perform_action_of_element( @ref, name ); end
   # This API exists to be consistent with {#attribute}.
   def param_attribute name, param; AX.param_attr_of_element( @ref, name, param ); end
   # This API exists to be consistent with {#attribute}.
