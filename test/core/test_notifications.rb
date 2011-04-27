@@ -1,7 +1,7 @@
 require 'core/helper'
 
 # @todo this is totally broken right now
-# class TestAXWaitForNotification < TestAX
+# class TestAXWaitForNotification < TestCore
 #   def test_wait_for_finder_prefs
 #     got_notification = false
 #     AX::FINDER.show_about_window

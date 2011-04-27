@@ -1,9 +1,10 @@
 require 'core/helper'
 
+
 ##
 # AFAICT every accessibility object **MUST** have attributes, so
 # there are no tests to check what happens when they do not exist.
-class TestAXAttrsOfElement < TestAX
+class TestAXAttrsOfElement < TestCore
 
   def setup
     @attrs = AX.attrs_of_element(DOCK)
@@ -26,7 +27,7 @@ class TestAXAttrsOfElement < TestAX
 end
 
 
-class TestAXAttrOfElement < TestAX
+class TestAXAttrOfElement < TestCore
 
   def test_does_not_return_raw_values
     assert_kind_of AX::Element, AX.attr_of_element(FINDER, KAXMenuBarAttribute)
@@ -115,7 +116,8 @@ class TestAXAttrOfElement < TestAX
 
 end
 
-class TestAXElementAttributeWritable < TestAX
+
+class TestAXElementAttributeWritable < TestCore
 
   def test_true_for_writable_attribute
     assert AX.attr_of_element_writable?(finder_dock_item, KAXSelectedAttribute)
@@ -137,7 +139,8 @@ class TestAXElementAttributeWritable < TestAX
 
 end
 
-class TestAXSetAttrOfElement < TestAX
+
+class TestAXSetAttrOfElement < TestCore
 
   # @todo these tests require me to go deep into a UI
 

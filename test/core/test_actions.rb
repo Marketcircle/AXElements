@@ -1,6 +1,7 @@
 require 'core/helper'
 
-class TestAXActionsOfElement < TestAX
+
+class TestAXActionsOfElement < TestCore
 
   def test_works_when_there_are_no_actions
     assert_empty AX.actions_of_element(DOCK)
@@ -18,7 +19,8 @@ class TestAXActionsOfElement < TestAX
 
 end
 
-class TestAXPerformActionOfElement < TestAX
+
+class TestAXPerformActionOfElement < TestCore
 
   def dock_kids
     attribute_for finder_dock_item, KAXChildrenAttribute
@@ -36,7 +38,8 @@ class TestAXPerformActionOfElement < TestAX
 
 end
 
-class TestAXPostKBString < TestAX
+
+class TestAXPostKBString < TestCore
 
   # this test can fail for strange keyboard layouts (e.g. programmer's dvorak)
   def test_post_to_system
@@ -53,4 +56,3 @@ class TestAXPostKBString < TestAX
 #  end
 
 end
-

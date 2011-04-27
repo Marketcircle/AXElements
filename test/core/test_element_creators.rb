@@ -1,5 +1,6 @@
 require 'core/helper'
 
+
 class TestAXElementAtPosition < MiniTest::Unit::TestCase
 
   # this will break with full screen apps :(
@@ -14,7 +15,7 @@ end
 class TestAXApplicationForPID < MiniTest::Unit::TestCase
 
   def test_makes_an_app
-    assert_instance_of AX::Application, AX.application_for_pid(TestAX::FINDER_PID)
+    assert_instance_of AX::Application, AX.application_for_pid(TestCore::FINDER_PID)
   end
 
 end

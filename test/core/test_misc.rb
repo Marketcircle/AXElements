@@ -1,6 +1,7 @@
 require 'core/helper'
 
-class TestAXPIDOfElement < TestAX
+
+class TestAXPIDOfElement < TestCore
 
   def test_pid_of_app
     assert_equal FINDER_PID, AX.pid_of_element(FINDER)
@@ -15,7 +16,7 @@ end
 
 # I'd prefer to not have to directly call the log method bypassing
 # the fact that it is a private method.
-class TestAXLogAXCall < TestAX
+class TestAXLogAXCall < TestCore
 
   def test_code_is_returned
     assert_equal KAXErrorIllegalArgument, AX.send(:log_ax_call, DOCK, KAXErrorIllegalArgument)
