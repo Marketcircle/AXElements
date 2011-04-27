@@ -1,5 +1,5 @@
 require 'AXElements'
-require 'StringIO'
+require 'stringio'
 
 require 'rubygems'
 gem     'minitest-macruby-pride'
