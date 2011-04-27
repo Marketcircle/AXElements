@@ -19,7 +19,6 @@ describes user interactions.
   s.homepage      = 'http://samurai.marketcircle.com:3000/docs/AXElements'
   s.licenses      = ['MIT']
   s.has_rdoc      = 'yard'
-  s.require_paths = ['lib']
 
   s.files            =
     Dir.glob('lib/**/*.rb*')  +
