@@ -1,11 +1,5 @@
 class TestCore < TestAX
 
-  def finder_dock_item
-    children_for( LIST ).find do |item|
-      attribute_for( item, KAXTitleAttribute ) == 'Finder'
-    end
-  end
-
   def spotlight_text_field
     screen    = NSScreen.mainScreen.frame
     spotlight = element_at_pos CGPoint.new(screen.size.width - 10, 5)

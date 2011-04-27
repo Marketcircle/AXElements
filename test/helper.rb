@@ -60,6 +60,12 @@ class TestAX < MiniTest::Unit::TestCase
     AXUIElementSetAttributeValue( element, attribute, value )
   end
 
+  def finder_dock_item
+    children_for( LIST ).find do |item|
+      attribute_for( item, KAXTitleAttribute ) == 'Finder'
+    end
+  end
+
   # turn on full logging, yield, set log level back to previous
   def with_logging level = Logger::DEBUG
     original_level = AX.log.level
