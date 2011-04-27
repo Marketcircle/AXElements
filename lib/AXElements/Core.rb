@@ -386,7 +386,7 @@ class << AX
   # @param [#to_sym] class_name
   # @return [Class]
   def create_ax_class class_name
-    klass = Class.new(Element) {
+    klass = Class.new(AX::Element) {
       AX.log.debug "#{class_name} class created"
     }
     const_set( class_name, klass )
