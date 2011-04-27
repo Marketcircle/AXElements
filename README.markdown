@@ -20,6 +20,14 @@ tutorials in the `docs` directory. The starting point is [here](docs/AXElements.
 - switch to RedCarpet when YARD supports it
   + remember to update all documentation for new advantages
 
+## Test Suite
+
+The nature of this library requires that the tests take over your
+computer while they run.
+
+The tests aren't programmed to do anything destructive, but if you
+interfere with them something could go wrong.
+
 ## Contributing to AXElements
 
 * Check out the latest master to make sure the feature hasn't been implemented or the bug hasn't been fixed yet
