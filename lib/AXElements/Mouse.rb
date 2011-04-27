@@ -4,6 +4,7 @@
 # @todo Random background movements
 # @todo Less discrimination against left handed people
 # @todo A more intelligent default duration
+# @todo Point arguments should accept a pair tuple
 module Mouse
 class << self
 
