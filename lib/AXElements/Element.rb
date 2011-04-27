@@ -34,6 +34,15 @@ class Element
   end
 
   ##
+  # A short path when you have the exact name of the attribute you want
+  # to retrieve the value of.
+  #
+  # This API exists for the sake of making search much faster.
+  def attribute name
+    AX.attr_of_element( @ref, name )
+  end
+
+  ##
   # Ideally this method would return a reference to `self`, but since
   # this method inherently causes state change, the reference to `self`
   # may no longer be valid. An example of this would be pressing the
@@ -115,7 +124,7 @@ class Element
       primary_filter ||= (AX.const_get(class_const) if AX.const_defined?(class_const))
 
       if element.attributes.include?(KAXChildrenAttribute)
-        elements.concat element.send(:attribute, KAXChildrenAttribute)
+        elements.concat element.attribute(KAXChildrenAttribute)
       end
 
       next unless element.class == primary_filter
@@ -208,12 +217,6 @@ class Element
 
   protected
 
-  ##
-  # A short path when you have the exact name of the attribute you want
-  # to retrieve the value of.
-  #
-  # This API exists for the sake of making search much faster.
-  def attribute name; AX.attr_of_element( @ref, name ); end
   # This API exists to be consistent with {#attribute}.
   def action name; AX.perform_action_of_element( @ref, name ); end
   # This API exists to be consistent with {#attribute}.
