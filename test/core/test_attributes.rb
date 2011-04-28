@@ -117,6 +117,33 @@ class TestAttrOfElementParsesData < TestCore
 end
 
 
+class TestAttrOfElementMakesRightType < TestCore
+
+  def test_chooses_role_if_only_role_exists
+    assert_instance_of AX::Application, AX.application_for_pid(DOCK_PID)
+  end
+
+  def test_chooses_subrole_if_it_exists_and_is_legitimate
+    classes = AX.attr_of_element(LIST, KAXChildrenAttribute).map(&:class)
+    assert classes.include? AX::ApplicationDockItem
+    assert classes.include? AX::TrashDockItem
+    assert classes.include? AX::FolderDockItem # fragile?
+    assert classes.include? AX::SeparatorDockItem # fragile?
+  end
+
+  def test_chooses_role_if_subrole_is_nil
+    skip 'Only known case is WebArea which is not easy to get to'
+  end
+
+  # @todo find out if this only happens with windows or if it happens
+  #       with every type that must have a subrole but does not supply
+  #       one
+  # def test_chooses_role_if_subrole_is_unknown_type
+  #   skip 'This case is actually not handled right now'
+  # end
+
+end
+
 
 class TestElementAttributeWritable < TestCore
 
