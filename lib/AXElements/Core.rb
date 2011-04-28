@@ -68,7 +68,7 @@ class << AX
   end
 
   ##
-  # Preform an action on an element.
+  # Perform an action on an element.
   #
   # @param [AXUIElementRef] element
   # @param [String] action an action constant
