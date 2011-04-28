@@ -2,6 +2,7 @@ module AX
 
 ##
 # @abstract
+# @todo A method to test for equivalency
 #
 # The abstract base class for all accessibility objects.
 class Element
