@@ -1,6 +1,3 @@
-require 'elements/helper'
-
-
 class TestElementAttributes < TestElements
 
   def test_not_empty

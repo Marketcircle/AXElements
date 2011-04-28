@@ -1,6 +1,3 @@
-require 'core/helper'
-
-
 ##
 # AFAICT every accessibility object **MUST** have attributes, so
 # there are no tests to check what happens when they do not exist.

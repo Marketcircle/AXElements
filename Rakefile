@@ -47,7 +47,7 @@ test_suites.each do |suite|
     Rake::TestTask.new(suite) do |t|
       t.libs << 'test'
       t.pattern = "test/#{suite}/test_*.rb"
-      t.ruby_opts = ['-rhelper']
+      t.ruby_opts = ['-rhelper', "-r#{suite}/helper"]
       t.verbose = true
     end
   end

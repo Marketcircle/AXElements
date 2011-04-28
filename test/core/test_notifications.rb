@@ -1,5 +1,3 @@
-require 'core/helper'
-
 # @todo this is totally broken right now
 # class TestAXWaitForNotification < TestCore
 #   def test_wait_for_finder_prefs

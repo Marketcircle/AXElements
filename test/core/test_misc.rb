@@ -1,6 +1,3 @@
-require 'core/helper'
-
-
 class TestPIDOfElement < TestCore
 
   def test_pid_of_app

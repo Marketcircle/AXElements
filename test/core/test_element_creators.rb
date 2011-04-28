@@ -1,6 +1,3 @@
-require 'core/helper'
-
-
 class TestElementAtPosition < MiniTest::Unit::TestCase
 
   # this will break with full screen apps :(

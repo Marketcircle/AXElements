@@ -1,6 +1,3 @@
-require 'core/helper'
-
-
 class TestActionsOfElement < TestCore
 
   def test_works_when_there_are_no_actions
