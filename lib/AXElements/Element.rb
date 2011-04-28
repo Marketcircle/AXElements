@@ -54,8 +54,6 @@ class Element
   end
 
   ##
-  # @todo Consider a default value for attr to be KAXValueAttribute
-  #
   # We cannot make any assumptions about the state of the program after
   # you have set a value; at least not in the general case.
   #
