@@ -62,5 +62,21 @@ class << Singletons
     AX.application_for_pid( apps.first.processIdentifier )
   end
 
+
+  private
+
+  ##
+  # This method uses asynchronous method calls to launch applications.
+  #
+  # @param [String] bundle the bundle identifier for the app
+  # @return [Boolean]
+  def launch_application bundle
+    AX.log.info "Launching app with bundleID '#{bundle}'"
+    NSWorkspace.sharedWorkspace.launchAppWithBundleIdentifier  bundle,
+                                                      options: NSWorkspaceLaunchAsync,
+                               additionalEventParamDescriptor: nil,
+                                             launchIdentifier: nil
+  end
+
 end
 end
