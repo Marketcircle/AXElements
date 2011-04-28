@@ -1,72 +1,136 @@
-class TestAXElementAttributes < MiniTest::Unit::TestCase
+require 'elements/helper'
+
+
+class TestElementAttributes < TestElements
+
   def test_not_empty
-    refute_empty AX::DOCK.attributes
+    refute_empty EL_DOCK.attributes
   end
+
   def test_contains_proper_info
-    assert AX::DOCK.attributes.include?(KAXRoleAttribute)
-    assert AX::DOCK.attributes.include?(KAXTitleAttribute)
+    assert EL_DOCK.attributes.include?(KAXRoleAttribute)
+    assert EL_DOCK.attributes.include?(KAXTitleAttribute)
   end
+
 end
 
-class TestAXElementActions < MiniTest::Unit::TestCase
-  EL = AX::DOCK.list.application_dock_item
+
+class TestElementActions < TestElements
+
   def test_empty_for_dock
-    assert_empty AX::DOCK.actions
+    assert_empty EL_DOCK.actions
   end
+
   def test_not_empty_for_dock_item
-    refute_empty EL.actions
+    refute_empty EL_DOCK_APP.actions
   end
+
   def test_contains_proper_info
-    assert EL.actions.include?(KAXPressAction)
-    assert EL.actions.include?(KAXShowMenuAction)
+    assert EL_DOCK_APP.actions.include?(KAXPressAction)
+    assert EL_DOCK_APP.actions.include?(KAXShowMenuAction)
   end
+
 end
 
-# @todo
-# class TestAXElementParamAttributes < MiniTest::Unit::TestCase
-#   def test_empty_for_dock
-#   end
-#   def test_not_empty_for_something
-#   end
-#   def test_contains_proper_info
-#   end
-# end
 
-class TestAXElementPID < MiniTest::Unit::TestCase
+# @todo implement missing test cases
+class TestElementParamAttributes < TestElements
+
+  def test_empty_for_dock
+    assert_empty EL_DOCK.param_attributes
+  end
+
+  # def test_not_empty_for_something
+  # end
+  # def test_contains_proper_info
+  # end
+  # @todo some other tests copied from testing #get_attributes
+
+end
+
+
+class TestElementPID < TestElements
+
   def test_actually_works
-    assert_instance_of Fixnum, AX::DOCK.pid
-    refute AX::DOCK.pid == 0
+    assert_instance_of Fixnum, EL_DOCK_APP.pid
+    refute EL_DOCK_APP.pid == 0
   end
+
 end
 
-class TestAXElementGetAttribute < MiniTest::Unit::TestCase
-  def test_returns_nil_for_non_existent_attributes
-    assert_nil AX::DOCK.get_attribute 'fakeattribute'
+
+class TestElementGetAttribute < TestElements
+
+  def test_raises_arg_error_for_non_existent_attributes
+    assert_raises ArgumentError do EL_DOCK.get_attribute('fakeattribute') end
+    assert_raises ArgumentError do EL_DOCK.get_attribute(:fakeattribute) end
   end
-  def test_fetches_attribute
-    assert_equal 'Dock', AX::DOCK.get_attribute(KAXTitleAttribute)
+
+  def test_matches_single_word_attribute
+    assert_equal KAXApplicationRole, EL_DOCK.get_attribute( :role )
   end
+
+  def test_matches_mutlti_word_attribute
+    assert_equal 'application', EL_DOCK.get_attribute( :role_description )
+  end
+
+  def test_matches_acronym_attributes
+    assert_instance_of NSURL, EL_DOCK_APP.get_attribute(:url)
+  end
+
+  def test_is_predicate_matches
+    assert_instance_of_boolean EL_DOCK_APP.get_attribute(:application_running?)
+  end
+
+  def test_non_is_predicates_match
+    assert_instance_of_boolean EL_DOCK_APP.get_attribute(:selected?)
+  end
+
+  def test_gets_exact_match_except_prefix
+    # finds role when role and subrole exist
+    assert_equal 'Dock', EL_DOCK.get_attribute(:title)
+
+    # finds top_level_ui_element and shown_menu_ui_element exists
+    top_level  = EL_DOCK_APP.get_attribute(:top_level_ui_element)
+    shown_menu = EL_DOCK_APP.get_attribute(:shown_menu_ui_element)
+    refute_equal top_level, shown_menu
+    assert_instance_of AX::List, top_level
+    assert_nil shown_menu
+  end
+
 end
 
-class TestAXElementAttributeWritable < MiniTest::Unit::TestCase
+
+class TestElementAttribute < TestElements
+
+  def test_works
+    assert_equal 'Dock', EL_DOCK.attribute(KAXTitleAttribute)
+  end
+
+end
+
+
+class TestElementAttributeWritable < TestElements
+
   def test_raises_error_for_non_existant_attributes
     assert_raises ArgumentError do
-      AX::DOCK.attribute_writable?(:fake_attribute)
+      EL_DOCK.attribute_writable?(:fake_attribute)
     end
   end
+
   def test_true_for_writable_attributes
-    list = AX.raw_attr_of_element(DOCK,KAXChildrenAttribute).first
-    app  = AX.raw_attr_of_element(list,KAXChildrenAttribute).first
-    @el  = AX::Element.new(app)
-    assert @el.attribute_writable?(KAXSelectedAttribute)
+    assert EL_DOCK_APP.attribute_writable? :selected
   end
+
   def test_false_for_non_writable_attributes
-    refute AX::DOCK.attribute_writable?(KAXTitleAttribute)
+    refute EL_DOCK.attribute_writable? :title
   end
+
 end
 
-# @todo this is a bit too invasive right now
-# class TestAXElementGetParamAttribute < MiniTest::Unit::TestCase
+
+# @todo I'll get to this when I need to get to parameterized attributes
+# class TestElementGetParamAttribute < TestElements
 #   def test_returns_nil_for_non_existent_attributes
 #   end
 #   def test_fetches_attribute
