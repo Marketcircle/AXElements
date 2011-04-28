@@ -43,6 +43,13 @@ class Element
     AX.attr_of_element( @ref, name )
   end
 
+  # @param [Symbol] attr
+  def attribute_writable? attr
+    real_attribute = attribute_for attr
+    raise ArgumentError, "#{attr} not found" unless real_attribute
+    AX.attr_of_element_writable?(@ref, real_attribute)
+  end
+
   ##
   # Ideally this method would return a reference to `self`, but since
   # this method inherently causes state change, the reference to `self`
