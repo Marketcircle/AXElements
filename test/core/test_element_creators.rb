@@ -1,7 +1,7 @@
 require 'core/helper'
 
 
-class TestAXElementAtPosition < MiniTest::Unit::TestCase
+class TestElementAtPosition < MiniTest::Unit::TestCase
 
   # this will break with full screen apps :(
   def test_returns_a_menubar_for_coordinates_10_0
@@ -12,7 +12,7 @@ class TestAXElementAtPosition < MiniTest::Unit::TestCase
 end
 
 
-class TestAXApplicationForPID < MiniTest::Unit::TestCase
+class TestApplicationForPID < MiniTest::Unit::TestCase
 
   def test_makes_an_app
     assert_instance_of AX::Application, AX.application_for_pid(TestCore::FINDER_PID)

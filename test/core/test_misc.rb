@@ -1,7 +1,7 @@
 require 'core/helper'
 
 
-class TestAXPIDOfElement < TestCore
+class TestPIDOfElement < TestCore
 
   def test_pid_of_app
     assert_equal FINDER_PID, AX.pid_of_element(FINDER)
@@ -16,7 +16,7 @@ end
 
 # I'd prefer to not have to directly call the log method bypassing
 # the fact that it is a private method.
-class TestAXLogAXCall < TestCore
+class TestLogAXCall < TestCore
 
   def test_code_is_returned
     assert_equal KAXErrorIllegalArgument, AX.send(:log_ax_call, DOCK, KAXErrorIllegalArgument)
@@ -39,7 +39,7 @@ class TestAXLogAXCall < TestCore
 end
 
 
-class TestAXStripPrefix < MiniTest::Unit::TestCase
+class TestStripPrefix < MiniTest::Unit::TestCase
 
   def test_removes_ax_prefix; prefix_test 'AXButton', 'Button'; end
 
