@@ -54,7 +54,7 @@ class << Singletons
   def application_for_bundle_identifier bundle, sleep_time
     sleep_count = 0
     while (apps = NSRunningApplication.runningApplicationsWithBundleIdentifier bundle).empty?
-      AX.launch_application bundle
+      launch_application bundle
       return if sleep_count > 10
       sleep sleep_time
       sleep_count += 1
