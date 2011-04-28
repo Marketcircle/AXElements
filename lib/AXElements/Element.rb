@@ -125,6 +125,7 @@ class Element
   # @todo make search much faster by not wrapping child classes
   # @todo refactor searching, perhaps make an iterator
   # @todo consider using the rails inflector for pluralization checking
+  # @todo this method should be moved to its own class (Strategy Pattern?)
   #
   # Perform a breadth first search through the view hierarchy rooted at
   # the current element.
