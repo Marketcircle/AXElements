@@ -1,0 +1,3 @@
+class TestActions < TestAX
+end
+

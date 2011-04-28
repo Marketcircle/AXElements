@@ -9,7 +9,6 @@ GUI manipulation, whether it be  finding controls on the screen,
 typing, clicking, or the various other ways in which a user can
 interact with the computer.
 
-
 ## Getting Started
 
 Though it is not required, it would be beneficial to first read
@@ -33,11 +32,16 @@ represents an application.
 
     AX::Application.application_with_bundle_identifier 'com.apple.mail'
 
-
 ## Concepts
 
 The important thing to note from the previous section is the idea of
 changing state and then verifying it.
+
+Because of the way that things change, it is easy to keep accidentally
+keep a reference to an object that no longer exists. The safest thing
+to do would be to not cache anything. AXElements does not provide a
+facility for cache invalidation and elements will almost always be
+invalidated after performing actions.
 
 ## Mouse Stuff
 

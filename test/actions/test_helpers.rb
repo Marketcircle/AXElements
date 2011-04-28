@@ -1,4 +1,5 @@
 class TestAXElementUnderMouse < MiniTest::Unit::TestCase
+
   def test_returns_some_kind_of_ax_element
     assert_kind_of AX::Element, AX.element_under_mouse
   end

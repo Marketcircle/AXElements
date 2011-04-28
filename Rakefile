@@ -3,7 +3,7 @@ require 'yard'
 require 'rake/compiletask'
 require 'rake/testtask'
 require 'rake/gempackagetask'
-require 'rubygems/installer'
+require 'rubygems/dependency_installer'
 require 'lib/AXElements/Version'
 
 task :default => :test
@@ -86,9 +86,9 @@ describes user interactions.
     [ 'Rakefile', 'LICENSE.txt', 'README.markdown', '.yardopts' ] +
     Dir.glob('docs/**/*')
 
-  s.add_development_dependency 'minitest-macruby-pride',  ['~> 2.2.0']
-  s.add_development_dependency 'yard',                    ['~> 0.6.8']
-  s.add_development_dependency 'redcarpet',               ['~> 1.11.0']
+  s.add_development_dependency 'minitest-macruby-pride', ['~> 2.2.0']
+  s.add_development_dependency 'yard',                   ['~> 0.6.8']
+  s.add_development_dependency 'redcarpet',              ['~> 1.11.0']
 end
 
 Rake::GemPackageTask.new(GEM_SPEC) do |pkg|
@@ -96,6 +96,7 @@ Rake::GemPackageTask.new(GEM_SPEC) do |pkg|
   pkg.need_tar = true
 end
 
+# This only works as long as I have no dependencies?
 desc 'Build the gem and install it'
 task :install => :gem do
   Gem::Installer.new("pkg/#{GEM_SPEC.file_name}").install
