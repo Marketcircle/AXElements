@@ -13,19 +13,10 @@ class Element
     @attributes = AX.attrs_of_element(element)
   end
 
+  # @group Attributes
+
   # @return [Array<String>] cache of available attributes
   attr_reader :attributes
-
-  # @return [Array<String>] cache of available actions
-  def actions; @actions ||= AX.actions_of_element(@ref); end
-
-  # @return [Array<String>] cache of available actions
-  def param_attributes; @param_attributes ||= AX.param_attrs_of_element(@ref); end
-
-  # @return [Fixnum]
-  def pid
-    @pid ||= AX.pid_of_element( @ref )
-  end
 
   # @param [Symbol] attr
   def get_attribute attr
@@ -39,6 +30,11 @@ class Element
   # description of the object try using {#inspect}.
   def description
     get_attribute :description
+  end
+
+  # @return [Fixnum]
+  def pid
+    @pid ||= AX.pid_of_element( @ref )
   end
 
   ##
@@ -55,6 +51,49 @@ class Element
     real_attribute = attribute_for attr
     raise ArgumentError, "#{attr} not found" unless real_attribute
     AX.attr_of_element_writable?(@ref, real_attribute)
+  end
+
+  ##
+  # @todo Consider a default value for attr to be KAXValueAttribute
+  #
+  # We cannot make any assumptions about the state of the program after
+  # you have set a value; at least not in the general case.
+  #
+  # @param [String] attr an attribute constant
+  # @return the value that you set is returned
+  def set_attribute attr, value
+    real_attribute = attribute_for attr
+    raise ArgumentError, "#{attr} is not an attribute" unless real_attribute
+    unless AX.attr_of_element_writable?(@ref, real_attribute)
+      raise ArgumentError, "#{attr} not writable"
+    end
+    self.send(:attribute=, real_attribute, value)
+    value
+  end
+
+  # @group Parameterized Attributes
+
+  # @return [Array<String>] cache of available actions
+  def param_attributes
+    @param_attributes ||= AX.param_attrs_of_element(@ref)
+  end
+
+  ##
+  # @todo merge this into {#method_missing} other places once I understand
+  #       it more, right now it would just add a lot of overhead
+  #
+  # @param [Symbol] attr
+  def get_param_attribute attr, param
+    real_attribute = param_attribute_for attr
+    raise ArgumentError, "#{attr} is not a parameterized attribute" unless real_attribute
+    param_attribute(real_attribute, param)
+  end
+
+  # @group Actions
+
+  # @return [Array<String>] cache of available actions
+  def actions
+    @actions ||= AX.actions_of_element(@ref)
   end
 
   ##
@@ -77,36 +116,7 @@ class Element
     AX.action_of_element( @ref, name )
   end
 
-  ##
-  # @todo merge this into {#method_missing} other places once I understand
-  #       it more, right now it would just add a lot of overhead
-  #
-  # @param [Symbol] attr
-  def get_param_attribute attr, param
-    real_attribute = param_attribute_for attr
-    raise ArgumentError, "#{attr} is not a parameterized attribute" unless real_attribute
-    param_attribute(real_attribute, param)
-  end
-
-  ##
-  # @todo Consider a default value for attr to be KAXValueAttribute
-  #
-  # We cannot make any assumptions about the state of the program after
-  # you have set a value; at least not in the general case.
-  #
-  # @param [String] attr an attribute constant
-  # @return the value that you set is returned
-  def set_attribute attr, value
-    real_attribute = attribute_for attr
-    raise ArgumentError, "#{attr} is not an attribute" unless real_attribute
-    unless AX.attr_of_element_writable?(@ref, real_attribute)
-      raise ArgumentError, "#{attr} not writable"
-    self.send(:attribute=, real_attribute, value)
-    value
-  end
-
-  ##
-  end
+  # @group Search
 
   ##
   # @todo allow regex matching when filtering string attributes
@@ -182,6 +192,8 @@ class Element
     super
   end
 
+  # @group Notifications
+
   ##
   # @todo Need to provide a nice interface for taking notif names
   #       (i.e. `:window_created` instead of `KAXWindowCreatedNotification`)
@@ -196,6 +208,8 @@ class Element
   def wait_for_notification notif, timeout = 10
     AX.wait_for_notification( @ref, notif, timeout )
   end
+
+  # @endgroup
 
   ##
   # Overriden to produce cleaner output.
