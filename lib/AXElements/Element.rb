@@ -35,6 +35,13 @@ class Element
   end
 
   ##
+  # Needed to override inherited {NSObject#description}. If you want a
+  # description of the object try using {#inspect}.
+  def description
+    get_attribute :description
+  end
+
+  ##
   # A short path when you have the exact name of the attribute you want
   # to retrieve the value of.
   #
@@ -94,16 +101,11 @@ class Element
     raise ArgumentError, "#{attr} is not an attribute" unless real_attribute
     unless AX.attr_of_element_writable?(@ref, real_attribute)
       raise ArgumentError, "#{attr} not writable"
-    end
     self.send(:attribute=, real_attribute, value)
     value
   end
 
   ##
-  # Needed to override inherited {NSObject#description}. If you want a
-  # description of the object try using {#inspect}.
-  def description
-    self.method_missing :description
   end
 
   ##
