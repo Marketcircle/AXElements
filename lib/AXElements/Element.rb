@@ -71,6 +71,12 @@ class Element
     value
   end
 
+  ##
+  # This API exists to be consistent with {#attribute}.
+  def attribute= name, value
+    AX.set_attr_of_element( @ref, name, value )
+  end
+
   # @group Parameterized Attributes
 
   # @return [Array<String>] cache of available actions
@@ -87,6 +93,12 @@ class Element
     real_attribute = param_attribute_for attr
     raise ArgumentError, "#{attr} is not a parameterized attribute" unless real_attribute
     param_attribute(real_attribute, param)
+  end
+
+  ##
+  # This API exists to be consistent with {#attribute}.
+  def param_attribute name, param
+    AX.param_attr_of_element( @ref, name, param )
   end
 
   # @group Actions
@@ -247,11 +259,6 @@ class Element
 
 
   protected
-
-  # This API exists to be consistent with {#attribute}.
-  def param_attribute name, param; AX.param_attr_of_element( @ref, name, param ); end
-  # This API exists to be consistent with {#attribute}.
-  def attribute= name, value; AX.set_attr_of_element( @ref, name, value ); end
 
   ##
   # Make a string that should match the suffix of a attribute/action
