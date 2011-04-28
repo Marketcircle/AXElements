@@ -1,6 +1,32 @@
+require 'rubygems'
+require 'yard'
+require 'rake/compiletask'
+require 'rake/testtask'
+require 'rake/gempackagetask'
+require 'rubygems/installer'
+require 'lib/AXElements/Version'
+
 task :default => :test
 
-require 'rake/compiletask'
+## Documentation
+
+YARD::Rake::YardocTask.new
+
+desc 'Generate Graphviz object graph'
+task :garden do
+  sh 'yard graph --full --dependencies --dot="-Tpng:quartz" -f docs/images/AX.dot'
+end
+
+## Console
+
+desc 'Start up IRb with AXElements loaded'
+task :console do
+  irb = ENV['RUBY_VERSION'] ? 'irb' : 'macirb'
+  sh "#{irb} -Ilib -rAXElements"
+end
+
+## Compilation
+
 Rake::CompileTask.new do |t|
   t.files = FileList["lib/**/*.rb"]
   t.verbose = true
@@ -13,7 +39,8 @@ task :clean do
   end
 end
 
-require 'rake/testtask'
+## Testing
+
 test_suites = [:core, :elements, :mouse, :actions]
 test_suites.each do |suite|
   namespace :test do
@@ -28,27 +55,48 @@ end
 desc 'Run all test suites'
 task :test => test_suites.map { |suite| "test:#{suite}" }
 
-require 'rubygems'
-require 'rubygems/builder'
-require 'rubygems/installer'
-spec = Gem::Specification.load('AXElements.gemspec')
+## Gem Packaging
 
-desc 'Build the gem'
-task :build do Gem::Builder.new(spec).build end
+GEM_SPEC = Gem::Specification.new do |s|
+  s.name    = 'AXElements'
+  s.version = AX::VERSION
 
-desc 'Build the gem and install it'
-task :install => :build do Gem::Installer.new(spec.file_name).install end
+  s.required_rubygems_version = Gem::Requirement.new '>= 1.4.2'
+  s.requirements              = ['BridgeSupport Preview 3']
 
-require 'yard'
-YARD::Rake::YardocTask.new
+  s.summary       = 'A DSL for automating GUI manipulation'
+  s.description   = <<-EOS
+AXElements is a DSL abstraction on top of the Mac OS X Accessibility Framework
+that allows code to be written in a very natural and declarative style that
+describes user interactions.
+  EOS
+  s.authors       = ['Mark Rada']
+  s.email         = 'mrada@marketcircle.com'
+  s.homepage      = 'http://samurai.marketcircle.com:3000/docs/AXElements'
+  s.licenses      = ['MIT']
+  s.has_rdoc      = 'yard'
 
-desc 'Generate Graphviz object graph'
-task :garden do
-  sh 'yard graph --full --dependencies --dot="-Tpng:quartz" -f docs/images/AX.dot'
+  s.files            =
+    Dir.glob('lib/**/*.rb*')  +
+    Dir.glob('vendor/**/*')
+  s.test_files       =
+    Dir.glob('test/**/test_*.rb') +
+    [ 'test/helper.rb' ]
+  s.extra_rdoc_files =
+    [ 'Rakefile', 'LICENSE.txt', 'README.markdown', '.yardopts' ] +
+    Dir.glob('docs/**/*')
+
+  s.add_development_dependency 'minitest-macruby-pride',  ['~> 2.2.0']
+  s.add_development_dependency 'yard',                    ['~> 0.6.8']
+  s.add_development_dependency 'redcarpet',               ['~> 1.11.0']
 end
 
-desc 'Start up IRb with AXElements loaded'
-task :console do
-  irb = ENV['RUBY_VERSION'] ? 'irb' : 'macirb'
-  sh "#{irb} -Ilib -rAXElements"
+Rake::GemPackageTask.new(GEM_SPEC) do |pkg|
+  pkg.need_zip = false
+  pkg.need_tar = true
+end
+
+desc 'Build the gem and install it'
+task :install => :gem do
+  Gem::Installer.new("pkg/#{GEM_SPEC.file_name}").install
 end
