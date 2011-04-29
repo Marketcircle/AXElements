@@ -20,7 +20,7 @@ class Application < AX::Element
     # @param [Float] timeout how long to wait between polling
     # @return [AX::Application]
     def application_with_bundle_identifier bundle, sleep_time = 2
-      AX::Singletons.application_for_bundle_identifier(bundle, sleep_time)
+      Accessibility.application_for_bundle_identifier(bundle, sleep_time)
     end
 
   end
