@@ -19,12 +19,12 @@ require 'AXElements/MacRubyExtensions'
 require 'AXElements/Mouse'
 
 require 'AXElements/Core'
+require 'AXElements/Accessibility'
 
 require 'AXElements/Element'
 require 'AXElements/Elements/Application'
 require 'AXElements/Elements/SystemWide'
 
 require 'AXElements/Actions'
-require 'AXElements/Singletons'
 
 require 'AXElements/Constants'
