@@ -45,7 +45,7 @@ class TestAttrOfElementParsesData < TestCore
   end
 
   def test_returns_nil_for_nil_attributes
-    assert_nil AX.attr_of_element(DOCK, KAXFocusedUIElementAttribute)
+    assert_nil AX.attr_of_element(LIST, KAXWindowAttribute)
   end
 
   def test_returns_boolean_false_for_false_attributes
