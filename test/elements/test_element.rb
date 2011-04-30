@@ -98,6 +98,23 @@ class TestElementGetAttribute < TestElements
 end
 
 
+
+class TestElementDescription < TestElements
+
+  def test_raise_error_if_object_has_no_description
+    assert_raises ArgumentError do EL_DOCK.description end
+  end
+
+  def test_gets_description_if_object_has_a_description
+    element = AX.element_at_position(
+      CGPoint.new(NSScreen.mainScreen.frame.size.width - 10, 10)
+                                     )
+    assert_equal 'spotlight menu', element.description
+  end
+
+end
+
+
 class TestElementAttribute < TestElements
 
   def test_works

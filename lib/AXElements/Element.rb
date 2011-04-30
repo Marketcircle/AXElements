@@ -27,7 +27,7 @@ class Element
 
   ##
   # Needed to override inherited {NSObject#description}. If you want a
-  # description of the object try using {#inspect}.
+  # description of the object use {#inspect} instead.
   def description
     get_attribute :description
   end
