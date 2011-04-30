@@ -20,6 +20,7 @@ require 'AXElements/Mouse'
 
 require 'AXElements/Core'
 require 'AXElements/Accessibility'
+require 'AXElements/Search'
 
 require 'AXElements/Element'
 require 'AXElements/Elements/Application'
