@@ -3,6 +3,8 @@ module Accessibility
 ##
 # @todo There is a lot of duplication in this class that needs to be
 #       dealt with appropriately.
+# @todo Search does not handle if the object does not respond to a
+#       filter.
 #
 # Represents a search entity. Searches through a view hierarchy are
 # breadth first.
@@ -19,8 +21,8 @@ class Search
   # @param [AX::Element] root
   def initialize root
     root.attributes.include?(KAXChildrenAttribute) ?
-      self.elements = root.attribute(KAXChildrenAttribute) :
-      raise ArgumentError, "Cannot search #{root.inspect} as it has no children"
+      (self.elements = root.attribute(KAXChildrenAttribute)) :
+      raise(ArgumentError, "Cannot search #{root.inspect} as it has no children")
   end
 
   ##
