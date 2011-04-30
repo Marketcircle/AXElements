@@ -150,28 +150,10 @@ class Element
   # @param [Hash{Symbol=>Object}] filters
   # @return [AX::Element,nil,Array<AX::Element>,Array<>]
   def search element_type, filters = {}
-    element_type   = element_type.to_s
-    class_const    = element_type.camelize!.chomp('s')
-    elements       = attribute(KAXChildrenAttribute)
-    search_results = []
-    filters      ||= {}
-
-    until elements.empty?
-      element          = elements.shift
-      primary_filter ||= (AX.const_get(class_const) if AX.const_defined?(class_const))
-
-      if element.attributes.include?(KAXChildrenAttribute)
-        elements.concat element.attribute(KAXChildrenAttribute)
-      end
-
-      next unless element.class == primary_filter
-      next if filters.find { |filter,value| element.send(filter) != value }
-
-      return element unless element_type[-1] == 's'
-      search_results << element
-    end
-
-    element_type[-1] == 's' ? search_results : nil
+    klass    = element_type.to_s.camelize!
+    method   = klass.chomp!('s') ? :find_all : :find
+    searcher = Accessibility::Search.new(self)
+    searcher.send(method, klass, (filters || {}))
   end
 
   ##
