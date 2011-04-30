@@ -39,8 +39,13 @@ class Application < AX::Element
     (super).sub />$/, " @pid=#{self.pid}>"
   end
 
-  def post_kb_string string
-    AX.post_kb_string( @ref, string )
+  ##
+  # @note Key presses are async
+  #
+  # Send keyboard input to `self`, the control that currently has focus
+  # will the control that receives the key presses.
+  def type_string string
+    AX.keyboard_action( @ref, string )
   end
 
 
