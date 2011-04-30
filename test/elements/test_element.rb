@@ -12,50 +12,6 @@ class TestElementAttributes < TestElements
 end
 
 
-class TestElementActions < TestElements
-
-  def test_empty_for_dock
-    assert_empty EL_DOCK.actions
-  end
-
-  def test_not_empty_for_dock_item
-    refute_empty EL_DOCK_APP.actions
-  end
-
-  def test_contains_proper_info
-    assert EL_DOCK_APP.actions.include?(KAXPressAction)
-    assert EL_DOCK_APP.actions.include?(KAXShowMenuAction)
-  end
-
-end
-
-
-# @todo implement missing test cases
-class TestElementParamAttributes < TestElements
-
-  def test_empty_for_dock
-    assert_empty EL_DOCK.param_attributes
-  end
-
-  # def test_not_empty_for_something
-  # end
-  # def test_contains_proper_info
-  # end
-  # @todo some other tests copied from testing #get_attributes
-
-end
-
-
-class TestElementPID < TestElements
-
-  def test_actually_works
-    assert_instance_of Fixnum, EL_DOCK_APP.pid
-    refute EL_DOCK_APP.pid == 0
-  end
-
-end
-
-
 class TestElementGetAttribute < TestElements
 
   def test_raises_arg_error_for_non_existent_attributes
@@ -115,9 +71,19 @@ class TestElementDescription < TestElements
 end
 
 
+class TestElementPID < TestElements
+
+  def test_actually_works
+    assert_instance_of Fixnum, EL_DOCK_APP.pid
+    refute EL_DOCK_APP.pid == 0
+  end
+
+end
+
+
 class TestElementAttribute < TestElements
 
-  def test_works
+  def test_actually_works
     assert_equal 'Dock', EL_DOCK.attribute(KAXTitleAttribute)
   end
 
@@ -143,75 +109,74 @@ class TestElementAttributeWritable < TestElements
 end
 
 
+class TestElementSetAttribute < TestElements
+
+  def test_set_a_text_fields_value
+    spotlight_text_field do |field|
+      new_value = "#{Time.now}"
+      item = AX::Element.new(field)
+      item.set_attribute( :value, new_value )
+      assert_equal new_value, attribute_for( field, KAXValueAttribute )
+    end
+  end
+
+end
+
+
+class TestElementAttributeEquals < TestElements
+
+  def test_actually_works
+    spotlight_text_field do |field|
+      new_value = "#{Time.now}"
+      item = AX::Element.new(field)
+      item.send( :attribute=, KAXValueAttribute, new_value )
+      assert_equal new_value, attribute_for( field, KAXValueAttribute )
+    end
+  end
+
+end
+
+
+# @todo implement missing test cases
+class TestElementParamAttributes < TestElements
+
+  def test_empty_for_dock
+    assert_empty EL_DOCK.param_attributes
+  end
+
+  # def test_not_empty_for_something
+  # end
+  # def test_contains_proper_info
+  # end
+  # @todo some other tests copied from testing #get_attributes
+
+end
+
+
 # @todo I'll get to this when I need to get to parameterized attributes
-# class TestElementGetParamAttribute < TestElements
+class TestElementGetParamAttribute < TestElements
+
 #   def test_returns_nil_for_non_existent_attributes
 #   end
 #   def test_fetches_attribute
 #   end
-# end
 
-# @todo this is a bit too invasive right now
-# class TestAXElementSetAttribute < MiniTest::Unit::TestCase
-# end
-
-# @todo this is a bit too invasive right now
-# class TestAXElementSetFocus < MiniTest::Unit::TestCase
-# end
-
-# @todo this is a bit too invasive right now
-# class TestAXElementPerformAction < MiniTest::Unit::TestCase
-# end
-
-class TestAXElementMethodMissing < MiniTest::Unit::TestCase
-  # def test_finds_setters
-  # end
-  def test_finds_attribute
-    assert_equal 'Dock', AX::DOCK.title
-  end
-  # def test_finds_actions
-  # end
-  # def test_does_search_if_has_kids
-  # end
-  # def test_does_not_search_if_no_kids
-  # end
-  # def bench_attribute_lookup_is_linear
-  # end
-  # def test_finds_button_when_close_button_exists
-  # end
-  # def test_predicate_that_uses_is
-  # end
-  # def test_predicate_that_does_not_use_is # AXEnabled
-  # end
 end
 
-class TestAXElementRaise < MiniTest::Unit::TestCase
-  # def test_delegates_up_if_raise_not_an_action
-  # end
-  # def test_calls_raise_if_raise_is_an_action
-  # end
-end
 
-class TestAXElementPrettyPrint < MiniTest::Unit::TestCase
-end
+class TestElementActions < TestElements
 
-class TestAXElementInspect < MiniTest::Unit::TestCase
-end
+  def test_empty_for_dock
+    assert_empty EL_DOCK.actions
+  end
 
-class TestAXElementRespondTo < MiniTest::Unit::TestCase
-  def test_works_on_attributes
-    assert AX::DOCK.respond_to?(:title)
+  def test_not_empty_for_dock_item
+    refute_empty EL_DOCK_APP.actions
   end
-  def test_does_not_work_with_search_names
-    refute AX::DOCK.respond_to?(:list)
-  end
-  def test_works_for_regular_methods
-    assert AX::DOCK.respond_to?(:attributes)
-  end
-  def test_returns_false_for_non_existant_methods
-    refute AX::DOCK.respond_to?(:crazy_thing_that_cant_work)
-  end
-end
 
-class TestAXElementMethods < MiniTest::Unit::TestCase
+  def test_contains_proper_info
+    assert EL_DOCK_APP.actions.include?(KAXPressAction)
+    assert EL_DOCK_APP.actions.include?(KAXShowMenuAction)
+  end
+
 end
