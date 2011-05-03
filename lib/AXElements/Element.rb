@@ -79,7 +79,7 @@ class Element
 
   # @return [Array<String>] cache of available actions
   def param_attributes
-    @param_attributes ||= AX.param_attrs_of_element(@ref)
+    AX.param_attrs_of_element(@ref)
   end
 
   ##
