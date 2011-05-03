@@ -212,12 +212,18 @@ class Element
   end
 
   ##
-  # @todo FINISH THIS METHOD
+  # @todo Find out what is going wrong when I make this recursive;
+  #       it is crashing MacRuby, but the backtrace shows the problem
+  #       occuring in 'com.apple.HIServices' in the
+  #       `_AXMIGCopyAttributeNames` function.
   #
   # A more expensive {#inspect} where we actually look up the
   # values for each attribute and format the output nicely.
   def pretty_print
-    inspect
+    array = attributes.map do |attr|
+      [AX.strip_prefix(attr), attribute(attr)]
+    end
+    Hash[array]
   end
 
   ##
