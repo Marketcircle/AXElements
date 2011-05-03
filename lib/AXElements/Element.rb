@@ -103,7 +103,7 @@ class Element
 
   # @return [Array<String>] cache of available actions
   def actions
-    @actions ||= AX.actions_of_element(@ref)
+    AX.actions_of_element(@ref)
   end
 
   ##
