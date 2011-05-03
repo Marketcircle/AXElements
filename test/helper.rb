@@ -5,6 +5,7 @@ require 'rubygems'
 gem     'minitest-macruby-pride'
 require 'minitest/autorun'
 require 'minitest/pride'
+require 'minitest/benchmark'
 
 $init_output = StringIO.new
 AX.log = Logger.new $init_output
