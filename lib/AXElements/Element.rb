@@ -180,7 +180,7 @@ class Element
   #  window.buttons(title:'New Project', enabled?:true)
   def method_missing method, *args
     attr = attribute_for method
-    return AX.attr_of_element(@ref, attr) if attr
+    return attribute(attr) if attr
     return search(method, args.first) if attributes.include?(KAXChildrenAttribute)
     super
   end
