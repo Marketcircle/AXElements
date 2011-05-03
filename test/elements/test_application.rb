@@ -1,23 +1,47 @@
-class TestAXApplication < MiniTest::Unit::TestCase
+class MockApplication < AX::Application
 
-  def test_is_subclass_of_element
-    assert AX::Application.ancestors.include?(AX::Element)
+  def initialize ref
+    super
+    @mock = MiniTest::Mock.new
+    @mock.expect :keyboard_action, true, [ref, 'test']
   end
 
-  # # @todo mocking is almost not worth it
-  # def test_application_with_bundle_identifier
-  #   def dup_class.AX
+  attr_reader :mock
+  alias_method :AX, :mock
 
+end
+
+
+class TestAXApplication < TestElements
+
+  def test_is_a_direct_subclass_of_element
+    assert_equal AX::Element, AX::Application.superclass
+  end
+
+  # def test_application_with_bundle_identifier
+  #   mock = MiniTest::Mock.new
+  #   mock.expect :application_for_bundle_identifier, nil, ['com.test']
+  #   mock.expect :application_for_bundle_identifier, nil, ['com.test', 9001]
+
+  #   dup_class = AX::Application.dup
+  #   dup_class.instance_eval do
+  #     const_set( :AX, Module.new )
+  #     AX.class_eval { const_set(:Singletons, mock) }
   #   end
-  #   dup_class.application_with_bundle_identifier 'com.apple.dock'
-  #   # assert mock
+
+  #   dup_class.application_with_bundle_identifier 'com.test'
+  #   dup_class.application_with_bundle_identifier 'com.test', 9001
+
+  #   mock.verify
   # end
 
   def test_set_attribute_has_special_case_for_focus
-    dup_class  = AX::Application.dup
     was_called = false
-    dup_class.send :define_method, :set_focus do was_called = true end
-    AX::DOCK.set_attribute :focused, true
+    dup_class  = AX::Application.dup
+    dup_class.class_eval do
+      define_method :set_focus do was_called = true end
+    end
+    EL_DOCK.set_attribute :focused, true
     assert was_called
   end
 
@@ -25,9 +49,15 @@ class TestAXApplication < MiniTest::Unit::TestCase
     assert_match /\s@pid=/, AX::DOCK.inspect
   end
 
-  # @todo make this test stronger
   def test_can_post_keyboard_events
-    assert AX::Application.instance_methods.include?(:post_kb_string)
+    assert AX::Application.instance_methods.include?(:type_string)
+  end
+
+  def test_type_string
+    ref  = EL_DOCK.instance_variable_get(:@ref)
+    dock = MockApplication.new ref
+    dock.type_string('test')
+    dock.mock.verify
   end
 
 end

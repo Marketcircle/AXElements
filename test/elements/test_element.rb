@@ -54,7 +54,6 @@ class TestElementGetAttribute < TestElements
 end
 
 
-
 class TestElementDescription < TestElements
 
   def test_raise_error_if_object_has_no_description
@@ -180,3 +179,110 @@ class TestElementActions < TestElements
   end
 
 end
+
+
+class TestElementPerformAction < TestElements
+
+  def test_returns_boolean
+  end
+
+  def test_does_name_translation
+    # show_menu
+    # press
+  end
+
+  def test_raise_error_for_non_existant_action
+  end
+
+end
+
+
+class TestElementAction < TestElements
+
+  def test_actually_works
+  end
+
+end
+
+
+class TestElementSearch < TestElements
+
+  def test_plural_calls_find_all
+  end
+
+  def test_singular_calls_find
+  end
+
+  def test_works_with_no_filters
+  end
+
+  def test_forwards_all_filters
+  end
+
+end
+
+
+class TestElementMethodMissing < TestElements
+
+  def test_finds_attribute
+    assert_equal 'Dock', EL_DOCK.title
+  end
+
+  def test_does_search_if_has_kids
+  end
+
+  def test_does_not_search_if_no_kids
+  end
+
+end
+
+
+class TestElementNotifications < TestElements
+
+  def test_wait_for_window_created
+  end
+
+end
+
+
+class TestElementInspect < TestElements
+
+  def test_includes_methods
+    # methods section
+    # strips prefix
+  end
+
+end
+
+
+class TestElementPrettyPrint < TestElements
+
+  def test_
+  end
+
+end
+
+
+class TestElementRespondTo < TestElements
+
+  def test_works_on_attributes
+    assert EL_DOCK.respond_to?(:title)
+  end
+
+  def test_does_not_work_with_search_names
+    refute EL_DOCK.respond_to?(:list)
+  end
+
+  def test_works_for_regular_methods
+    assert EL_DOCK.respond_to?(:attributes)
+  end
+
+  def test_returns_false_for_non_existant_methods
+    refute EL_DOCK.respond_to?(:crazy_thing_that_cant_work)
+  end
+
+end
+
+
+# class TestAXElementMethods < MiniTest::Unit::TestCase
+# end

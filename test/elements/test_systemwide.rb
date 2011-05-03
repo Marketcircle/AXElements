@@ -1,8 +1,7 @@
 class TestAXSystemWide < MiniTest::Unit::TestCase
 
-  # important so that it inherits application functionality
-  def test_is_subclass_of_application
-    assert AX::SystemWide.ancestors.include?(AX::Application)
+  def test_typed_things_go_where_the_focus_is
+    skip 'Pending.'
   end
 
 end
