@@ -1,39 +1,16 @@
-class MockApplication < AX::Application
-
-  def initialize ref
-    super
-    @mock = MiniTest::Mock.new
-    @mock.expect :keyboard_action, true, [ref, 'test']
-  end
-
-  attr_reader :mock
-  alias_method :AX, :mock
-
-end
-
-
 class TestAXApplication < TestElements
 
   def test_is_a_direct_subclass_of_element
     assert_equal AX::Element, AX::Application.superclass
   end
 
-  # def test_application_with_bundle_identifier
-  #   mock = MiniTest::Mock.new
-  #   mock.expect :application_for_bundle_identifier, nil, ['com.test']
-  #   mock.expect :application_for_bundle_identifier, nil, ['com.test', 9001]
-
-  #   dup_class = AX::Application.dup
-  #   dup_class.instance_eval do
-  #     const_set( :AX, Module.new )
-  #     AX.class_eval { const_set(:Singletons, mock) }
-  #   end
-
-  #   dup_class.application_with_bundle_identifier 'com.test'
-  #   dup_class.application_with_bundle_identifier 'com.test', 9001
-
-  #   mock.verify
-  # end
+  def test_application_with_bundle_identifier
+    [ ['com.apple.dock'], ['com.apple.dock', 2] ].each do |args|
+      app = AX::Application.application_with_bundle_identifier *args
+      assert_instance_of AX::Application, app
+      assert_equal 'Dock', app.attribute(KAXTitleAttribute)
+    end
+  end
 
   def test_set_attribute_has_special_case_for_focus
     was_called = false
@@ -53,11 +30,20 @@ class TestAXApplication < TestElements
     assert AX::Application.instance_methods.include?(:type_string)
   end
 
+  # @note This test uses a stub
   def test_type_string
-    ref  = EL_DOCK.instance_variable_get(:@ref)
-    dock = MockApplication.new ref
-    dock.type_string('test')
-    dock.mock.verify
+    class << AX
+      alias_method :old_keyboard_action, :keyboard_action
+      attr_reader :test_type_string_mock
+      def keyboard_action element, string
+        true if string == 'test'
+      end
+    end
+    assert EL_DOCK.type_string('test')
+  ensure
+    class << AX
+      alias_method :keyboard_action, :old_keyboard_action
+    end
   end
 
 end
