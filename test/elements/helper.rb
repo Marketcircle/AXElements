@@ -7,6 +7,6 @@ class TestElements < TestAX
     x.class == AX::ApplicationDockItem
   }
 
-  EL_SYSTEM = AX::SystemWide.new SYSTEM
+  EL_SYSTEM = AX::SystemWide.instance
 
 end

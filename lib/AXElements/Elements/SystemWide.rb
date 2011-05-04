@@ -1,11 +1,17 @@
+require 'singleton'
+
 module AX
 
 ##
-# @todo Make this class `include Singleton`?
 # @todo Remove methods we know this class cannot use (e.g. param_attributes)
 #
 # Represents the special SystemWide accessibility object.
 class SystemWide < AX::Element
+  include Singleton
+
+  def initialize ref = AXUIElementCreateSystemWide()
+    super
+  end
 
   ##
   # @note With the SystemWide class, using {#type_string} will send the
