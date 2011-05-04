@@ -9,7 +9,4 @@ module AX
   # @return [AX::Application] the Mac OS X Finder application
   FINDER = Application.application_with_bundle_identifier 'com.apple.finder'
 
-  # @todo provide a default object for Spotlight (hard since AX is not properly
-  #       implemented for it)
-
 end
