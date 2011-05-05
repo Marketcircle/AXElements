@@ -32,6 +32,10 @@ class Element
     get_attribute :description
   end
 
+  ##
+  # Get the process identifier for the application that the element
+  # belongs to.
+  #
   # @return [Fixnum]
   def pid
     @pid ||= AX.pid_of_element( @ref )
@@ -265,6 +269,9 @@ class Element
   def param_attribute_for sym; constant_for sym, param_attributes; end
 
   ##
+  # @todo Investigate if using a regex is faster than calling
+  #       caseInsensitiveCompare for the average AX constant
+  #
   # Match a symbol to a attribute/action constant a suffix of an action
   # constant.
   #
