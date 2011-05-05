@@ -80,15 +80,6 @@ class TestElementPID < TestElements
 end
 
 
-class TestElementAttribute < TestElements
-
-  def test_actually_works
-    assert_equal 'Dock', EL_DOCK.attribute(KAXTitleAttribute)
-  end
-
-end
-
-
 class TestElementAttributeWritable < TestElements
 
   def test_raises_error_for_non_existant_attributes
@@ -115,20 +106,6 @@ class TestElementSetAttribute < TestElements
       new_value = "#{Time.now}"
       item = AX::Element.new(field)
       item.set_attribute( :value, new_value )
-      assert_equal new_value, attribute_for( field, KAXValueAttribute )
-    end
-  end
-
-end
-
-
-class TestElementAttributeEquals < TestElements
-
-  def test_actually_works
-    spotlight_text_field do |field|
-      new_value = "#{Time.now}"
-      item = AX::Element.new(field)
-      item.send( :attribute=, KAXValueAttribute, new_value )
       assert_equal new_value, attribute_for( field, KAXValueAttribute )
     end
   end
@@ -192,14 +169,6 @@ class TestElementPerformAction < TestElements
   end
 
   def test_raise_error_for_non_existant_action
-  end
-
-end
-
-
-class TestElementAction < TestElements
-
-  def test_actually_works
   end
 
 end
