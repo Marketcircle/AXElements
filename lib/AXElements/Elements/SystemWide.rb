@@ -9,8 +9,8 @@ module AX
 class SystemWide < AX::Element
   include Singleton
 
-  def initialize ref = AXUIElementCreateSystemWide()
-    super
+  def initialize
+    super AXUIElementCreateSystemWide()
   end
 
   ##
