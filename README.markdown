@@ -9,17 +9,6 @@ describes user interactions.
 AXElements is documented using YARD, and includes a few small
 tutorials in the `docs` directory. The starting point is [here](docs/AXElements.markdown).
 
-## General TODO
-
-- better super class choosing when creating classes at run time
-  + a close button should be the subclass of a button, but you may
-  need to also create the button class, but in this case superclass
-  should be the general role of the element
-    * then we can search using #kind_of instead of #is_a, though I am
-    not convinced that this change would be beneficial
-- switch to RedCarpet when YARD supports it
-  + remember to update all documentation for new advantages
-
 ## Test Suite
 
 The nature of this library requires that the tests take over your
@@ -27,6 +16,34 @@ computer while they run.
 
 The tests aren't programmed to do anything destructive, but if you
 interfere with them something could go wrong.
+
+## Road Map
+
+An idealized outline of how things will progress in the next couple of releases
+
+### 0.5
+
+- better super class choosing when creating classes at run time
+  + a close button should be the subclass of a button, but you may
+  need to also create the button class, but in this case superclass
+  should be the general role of the element
+    * then we can search using #kind_of instead of #is_a, though I am
+    not convinced that this change would be beneficial
+- notifications system needs an overhaul
+  + notification name resolution does not need to happen in the
+  Element class
+  + needs to callback to a proc instead of a static method
+- Search needs to be expanded
+  + First it needs to be cleaned up
+  + It needs to handle exceptions better
+  + Needs to support more complex filtering criteria
+
+### 0.6
+
+- Keyboard module
+  + support a much larger set of keys and key combinations that can be pressed
+- Mouse module cleanup
+- Performance tweaks
 
 ## Contributing to AXElements
 
