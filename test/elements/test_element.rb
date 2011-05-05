@@ -161,14 +161,20 @@ end
 class TestElementPerformAction < TestElements
 
   def test_returns_boolean
+    assert_equal true, EL_DOCK_APP.perform_action(:show_menu)
   end
 
   def test_does_name_translation
-    # show_menu
-    # press
+    before_kids = EL_DOCK_APP.attribute(KAXChildrenAttribute).size
+    EL_DOCK_APP.perform_action(:show_menu)
+    after_kids = EL_DOCK_APP.attribute(KAXChildrenAttribute).size
+    refute_equal after_kids, before_kids
   end
 
   def test_raise_error_for_non_existant_action
+    assert_raises ArgumentError do
+      EL_DOCK_APP.perform_action(:fake_action)
+    end
   end
 
 end
@@ -177,15 +183,22 @@ end
 class TestElementSearch < TestElements
 
   def test_plural_calls_find_all
+    assert_instance_of Array, EL_DOCK.search(:application_dock_items)
   end
 
   def test_singular_calls_find
+    assert_kind_of AX::Element, EL_DOCK.search(:list)
   end
 
   def test_works_with_no_filters
+    assert_equal 'AXList', EL_DOCK.search(:list).attribute(KAXRoleAttribute)
   end
 
+  # @note this test is kind of fragile
   def test_forwards_all_filters
+    assert_raises ArgumentError do
+      EL_DOCK.search(:application_dock_item, clearly_fake_attribute: true)
+    end
   end
 
 end
@@ -198,9 +211,13 @@ class TestElementMethodMissing < TestElements
   end
 
   def test_does_search_if_has_kids
+    assert_instance_of AX::ApplicationDockItem, EL_DOCK.application_dock_item
   end
 
   def test_does_not_search_if_no_kids
+    assert_raises NoMethodError do
+      EL_SYSTEM.list
+    end
   end
 
 end
