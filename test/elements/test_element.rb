@@ -1,12 +1,12 @@
 class TestElementAttributes < TestElements
 
   def test_not_empty
-    refute_empty EL_DOCK.attributes
+    refute_empty AX::DOCK.attributes
   end
 
   def test_contains_proper_info
-    assert EL_DOCK.attributes.include?(KAXRoleAttribute)
-    assert EL_DOCK.attributes.include?(KAXTitleAttribute)
+    assert AX::DOCK.attributes.include?(KAXRoleAttribute)
+    assert AX::DOCK.attributes.include?(KAXTitleAttribute)
   end
 
 end
@@ -15,16 +15,16 @@ end
 class TestElementGetAttribute < TestElements
 
   def test_raises_arg_error_for_non_existent_attributes
-    assert_raises ArgumentError do EL_DOCK.get_attribute('fakeattribute') end
-    assert_raises ArgumentError do EL_DOCK.get_attribute(:fakeattribute) end
+    assert_raises ArgumentError do AX::DOCK.get_attribute('fakeattribute') end
+    assert_raises ArgumentError do AX::DOCK.get_attribute(:fakeattribute) end
   end
 
   def test_matches_single_word_attribute
-    assert_equal KAXApplicationRole, EL_DOCK.get_attribute( :role )
+    assert_equal KAXApplicationRole, AX::DOCK.get_attribute( :role )
   end
 
   def test_matches_mutlti_word_attribute
-    assert_equal 'application', EL_DOCK.get_attribute( :role_description )
+    assert_equal 'application', AX::DOCK.get_attribute( :role_description )
   end
 
   def test_matches_acronym_attributes
@@ -41,7 +41,7 @@ class TestElementGetAttribute < TestElements
 
   def test_gets_exact_match_except_prefix
     # finds role when role and subrole exist
-    assert_equal 'Dock', EL_DOCK.get_attribute(:title)
+    assert_equal 'Dock', AX::DOCK.get_attribute(:title)
 
     # finds top_level_ui_element and shown_menu_ui_element exists
     top_level  = EL_DOCK_APP.get_attribute(:top_level_ui_element)
@@ -57,7 +57,7 @@ end
 class TestElementDescription < TestElements
 
   def test_raise_error_if_object_has_no_description
-    assert_raises ArgumentError do EL_DOCK.description end
+    assert_raises ArgumentError do AX::DOCK.description end
   end
 
   def test_gets_description_if_object_has_a_description
@@ -84,7 +84,7 @@ class TestElementAttributeWritable < TestElements
 
   def test_raises_error_for_non_existant_attributes
     assert_raises ArgumentError do
-      EL_DOCK.attribute_writable?(:fake_attribute)
+      AX::DOCK.attribute_writable?(:fake_attribute)
     end
   end
 
@@ -93,7 +93,7 @@ class TestElementAttributeWritable < TestElements
   end
 
   def test_false_for_non_writable_attributes
-    refute EL_DOCK.attribute_writable? :title
+    refute AX::DOCK.attribute_writable? :title
   end
 
 end
@@ -117,7 +117,7 @@ end
 class TestElementParamAttributes < TestElements
 
   def test_empty_for_dock
-    assert_empty EL_DOCK.param_attributes
+    assert_empty AX::DOCK.param_attributes
   end
 
   # def test_not_empty_for_something
@@ -143,7 +143,7 @@ end
 class TestElementActions < TestElements
 
   def test_empty_for_dock
-    assert_empty EL_DOCK.actions
+    assert_empty AX::DOCK.actions
   end
 
   def test_not_empty_for_dock_item
@@ -183,21 +183,21 @@ end
 class TestElementSearch < TestElements
 
   def test_plural_calls_find_all
-    assert_instance_of Array, EL_DOCK.search(:application_dock_items)
+    assert_instance_of Array, AX::DOCK.search(:application_dock_items)
   end
 
   def test_singular_calls_find
-    assert_kind_of AX::Element, EL_DOCK.search(:list)
+    assert_kind_of AX::Element, AX::DOCK.search(:list)
   end
 
   def test_works_with_no_filters
-    assert_equal 'AXList', EL_DOCK.search(:list).attribute(KAXRoleAttribute)
+    assert_equal 'AXList', AX::DOCK.search(:list).attribute(KAXRoleAttribute)
   end
 
   # @note this test is kind of fragile
   def test_forwards_all_filters
     assert_raises ArgumentError do
-      EL_DOCK.search(:application_dock_item, clearly_fake_attribute: true)
+      AX::DOCK.search(:application_dock_item, clearly_fake_attribute: true)
     end
   end
 
@@ -207,16 +207,16 @@ end
 class TestElementMethodMissing < TestElements
 
   def test_finds_attribute
-    assert_equal 'Dock', EL_DOCK.title
+    assert_equal 'Dock', AX::DOCK.title
   end
 
   def test_does_search_if_has_kids
-    assert_instance_of AX::ApplicationDockItem, EL_DOCK.application_dock_item
+    assert_instance_of AX::ApplicationDockItem, AX::DOCK.application_dock_item
   end
 
   def test_does_not_search_if_no_kids
     assert_raises NoMethodError do
-      EL_SYSTEM.list
+      AX::SYSTEM.list
     end
   end
 
@@ -252,19 +252,19 @@ end
 class TestElementRespondTo < TestElements
 
   def test_works_on_attributes
-    assert EL_DOCK.respond_to?(:title)
+    assert AX::DOCK.respond_to?(:title)
   end
 
   def test_does_not_work_with_search_names
-    refute EL_DOCK.respond_to?(:list)
+    refute AX::DOCK.respond_to?(:list)
   end
 
   def test_works_for_regular_methods
-    assert EL_DOCK.respond_to?(:attributes)
+    assert AX::DOCK.respond_to?(:attributes)
   end
 
   def test_returns_false_for_non_existant_methods
-    refute EL_DOCK.respond_to?(:crazy_thing_that_cant_work)
+    refute AX::DOCK.respond_to?(:crazy_thing_that_cant_work)
   end
 
 end

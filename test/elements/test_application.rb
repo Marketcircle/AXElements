@@ -18,7 +18,7 @@ class TestAXApplication < TestElements
     dup_class.class_eval do
       define_method :set_focus do was_called = true end
     end
-    EL_DOCK.set_attribute :focused, true
+    AX::DOCK.set_attribute :focused, true
     assert was_called
   end
 
@@ -39,7 +39,7 @@ class TestAXApplication < TestElements
         true if string == 'test'
       end
     end
-    assert EL_DOCK.type_string('test')
+    assert AX::DOCK.type_string('test')
   ensure
     class << AX
       alias_method :keyboard_action, :old_keyboard_action
