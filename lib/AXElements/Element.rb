@@ -191,15 +191,15 @@ class Element
   # @todo Need to provide a nice interface for taking notif names
   #       (i.e. `:window_created` instead of `KAXWindowCreatedNotification`)
   #
-  # Optimized under the assumption that you will be passing a block much
-  # less frequently than not.
-  #
   # @yield
   # @yieldreturn [Boolean]
+  #
   # @param [String] notif
   # @param [Float] timeout
-  def wait_for_notification notif, timeout = 10
-    AX.wait_for_notification( @ref, notif, timeout )
+  def on_notification notif, &block
+    real_notif = notif_for(notif)
+    raise ArgumentError, "#{notif} is not a notification constant" unless real_notif
+    AX.register_for_notif( @ref, real_notif, &block )
   end
 
   # @endgroup
@@ -245,6 +245,11 @@ class Element
 
 
   protected
+
+  def notif_for sym
+    const = "KAX#{sym.to_s.camelize!}Notification"
+    Kernel.const_defined?(const) ? Kernel.const_get(const) : nil
+  end
 
   ##
   # Make a string that should match the suffix of a attribute/action

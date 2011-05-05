@@ -147,9 +147,9 @@ class << AX
   # @param [Object] refcon some context object that you can pass around
   def notif_method observer, element, notif, refcon
     should_stop_waiting   = true
-    if @notif_proc
-      should_stop_waiting = @notif_proc.call(process_ax_data(element), notif)
-      @notif_proc         = nil
+    if @notif_block
+      should_stop_waiting = @notif_block.call(process_ax_data(element), notif)
+      @notif_block        = nil
     end
     return unless should_stop_waiting
 
@@ -184,9 +184,9 @@ class << AX
   # @yieldparam [String] notif the name of the notification
   # @yieldreturn [Boolean] determines if the script should continue or wait
   # @return [Boolean] true if the notification was received, otherwise false
-  def register_for_notif element, notif
-    @notif_proc = Proc.new if block_given?
-    observer    = notif_observer element, method(:notif_method)
+  def register_for_notif element, notif, &block
+    @notif_block = block
+    observer     = notif_observer element, method(:notif_method)
 
     run_loop     = CFRunLoopGetCurrent()
     app_run_loop = AXObserverGetRunLoopSource( observer )
@@ -468,7 +468,7 @@ class << AX
   #
   # @param [Method,Proc] callback
   # @return [AXObserverRef]
-  def notification_observer element, callback
+  def notif_observer element, callback
     ptr  = Pointer.new '^{__AXObserver}'
     code = AXObserverCreate( pid_of_element(element), callback, ptr )
     log_ax_call element, code

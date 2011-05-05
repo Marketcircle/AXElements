@@ -81,17 +81,21 @@ module Kernel
 
 
   ##
-  # @todo This does not support blocks just yet
-  # @todo Change this to wait_for_notification:from: when the syntax
+  # @todo Change this to register_for_notification:from: when the syntax
   #       is supported by YARD or someone complains, which ever comes
   #       first.
   #
-  # @param [String] notif
   # @param [AX::Element] element
-  def wait_for_notification notif, element
-   element.wait_for_notification notif
+  # @param [String] notif
+  def register_for_notification element, notif, &block
+    # do the notif name translation here?
+    element.on_notification notif, &block
   end
 
+  # @param [Float] timeout number of seconds to wait for a notification
+  def wait timeout = 10.0
+    AX.wait_for_notification timeout
+  end
 
   ##
   # @todo documentation
