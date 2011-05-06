@@ -7,6 +7,12 @@ module AX
 # The abstract base class for all accessibility objects.
 class Element
 
+  ##
+  # @todo take a second argument of the attributes array; the attributes
+  #       are already retrieved once to decide on the class type; if that
+  #       can be cached and used to initialize an element, we can save a
+  #       more expensive call to fetch the attributes
+  #
   # @param [AXUIElementRef] element
   def initialize element
     @ref        = element
