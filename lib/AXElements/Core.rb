@@ -246,7 +246,7 @@ class << AX
   # @param [AXUIElementRef] element
   # @return [Fixnum]
   def pid_of_element element
-    ptr  = Pointer.new 'i'
+    ptr  = Pointer.new('i')
     code = AXUIElementGetPid( element, ptr )
     log_ax_call element, code
     ptr[0]
@@ -383,13 +383,13 @@ class << AX
   # This method is called for each type of UI element that has not yet been
   # explicitly defined to define them at runtime.
   #
-  # @param [#to_sym] class_name
+  # @param [#to_sym] name
   # @return [Class]
-  def create_ax_class class_name
+  def create_ax_class name
     klass = Class.new(AX::Element) {
-      AX.log.debug "#{class_name} class created"
+      AX.log.debug "#{name} class created"
     }
-    const_set( class_name, klass )
+    const_set( name, klass )
   end
 
   ##
