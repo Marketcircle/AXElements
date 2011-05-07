@@ -31,6 +31,15 @@ class Element
   end
 
   ##
+  # A short path when you have the exact name of the attribute you want
+  # to retrieve the value of.
+  #
+  # This API exists for the sake of making search much faster.
+  def attribute name
+    AX.attr_of_element(@ref, name)
+  end
+
+  ##
   # Needed to override inherited {NSObject#description}. If you want a
   # description of the object use {#inspect} instead.
   def description
@@ -38,21 +47,14 @@ class Element
   end
 
   ##
+  # @todo Is it worth caching? Does it matter if it matters to cache the PID?
+  #
   # Get the process identifier for the application that the element
   # belongs to.
   #
   # @return [Fixnum]
   def pid
-    @pid ||= AX.pid_of_element( @ref )
-  end
-
-  ##
-  # A short path when you have the exact name of the attribute you want
-  # to retrieve the value of.
-  #
-  # This API exists for the sake of making search much faster.
-  def attribute name
-    AX.attr_of_element( @ref, name )
+    @pid ||= AX.pid_of_element(@ref)
   end
 
   # @param [Symbol] attr
@@ -81,19 +83,19 @@ class Element
   ##
   # This API exists to be consistent with {#attribute}.
   def attribute= name, value
-    AX.set_attr_of_element( @ref, name, value )
+    AX.set_attr_of_element(@ref, name, value)
   end
 
   # @group Parameterized Attributes
 
-  # @return [Array<String>] cache of available actions
+  # @return [Array<String>] available parameterized attributes
   def param_attributes
     AX.param_attrs_of_element(@ref)
   end
 
   ##
-  # @todo merge this into {#method_missing} other places once I understand
-  #       it more, right now it would just add a lot of overhead
+  # @todo Merge this into {#method_missing} and other places once I
+  #       understand it more, it just adds overhead right now
   #
   # @param [Symbol] attr
   def get_param_attribute attr, param
@@ -105,7 +107,7 @@ class Element
   ##
   # This API exists to be consistent with {#attribute}.
   def param_attribute name, param
-    AX.param_attr_of_element( @ref, name, param )
+    AX.param_attr_of_element(@ref, name, param)
   end
 
   # @group Actions
@@ -132,19 +134,13 @@ class Element
   ##
   # This API exists to be consistent with {#attribute}.
   def action name
-    AX.action_of_element( @ref, name )
+    AX.action_of_element(@ref, name)
   end
 
   # @group Search
 
   ##
-  # @todo allow regex matching when filtering string attributes
-  # @todo decide whether plural or singular search before entering
-  #       the main loop
-  # @todo make search much faster by not wrapping child classes
-  # @todo refactor searching, perhaps make an iterator
   # @todo consider using the rails inflector for pluralization checking
-  # @todo this method should be moved to its own class (Strategy Pattern?)
   #
   # Perform a breadth first search through the view hierarchy rooted at
   # the current element.
@@ -153,7 +149,8 @@ class Element
   # on the details of how to search.
   #
   # @example Find the dock item for the Finder app
-  #  AX::DOCK.search( :application_dock_item, title: 'Finder' )
+  #
+  #   AX::DOCK.search( :application_dock_item, title:'Finder' )
   #
   # @param [Symbol,String] element_type
   # @param [Hash{Symbol=>Object}] filters
@@ -166,27 +163,37 @@ class Element
   end
 
   ##
-  # @todo search param attributes
-  #
-  # We use {#method_missing} to dynamically handle requests to, in the
-  # following order, lookup attributes, or search for elements in the
-  # view hierarchy.
+  # We use {#method_missing} to dynamically handle requests to lookup
+  # attributes or search for elements in the view hierarchy. An attribute
+  # lookup is tried first.
   #
   # Failing both lookups, this method calls `super`.
   #
   # @example Attribute lookup of an element
-  #  mail   = AX::Application.application_with_bundle_identifier 'com.apple.mail'
-  #  window = mail.focused_window
+  #
+  #   mail   = AX::Application.application_with_bundle_identifier 'com.apple.mail'
+  #   window = mail.focused_window
+  #
   # @example Attribute lookup of an element property
-  #  window.title
+  #
+  #   window.title
+  #
   # @example Simple single element search
-  #  window.button # => You want the first Button that is found
+  #
+  #   window.button # => You want the first Button that is found
+  #
   # @example Simple multi-element search
-  #  window.buttons # => You want all the Button objects found
+  #
+  #   window.buttons # => You want all the Button objects found
+  #
   # @example Filters for a single element search
-  #  window.button(title:'Log In') # => First Button with a title of 'Log In'
+  #
+  #   window.button(title:'Log In') # => First Button with a title of 'Log In'
+  #
   # @example Contrived multi-element search with filtering
-  #  window.buttons(title:'New Project', enabled?:true)
+  #
+  #   window.buttons(title:'New Project', enabled?:true)
+  #
   def method_missing method, *args
     attr = attribute_for method
     return attribute(attr) if attr
@@ -197,18 +204,18 @@ class Element
   # @group Notifications
 
   ##
-  # @todo Need to provide a nice interface for taking notif names
-  #       (i.e. `:window_created` instead of `KAXWindowCreatedNotification`)
-  #
-  # @yield
-  # @yieldreturn [Boolean]
+  # Register to receive a notification from an object.
   #
   # @param [String] notif
   # @param [Float] timeout
+  # @yield
+  # @yieldparam [AX::Element] element
+  # @yieldparam [String] notif
+  # @yieldreturn [Boolean]
   def on_notification notif, &block
     real_notif = notif_for(notif)
     raise ArgumentError, "#{notif} is not a notification constant" unless real_notif
-    AX.register_for_notif( @ref, real_notif, &block )
+    AX.register_for_notif(@ref, real_notif, &block)
   end
 
   # @endgroup
@@ -261,12 +268,8 @@ class Element
   alias_method :eql?, :==
   alias_method :equal?, :==
 
-  protected
 
-  def notif_for sym
-    const = "KAX#{sym.to_s.camelize!}Notification"
-    Kernel.const_defined?(const) ? Kernel.const_get(const) : nil
-  end
+  protected
 
   ##
   # Make a string that should match the suffix of a attribute/action
@@ -275,6 +278,11 @@ class Element
     name = name.to_s
     name.chomp!('?')
     name.delete('_')
+  end
+
+  def notif_for sym
+    const = "KAX#{sym.to_s.camelize!}Notification"
+    Kernel.const_defined?(const) ? Kernel.const_get(const) : nil
   end
 
   def attribute_for sym;       constant_for sym, attributes;       end
