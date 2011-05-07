@@ -133,33 +133,6 @@ class << AX
   # @group Notifications
 
   ##
-  # @todo turn this into a proc and dispatch it from within
-  #       the {#wait_for_notification} method (waiting on MacRuby bug),
-  #       or move this method to its own class
-  # @todo desperately needs refactoring
-  #
-  # Do not call this method directly. It will be called automatically
-  # when a notification is triggered.
-  #
-  # @param [AXObserverRef] observer the observer being notified
-  # @param [AXUIElementRef] element the element being referenced
-  # @param [String] notif the notification name
-  # @param [Object] refcon some context object that you can pass around
-  def notif_method observer, element, notif, refcon
-    should_stop_waiting   = true
-    if @notif_block
-      should_stop_waiting = @notif_block.call(process_ax_data(element), notif)
-      @notif_block        = nil
-    end
-    return unless should_stop_waiting
-
-    run_loop   = CFRunLoopGetCurrent()
-    app_source = AXObserverGetRunLoopSource( observer )
-    CFRunLoopRemoveSource( run_loop, app_source, KCFRunLoopDefaultMode )
-    CFRunLoopStop(run_loop)
-  end
-
-  ##
   # @todo kAXUIElementDestroyedNotification look at it for catching
   #       windows that disappear
   # @todo Provide an interface that takes a PID instead of an element?
@@ -167,7 +140,7 @@ class << AX
   #       method in AX that uses stored state
   #
   # [Notifications](../file/docs/Notifications.markdown) are a way to put
-  # non-polling delays into your scripts (sorta).
+  # non-polling delays into your scripts.
   #
   # Pause execution of the program until a notification is received or a
   # timeout occurs.
@@ -175,36 +148,51 @@ class << AX
   # You can optionally pass a block to this method to validate the
   # notification.
   #
+  # @param [AXUIElementRef] element the element which will send the notification
   # @param [String] notif the name of the notification
-  # @param [Float] timeout
   # @yield Validate the notification; the block should return truthy if
-  #        the notification is expected and the script can stop waiting,
-  #        otherwise should return falsy.
+  #        the notification received is the expected one and the script can stop
+  #        waiting, otherwise should return falsy.
   # @yieldparam [AX::Element] element the element that sent the notification
   # @yieldparam [String] notif the name of the notification
   # @yieldreturn [Boolean] determines if the script should continue or wait
-  # @return [Boolean] true if the notification was received, otherwise false
-  def register_for_notif element, notif, &block
-    @notif_block = block
-    observer     = notif_observer element, method(:notif_method)
+  # @return [Proc] the proc generated as a callback when the notification is
+  #                received
+  def register_for_notif element, notif
+    notif_proc = Proc.new do |obsrvr, elmnt, ntfctn, _|
+      wrapped_element     = element_attribute elmnt
+      should_stop_waiting = block_given? ? yield(wrapped_element, ntfctn) : true
+      return unless should_stop_waiting
 
-    run_loop     = CFRunLoopGetCurrent()
-    app_run_loop = AXObserverGetRunLoopSource( observer )
+      run_loop   = CFRunLoopGetCurrent()
+      app_source = AXObserverGetRunLoopSource(obsrvr)
+      CFRunLoopRemoveSource(run_loop, app_source, KCFRunLoopDefaultMode)
+      CFRunLoopStop(run_loop)
+    end
 
+    observer   = make_observer_for element, notif_proc
+    run_loop   = CFRunLoopGetCurrent()
+    app_source = AXObserverGetRunLoopSource(observer)
     register_notif_callback observer, element, notif
-    CFRunLoopAddSource( run_loop, app_run_loop, KCFRunLoopDefaultMode )
+    CFRunLoopAddSource(run_loop, app_source, KCFRunLoopDefaultMode)
+    notif_proc
   end
 
   ##
+  # @todo Handle failure cases gracefully; instead of just returning false,
+  #       we need to unregister the notification so that it doesn't screw
+  #       up future things.
+  #
   # Pause execution of the program until a notification is received or a
   # timeout occurs.
+  #
+  # We use RunInMode because it has timeout functionality; this method
+  # actually has 4 return values, but only two codes will occur under
+  # regular circumstances.
   #
   # @param [Float] timeout
   # @return [Boolean] true if the notification was received, otherwise false
   def wait_for_notification timeout
-    # use RunInMode because it has timeout functionality; this method
-    # actually has 4 return values, but only two codes will occur under
-    # regular circumstances
     CFRunLoopRunInMode( KCFRunLoopDefaultMode, timeout, false ) == 2
   end
 
@@ -477,6 +465,8 @@ class << AX
 
   ##
   # @todo Consider exposing the refcon argument
+  # @todo Need to cache a list of callbacks so that they can be unregistered
+  #       in cases when an error occurs.
   #
   # Setup a callback for an accessibility notification.
   #
