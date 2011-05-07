@@ -2,7 +2,6 @@ module AX
 
 ##
 # @abstract
-# @todo A method to test for equivalency
 #
 # The abstract base class for all accessibility objects.
 class Element
@@ -253,6 +252,14 @@ class Element
   #   super
   # end
 
+  ##
+  # Overridden so that equality testing would work. A hack, but the only
+  # sane way I can think of to test for equivalency.
+  def == other
+    @ref == other.instance_variable_get(:@ref)
+  end
+  alias_method :eql?, :==
+  alias_method :equal?, :==
 
   protected
 

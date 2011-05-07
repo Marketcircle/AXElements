@@ -272,3 +272,44 @@ end
 
 # class TestAXElementMethods < MiniTest::Unit::TestCase
 # end
+
+
+class TestElementEquivalence < TestElements
+
+  def dock
+    Accessibility.application_for_bundle_identifier('com.apple.dock', 1.0)
+  end
+
+  def list
+    AX::DOCK.attribute(KAXChildrenAttribute).first
+  end
+
+  def test_dock_app_is_equal_to_dock_app
+    assert AX::DOCK == dock
+    assert AX::DOCK.eql? dock
+    assert AX::DOCK.equal? dock
+    refute AX::DOCK != dock
+  end
+
+  def test_dock_list_is_equal_to_dock_list
+    assert list == list
+    assert list.eql? list
+    assert list.equal? list
+    refute list != list
+  end
+
+  def test_dock_app_not_equal_to_finder_app
+    refute AX::DOCK == AX::FINDER
+    refute AX::DOCK.eql? AX::FINDER
+    refute AX::DOCK.equal? AX::FINDER
+    assert AX::DOCK != AX::FINDER
+  end
+
+  def test_dock_app_is_not_equal_to_dock_list
+    refute AX::DOCK == list
+    refute AX::DOCK.eql? list
+    refute AX::DOCK.equal? list
+    assert AX::DOCK != list
+  end
+
+end
