@@ -15,7 +15,7 @@ class << AX
   # @return [Array<String>]
   def attrs_of_element element
     ptr = Pointer.new( '^{__CFArray}' )
-    code = AXUIElementCopyAttributeNames( element, ptr )
+    code = AXUIElementCopyAttributeNames(element, ptr)
     log_ax_call element, code
     ptr[0]
   end
@@ -36,8 +36,8 @@ class << AX
   # @param [AXUIElementRef] element
   # @param [String] attr an attribute constant
   def attr_of_element_writable? element, attr
-    ptr  = Pointer.new('B')
-    code = AXUIElementIsAttributeSettable( element, attr, ptr )
+    ptr  = Pointer.new( 'B' )
+    code = AXUIElementIsAttributeSettable(element, attr, ptr)
     log_ax_call element, code
     ptr[0]
   end
@@ -51,7 +51,7 @@ class << AX
   # @param [Object] value the new value to set on the attribute
   # @return [Object] returns the value that was set
   def set_attr_of_element element, attr, value
-    code = AXUIElementSetAttributeValue( element, attr, value )
+    code = AXUIElementSetAttributeValue(element, attr, value)
     log_ax_call element, code
     value
   end
@@ -62,20 +62,20 @@ class << AX
   # @return [Array<String>]
   def actions_of_element element
     array_ptr = Pointer.new( '^{__CFArray}' )
-    code = AXUIElementCopyActionNames( element, array_ptr )
+    code = AXUIElementCopyActionNames(element, array_ptr)
     log_ax_call element, code
     array_ptr[0]
   end
 
   ##
-  # Perform an action on an element.
+  # Trigger and action that an element can perform.
   #
   # @param [AXUIElementRef] element
   # @param [String] action an action constant
   # @return [Boolean] true if successful
   def action_of_element element, action
-    code = AXUIElementPerformAction( element, action )
-    log_ax_call( element, code ) == 0
+    code = AXUIElementPerformAction(element, action)
+    log_ax_call(element, code) == 0
   end
 
   ##
@@ -115,7 +115,7 @@ class << AX
   #   parameterized attributes
   def param_attrs_of_element element
     array_ptr = Pointer.new( '^{__CFArray}' )
-    code = AXUIElementCopyParameterizedAttributeNames( element, array_ptr )
+    code = AXUIElementCopyParameterizedAttributeNames(element, array_ptr)
     log_ax_call element, code
     array_ptr[0]
   end
@@ -133,8 +133,6 @@ class << AX
   # @group Notifications
 
   ##
-  # @todo kAXUIElementDestroyedNotification look at it for catching
-  #       windows that disappear
   # @todo Provide an interface that takes a PID instead of an element?
   # @note This method is not thread safe right now, it is the only class
   #       method in AX that uses stored state
@@ -142,8 +140,7 @@ class << AX
   # [Notifications](../file/docs/Notifications.markdown) are a way to put
   # non-polling delays into your scripts.
   #
-  # Pause execution of the program until a notification is received or a
-  # timeout occurs.
+  # Register to be notified of a specified event in an application.
   #
   # You can optionally pass a block to this method to validate the
   # notification.
@@ -156,8 +153,7 @@ class << AX
   # @yieldparam [AX::Element] element the element that sent the notification
   # @yieldparam [String] notif the name of the notification
   # @yieldreturn [Boolean] determines if the script should continue or wait
-  # @return [Proc] the proc generated as a callback when the notification is
-  #                received
+  # @return [Proc] the proc used as a callback when the notification is received
   def register_for_notif element, notif
     notif_proc = Proc.new do |obsrvr, elmnt, ntfctn, _|
       wrapped_element     = element_attribute elmnt
@@ -192,8 +188,8 @@ class << AX
   #
   # @param [Float] timeout
   # @return [Boolean] true if the notification was received, otherwise false
-  def wait_for_notification timeout
-    CFRunLoopRunInMode( KCFRunLoopDefaultMode, timeout, false ) == 2
+  def wait_for_notif timeout
+    CFRunLoopRunInMode(KCFRunLoopDefaultMode, timeout, false) == 2
   end
 
   # @group Dynamic Elements
@@ -206,12 +202,12 @@ class << AX
   # The co-ordinates should be specified with the origin being in the
   # top-left corner of the main screen.
   #
-  # @param [CGPoint] point
+  # @param [CGPoint,Array<Number,Number>] point
   # @return [AX::Element]
   def element_at_position point
     ptr     = Pointer.new( '^{__AXUIElement}' )
     system  = AXUIElementCreateSystemWide()
-    code    = AXUIElementCopyElementAtPosition( system, point.x, point.y, ptr )
+    code    = AXUIElementCopyElementAtPosition(system, *(point.to_a), ptr)
     log_ax_call system, code
     element_attribute ptr[0]
   end
@@ -223,7 +219,7 @@ class << AX
   # @param [Fixnum] pid The process identifier for the application you want
   # @return [AX::Application]
   def application_for_pid pid
-    element_attribute( AXUIElementCreateApplication(pid) )
+    element_attribute AXUIElementCreateApplication(pid)
   end
 
   # @group Misc.
@@ -234,19 +230,26 @@ class << AX
   # @param [AXUIElementRef] element
   # @return [Fixnum]
   def pid_of_element element
-    ptr  = Pointer.new('i')
-    code = AXUIElementGetPid( element, ptr )
+    ptr  = Pointer.new( 'i' )
+    code = AXUIElementGetPid(element, ptr)
     log_ax_call element, code
     ptr[0]
   end
 
   ##
   # @note In the case of a predicate name, this will strip the 'Is'
-  #       part of the name if it is present (e.g. AXIsApplicationEnabled
-  #       becomes ApplicationEnabled, and AXEnabled becomes Enabled)
+  #       part of the name if it is present
   #
-  # Duplicates the accessibility constant and removes the namespace prefix
-  # from it (e.g. AXTitle becomes Title).
+  # Takes an accessibility constant and returns a new string with the
+  # namespace prefix removed.
+  #
+  # @example
+  #
+  #   AX.strip_prefix 'AXTitle'                    # => 'Title'
+  #   AX.strip_prefix 'AXIsApplicationEnabled'     # => 'ApplicationEnabled'
+  #   AX.strip_prefix 'MCAXEnabled'                # => 'Enabled'
+  #   AX.strip_prefix KAXWindowCreatedNotification # => 'WindowCreated'
+  #   AX.strip_prefix NSAccessibilityButtonRole    # => 'Button'
   #
   # @param [String] constant
   # @return [String]
@@ -272,7 +275,7 @@ class << AX
     '1' => 18, '2' => 19, '3' => 20, '4' => 21, '5' => 23, '6' => 22,
     '7' => 26, '8' => 28, '9' => 25, '0' => 29,
     # Misc.
-    "\t" => 48, ' ' => 49, "\e"=> 53
+    "\t" => 48, ' ' => 49, "\e"=> 53,"\b"=> 51
   }
 
   def post_kb_key element, key_code, state
@@ -300,7 +303,9 @@ class << AX
   end
 
   ##
-  # A mapping of the AXError constants to human readable strings.
+  # A mapping of the AXError constants to human readable strings, though
+  # this has to be actively maintained in case of changes to Apple's
+  # documentation in the future.
   #
   # @return [Hash{Fixnum=>String}]
   AXError = {
@@ -369,7 +374,7 @@ class << AX
   ##
   # Creates new class at run time and puts it into the {AX} namespace.
   # This method is called for each type of UI element that has not yet been
-  # explicitly defined to define them at runtime.
+  # explicitly defined so that they can be defined them at runtime.
   #
   # @param [#to_sym] name
   # @return [Class]
@@ -381,9 +386,9 @@ class << AX
   end
 
   ##
-  # Like {#const_get} except that if the class does not exist yet then
-  # it will create the class for you. If not used carefully, it could end
-  # up creating a bunch of useless, possibly harmful, classes at run time.
+  # Like #const_get except that if the class does not exist yet then
+  # it will assume the constant belongs to a class and creates the class
+  # for you.
   #
   # @param [#to_sym] const the value you want as a constant
   # @return [Class] a reference to the class being looked up
@@ -392,12 +397,19 @@ class << AX
   end
 
   ##
+  # @todo Should we handle cases where a subrole has a value of
+  #       'Unknown'? What is the performance impact?
+  # @todo Would it be faster to use AXUIElementCopyMultipleAttributeValues
+  #       for the subrole and role and then just check if the subrole is
+  #       nil?
+  #
   # Figures out what the name of the class of an element should be.
   # We have to be careful, because some things claim to have a subrole
-  # but return nil.
+  # but return nil or they have a subrole value of 'Unknown'.
   #
-  # This method prefers to choose a class type based on the subrole value for
-  # an accessibility object, and it will use the role if there is no subrole.
+  # This method prefers to choose a class type based on the subrole value
+  # for an accessibility object, and it will use the role if there is no
+  # subrole.
   #
   # @param [AXUIElementRef]
   # @return [String]
@@ -434,31 +446,34 @@ class << AX
   end
 
   ##
-  # This array is order-sensitive, which is why there is a
-  # nil object at index 0.
+  # This array is order-sensitive, which is why there is a nil object at index 0
   #
   # @return [Class,nil]
   AXBoxType = [ nil, CGPoint, CGSize, CGRect, CFRange ]
 
+  ##
+  # Find out what type of struct is contained in the AXValueRef and then
+  # wrap it properly.
+  #
+  # @param [AXValueRef] value
   # @return [Boxed,nil]
   def boxed_attribute value
     return unless value
-    box_type = AXValueGetType( value )
-    ptr      = Pointer.new( AXBoxType[box_type].type )
-    AXValueGetValue( value, box_type, ptr )
+    box_type = AXValueGetType(value)
+    ptr      = Pointer.new(AXBoxType[box_type].type)
+    AXValueGetValue(value, box_type, ptr)
     ptr[0]
   end
 
   ##
   # Create and return a notification observer for the object's application.
-  # This method is almost never directly called, it is instead called by
-  # {Traits::Notifications#wait_for_notification}.
   #
+  # @param [AXUIElementRef] element
   # @param [Method,Proc] callback
   # @return [AXObserverRef]
-  def notif_observer element, callback
-    ptr  = Pointer.new '^{__AXObserver}'
-    code = AXObserverCreate( pid_of_element(element), callback, ptr )
+  def make_observer_for element, callback
+    ptr  = Pointer.new( '^{__AXObserver}' )
+    code = AXObserverCreate(pid_of_element(element), callback, ptr)
     log_ax_call element, code
     ptr[0]
   end
@@ -474,7 +489,7 @@ class << AX
   # @param [AX::Element] element
   # @param [String] notif
   def register_notif_callback observer, element, notif
-    code = AXObserverAddNotification( observer, element, notif, nil )
+    code = AXObserverAddNotification(observer, element, notif, nil)
     log_ax_call element, code
   end
 
