@@ -307,7 +307,11 @@ end
 class TestElementEquivalence < TestElements
 
   def dock
-    Accessibility.application_for_bundle_identifier('com.apple.dock', 1.0)
+    Accessibility.application_with_bundle_identifier('com.apple.dock', 1.0)
+  end
+
+  def finder
+    Accessibility.application_with_bundle_identifier('com.apple.finder', 1.0)
   end
 
   def list
@@ -329,10 +333,10 @@ class TestElementEquivalence < TestElements
   end
 
   def test_dock_app_not_equal_to_finder_app
-    refute AX::DOCK == AX::FINDER
-    refute AX::DOCK.eql? AX::FINDER
-    refute AX::DOCK.equal? AX::FINDER
-    assert AX::DOCK != AX::FINDER
+    refute AX::DOCK == finder
+    refute AX::DOCK.eql? finder
+    refute AX::DOCK.equal? finder
+    assert AX::DOCK != finder
   end
 
   def test_dock_app_is_not_equal_to_dock_list
