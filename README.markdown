@@ -29,21 +29,26 @@ An idealized outline of how things will progress in the next couple of releases
   should be the general role of the element
     * then we can search using #kind_of instead of #is_a, though I am
     not convinced that this change would be beneficial
-- notifications system needs an overhaul
+- notifications system needs to be cleaned up
   + notification name resolution does not need to happen in the
-  Element class
-  + needs to callback to a proc instead of a static method
+  Element class, or does it?
+  + needs to cleanup properly in failure cases
 - Search needs to be expanded
   + First it needs to be cleaned up
   + It needs to handle exceptions better
   + Needs to support more complex filtering criteria
 
-### 0.6
+### 0.6 (or maybe 1.0)
 
 - Keyboard module
   + support a much larger set of keys and key combinations that can be pressed
 - Mouse module cleanup
 - Performance tweaks
+
+### Future
+
+- Screenshot taking and diff'ing abilities for those rare cases when
+  you need it
 
 ## Contributing to AXElements
 
