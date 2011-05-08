@@ -27,8 +27,13 @@ require 'AXElements/Elements/Application'
 require 'AXElements/Elements/SystemWide'
 
 require 'AXElements/Actions'
+module AX
+  # @return [AX::SystemWide]
+  SYSTEM = AX::SystemWide.instance
+  # @return [AX::Application] the Mac OS X dock application
+  DOCK = Application.application_with_bundle_identifier 'com.apple.dock'
+end
 
-require 'AXElements/Constants'
 require 'AXElements/Actions'
 module Kernel
   include Accessibility::Lanugage
