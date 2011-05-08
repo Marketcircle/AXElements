@@ -11,6 +11,18 @@
 module Kernel
 
   ##
+  # We assume that any method that has the first argument with a type
+  # of AX::Element is intended to be an action and so #method_missing
+  # will forward the message to the element.
+  #
+  # @param [String] name an action constant
+  def method_missing method, *args
+    arg = args.first
+    super unless arg.kind_of?(AX::Element)
+    arg.perform_action method
+  end
+
+  ##
   # Focus an element on the screen, if possible.
   def set_focus element
     set element, focused: true
@@ -48,21 +60,6 @@ module Kernel
     end
   end
 
-
-  ##
-  # Ideally this method would return a reference to `self`, but since
-  # this method inherently causes state change, the reference to `self`
-  # may no longer be valid. An example of this would be pressing the
-  # close button on a window.
-  #
-  # @param [String] name an action constant
-  def method_missing method, *args
-    arg = args.first
-    super unless arg.kind_of?(AX::Element)
-    arg.perform_action method
-  end
-
-
   alias_method :ax_raise, :raise
   ##
   # Needed to override inherited {Kernel#raise} so that the raise action
@@ -72,13 +69,11 @@ module Kernel
     arg.kind_of?(AX::Element) ? arg.perform_action(:raise) : ax_raise(*args)
   end
 
-
   # @param [#to_s] string
   # @param [AX::Application] app
   def type string, app = AX::SYSTEM
     app.type_string string.to_s
   end
-
 
   ##
   # @todo Change this to register_for_notification:from: when the syntax
@@ -98,15 +93,23 @@ module Kernel
   end
 
   ##
-  # @todo documentation
   # @overload move_mouse_to(element)
   #   Move the mouse to a UI element
-  #  @param [AX::Element] arg
+  #   @param [AX::Element] arg
+  #
   # @overload move_mouse_to(point)
-  #  Move the mouse to an arbitrary point
-  #  @param [CGPoint] arg
+  #   Move the mouse to an arbitrary point
+  #   @param [CGPoint] arg
+  #
+  # @overload move_mouse_to([x,y])
+  #   Move the mouse to an arbitrary point given as an two element array
+  #   @param [Array(Float,Float)] arg
   def move_mouse_to arg
-    arg = CGPoint.center(arg.position, arg.size) if arg.kind_of?(AX::Element)
+    if arg.kind_of?(AX::Element)
+      arg = CGPoint.center(arg.position, arg.size)
+    elsif arg.is_a?(Array)
+      arg = CGPoint.new(*arg)
+    end
     Mouse.move_to arg
   end
 
@@ -123,7 +126,11 @@ module Kernel
   #
   # If you want to
   def drag_mouse_to arg
-    arg = CGPoint.center(arg.position, arg.size) if arg.kind_of?(AX::Element)
+    if arg.kind_of?(AX::Element)
+      arg = CGPoint.center(arg.position, arg.size)
+    elsif arg.is_a?(Array)
+      arg = CGPoint.new(*arg)
+    end
     Mouse.drag_to arg
   end
 
