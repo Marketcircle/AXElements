@@ -93,7 +93,7 @@ module Kernel
   end
 
   # @param [Float] timeout number of seconds to wait for a notification
-  def wait timeout = 10.0
+  def wait_for_notification timeout = 10.0
     AX.wait_for_notif timeout
   end
 
