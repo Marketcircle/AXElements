@@ -36,5 +36,5 @@ end
 
 require 'AXElements/Actions'
 module Kernel
-  include Accessibility::Lanugage
+  include Accessibility::Language
 end
