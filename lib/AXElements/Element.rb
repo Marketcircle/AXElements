@@ -206,12 +206,18 @@ class Element
   ##
   # Register to receive a notification from an object.
   #
+  # You can optionally pass a block to this method that will be given
+  # an element equivalent to `self` and the name of the notification;
+  # the block should return a truthy value that decides if the
+  # notification received is the expected one.
+  #
   # @param [String] notif
   # @param [Float] timeout
   # @yield
   # @yieldparam [AX::Element] element
   # @yieldparam [String] notif
   # @yieldreturn [Boolean]
+  # @return [Proc]
   def on_notification notif, &block
     real_notif = notif_for(notif)
     raise ArgumentError, "#{notif} is not a notification constant" unless real_notif

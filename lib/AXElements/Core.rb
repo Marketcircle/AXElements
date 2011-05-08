@@ -154,11 +154,11 @@ class << AX
   # @yieldparam [String] notif the name of the notification
   # @yieldreturn [Boolean] determines if the script should continue or wait
   # @return [Proc] the proc used as a callback when the notification is received
-  def register_for_notif element, notif
+  def register_for_notif element, notif, &blk
     notif_proc = Proc.new do |obsrvr, elmnt, ntfctn, _|
-      wrapped_element     = element_attribute elmnt
-      should_stop_waiting = block_given? ? yield(wrapped_element, ntfctn) : true
-      return unless should_stop_waiting
+      wrapped_elmnt = element_attribute elmnt
+      stop_waiting  = blk ? blk.call(wrapped_elmnt, ntfctn) : true
+      break unless stop_waiting
 
       run_loop   = CFRunLoopGetCurrent()
       app_source = AXObserverGetRunLoopSource(obsrvr)
