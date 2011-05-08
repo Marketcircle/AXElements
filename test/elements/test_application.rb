@@ -34,7 +34,6 @@ class TestAXApplication < TestElements
   def test_type_string
     class << AX
       alias_method :old_keyboard_action, :keyboard_action
-      attr_reader :test_type_string_mock
       def keyboard_action element, string
         true if string == 'test'
       end
