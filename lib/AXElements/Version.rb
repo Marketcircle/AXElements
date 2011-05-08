@@ -3,8 +3,8 @@ require   'logger'
 ##
 # A module for all the different accessibility roles.
 module AX
-  VERSION   = '0.3.0'
-  CODE_NAME = 'Tiger Blood'
+  VERSION   = '0.4.0'
+  CODE_NAME = 'PokeMaster'
 
   class << self
     # @return [Logger]
