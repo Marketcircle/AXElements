@@ -46,7 +46,11 @@ class Search
 
       next if element.class != primary_filter
       next if filters.find do |filter, value|
-        element.get_attribute(filter) != value # this is the expensive step
+        if filter == :title_ui_element
+          element.get_attribute(filter).attribute(KAXValueAttribute) != value
+        else
+          element.get_attribute(filter) != value
+        end
       end
 
       search_results << element
@@ -72,7 +76,11 @@ class Search
 
       next if element.class != primary_filter
       next if filters.find do |filter, value|
-        element.get_attribute(filter) != value # this is the expensive step
+        if filter == :title_ui_element
+          element.get_attribute(filter).attribute(KAXValueAttribute) != value
+        else
+          element.get_attribute(filter) != value
+        end
       end
 
       return element
