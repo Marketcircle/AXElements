@@ -25,8 +25,9 @@ class TestActionOfElement < TestCore
 
   def test_show_a_dock_menu
     before_action_kid_count = dock_kids.count
-    AX.action_of_element( finder_dock_item, KAXShowMenuAction )
+    AX.action_of_element(finder_dock_item, KAXShowMenuAction)
     assert dock_kids.count > before_action_kid_count
+    AX.action_of_element(finder_dock_item, KAXShowMenuAction)
   end
 
   # # @todo not a high priority
