@@ -226,6 +226,29 @@ end
 class TestElementNotifications < TestElements
 
   def test_wait_for_window_created
+    class << AX
+      alias_method :old_register_for_notif, :register_for_notif
+      def register_for_notif ref, notif, &block
+        [
+         CFGetTypeID(ref) == AXUIElementGetTypeID(),
+         notif == KAXWindowCreatedNotification,
+         (block.call if block)
+        ]
+      end
+    end
+    ret = AX::DOCK.on_notification(:window_created)
+    ret.concat AX::DOCK.on_notification(:window_created) { 'test' }
+    assert_equal [true, true, nil, true, true, 'test'], ret
+  ensure
+    class << AX
+      alias_method :register_for_notif, :old_register_for_notif
+    end
+  end
+
+  def test_argument_error_for_non_existent_constant
+    assert_raises ArgumentError do
+      AX::DOCK.on_notification(:made_up_notification)
+    end
   end
 
 end
