@@ -19,14 +19,14 @@ require 'AXElements/MacRubyExtensions'
 require 'AXElements/Mouse'
 
 require 'AXElements/Core'
-require 'AXElements/Accessibility'
+require 'AXElements/Element'
 require 'AXElements/Search'
 
-require 'AXElements/Element'
 require 'AXElements/Elements/Application'
 require 'AXElements/Elements/SystemWide'
 
-require 'AXElements/Actions'
+require 'AXElements/Accessibility'
+
 module AX
   # @return [AX::SystemWide]
   SYSTEM = AX::SystemWide.instance
