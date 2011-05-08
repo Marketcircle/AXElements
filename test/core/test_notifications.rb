@@ -57,7 +57,7 @@ class TestAXNotifications < TestCore
   def test_waits_the_given_timeout
     time  = 0.1
     start = Time.now
-    wait time
+    AX.wait_for_notif(time)
     assert_in_delta time, (Time.now - start), 0.05
   end
 
