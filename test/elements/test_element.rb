@@ -256,20 +256,26 @@ end
 
 class TestElementInspect < TestElements
 
-  def test_includes_methods
-    # methods section
-    # strips prefix
+  def test_includes_attributes
+    output = AX::DOCK.inspect
+    assert_match /@attributes=/, output
+    assert_match /Title/, output
+    refute_match /AXTitle/, output
   end
 
 end
 
 
-class TestElementPrettyPrint < TestElements
-
-  def test_
-  end
-
-end
+# @todo Test this once the recursive feature starts working
+# class TestElementPrettyPrint < TestElements
+#   def test_hash_of_attributes
+#     # is a hash
+#     # has attributes as the keys
+#     # has the correct values
+#   end
+#   # def test_is_recursive
+#   # end
+# end
 
 
 class TestElementRespondTo < TestElements
@@ -293,7 +299,8 @@ class TestElementRespondTo < TestElements
 end
 
 
-# class TestAXElementMethods < MiniTest::Unit::TestCase
+# @todo Test this once it is implemented
+# class TestElementMethods < TestElements
 # end
 
 
