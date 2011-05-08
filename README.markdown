@@ -41,9 +41,13 @@ An idealized outline of how things will progress in the next couple of releases
 ### 0.6 (or maybe 1.0)
 
 - Keyboard module
-  + support a much larger set of keys and key combinations that can be pressed
+  + support a much larger set of keys and key combinations that can be
+  pressed
 - Mouse module cleanup
 - Performance tweaks
+- Tests should rely on a special app that is bundled just for tests
+  instead of trying to interact with different assumed parts of the
+  environment
 
 ### Future
 
