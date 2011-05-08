@@ -29,3 +29,7 @@ require 'AXElements/Elements/SystemWide'
 require 'AXElements/Actions'
 
 require 'AXElements/Constants'
+require 'AXElements/Actions'
+module Kernel
+  include Accessibility::Lanugage
+end

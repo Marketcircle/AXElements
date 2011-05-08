@@ -1,5 +1,8 @@
 # -*- coding: utf-8 -*-
 
+
+module Accessibility
+
 ##
 # @todo Allow the animation duration to be overridden
 # @note The API here is alpha, I need to get a better feel for how it
@@ -7,7 +10,7 @@
 #
 # The idea here is to pull actions out from an object and put them
 # in front of object to give AXElements more of a DSL feel.
-module Kernel
+module Language
 
   ##
   # Focus an element on the screen, if possible.
@@ -48,7 +51,6 @@ module Kernel
   end
 
 
-  alias_method :ax_method_missing, :method_missing
   ##
   # Ideally this method would return a reference to `self`, but since
   # this method inherently causes state change, the reference to `self`
@@ -58,7 +60,7 @@ module Kernel
   # @param [String] name an action constant
   def method_missing method, *args
     arg = args.first
-    ax_method_missing(method, *args) unless arg.kind_of?(AX::Element)
+    super unless arg.kind_of?(AX::Element)
     arg.perform_action method
   end
 
@@ -168,4 +170,5 @@ module Kernel
     press app.menu_bar.menu_item(title:'Preferences…')
   end
 
+end
 end
