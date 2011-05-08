@@ -48,7 +48,9 @@ class Application < AX::Element
 
   ##
   # @todo This method needs a fall back procedure if the app does not
-  #       have a dock icon (i.e. the dock doesn't have a dock icon)
+  #       have a dock icon (e.g. the dock doesn't have a dock icon).
+  #       We could have alternative methods for setting focus, such as
+  #       using CMD+TAB or Expos
   def set_focus
     AX::DOCK.application_dock_item(title: title).perform_action(:press)
   end
