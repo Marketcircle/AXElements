@@ -34,7 +34,7 @@ module AX
   DOCK = Application.application_with_bundle_identifier 'com.apple.dock'
 end
 
-require 'AXElements/Actions'
+require 'AXElements/Language'
 module Kernel
   include Accessibility::Language
 end
