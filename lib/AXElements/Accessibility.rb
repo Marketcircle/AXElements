@@ -1,9 +1,6 @@
 ##
-# @todo This module needs a better name
-#
 # A collection of helper methods for working with AXElements.
 module Accessibility
-
 class << self
 
   ##
