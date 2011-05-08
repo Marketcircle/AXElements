@@ -29,8 +29,7 @@ class << self
   ##
   # @todo Find a way for this method to work without sleeping;
   #       consider looping begin/rescue/end until AX starts up
-  # @todo Search NSWorkspace.sharedWorkspace.runningApplications ?
-  # @todo this does not handle bad bundle identifier's very well
+  # @todo This needs to handle bad bundle identifier's gracefully
   #
   # This is the standard way of creating an application object. It will
   # launch the app if it is not already running and then create the
@@ -44,10 +43,10 @@ class << self
   # If this method fails to find an app with the appropriate bundle
   # identifier then it will return nil, eventually.
   #
-  # @param [String] bundle
-  # @param [Float] timeout how long to wait between polling
+  # @param [String] bundle a bundle identifier
+  # @param [Float] sleep_time how long to wait between polling
   # @return [AX::Application,nil]
-  def application_for_bundle_identifier bundle, sleep_time
+  def application_with_bundle_identifier bundle, sleep_time = 2
     sleep_count = 0
     while (apps = NSRunningApplication.runningApplicationsWithBundleIdentifier bundle).empty?
       launch_application bundle
