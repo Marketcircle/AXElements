@@ -26,15 +26,12 @@ require 'AXElements/Elements/Application'
 require 'AXElements/Elements/SystemWide'
 
 require 'AXElements/Accessibility'
+require 'AXElements/Language'
 
 module AX
   # @return [AX::SystemWide]
   SYSTEM = AX::SystemWide.instance
+
   # @return [AX::Application] the Mac OS X dock application
   DOCK = Application.application_with_bundle_identifier 'com.apple.dock'
-end
-
-require 'AXElements/Language'
-module Kernel
-  include Accessibility::Language
 end

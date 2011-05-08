@@ -1,16 +1,14 @@
 # -*- coding: utf-8 -*-
 
-
-module Accessibility
-
 ##
 # @todo Allow the animation duration to be overridden
 # @note The API here is alpha, I need to get a better feel for how it
 #       should work.
 #
 # The idea here is to pull actions out from an object and put them
-# in front of object to give AXElements more of a DSL feel.
-module Language
+# in front of object to give AXElements more of a DSL feel to make
+# communicating test steps more clear.
+module Kernel
 
   ##
   # Focus an element on the screen, if possible.
@@ -170,5 +168,4 @@ module Language
     press app.menu_bar.menu_item(title:'Preferences…')
   end
 
-end
 end
