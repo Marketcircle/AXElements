@@ -229,8 +229,8 @@ class Element
   ##
   # Overriden to produce cleaner output.
   def inspect
-    nice_methods = attributes.map { |name| AX.strip_prefix name }
-    "\#<#{self.class} @methods=#{nice_methods}>"
+    nice_attrs = attributes.map { |name| AX.strip_prefix name }
+    "\#<#{self.class} @attributes=#{nice_attrs}>"
   end
 
   ##
