@@ -37,6 +37,8 @@ An idealized outline of how things will progress in the next couple of releases
   + First it needs to be cleaned up
   + It needs to handle exceptions better
   + Needs to support more complex filtering criteria
+- Update rubygems in MacRuby or import the specific parts of Active
+  Support that AXElements depends on
 
 ### 0.6 (or maybe 1.0)
 
