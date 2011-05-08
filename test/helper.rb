@@ -7,10 +7,13 @@ require 'minitest/autorun'
 require 'minitest/pride'
 require 'minitest/benchmark'
 
+
 $init_output = StringIO.new
 AX.log = Logger.new $init_output
 
+
 class MiniTest::Unit::TestCase
+
   def setup
     @log_output = StringIO.new
     AX.log = Logger.new @log_output
@@ -19,7 +22,9 @@ class MiniTest::Unit::TestCase
   def assert_instance_of_boolean value
     assert value.is_a?(TrueClass) || value.is_a?(FalseClass)
   end
+
 end
+
 
 class TestAX < MiniTest::Unit::TestCase
 

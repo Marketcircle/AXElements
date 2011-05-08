@@ -202,7 +202,7 @@ class << AX
   # The co-ordinates should be specified with the origin being in the
   # top-left corner of the main screen.
   #
-  # @param [CGPoint,Array<Number,Number>] point
+  # @param [CGPoint,Array(Number,Number)] point
   # @return [AX::Element]
   def element_at_position point
     ptr     = Pointer.new( '^{__AXUIElement}' )

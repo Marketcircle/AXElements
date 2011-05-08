@@ -5,6 +5,8 @@ module Accessibility
 #       dealt with appropriately.
 # @todo Search does not handle if the object does not respond to a
 #       filter.
+# @todo allow regex matching when filtering string attributes
+# @todo make search much faster by not wrapping child classes
 #
 # Represents a search entity. Searches through a view hierarchy are
 # breadth first.
