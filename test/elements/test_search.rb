@@ -19,6 +19,7 @@ class TestSearch < TestElements
   end
 
   def test_is_breadth_first
+    skip 'This test needs a very specific window organization to test properly'
   end
 
 end
@@ -26,19 +27,18 @@ end
 
 class BenchSearch < TestElements
 
-  def bench_no_extra_filters
-  end
-
-  def bench_simple_filter
-  end
-
-  def bench_multiple_filters
-  end
-
-  def bench_shallow_search
-  end
-
-  def bench_deep_search
-  end
+# some interesting scenarios
+#  searching a table with a lot of rows
+#    in this test, our variable is the number of rows
+#  search a tall tree
+#    in this test, our variable is how tall the tree is
+#  search with no filters
+#    this is a simple case that should be thrown in as a
+#    control, it will help gauge how much search performance
+#    depends on the core implementation of the AX module
+#  search with a lot of filters
+#    this test will become more important as the filtering
+#    logic becomes more complex due to supporting different
+#    ideas (e.g. the :title_ui_element hack that exists in v0.4)
 
 end
