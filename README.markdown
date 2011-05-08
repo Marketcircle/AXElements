@@ -39,6 +39,11 @@ An idealized outline of how things will progress in the next couple of releases
   + Needs to support more complex filtering criteria
 - Update rubygems in MacRuby or import the specific parts of Active
   Support that AXElements depends on
+- Tests should rely on a special app that is bundled just for tests
+  instead of trying to interact with different assumed parts of the
+  environment
+  + this should help with all the skipped tests and also the
+  benchmarks that should be implemented
 
 ### 0.6 (or maybe 1.0)
 
@@ -47,9 +52,6 @@ An idealized outline of how things will progress in the next couple of releases
   pressed
 - Mouse module cleanup
 - Performance tweaks
-- Tests should rely on a special app that is bundled just for tests
-  instead of trying to interact with different assumed parts of the
-  environment
 
 ### Future
 
