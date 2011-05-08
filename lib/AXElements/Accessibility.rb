@@ -1,6 +1,5 @@
 ##
 # @todo This module needs a better name
-# @todo Load application by name (localized)
 #
 # A collection of helper methods for working with AXElements.
 module Accessibility
@@ -31,7 +30,6 @@ class << self
   # @todo Find a way for this method to work without sleeping;
   #       consider looping begin/rescue/end until AX starts up
   # @todo Search NSWorkspace.sharedWorkspace.runningApplications ?
-  # @todo add another app launching method using app names
   # @todo this does not handle bad bundle identifier's very well
   #
   # This is the standard way of creating an application object. It will
@@ -58,6 +56,11 @@ class << self
       sleep_count += 1
     end
     AX.application_for_pid( apps.first.processIdentifier )
+  end
+
+  # @param [String] name name of the application to launch
+  def application_with_name name
+    raise NotImplementedError
   end
 
 
