@@ -5,7 +5,7 @@ require   'logger'
 ##
 # A module for all the different accessibility roles.
 module AX
-  VERSION   = '0.4.1'
+  VERSION   = '0.4.2'
   CODE_NAME = 'PokéMaster'
 
   class << self
