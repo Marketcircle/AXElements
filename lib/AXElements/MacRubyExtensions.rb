@@ -97,7 +97,7 @@ class CGPoint
   def carbonize!
     NSScreen.screens.each do |screen|
       if NSPointInRect(self, screen.frame)
-        self.y = screen.frame.size.height - self.y
+        self.y = screen.frame.size.height - self.y + (2 * screen.frame.origin.y)
         return self
       end
     end

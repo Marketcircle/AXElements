@@ -31,7 +31,7 @@ class TestCGPointCarbonizeBang < TestCGPointExtensions
     SCREENS.each do |screen|
       frame = screen.frame
       point = frame.origin.dup.carbonize!
-      assert_equal (frame.size.height - frame.origin.y), point.y, screen.frame.inspect
+      assert_equal (frame.size.height + frame.origin.y), point.y, screen.frame.inspect
     end
   end
 
@@ -40,8 +40,8 @@ class TestCGPointCarbonizeBang < TestCGPointExtensions
     SCREENS.each do |screen|
       frame = screen.frame
       point = frame.origin
-      point.x = frame.size.width / 2
-      point.y = frame.size.height / 2
+      point.x = ( frame.size.width / 2 )  + point.x
+      point.y = ( frame.size.height / 2 ) + point.y
       assert_equal point, point.dup.carbonize!
     end
   end
