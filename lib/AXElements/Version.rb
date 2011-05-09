@@ -1,10 +1,12 @@
+# -*- coding: utf-8 -*-
+
 require   'logger'
 
 ##
 # A module for all the different accessibility roles.
 module AX
   VERSION   = '0.4.0'
-  CODE_NAME = 'PokeMaster'
+  CODE_NAME = 'PokéMaster'
 
   class << self
     # @return [Logger]
