@@ -10,6 +10,7 @@
 # communicating test steps more clear.
 module Kernel
 
+  alias_method :ax_method_missing, :method_missing
   ##
   # We assume that any method that has the first argument with a type
   # of AX::Element is intended to be an action and so #method_missing
@@ -18,7 +19,7 @@ module Kernel
   # @param [String] name an action constant
   def method_missing method, *args
     arg = args.first
-    super unless arg.kind_of?(AX::Element)
+    ax_method_missing(method, *args) unless arg.kind_of?(AX::Element)
     arg.perform_action method
   end
 
