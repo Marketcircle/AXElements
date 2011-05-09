@@ -9,6 +9,7 @@ module AX
   CODE_NAME = 'PokéMaster'
 
   class << self
+    # @todo Move the logger out of the AX module
     # @return [Logger]
     attr_accessor :log
   end
