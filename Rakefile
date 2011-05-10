@@ -69,14 +69,3 @@ desc 'Build the gem and install it'
 task :install => :gem do
   Gem::Installer.new("pkg/#{GEM_SPEC.file_name}").install
 end
-
-## Gem vendoring
-
-desc 'Setup vendor/ directory with dependencies'
-task :setup do
-  deps = ['activesupport', 'i18n']
-  sh "gem install --no-ri --no-rdoc --install-dir vendor #{deps.join(' ')}"
-  sh 'rm -rf vendor/specifications vendor/cache vendor/doc'
-  deps.each { |dep| sh 'mv vendor/gems/#{gem}*/lib/* vendor/' }
-  sh 'rm -rf vendor/gems'
-end
