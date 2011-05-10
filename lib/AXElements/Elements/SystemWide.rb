@@ -3,8 +3,6 @@ require 'singleton'
 module AX
 
 ##
-# @todo Remove methods we know this class cannot use (e.g. param_attributes)
-#
 # Represents the special SystemWide accessibility object.
 class SystemWide < AX::Element
   include Singleton
@@ -20,6 +18,26 @@ class SystemWide < AX::Element
   # Generate keyboard events by simulating keyboard input.
   def type_string string
     AX.keyboard_action( @ref, string )
+  end
+
+  ##
+  # Overridden to avoid a difficult to understand error message.
+  def search *args
+    problem 'AX::SystemWide cannot search'
+  end
+
+  ##
+  # Raises an `ArgumentError` instead of (possibly) silently failing to
+  # register for a notification.
+  def on_notification *args
+    problem 'AX::SystemWide cannot register for notifications'
+  end
+
+
+  private
+
+  def problem string
+    raise ArgumentError, string
   end
 
 end
