@@ -1,7 +1,4 @@
-##
-# A collection of helper methods for working with AXElements.
-module Accessibility
-class << self
+class << Accessibility
 
   ##
   # Get a list of elements, starting with the element you gave and riding
@@ -75,5 +72,4 @@ class << self
                                              launchIdentifier: nil
   end
 
-end
 end
