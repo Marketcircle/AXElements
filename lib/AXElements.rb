@@ -1,4 +1,5 @@
 framework 'Cocoa'
+require   'logger'
 
 # check that the new bridge support exists
 # check that the Accessibility APIs are enabled
@@ -15,12 +16,21 @@ You need to install the latest BridgeSupport preview for AXElements to work.
 end
 
 ##
-#
+# Helper methods and other metadata
 module Accessibility
+  class << self
+    # @return [Logger]
+    attr_accessor :log
+  end
+
+  @log = Logger.new $stderr
+  @log.level = Logger::ERROR
 end
 
 ##
-# A module for all the different accessibility roles.
+# Container for all the accessibility objects as well as the set of
+# stateless singleton methods that interact with OS X Accessibility
+# APIs.
 module AX
 end
 
