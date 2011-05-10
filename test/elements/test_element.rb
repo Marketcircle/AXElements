@@ -245,11 +245,7 @@ class TestElementNotifications < TestElements
     end
   end
 
-  def test_argument_error_for_non_existent_constant
-    assert_raises ArgumentError do
-      AX::DOCK.on_notification(:made_up_notification)
-    end
-  end
+  # @todo Test that registration still works with a custom notification
 
 end
 

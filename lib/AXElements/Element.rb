@@ -211,7 +211,7 @@ class Element
   # the block should return a truthy value that decides if the
   # notification received is the expected one.
   #
-  # @param [String] notif
+  # @param [String,Symbol] notif
   # @param [Float] timeout
   # @yield
   # @yieldparam [AX::Element] element
@@ -219,9 +219,7 @@ class Element
   # @yieldreturn [Boolean]
   # @return [Proc]
   def on_notification notif, &block
-    real_notif = notif_for(notif)
-    raise ArgumentError, "#{notif} is not a notification constant" unless real_notif
-    AX.register_for_notif(@ref, real_notif, &block)
+    AX.register_for_notif(@ref, notif_for(notif), &block)
   end
 
   # @endgroup
@@ -286,9 +284,10 @@ class Element
     name.delete('_')
   end
 
-  def notif_for sym
-    const = "KAX#{sym.to_s.camelize!}Notification"
-    Kernel.const_defined?(const) ? Kernel.const_get(const) : nil
+  def notif_for name
+    name  = name.to_s
+    const = "KAX#{name.camelize!}Notification"
+    Kernel.const_defined?(const) ? Kernel.const_get(const) : name
   end
 
   def attribute_for sym;       constant_for sym, attributes;       end
