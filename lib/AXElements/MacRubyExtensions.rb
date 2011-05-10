@@ -15,7 +15,7 @@ class NSArray
 
   alias_method :ax_array_method_missing, :method_missing
   ##
-  # @todo I'm on the fence about whether this is worth it, so it might
+  # @note I'm on the fence about whether this is worth it, so it might
   #       go away in the future. If it doesn't go away, it could be
   #       opened up to work with all data types.
   #
