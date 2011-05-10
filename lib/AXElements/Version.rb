@@ -16,12 +16,4 @@ module AX
 
   @log = Logger.new $stderr
   @log.level = Logger::ERROR
-
-  EMBEDDED_DEPENDENCIES = {
-    'i18n'          => '0.5.0',
-    'activesupport' => '3.0.6'
-  }
-
-  # Specify load paths to get around needing rubygems
-  $LOAD_PATH.unshift File.absolute_path("#{File.dirname __FILE__}/../../vendor")
 end

@@ -1,7 +1,8 @@
+require 'rubygems'
+
 require 'AXElements'
 require 'stringio'
 
-require 'rubygems'
 gem     'minitest-macruby-pride'
 require 'minitest/autorun'
 require 'minitest/pride'
