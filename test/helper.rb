@@ -17,7 +17,7 @@ class MiniTest::Unit::TestCase
 
   def setup
     @log_output = StringIO.new
-    AX.log = Logger.new @log_output
+    Accessibility.log = Logger.new @log_output
   end
 
   def assert_instance_of_boolean value
