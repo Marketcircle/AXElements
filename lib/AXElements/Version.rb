@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-require   'logger'
+require 'logger'
 
 module Accessibility
   VERSION   = '0.4.2'
