@@ -293,12 +293,13 @@ class << AX
   def log_ax_call element, code
     return code if code.zero?
     message = AXError[code] || 'UNKNOWN ERROR CODE'
-    log.warn "[#{message} (#{code})] while trying #{caller[0]}"
-    log.info "Available attributes were:\n#{attrs_of_element(element)}"
-    log.info "Available actions were:\n#{actions_of_element(element)}"
-    # @todo log.info available parameterized attributes
-    log.debug "Backtrace: #{caller.description}"
-    # @todo log.debug pp hierarchy element or pp element
+    logger = Accessibility.log
+    logger.warn "[#{message} (#{code})] while trying #{caller[0]}"
+    logger.info "Available attributes were:\n#{attrs_of_element(element)}"
+    logger.info "Available actions were:\n#{actions_of_element(element)}"
+    # @todo logger.info available parameterized attributes
+    logger.debug "Backtrace: #{caller.description}"
+    # @todo logger.debug pp hierarchy element or pp element
     code
   end
 
@@ -380,7 +381,7 @@ class << AX
   # @return [Class]
   def create_ax_class name
     klass = Class.new(AX::Element) {
-      AX.log.debug "#{name} class created"
+      Accessibility.log.debug "#{name} class created"
     }
     const_set( name, klass )
   end

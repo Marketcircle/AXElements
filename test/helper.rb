@@ -10,7 +10,7 @@ require 'minitest/benchmark'
 
 
 $init_output = StringIO.new
-AX.log = Logger.new $init_output
+Accessibility.log = Logger.new $init_output
 
 
 class MiniTest::Unit::TestCase
@@ -92,10 +92,10 @@ class TestAX < MiniTest::Unit::TestCase
 
   # turn on full logging, yield, set log level back to previous
   def with_logging level = Logger::DEBUG
-    original_level = AX.log.level
-    AX.log.level   = level
+    original_level = Accessibility.log.level
+    Accessibility.log.level   = level
     yield
-    AX.log.level   = original_level
+    Accessibility.log.level   = original_level
   end
 
 end

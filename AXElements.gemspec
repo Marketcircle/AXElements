@@ -3,7 +3,7 @@ require 'AXElements/Version'
 
 GEM_SPEC = Gem::Specification.new do |s|
   s.name    = 'AXElements'
-  s.version = AX::VERSION
+  s.version = Accessibility::VERSION
 
   s.summary     = 'A DSL for automating GUI manipulation'
   s.description = <<-EOS

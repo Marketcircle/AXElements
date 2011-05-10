@@ -14,6 +14,16 @@ You need to install the latest BridgeSupport preview for AXElements to work.
   EOS
 end
 
+##
+#
+module Accessibility
+end
+
+##
+# A module for all the different accessibility roles.
+module AX
+end
+
 require 'AXElements/Version'
 require 'AXElements/MacRubyExtensions'
 require 'AXElements/Mouse'
