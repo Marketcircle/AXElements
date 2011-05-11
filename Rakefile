@@ -13,7 +13,7 @@ task :default => :test
 YARD::Rake::YardocTask.new
 
 desc 'Generate Graphviz object graph'
-task :garden do
+task :garden => :yard do
   sh 'yard graph --full --dependencies --dot="-Tpng:quartz" -f docs/images/AX.dot'
 end
 
