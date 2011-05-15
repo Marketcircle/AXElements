@@ -22,6 +22,14 @@ class TestSearch < TestElements
     skip 'This test needs a very specific window organization to test properly'
   end
 
+  def test_nil_if_not_found_for_singular_search
+    assert_nil AX::DOCK.search(:fake_thing)
+  end
+
+  def test_empty_array_for_plural_search
+    assert_empty AX::DOCK.search(:fake_things)
+  end
+
 end
 
 
