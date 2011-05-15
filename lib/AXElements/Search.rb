@@ -38,6 +38,12 @@ class Search
   # @return [Array<AX::Element>]
   attr_accessor :elements
 
+  # @return [AX::Element]
+  attr_accessor :element
+
+  # @return [Class] The target class from the AX namespace
+  attr_accessor :target
+
   # @param [AX::Element] root
   def initialize root
     root.attributes.include?(KAXChildrenAttribute) ?
@@ -55,22 +61,10 @@ class Search
   def find_all klass, filters = {}
     search_results = []
     until elements.empty?
-      element          = elements.shift
-      primary_filter ||= (AX.const_get(klass) if AX.const_defined?(klass))
-
-      if element.attributes.include?(KAXChildrenAttribute)
-        elements.concat element.attribute(KAXChildrenAttribute)
-      end
-
-      next if element.class != primary_filter
-      next if filters.find do |filter, value|
-        if filter == :title_ui_element
-          element.get_attribute(filter).attribute(KAXValueAttribute) != value
-        else
-          element.get_attribute(filter) != value
-        end
-      end
-
+      self.element = elements.shift
+      append_children
+      self.target ||= AX.const_get(klass) if AX.const_defined?(klass)
+      next unless matches_criteria?
       search_results << element
     end
     search_results
@@ -85,25 +79,39 @@ class Search
   # @return [AX::Element,nil]
   def find klass, filters = {}
     until elements.empty?
-      element          = elements.shift
-      primary_filter ||= (AX.const_get(klass) if AX.const_defined?(klass))
-
-      if element.attributes.include?(KAXChildrenAttribute)
-        elements.concat element.attribute(KAXChildrenAttribute)
-      end
-
-      next if element.class != primary_filter
-      next if filters.find do |filter, value|
-        if filter == :title_ui_element
-          element.get_attribute(filter).attribute(KAXValueAttribute) != value
-        else
-          element.get_attribute(filter) != value
-        end
-      end
-
+      self.element = elements.shift
+      append_children
+      self.target ||= AX.const_get(klass) if AX.const_defined?(klass)
+      next unless matches_criteria?
       return element
     end
   end
+
+
+  private
+
+  def append_children
+    if element.attributes.include?(KAXChildrenAttribute)
+      elements.concat element.attribute(KAXChildrenAttribute)
+    end
+  end
+
+  def matches_criteria?
+    return false if element.class != primary_filter
+    return false if filters.find do |filter, value|
+      filter_value = element.get_attribute(filter)
+      if filter_value.class == value.class
+        filter_value != value
+      else
+        filter_value.attribute(TABLE[filter]) != value
+      end
+    end
+    return true
+  end
+
+  TABLE = {
+    title_ui_element: KAXValueAttribute
+  }
 
 end
 end
