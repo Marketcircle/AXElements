@@ -100,11 +100,7 @@ class << AX
   # @param [AXUIElementRef] element an application to post the event to
   # @param [String] string the string you want typed on the screen
   def keyboard_action element, string
-    string.each_char { |char|
-      key_code = KEYCODE_MAP[char]
-      post_kb_key(element, key_code, true)
-      post_kb_key(element, key_code, false)
-    }
+    post_kb_events(element, parse_kb_string(string))
     nil
   end
 
@@ -279,9 +275,26 @@ class << AX
     "\r" => 36
   }
 
-  def post_kb_key element, key_code, state
-    code = AXUIElementPostKeyboardEvent(element, 0, key_code, state)
-    log_ax_call element, code
+  def parse_kb_string string
+    sequence = []
+    string.each_char do |char|
+      if char.match(/[A-Z]/)
+        code  = KEYCODE_MAP[char.downcase]
+        event = [[56,true], [code,true], [code,false], [56,false]]
+      else
+        code  = KEYCODE_MAP[char]
+        event = [[code,true],[code,false]]
+      end
+      sequence.concat event
+    end
+    sequence
+  end
+
+  def post_kb_events element, events
+    events.each do |event|
+      code = AXUIElementPostKeyboardEvent(element, 0, *event)
+      log_ax_call element, code
+    end
   end
 
   ##
