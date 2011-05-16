@@ -37,16 +37,31 @@ class TestActionOfElement < TestCore
 end
 
 
-class TestPostKBString < TestCore
+class TestKeyboardAction < TestCore
 
   # this test can fail for strange keyboard layouts (e.g. programmer's dvorak)
-  def test_post_to_system
+  def post_to_system string
     spotlight_text_field do |field|
-      string = '12'
       AX.keyboard_action( SYSTEM, string )
       sleep 0.01
       assert_equal string, attribute_for( field, KAXValueAttribute )
     end
+  end
+
+  def test_uppercase_letters
+    post_to_system 'AM'
+  end
+
+  def test_numbers
+    post_to_system '12'
+  end
+
+  def test_letters
+    post_to_system 'am'
+  end
+
+  def test_escape_sequences
+    post_to_system "\s"
   end
 
 #  # @todo not a high priority
