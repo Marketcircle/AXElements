@@ -44,6 +44,10 @@ class Search
   # @return [Class] The target class from the AX namespace
   attr_accessor :target
 
+  # @return [Hash{Symbol=>Object}] Hash of filters (requirements) that
+  #   an element must meet in order to match
+  attr_accessor :filters
+
   # @param [AX::Element] root
   def initialize root
     root.attributes.include?(KAXChildrenAttribute) ?
@@ -56,10 +60,11 @@ class Search
   # and any other search criteria.
   #
   # @param [String] target_klass
-  # @param [Hash] filters
+  # @param [Hash] criteria
   # @return [Array<AX::Element>,Array<>]
-  def find_all klass, filters = {}
+  def find_all klass, criteria = {}
     search_results = []
+    self.filters = criteria
     until elements.empty?
       self.element = elements.shift
       append_children
@@ -75,9 +80,10 @@ class Search
   # matches any other criteria that has been specified.
   #
   # @param [String] target_klass
-  # @param [Hash] filters
+  # @param [Hash] criteria
   # @return [AX::Element,nil]
-  def find klass, filters = {}
+  def find klass, criteria = {}
+    self.filters = criteria
     until elements.empty?
       self.element = elements.shift
       append_children
@@ -97,8 +103,8 @@ class Search
   end
 
   def matches_criteria?
-    return false if element.class != primary_filter
-    return false if filters.find do |filter, value|
+    return false if element.class != self.target
+    return false if self.filters.find do |filter, value|
       filter_value = element.get_attribute(filter)
       if filter_value.class == value.class
         filter_value != value
