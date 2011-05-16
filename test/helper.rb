@@ -87,6 +87,7 @@ class TestAX < MiniTest::Unit::TestCase
       attribute_for(element, KAXRoleAttribute) == KAXTextFieldRole
     end
     yield text_field
+  ensure
     action_for spotlight, KAXPressAction
   end
 
