@@ -55,3 +55,6 @@ module AX
   # @return [AX::Application] the Mac OS X dock application
   DOCK = Application.application_with_bundle_identifier 'com.apple.dock'
 end
+
+# Mix the language methods in to the TopLevel
+include Accessibility::Language

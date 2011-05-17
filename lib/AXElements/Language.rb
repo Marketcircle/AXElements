@@ -8,9 +8,8 @@
 # The idea here is to pull actions out from an object and put them
 # in front of object to give AXElements more of a DSL feel to make
 # communicating test steps more clear.
-module Kernel
+module Accessibility::Language
 
-  alias_method :ax_method_missing, :method_missing
   ##
   # We assume that any method that has the first argument with a type
   # of AX::Element is intended to be an action and so #method_missing
@@ -19,12 +18,12 @@ module Kernel
   # @param [String] name an action constant
   def method_missing method, *args
     arg = args.first
-    ax_method_missing(method, *args) unless arg.kind_of?(AX::Element)
-    arg.perform_action method
+    return super unless arg.kind_of?(AX::Element)
+    return arg.perform_action method
   end
 
   ##
-  # Focus an element on the screen, if possible.
+  # Focus an element on the screen, if possible
   def set_focus element
     set element, focused: true
   end
