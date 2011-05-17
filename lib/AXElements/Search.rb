@@ -97,4 +97,3 @@ class Accessibility::Search
   }
 
 end
-end
