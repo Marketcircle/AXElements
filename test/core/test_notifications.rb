@@ -58,7 +58,7 @@ class TestAXNotifications < TestCore
     time  = 0.1
     start = Time.now
     AX.wait_for_notif(time)
-    assert_in_delta time, (Time.now - start), 0.05
+    assert_in_delta (Time.now - start), time, 0.05
   end
 
   def test_callbacks_are_unregistered_when_a_timeout_occurs
