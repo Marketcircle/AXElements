@@ -1,5 +1,3 @@
-module Accessibility
-
 ##
 # @todo Search does not handle if the object does not respond to a
 #       filter. Though, this is implicitly a low risk scenario.
@@ -12,7 +10,7 @@ module Accessibility
 # object (or confirm that an object does not exist). This could be sped
 # up in the future by iterating over low level AXUIElementRef objects
 # instead of the wrapped {AX::Element} objects.
-class Search
+class Accessibility::Search
 
   # @return [Array<AX::Element>]
   attr_accessor :elements
