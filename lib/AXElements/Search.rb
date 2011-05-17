@@ -1,30 +1,9 @@
 module Accessibility
 
 ##
-# @todo There is a lot of duplication in this class that needs to be
-#       dealt with appropriately.
 # @todo Search does not handle if the object does not respond to a
 #       filter. Though, this is implicitly a low risk scenario.
 # @todo Make search much faster by not wrapping child classes
-# @todo Allow regex matching when filtering string attributes
-# @todo Conceptually, when you are writing a test filter, you have the
-#       key and the value. The key is always a property (attribute) of
-#       the element that is being searched for; but the meaning of the
-#       key is influenced the class of the value and the class of the
-#       key. In most cases, things are very simple because the class
-#       of the key matches the class of the value and they can just be
-#       tested for equality. However, if the classes do not match, you
-#       need a heuristic to decide what to do. As an example, if the
-#       value is a regexp, then the key needs to respond to #match, but
-#       it might be an Element (which does not respond to #match), so
-#       you have to look at an attribute on the Element which would
-#       respond to #match, which is probably a title or a value. In the
-#       case of the title ui element, it is obvious that we would want
-#       to extract the title attribute when matching against a regexp
-#       or a string. Other cases still need to be explored. A possible
-#       implementation for such a system would use lookup tables to
-#       match a class to a list of possible methods or a list of attributes
-#       that could be checked.
 #
 # Represents a search entity. Searches through a view hierarchy are
 # breadth first.
