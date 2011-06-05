@@ -1,0 +1,7 @@
+//
+// Prefix header for all source files of the 'AXNotifications Troll' target in the 'AXNotifications Troll' project
+//
+
+#ifdef __OBJC__
+  #import <Cocoa/Cocoa.h>
+#endif

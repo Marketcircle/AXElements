@@ -1,0 +1,330 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		AF7345AE139B441600D53953 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AF7345AD139B441600D53953 /* Cocoa.framework */; };
+		AF7345B0139B441600D53953 /* MacRuby.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AF7345AF139B441600D53953 /* MacRuby.framework */; };
+		AF7345B7139B441600D53953 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = AF7345B5139B441600D53953 /* InfoPlist.strings */; };
+		AF7345BA139B441600D53953 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = AF7345B9139B441600D53953 /* main.m */; };
+		AF7345BE139B441700D53953 /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = AF7345BC139B441700D53953 /* MainMenu.xib */; };
+		AF7345C1139B441700D53953 /* rb_main.rb in Resources */ = {isa = PBXBuildFile; fileRef = AF7345C0139B441700D53953 /* rb_main.rb */; };
+		AF7345C3139B441700D53953 /* AppDelegate.rb in Resources */ = {isa = PBXBuildFile; fileRef = AF7345C2139B441700D53953 /* AppDelegate.rb */; };
+		AF7345CD139B442500D53953 /* troll-dad.icns in Resources */ = {isa = PBXBuildFile; fileRef = AF7345CC139B442500D53953 /* troll-dad.icns */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		AF7345A9139B441600D53953 /* AXNotifications Troll.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "AXNotifications Troll.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		AF7345AD139B441600D53953 /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
+		AF7345AF139B441600D53953 /* MacRuby.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MacRuby.framework; path = System/Library/Frameworks/MacRuby.framework; sourceTree = SDKROOT; };
+		AF7345B4139B441600D53953 /* AXNotifications Troll-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "AXNotifications Troll-Info.plist"; sourceTree = "<group>"; };
+		AF7345B6139B441600D53953 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		AF7345B8139B441600D53953 /* AXNotifications Troll-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "AXNotifications Troll-Prefix.pch"; sourceTree = "<group>"; };
+		AF7345B9139B441600D53953 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		AF7345BD139B441700D53953 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/MainMenu.xib; sourceTree = "<group>"; };
+		AF7345C0139B441700D53953 /* rb_main.rb */ = {isa = PBXFileReference; lastKnownFileType = text.script.ruby; path = rb_main.rb; sourceTree = "<group>"; };
+		AF7345C2139B441700D53953 /* AppDelegate.rb */ = {isa = PBXFileReference; lastKnownFileType = text.script.ruby; path = AppDelegate.rb; sourceTree = "<group>"; };
+		AF7345CC139B442500D53953 /* troll-dad.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = "troll-dad.icns"; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		AF7345A6139B441600D53953 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				AF7345AE139B441600D53953 /* Cocoa.framework in Frameworks */,
+				AF7345B0139B441600D53953 /* MacRuby.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		AF73459E139B441600D53953 = {
+			isa = PBXGroup;
+			children = (
+				AF7345CC139B442500D53953 /* troll-dad.icns */,
+				AF7345B2139B441600D53953 /* AXNotifications Troll */,
+				AF7345AC139B441600D53953 /* Frameworks */,
+				AF7345AA139B441600D53953 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		AF7345AA139B441600D53953 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				AF7345A9139B441600D53953 /* AXNotifications Troll.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		AF7345AC139B441600D53953 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				AF7345AD139B441600D53953 /* Cocoa.framework */,
+				AF7345AF139B441600D53953 /* MacRuby.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		AF7345B2139B441600D53953 /* AXNotifications Troll */ = {
+			isa = PBXGroup;
+			children = (
+				AF7345C2139B441700D53953 /* AppDelegate.rb */,
+				AF7345BB139B441700D53953 /* Resources */,
+				AF7345BF139B441700D53953 /* Other Sources */,
+				AF7345B3139B441600D53953 /* Supporting Files */,
+			);
+			path = "AXNotifications Troll";
+			sourceTree = "<group>";
+		};
+		AF7345B3139B441600D53953 /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				AF7345B4139B441600D53953 /* AXNotifications Troll-Info.plist */,
+				AF7345B5139B441600D53953 /* InfoPlist.strings */,
+				AF7345B8139B441600D53953 /* AXNotifications Troll-Prefix.pch */,
+				AF7345B9139B441600D53953 /* main.m */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		AF7345BB139B441700D53953 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				AF7345BC139B441700D53953 /* MainMenu.xib */,
+			);
+			name = Resources;
+			sourceTree = "<group>";
+		};
+		AF7345BF139B441700D53953 /* Other Sources */ = {
+			isa = PBXGroup;
+			children = (
+				AF7345C0139B441700D53953 /* rb_main.rb */,
+			);
+			name = "Other Sources";
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXLegacyTarget section */
+		AF7345B1139B441600D53953 /* Deployment */ = {
+			isa = PBXLegacyTarget;
+			buildArgumentsString = "--compile --embed --no-stdlib";
+			buildConfigurationList = AF7345C9139B441700D53953 /* Build configuration list for PBXLegacyTarget "Deployment" */;
+			buildPhases = (
+			);
+			buildToolPath = /usr/local/bin/macruby_deploy;
+			buildWorkingDirectory = "";
+			dependencies = (
+			);
+			name = Deployment;
+			passBuildSettingsInEnvironment = 1;
+			productName = Deployment;
+		};
+/* End PBXLegacyTarget section */
+
+/* Begin PBXNativeTarget section */
+		AF7345A8139B441600D53953 /* AXNotifications Troll */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = AF7345C6139B441700D53953 /* Build configuration list for PBXNativeTarget "AXNotifications Troll" */;
+			buildPhases = (
+				AF7345A5139B441600D53953 /* Sources */,
+				AF7345A6139B441600D53953 /* Frameworks */,
+				AF7345A7139B441600D53953 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "AXNotifications Troll";
+			productName = "AXNotifications Troll";
+			productReference = AF7345A9139B441600D53953 /* AXNotifications Troll.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		AF7345A0139B441600D53953 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				ORGANIZATIONNAME = "Marketcircle Incorporated";
+			};
+			buildConfigurationList = AF7345A3139B441600D53953 /* Build configuration list for PBXProject "AXNotifications Troll" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+			);
+			mainGroup = AF73459E139B441600D53953;
+			productRefGroup = AF7345AA139B441600D53953 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				AF7345A8139B441600D53953 /* AXNotifications Troll */,
+				AF7345B1139B441600D53953 /* Deployment */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		AF7345A7139B441600D53953 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				AF7345B7139B441600D53953 /* InfoPlist.strings in Resources */,
+				AF7345BE139B441700D53953 /* MainMenu.xib in Resources */,
+				AF7345C1139B441700D53953 /* rb_main.rb in Resources */,
+				AF7345C3139B441700D53953 /* AppDelegate.rb in Resources */,
+				AF7345CD139B442500D53953 /* troll-dad.icns in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		AF7345A5139B441600D53953 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				AF7345BA139B441600D53953 /* main.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXVariantGroup section */
+		AF7345B5139B441600D53953 /* InfoPlist.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				AF7345B6139B441600D53953 /* en */,
+			);
+			name = InfoPlist.strings;
+			sourceTree = "<group>";
+		};
+		AF7345BC139B441700D53953 /* MainMenu.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				AF7345BD139B441700D53953 /* en */,
+			);
+			name = MainMenu.xib;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		AF7345C4139B441700D53953 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = DEBUG;
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.6;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = macosx;
+			};
+			name = Debug;
+		};
+		AF7345C5139B441700D53953 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.6;
+				SDKROOT = macosx;
+			};
+			name = Release;
+		};
+		AF7345C7139B441700D53953 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = x86_64;
+				COPY_PHASE_STRIP = NO;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
+				GCC_ENABLE_OBJC_GC = required;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "AXNotifications Troll/AXNotifications Troll-Prefix.pch";
+				INFOPLIST_FILE = "AXNotifications Troll/AXNotifications Troll-Info.plist";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				WRAPPER_EXTENSION = app;
+			};
+			name = Debug;
+		};
+		AF7345C8139B441700D53953 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = x86_64;
+				COPY_PHASE_STRIP = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
+				GCC_ENABLE_OBJC_GC = required;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "AXNotifications Troll/AXNotifications Troll-Prefix.pch";
+				INFOPLIST_FILE = "AXNotifications Troll/AXNotifications Troll-Info.plist";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				WRAPPER_EXTENSION = app;
+			};
+			name = Release;
+		};
+		AF7345CA139B441700D53953 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+			};
+			name = Debug;
+		};
+		AF7345CB139B441700D53953 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		AF7345A3139B441600D53953 /* Build configuration list for PBXProject "AXNotifications Troll" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				AF7345C4139B441700D53953 /* Debug */,
+				AF7345C5139B441700D53953 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		AF7345C6139B441700D53953 /* Build configuration list for PBXNativeTarget "AXNotifications Troll" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				AF7345C7139B441700D53953 /* Debug */,
+				AF7345C8139B441700D53953 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+		};
+		AF7345C9139B441700D53953 /* Build configuration list for PBXLegacyTarget "Deployment" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				AF7345CA139B441700D53953 /* Debug */,
+				AF7345CB139B441700D53953 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = AF7345A0139B441600D53953 /* Project object */;
+}
