@@ -57,9 +57,9 @@ task :test => test_suites.map { |suite| "test:#{suite}" }
 
 ## Gem Packaging
 
-eval IO.read('AXElements.gemspec')
+spec = Gem::Specification.load('AXElements.gemspec')
 
-Rake::GemPackageTask.new(GEM_SPEC) do |pkg|
+Rake::GemPackageTask.new(spec) do |pkg|
   pkg.need_zip = false
   pkg.need_tar = true
 end
@@ -67,5 +67,5 @@ end
 # This only works as long as I have no dependencies?
 desc 'Build the gem and install it'
 task :install => :gem do
-  Gem::Installer.new("pkg/#{GEM_SPEC.file_name}").install
+  Gem::Installer.new("pkg/#{spec.file_name}").install
 end
