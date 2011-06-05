@@ -25,12 +25,12 @@ There are a few ways to get a reference to an accessibility object:
 * Get the accessibility object at an arbitrary point on the screen
 * Get the accessibility object under the mouse
 
-![Class Diagram](images/AX.png)
+{file:docs/images/AX.png}
 
 The most common way to start is by creating a new object that
 represents an application.
 
-    AX::Application.application_with_bundle_identifier 'com.apple.mail'
+    Accessibility..application_with_bundle_identifier 'com.apple.mail'
 
 ## Concepts
 
@@ -63,3 +63,4 @@ If you need/want to add accessibility to your own applications, you
 will need to make sure you follow some simple rules:
 
 * Constants need to have a namespace prefix that ends with AX (e.g. MCAX)
+* Most of the time, all you need to do is link some things in Interface Builder
