@@ -92,10 +92,9 @@ class << AX
   # In cases where you need (or want) to simulate keyboard input, such as
   # triggering hotkeys, you will need to use this method.
   #
-  # See the documentation page
-  # [KeyboardEvents](../file/docs/KeyboardEvents.markdown)
-  # on how to encode strings, as well as other details on using methods
-  # from this module.
+  # See the documentation page on
+  # {file:docs/KeyboardEvents.markdown Keyboard Events}
+  # to get a detailed explanation on how to encode strings.
   #
   # @param [AXUIElementRef] element an application to post the event to
   # @param [String] string the string you want typed on the screen
@@ -133,7 +132,7 @@ class << AX
   # @note This method is not thread safe right now, it is the only class
   #       method in AX that uses stored state
   #
-  # [Notifications](../file/docs/Notifications.markdown) are a way to put
+  # {file:docs/Notifications.markdown Notifications} are a way to put
   # non-polling delays into your scripts.
   #
   # Register to be notified of a specified event in an application.
