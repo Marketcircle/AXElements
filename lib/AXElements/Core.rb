@@ -164,8 +164,8 @@ class << AX
     observer   = make_observer_for element, notif_proc
     run_loop   = CFRunLoopGetCurrent()
     app_source = AXObserverGetRunLoopSource(observer)
-    register_notif_callback observer, element, notif
     CFRunLoopAddSource(run_loop, app_source, KCFRunLoopDefaultMode)
+    register_notif_callback observer, element, notif
     notif_proc
   end
 
