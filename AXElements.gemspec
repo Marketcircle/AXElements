@@ -1,9 +1,10 @@
 $LOAD_PATH.unshift File.join( File.dirname(__FILE__), 'lib' )
 require 'AXElements/Version'
 
-GEM_SPEC = Gem::Specification.new do |s|
-  s.name    = 'AXElements'
-  s.version = Accessibility::VERSION
+Gem::Specification.new do |s|
+  s.name     = 'AXElements'
+  s.version  = Accessibility::VERSION
+  s.platform = Gem::Platform::MACRUBY
 
   s.summary     = 'A DSL for automating GUI manipulation'
   s.description = <<-EOS
