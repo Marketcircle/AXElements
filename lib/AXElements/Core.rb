@@ -257,6 +257,7 @@ class << AX
 
   private
 
+  # @todo Extract data from /System/Library/Frameworks/Carbon.framework/Versions/A/Frameworks/HIToolbox.framework/Versions/A/Headers/Events.h
   # Map keyboard characters to their keycodes
   # @return [Hash{String=>Fixnum}]
   KEYCODE_MAP = {
