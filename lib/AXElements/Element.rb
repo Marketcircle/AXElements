@@ -1,10 +1,8 @@
-module AX
-
 ##
 # @abstract
 #
 # The abstract base class for all accessibility objects.
-class Element
+class AX::Element
 
   ##
   # @todo take a second argument of the attributes array; the attributes
@@ -309,5 +307,4 @@ class Element
     end
   end
 
-end
 end
