@@ -63,12 +63,25 @@ class << Accessibility
       sleep sleep_time
       sleep_count += 1
     end
-    AX.application_for_pid( apps.first.processIdentifier )
+    application_with_pid apps.first.processIdentifier
   end
 
+  ##
+  # Get the accessibility object for an application given its localized
+  # name.
+  #
   # @param [String] name name of the application to launch
+  # @return [AX::Application,nil]
   def application_with_name name
-    raise NotImplementedError
+    raise NotImplementedError, 'Please implement me. :('
+  end
+
+  ##
+  # Get the accessibility object for an application given its PID.
+  #
+  # @return [AX::Application]
+  def application_with_pid pid
+    AX.application_for_pid(pid)
   end
 
 
