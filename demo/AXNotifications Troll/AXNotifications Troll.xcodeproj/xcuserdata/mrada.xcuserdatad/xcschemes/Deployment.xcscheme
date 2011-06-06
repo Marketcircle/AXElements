@@ -13,6 +13,20 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
+               BlueprintIdentifier = "AF7345A8139B441600D53953"
+               BuildableName = "AXNotifications Troll.app"
+               BlueprintName = "AXNotifications Troll"
+               ReferencedContainer = "container:AXNotifications Troll.xcodeproj">
+            </BuildableReference>
+         </BuildActionEntry>
+         <BuildActionEntry
+            buildForTesting = "YES"
+            buildForRunning = "YES"
+            buildForProfiling = "YES"
+            buildForArchiving = "YES"
+            buildForAnalyzing = "YES">
+            <BuildableReference
+               BuildableIdentifier = "primary"
                BlueprintIdentifier = "AF7345B1139B441600D53953"
                BuildableName = "Deployment"
                BlueprintName = "Deployment"
