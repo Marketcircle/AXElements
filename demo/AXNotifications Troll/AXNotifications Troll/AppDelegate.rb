@@ -18,12 +18,28 @@ class AppDelegate
   end
 
   def send_notification(sender)
-    NSAccessibilityPostNotification(button.cell, text_box.stringValue)
-    label.stringValue = "Posted '#{text_box.stringValue}' notification"
+    notification = notification_for text_box.stringValue
+    NSAccessibilityPostNotification(button.cell, notification)
+    label.stringValue = "Posted '#{notification}' notification"
+  end
+
   def applicationShouldTerminateAfterLastWindowClosed(the_application)
     true
   end
 
+
+  private
+
+  def notification_for string
+    return Kernel.const_get(string) if Kernel.const_defined?(string)
+
+    const = string.capitalize
+    return Kernel.const_get(const) if Kernel.const_defined?(const)
+
+    const = "KAX#{string}Notification"
+    return Kernel.const_get(const) if Kernel.const_defined?(const)
+
+    return string
   end
 
 end
