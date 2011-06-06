@@ -6,3 +6,4 @@ vendor_test/
 *.rbo
 *.gem
 xcuserdata
+.DS_Store
