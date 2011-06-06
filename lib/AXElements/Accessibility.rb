@@ -5,8 +5,8 @@ class << Accessibility
   # all the way up the hierarchy to the top level (should be the Application).
   #
   # @param [AX::Element] element
-  # @return [Array<AX::Element>] the hierarchy in ascending order
-  def hierarchy *elements
+  # @return [Array<AX::Element>] the path in ascending order
+  def path *elements
     element = elements.last
     return hierarchy(elements << element.parent) if element.respond_to?(:parent)
     return elements

@@ -11,9 +11,9 @@ class TestElementUnderMouse < MiniTest::Unit::TestCase
 end
 
 
-class TestAXHierarchy < TestAX
+class TestAXPath < TestAX
 
-  RET = Accessibility.hierarchy( AX::DOCK.list.application_dock_item )
+  RET = Accessibility.path( AX::DOCK.list.application_dock_item )
 
   def test_returns_array_of_elements
     assert_instance_of Array, RET
