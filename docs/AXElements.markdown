@@ -26,7 +26,7 @@ There are a two ways to get a reference to an accessibility object:
 * An application object
   + Given a PID
   + Given a bundle identifier
-  + Given an app name (Not implemented yet...)
+  + Given an app name
 
 {file:docs/images/AX.png}
 

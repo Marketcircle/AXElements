@@ -73,7 +73,9 @@ class << Accessibility
   # @param [String] name name of the application to launch
   # @return [AX::Application,nil]
   def application_with_name name
-    raise NotImplementedError, 'Please implement me. :('
+    apps  = NSWorkspace.sharedWorkspace.runningApplications
+    index = apps.map(&:localizedName).index(name)
+    AX.application_for_pid(apps[index].processIdentifier) if index
   end
 
   ##
