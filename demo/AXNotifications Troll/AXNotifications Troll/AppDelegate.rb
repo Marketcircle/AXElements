@@ -14,12 +14,16 @@ class AppDelegate
   attr_accessor :label
 
   def applicationDidFinishLaunching(a_notification)
-    window.title = "PID = #{$$}"
+    window.title = NSRunningApplication.currentApplication.bundleIdentifier
   end
 
   def send_notification(sender)
     NSAccessibilityPostNotification(button.cell, text_box.stringValue)
     label.stringValue = "Posted '#{text_box.stringValue}' notification"
+  def applicationShouldTerminateAfterLastWindowClosed(the_application)
+    true
+  end
+
   end
 
 end
