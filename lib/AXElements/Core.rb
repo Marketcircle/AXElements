@@ -197,12 +197,13 @@ class << AX
   # The co-ordinates should be specified with the origin being in the
   # top-left corner of the main screen.
   #
-  # @param [CGPoint,Array(Number,Number)] point
+  # @param [Float] x
+  # @param [Float] y
   # @return [AX::Element]
-  def element_at_position point
+  def element_at_point x, y
     ptr     = Pointer.new( '^{__AXUIElement}' )
     system  = AXUIElementCreateSystemWide()
-    code    = AXUIElementCopyElementAtPosition(system, *(point.to_a), ptr)
+    code    = AXUIElementCopyElementAtPosition(system, x, y, ptr)
     log_ax_call system, code
     element_attribute ptr[0]
   end

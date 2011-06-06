@@ -1,8 +1,8 @@
 class TestElementAtPosition < MiniTest::Unit::TestCase
 
-  # this will break with full screen apps :(
+  # this test will break with full screen apps :(
   def test_returns_a_menubar_for_coordinates_10_0
-    item = AX.element_at_position( CGPoint.new(10, 0) )
+    item = AX.element_at_position( 10, 0 )
     assert_instance_of AX::MenuBarItem, item
   end
 
