@@ -73,9 +73,9 @@ class << Accessibility
   # @param [String] name name of the application to launch
   # @return [AX::Application,nil]
   def application_with_name name
-    apps  = NSWorkspace.sharedWorkspace.runningApplications
-    index = apps.map(&:localizedName).index(name)
-    AX.application_for_pid(apps[index].processIdentifier) if index
+    workspace = NSWorkspace.sharedWorkspace
+    app = workspace.runningApplications.find { |app| app.localizedName == name }
+    AX.application_for_pid(app.processIdentifier) if app
   end
 
   ##
