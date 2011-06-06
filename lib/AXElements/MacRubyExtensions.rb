@@ -85,47 +85,30 @@ end
 
 
 class CGPoint
-  ##
-  # Assumes the point represents something on the screen with the origin
-  # in the bottom left and then translates the point to be in the same
-  # place on screen if the origin were in the top left.
-  #
-  # This method will return nil if the co-ordinates cannot be translated.
-  #
-  # @param [CGPoint] point screen position in Cocoa screen coordinates
-  # @return [CGPoint,nil]
-  def carbonize!
-    NSScreen.screens.each do |screen|
-      if NSPointInRect(self, screen.frame)
-        self.y = screen.frame.size.height - self.y + (2 * screen.frame.origin.y)
-        return self
-      end
+  class << self
+    ##
+    # Get the center/centre point in a rectangle.
+    #
+    # @param [CGRect] rect
+    # @return [CGPoint]
+    def center_of_rect rect
+      center rect.origin, rect.size
     end
-    nil
-  end
-  alias_method :carbon!,    :carbonize!
-  alias_method :carbonify!, :carbonize!
+    alias_method :centre_of_rect, :center_of_rect
 
-  ##
-  # Get the center point in a rectangle.
-  #
-  # @param [CGRect] rect
-  # @return [CGPoint]
-  def self.center_of_rect rect
-    center rect.origin, rect.size
-  end
-
-  ##
-  # Given the origin and size of a rectangle, with the origin
-  # relative to the screen origin; find the center of the rectangle
-  # with co-ordinates relative to the screen origin.
-  #
-  # @param [CGPoint] origin
-  # @param [CGSize] size
-  # @return [CGPoint]
-  def self.center origin, size
-    x = origin.x + (size.width / 2.0)
-    y = origin.y + (size.height / 2.0)
-    new(x, y)
+    ##
+    # Given the origin and size of a rectangle, with the origin
+    # relative to the screen origin; find the center/centre of the
+    # rectangle with co-ordinates relative to the screen origin.
+    #
+    # @param [CGPoint] origin
+    # @param [CGSize] size
+    # @return [CGPoint]
+    def self.center origin, size
+      x = origin.x + (size.width / 2.0)
+      y = origin.y + (size.height / 2.0)
+      new(x, y)
+    end
+    alias_method :centre, :center
   end
 end
