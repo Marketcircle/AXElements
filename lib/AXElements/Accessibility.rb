@@ -17,8 +17,23 @@ class << Accessibility
   #
   # @return [AX::Element]
   def element_under_mouse
-    AX.element_at_position NSEvent.mouseLocation.carbonize!
+    AX.element_at_point *NSEvent.mouseLocation.carbonize!
   end
+
+  ##
+  #
+  #
+  # @overload element_at_point(x,y)
+  #   @param [Float] x
+  #   @param [Float] y
+  # @overload element_at_point([x,y])
+  #   @param [Array(Float,Float)] point
+  # @overload element_at_point(CGPoint.new(x,y))
+  #   @param [CGPoint] point
+  def element_at_point *point
+    AX.element_at_position(*point.to_a.flatten)
+  end
+  alias_method :element_at_position, :element_at_point
 
   ##
   # @todo Find a way for this method to work without sleeping;
