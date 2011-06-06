@@ -1,8 +1,8 @@
 # AXElements
 
 AXElements is a DSL abstraction built on top of the Mac OS X
-Accessibility Framework that allows code to be written in a very
-natural and declarative style that describes user interactions.
+Accessibility and CGEvent APIs that allows code to be written in a
+very natural and declarative style that describes user interactions.
 
 The framework is optimized for writing tests that require automatic
 GUI manipulation, whether it be  finding controls on the screen,
@@ -19,18 +19,23 @@ The entry point to using this framework is the accessibility object,
 which is always descendant of the {AX::Element} class, such as the
 {AX::Application} class.
 
-There are a few ways to get a reference to an accessibility object:
-* Start with a constant
-* Create a new accessibility object representing an application
-* Get the accessibility object at an arbitrary point on the screen
-* Get the accessibility object under the mouse
+There are a two ways to get a reference to an accessibility object:
+* An point on the screen
+  + Under the mouse
+  + An arbitrary point
+* An application object
+  + Given a PID
+  + Given a bundle identifier
+  + Given an app name (Not implemented yet...)
 
 {file:docs/images/AX.png}
 
-The most common way to start is by creating a new object that
-represents an application.
+The most common way to start is by creating a new object for an
+application. I prefer to use the bundle identfier approach like so:
 
-    Accessibility..application_with_bundle_identifier 'com.apple.mail'
+```ruby
+Accessibility.application_with_bundle_identifier 'com.apple.mail'
+```
 
 ## Concepts
 
