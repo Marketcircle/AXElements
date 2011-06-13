@@ -1,14 +1,14 @@
 # -*- coding: utf-8 -*-
 
 ##
-# @todo Allow the animation duration to be overridden
-# @note The API here is alpha, I need to get a better feel for how it
-#       should work.
+# @todo Allow the animation duration to be overridden for Mouse stuff
 #
 # The idea here is to pull actions out from an object and put them
 # in front of object to give AXElements more of a DSL feel to make
 # communicating test steps more clear.
 module Accessibility::Language
+
+  # @group Actions
 
   ##
   # We assume that any method that has the first argument with a type
@@ -20,6 +20,14 @@ module Accessibility::Language
     arg = args.first
     return super unless arg.kind_of?(AX::Element)
     return arg.perform_action method
+  end
+
+  ##
+  # Needed to override inherited {Kernel#raise} so that the raise action
+  # works, but in such a way that the original {#raise} also works.
+  def raise *args
+    arg = args.first
+    arg.kind_of?(AX::Element) ? arg.perform_action(:raise) : super
   end
 
   ##
@@ -60,20 +68,15 @@ module Accessibility::Language
     end
   end
 
-  alias_method :ax_raise, :raise
-  ##
-  # Needed to override inherited {Kernel#raise} so that the raise action
-  # works, but in such a way that the original {#raise} also works.
-  def raise *args
-    arg = args.first
-    arg.kind_of?(AX::Element) ? arg.perform_action(:raise) : ax_raise(*args)
-  end
+   # @group Keyboard input
 
   # @param [#to_s] string
   # @param [AX::Application] app
   def type string, app = AX::SYSTEM
     app.type_string string.to_s
   end
+
+   # @group Notifications
 
   ##
   # @todo Change this to register_for_notification:from: when the syntax
@@ -92,6 +95,8 @@ module Accessibility::Language
     AX.wait_for_notif timeout
   end
 
+  # @group Mouse input
+
   ##
   # @overload move_mouse_to(element)
   #   Move the mouse to a UI element
@@ -105,11 +110,11 @@ module Accessibility::Language
   #   Move the mouse to an arbitrary point given as an two element array
   #   @param [Array(Float,Float)] arg
   def move_mouse_to arg
-    if arg.kind_of?(AX::Element)
-      arg = CGPoint.center(arg.position, arg.size)
-    elsif arg.is_a?(Array)
-      arg = CGPoint.new(*arg)
-    end
+    arg = if arg.kind_of?(AX::Element)
+            CGPoint.center(arg.position, arg.size)
+          elsif arg.is_a?(Array)
+            CGPoint.new(*arg)
+          end
     Mouse.move_to arg
   end
 
@@ -123,14 +128,12 @@ module Accessibility::Language
   #
   # We try to inspect the arguments of this method in order to better
   # determine what it is you want.
-  #
-  # If you want to
   def drag_mouse_to arg
-    if arg.kind_of?(AX::Element)
-      arg = CGPoint.center(arg.position, arg.size)
-    elsif arg.is_a?(Array)
-      arg = CGPoint.new(*arg)
-    end
+    arg = if arg.kind_of?(AX::Element)
+            CGPoint.center(arg.position, arg.size)
+          elsif arg === Array
+            CGPoint.new(*arg)
+          end
     Mouse.drag_to arg
   end
 
@@ -154,9 +157,13 @@ module Accessibility::Language
     Mouse.right_click
   end
 
+  def double_click element = nil
+    raise NotImplementedError, 'Please implement me. :('
+  end
+
+  # @group Macros
+
   ##
-  # @todo return the element for the window?
-  #
   # A macro for showing the About window for an app.
   def show_about_window_for app
     set_focus app
@@ -165,9 +172,6 @@ module Accessibility::Language
   end
 
   ##
-  # @todo return the element for the window?
-  # @todo handle cases where an app has no prefs?
-  #
   # A macro for showing the About window for an app.
   def show_preferences_window_for app
     set_focus app
