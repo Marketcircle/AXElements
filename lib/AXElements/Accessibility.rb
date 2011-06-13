@@ -1,8 +1,15 @@
 class << Accessibility
 
+  # @group Debug helpers
+
   ##
-  # Get a list of elements, starting with the element you gave and riding
-  # all the way up the hierarchy to the top level (should be the Application).
+  # Get a list of elements, starting with an element you give, and riding
+  # the hierarchy up to the top level object (i.e. the {AX::Application}.
+  #
+  # @example
+  #   element = AX::DOCK.list.application_dock_item
+  #   Accessibility.path(element)
+  #     # => [AX::ApplicationDockItem, AX::List, AX::Application]
   #
   # @param [AX::Element] element
   # @return [Array<AX::Element>] the path in ascending order
@@ -13,7 +20,11 @@ class << Accessibility
   end
 
   ##
-  # Finds the current mouse position and then calls {#element_at_position}.
+  # @group Finding an object at a point
+
+  ##
+  # Get the current mouse position and return the top most element at
+  # that point.
   #
   # @return [AX::Element]
   def element_under_mouse
@@ -21,7 +32,7 @@ class << Accessibility
   end
 
   ##
-  #
+  # Get the top most object at an arbitrary point on the screen.
   #
   # @overload element_at_point(x,y)
   #   @param [Float] x
@@ -34,6 +45,8 @@ class << Accessibility
     AX.element_at_position(*point.to_a.flatten)
   end
   alias_method :element_at_position, :element_at_point
+
+  # @group Finding an application object
 
   ##
   # @todo Find a way for this method to work without sleeping;
@@ -68,14 +81,14 @@ class << Accessibility
 
   ##
   # Get the accessibility object for an application given its localized
-  # name.
+  # name. This will not work if the application is not already running.
   #
   # @param [String] name name of the application to launch
   # @return [AX::Application,nil]
   def application_with_name name
     workspace = NSWorkspace.sharedWorkspace
     app = workspace.runningApplications.find { |app| app.localizedName == name }
-    AX.application_for_pid(app.processIdentifier) if app
+    application_with_pid(app.processIdentifier) if app
   end
 
   ##
@@ -85,6 +98,8 @@ class << Accessibility
   def application_with_pid pid
     AX.application_for_pid(pid)
   end
+
+  # @endgroup
 
 
   private
