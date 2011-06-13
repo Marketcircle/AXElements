@@ -85,30 +85,48 @@ end
 
 
 class CGPoint
-  class << self
-    ##
-    # Get the center/centre point in a rectangle.
-    #
-    # @param [CGRect] rect
-    # @return [CGPoint]
-    def center_of_rect rect
-      center rect.origin, rect.size
-    end
-    alias_method :centre_of_rect, :center_of_rect
 
-    ##
-    # Given the origin and size of a rectangle, with the origin
-    # relative to the screen origin; find the center/centre of the
-    # rectangle with co-ordinates relative to the screen origin.
-    #
-    # @param [CGPoint] origin
-    # @param [CGSize] size
-    # @return [CGPoint]
-    def self.center origin, size
-      x = origin.x + (size.width / 2.0)
-      y = origin.y + (size.height / 2.0)
-      new(x, y)
+  ##
+  # Get the center point in a rectangle.
+  #
+  # @param [CGRect] rect
+  # @return [CGPoint]
+  def self.center_of_rect rect
+    center rect.origin, rect.size
+  end
+
+  ##
+  # Given the origin and size of a rectangle, with the origin
+  # relative to the screen origin; find the center of the
+  # rectangle with co-ordinates relative to the screen origin.
+  #
+  # @param [CGPoint] origin
+  # @param [CGSize] size
+  # @return [CGPoint]
+  def self.center origin, size
+    x = origin.x + (size.width / 2.0)
+    y = origin.y + (size.height / 2.0)
+    new(x, y)
+  end
+
+  ##
+  # Assumes the point represents a point on a screen that treats the
+  # bottom left of the primary screen as the origin (Cocoa co-ordinates),
+  # and then translates the point to be in the same place on the screen
+  # if treating the top left of the primary screen as the origin (Carbon
+  # co-ordinates).
+  #
+  # This is done in-place, but will return nil if the point is not on
+  # a screen.
+  #
+  # @return [CGPoint,nil]
+  def carbonize!
+    NSScreen.screens.each do |screen|
+      if NSPointInRect(self, screen.frame)
+        self.y = screen.frame.size.height - self.y + (2 * screen.frame.origin.y)
+        return self
+      end
     end
-    alias_method :centre, :center
+    nil
   end
 end
