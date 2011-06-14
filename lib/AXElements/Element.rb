@@ -138,7 +138,6 @@ class AX::Element
   # @group Search
 
   ##
-  # @todo consider using the rails inflector for pluralization checking
   #
   # Perform a breadth first search through the view hierarchy rooted at
   # the current element.
@@ -155,9 +154,9 @@ class AX::Element
   # @return [AX::Element,nil,Array<AX::Element>,Array<>]
   def search element_type, filters = {}
     klass    = element_type.to_s.camelize!
-    method   = klass.chomp!('s') ? :find_all : :find
     searcher = Accessibility::Search.new(self)
     searcher.send(method, klass, (filters || {}))
+    meth = ((klass = type.singularize) == type) ? :find : :find_all
   end
 
   ##
