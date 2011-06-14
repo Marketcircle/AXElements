@@ -1,99 +1,92 @@
 ##
 # @todo Search does not handle if the object does not respond to a
 #       filter. Though, this is implicitly a low risk scenario.
-# @todo Make search much faster by not wrapping child classes
 #
 # Represents a search entity. Searches through a view hierarchy are
 # breadth first.
-#
-# Search can be slow if it has to go too many levels deep to find an
-# object (or confirm that an object does not exist). This could be sped
-# up in the future by iterating over low level AXUIElementRef objects
-# instead of the wrapped {AX::Element} objects.
 class Accessibility::Search
 
-  # @return [Array<AX::Element>]
-  attr_accessor :elements
-
-  # @return [AX::Element]
-  attr_accessor :element
-
-  # @return [Class] The target class from the AX namespace
-  attr_accessor :target
-
-  # @return [Hash{Symbol=>Object}] Hash of filters (requirements) that
-  #   an element must meet in order to match
-  attr_accessor :filters
-
-  # @param [AX::Element] root
+  # @param [AX::Element] root the starting point of a search
   def initialize root
     root.attributes.include?(KAXChildrenAttribute) ?
-      (self.elements = root.attribute(KAXChildrenAttribute)) :
-      raise(ArgumentError, "Cannot search #{root.inspect} as it has no children")
+      (@tree = Accessibility::Tree.new(root)) :
+      raise(ArgumentError, "Can't search #{root.inspect} as it has no children")
   end
 
   ##
   # Find all elements in the view hierarchy that match the given class
   # and any other search criteria.
   #
-  # @param [String] target_klass
+  # @param [Symbol,String] target_klass
   # @param [Hash] criteria
   # @return [Array<AX::Element>,Array<>]
-  def find_all klass, criteria = {}
-    search_results = []
-    self.filters = criteria
-    until elements.empty?
-      self.element = elements.shift
-      append_children
-      self.target ||= AX.const_get(klass) if AX.const_defined?(klass)
-      next unless matches_criteria?
-      search_results << element
-    end
-    search_results
+  def find_all klass, criteria
+    @tree.find_all &SearchQualifier.new(klass, criteria).method(:qualifies?)
   end
 
   ##
   # Find the first element in the tree that has a certain type and
   # matches any other criteria that has been specified.
   #
-  # @param [String] target_klass
+  # @param [Symbol,String] target_klass
   # @param [Hash] criteria
   # @return [AX::Element,nil]
-  def find klass, criteria = {}
-    self.filters = criteria
-    until elements.empty?
-      self.element = elements.shift
-      append_children
-      self.target ||= AX.const_get(klass) if AX.const_defined?(klass)
-      next unless matches_criteria?
-      return element
-    end
+  def find klass, criteria
+    @tree.find &SearchQualifier.new(klass, criteria).method(:qualifies?)
   end
 
 
   private
 
-  def append_children
-    if element.attributes.include?(KAXChildrenAttribute)
-      elements.concat element.attribute(KAXChildrenAttribute)
-    end
-  end
+  ##
+  # Create a search "block" to be used for element validation in a search.
+  class SearchQualifier
 
-  def matches_criteria?
-    return false if element.class != self.target
-    return false if self.filters.find do |filter, value|
-      filter_value = element.get_attribute(filter)
-      if filter_value.class == value.class
-        filter_value != value
-      else
-        filter_value.attribute(TABLE[filter]) != value
+    # @return [Symbol,String]
+    attr_reader :klass_sym
+
+    # @return [Class]
+    attr_accessor :klass
+
+    # @return [Hash]
+    attr_reader :filters
+
+    # @param [Symbol,String] target_klass
+    # @param [Hash] filter_criteria
+    def initialize target_klass, filter_criteria
+      @klass_sym = target_klass
+      @filters   = filter_criteria
+    end
+
+    def qualifies? element
+      return false unless the_right_type?(element)
+      return false if filters.find do |filter, value|
+        filter_value = element.get_attribute(filter)
+        if filter_value.class == value.class
+          filter_value != value
+        else
+          filter_value.attribute(TABLE[filter]) != value
+        end
       end
+      return true
     end
-    return true
-  end
 
-  TABLE = {
-    title_ui_element: KAXValueAttribute
-  }
+
+    private
+
+    ##
+    # Checks if a candidate object is of the correct class
+    def the_right_type? element
+      return element.is_a?(klass) if klass
+      AX.const_defined?(klass_sym) ?
+        element.is_a?(klass = AX.const_get(klass_sym)) : false
+    end
+
+    # @return [Hash{Symbol=>String}]
+    TABLE = {
+      title_ui_element: KAXValueAttribute
+    }
+
+  end
 
 end
