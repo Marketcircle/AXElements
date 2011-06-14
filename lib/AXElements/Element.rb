@@ -157,7 +157,7 @@ class AX::Element
   def search element_type, filters = nil
     type = element_type.to_s.camelize!
     meth = ((klass = type.singularize) == type) ? :find : :find_all
-    Accessibility::Search.send(meth, self, klass.to_sym, (filters || {}))
+    Accessibility::Search.new(self).send(meth, klass.to_sym, (filters || {}))
   end
 
   ##
