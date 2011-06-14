@@ -1,5 +1,3 @@
-require 'active_support/inflector'
-
 class NSArray
   ##
   # Equivalent to `#[1]`

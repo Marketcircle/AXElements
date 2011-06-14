@@ -27,6 +27,8 @@ module Accessibility
   @log.level = Logger::ERROR
 end
 
+require 'active_support/inflector'
+
 ##
 # Container for all the accessibility objects as well as the set of
 # stateless singleton methods that interact with OS X Accessibility
