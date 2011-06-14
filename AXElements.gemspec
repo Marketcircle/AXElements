@@ -31,6 +31,6 @@ describes user interactions.
   s.add_runtime_dependency 'i18n',          ['~> 0.6.0'] # indirectly :(
 
   s.add_development_dependency 'minitest-macruby-pride', ['~> 2.2.2']
-  s.add_development_dependency 'yard',                   ['~> 0.7.1']
+  s.add_development_dependency 'yard',                   ['~> 0.7.2']
   s.add_development_dependency 'redcarpet',              ['~> 1.17']
 end
