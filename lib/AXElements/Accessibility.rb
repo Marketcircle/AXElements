@@ -20,6 +20,13 @@ class << Accessibility
   end
 
   ##
+  # Produce an {Accessibility::Tree} rooted at the given element.
+  #
+  # @param [AX::Element]
+  def tree element
+    Accessibilitiy::Tree.new(element)
+  end
+
   # @group Finding an object at a point
 
   ##

@@ -42,6 +42,7 @@ require 'AXElements/Mouse'
 
 require 'AXElements/Core'
 require 'AXElements/Element'
+require 'AXElements/Tree'
 require 'AXElements/Search'
 
 require 'AXElements/Elements/Application'
