@@ -1,3 +1,5 @@
+##
+# Extensions to NSArray.
 class NSArray
   ##
   # Equivalent to `#[1]`
@@ -53,6 +55,8 @@ class NSArray
 end
 
 
+##
+# Extensions to NSMutableString
 class NSMutableString
   ##
   # Returns the upper camel case version of the string. The string
@@ -72,6 +76,8 @@ class NSMutableString
 end
 
 
+##
+# Extensions to NSString
 class NSString
   ##
   # Used to test a symbol/string representing a method name.
@@ -82,8 +88,9 @@ class NSString
 end
 
 
+##
+# Extensions to CGPoint
 class CGPoint
-
   ##
   # Get the center point in a rectangle.
   #
