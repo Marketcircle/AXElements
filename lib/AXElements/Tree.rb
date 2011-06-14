@@ -1,5 +1,8 @@
 ##
 # A UI element tree that can be iterated using lazy evaluation.
+#
+# This class tries to use as many low level details as possible to get
+# better performance out of searches.
 class Accessibility::Tree
   include Enumerable
 
