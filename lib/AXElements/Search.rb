@@ -64,6 +64,7 @@ class Accessibility::Search
     def qualifies? element
       return false unless the_right_type?(element)
       return false if filters.find do |filter, value|
+        break unless element.respond_to?(filter)
         filter_value = element.get_attribute(filter)
         if filter_value.class == value.class
           filter_value != value
