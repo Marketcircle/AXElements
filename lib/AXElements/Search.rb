@@ -21,7 +21,7 @@ class Accessibility::Search
   # @param [Hash] criteria
   # @return [Array<AX::Element>,Array<>]
   def find_all klass, criteria
-    @tree.find_all &SearchQualifier.new(klass, criteria).method(:qualifies?)
+    @tree.find_all &Qualifier.new(klass, criteria).method(:qualifies?)
   end
 
   ##
@@ -32,7 +32,7 @@ class Accessibility::Search
   # @param [Hash] criteria
   # @return [AX::Element,nil]
   def find klass, criteria
-    @tree.find &SearchQualifier.new(klass, criteria).method(:qualifies?)
+    @tree.find &Qualifier.new(klass, criteria).method(:qualifies?)
   end
 
 
@@ -40,7 +40,7 @@ class Accessibility::Search
 
   ##
   # Create a search "block" to be used for element validation in a search.
-  class SearchQualifier
+  class Qualifier
 
     # @return [Symbol,String]
     attr_reader :klass_sym
