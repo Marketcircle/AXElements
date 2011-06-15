@@ -58,6 +58,9 @@ class Accessibility::Search
       @filters   = filter_criteria
     end
 
+    ##
+    # Whether or not a candidate object matches the criteria given
+    # at initialization.
     def qualifies? element
       return false unless the_right_type?(element)
       return false if filters.find do |filter, value|
@@ -75,7 +78,16 @@ class Accessibility::Search
     private
 
     ##
-    # Checks if a candidate object is of the correct class
+    # @todo Consider not looking up classes, and instead, just comparing
+    #       the #role of the candidate object with the #klass_sym that
+    #       was given. Is the price of doing const lookups more than
+    #       just doing string comparisons all the time? What is the
+    #       threshold?
+    #
+    # Checks if a candidate object is of the correct class.
+    #
+    # This is an important method to optimize for search as it needs
+    # to be called for each candidate object.
     def the_right_type? element
       return element.is_a?(klass) if klass
       AX.const_defined?(klass_sym) ?
