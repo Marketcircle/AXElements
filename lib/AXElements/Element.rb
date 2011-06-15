@@ -138,9 +138,6 @@ class AX::Element
   # @group Search
 
   ##
-  # @todo Do all camelization here before delagating so that it only has
-  #       to be done once. Also is better encapsulation and consistency.
-  #
   # Perform a breadth first search through the view hierarchy rooted at
   # the current element.
   #
