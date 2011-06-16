@@ -25,4 +25,17 @@ class Accessibility::Tree
     end
   end
 
+  ##
+  # Need to override the provided find method because it does not break
+  # properly when something is found.
+  def find
+    pending = [@root]
+    until pending.empty?
+      pending.shift.attribute(KAXChildrenAttribute).each do |x|
+        pending << x if x.attributes.include?(KAXChildrenAttribute)
+        return x if yield x
+      end
+    end
+  end
+
 end
