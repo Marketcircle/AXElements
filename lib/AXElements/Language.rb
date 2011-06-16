@@ -103,6 +103,10 @@ module Accessibility::Language
   # @group Mouse input
 
   ##
+  # @todo If the method is given an element as an argument then we
+  #       should only move if current mouse position is not over
+  #       the element (use NSPointInRect()).
+  #
   # @overload move_mouse_to(element)
   #   Move the mouse to a UI element
   #   @param [AX::Element] arg
