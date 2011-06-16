@@ -73,7 +73,7 @@ module Accessibility::Language
     end
   end
 
-   # @group Keyboard input
+  # @group Keyboard input
 
   # @param [#to_s] string
   # @param [AX::Application] app
@@ -81,7 +81,7 @@ module Accessibility::Language
     app.type_string string.to_s
   end
 
-   # @group Notifications
+  # @group Notifications
 
   ##
   # @todo Change this to register_for_notification:from: when the syntax
