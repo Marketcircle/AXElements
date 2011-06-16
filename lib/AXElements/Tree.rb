@@ -27,7 +27,8 @@ class Accessibility::Tree
 
   ##
   # Need to override the provided find method because it does not break
-  # properly when something is found.
+  # properly when something is found, which not only negates the
+  # performance boost.
   def find
     pending = [@root]
     until pending.empty?
