@@ -63,15 +63,7 @@ class Accessibility::Search
     # at initialization.
     def qualifies? element
       return false unless the_right_type?(element)
-      return false if filters.find do |filter, value|
-        break true unless element.respond_to?(filter)
-        filter_value = element.get_attribute(filter)
-        if filter_value.class == value.class
-          filter_value != value
-        else
-          filter_value.attribute(TABLE[filter]) != value
-        end
-      end
+      return false if does_not_meet_criteria?(element)
       return true
     end
 
@@ -99,6 +91,21 @@ class Accessibility::Search
     TABLE = {
       title_ui_element: KAXValueAttribute
     }
+
+    ##
+    # Determines if the element meets all the criteria of the filters
+    # the Qualifier object was initialized with.
+    def does_not_meet_criteria? element
+      filters.find do |filter, value|
+        break true unless element.respond_to?(filter)
+        filter_value = element.get_attribute(filter)
+        if filter_value.class == value.class
+          filter_value != value
+        else
+          filter_value.attribute(TABLE[filter]) != value
+        end
+      end
+    end
 
   end
 
