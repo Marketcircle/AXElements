@@ -298,10 +298,16 @@ class AX::Element
   #
   # @return [String,nil]
   def constant_for sym, array
+    value = @@const_map[sym]
+    return value if value
     suffix = matcher(sym)
-    array.find do |const|
+    @@const_map[sym] = array.find do |const|
       AX.strip_prefix(const).caseInsensitiveCompare(suffix) == NSOrderedSame
     end
   end
+
+  # @return [Hash{Symbol=>String}] Memoized mapping of symbols to constants
+  #   used for attribute/action lookups.
+  @@const_map = {}
 
 end
