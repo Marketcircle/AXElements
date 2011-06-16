@@ -270,45 +270,34 @@ class AX::Element
 
   protected
 
-  ##
-  # Make a string that should match the suffix of a attribute/action
-  # constant from an AX::Element object.
-  def matcher name
-    name = name.to_s
-    name.chomp!('?')
-    name.delete!('_')
-    name
-  end
-
   def notif_for name
     name  = name.to_s
     const = "KAX#{name.camelize!}Notification"
     Kernel.const_defined?(const) ? Kernel.const_get(const) : name
   end
 
-  def attribute_for sym;       constant_for sym, attributes;       end
-  def action_for sym;          constant_for sym, actions;          end
-  def param_attribute_for sym; constant_for sym, param_attributes; end
-
   ##
-  # @todo Investigate if using a regex is faster than calling
-  #       caseInsensitiveCompare for the average AX constant
-  #
-  # Match a symbol to a attribute/action constant a suffix of an action
-  # constant.
-  #
-  # @return [String,nil]
-  def constant_for sym, array
-    value = @@const_map[sym]
-    return value if value
-    suffix = matcher(sym)
-    @@const_map[sym] = array.find do |const|
-      AX.strip_prefix(const).caseInsensitiveCompare(suffix) == NSOrderedSame
-    end
+  # Make a string that should match the suffix of a attribute/action
+  # constant from an AX::Element object.
+  def self.matcher name
+    name = name.to_s
+    name.chomp!('?')
+    name.delete!('_')
+    name
   end
 
+  def attribute_for sym;       @@array = attributes;       @@const_map[sym] end
+  def action_for sym;          @@array = actions;          @@const_map[sym] end
+  def param_attribute_for sym; @@array = param_attributes; @@const_map[sym] end
+
   # @return [Hash{Symbol=>String}] Memoized mapping of symbols to constants
-  #   used for attribute/action lookups.
-  @@const_map = {}
+  #   used for attribute/action lookups
+  @@const_map = Hash.new do |hash,key|
+    suffix = matcher(key)
+    value = @@array.find do |const|
+      AX.strip_prefix(const).caseInsensitiveCompare(suffix) == NSOrderedSame
+    end
+    hash[key] = value if value
+  end
 
 end
