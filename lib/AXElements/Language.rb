@@ -38,7 +38,7 @@ module Accessibility::Language
   ##
   # Focus an element on the screen, if possible
   def set_focus element
-    set element, focused: true
+    element.set_attribute :focused, true
   end
 
   ##
