@@ -276,7 +276,8 @@ class AX::Element
   def matcher name
     name = name.to_s
     name.chomp!('?')
-    name.delete('_')
+    name.delete!('_')
+    name
   end
 
   def notif_for name
