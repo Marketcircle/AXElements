@@ -21,7 +21,7 @@ interfere with them something could go wrong.
 
 An idealized outline of how things will progress in the next couple of releases
 
-### 0.5
+### 0.5 (Luxray Tamer)
 
 - notifications system needs to be cleaned up
   + notification name resolution does not need to happen in the
@@ -32,12 +32,12 @@ An idealized outline of how things will progress in the next couple of releases
   environment
   + this should help with all the skipped tests and also the
   benchmarks that should be implemented
-
-### 0.6 (or maybe 1.0)
-
 - Keyboard module
   + support a much larger set of keys and key combinations that can be
   pressed
+
+### 0.6 (or maybe 1.0)
+
 - Mouse module cleanup
 - Performance tweaks
 

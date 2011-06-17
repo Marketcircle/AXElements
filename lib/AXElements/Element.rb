@@ -278,6 +278,12 @@ class AX::Element
 
   protected
 
+  ##
+  # Try to turn an arbitrary symbol into notification constant, and
+  # then get the value of the constant.
+  #
+  # @param [Symbol]
+  # @return [String]
   def notif_for name
     name  = name.to_s
     const = "KAX#{name.camelize!}Notification"
@@ -287,6 +293,8 @@ class AX::Element
   ##
   # Make a string that should match the suffix of a attribute/action
   # constant from an AX::Element object.
+  #
+  # @param [Symbol] name
   def self.matcher name
     name = name.to_s
     name.chomp!('?')
@@ -294,6 +302,7 @@ class AX::Element
     name
   end
 
+  # @todo Use a mutex to make lookups thread-safe
   def attribute_for sym;       @@array = attributes;       @@const_map[sym] end
   def action_for sym;          @@array = actions;          @@const_map[sym] end
   def param_attribute_for sym; @@array = param_attributes; @@const_map[sym] end

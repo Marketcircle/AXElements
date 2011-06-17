@@ -1,12 +1,16 @@
 ##
+# @todo The current strategy dealing with errors is just to log them,
+#       but that may not always be the correct thing to do. This
+#       requires some meditation.
+#
 # The singleton methods for the AX module represent the core layer of
 # abstraction for AXElements.
 #
 # The methods provide a clean Ruby-ish interface to the low level
 # CoreFoundation functions that compose the AXAPI. Doing this we can
-# hide away the need to work with pointers and centralize where logging
-# errors from low level function calls (since CoreFoundation uses a
-# different pattern for that sort of thing).
+# hide away the need to work with pointers and centralize when errors
+# are logged from the low level function calls (since CoreFoundation
+# uses a different pattern for that sort of thing).
 class << AX
 
   # @group Attributes
@@ -463,10 +467,7 @@ class << AX
     vals.map { |val| element_attribute val }
   end
 
-  ##
-  # This array is order-sensitive, which is why there is a nil object at index 0
-  #
-  # @return [Class,nil]
+  # @return [Class,nil] order-sensitive (i.e. why index 0 is nil)
   AXBoxType = [ nil, CGPoint, CGSize, CGRect, CFRange ]
 
   ##
