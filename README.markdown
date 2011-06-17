@@ -33,12 +33,6 @@ An idealized outline of how things will progress in the next couple of releases
   + notification name resolution does not need to happen in the
   Element class, or does it?
   + needs to cleanup properly in failure cases
-- Search needs to be expanded
-  + First it needs to be cleaned up
-  + It needs to handle exceptions better
-  + Needs to support more complex filtering criteria
-- Update rubygems in MacRuby or import the specific parts of Active
-  Support that AXElements depends on
 - Tests should rely on a special app that is bundled just for tests
   instead of trying to interact with different assumed parts of the
   environment
