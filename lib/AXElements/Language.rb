@@ -64,9 +64,7 @@ module Accessibility::Language
   #
   # @return [nil] do not rely on a return value
   def set element, change
-    if element.actions.include?(KAXFocusedAttribute)
-      set_focus element unless element.attribute(KAXFocusedAttribute)
-    end
+    set_focus element
     key, value = if change.is_a? Hash
                    change.first
                  else
