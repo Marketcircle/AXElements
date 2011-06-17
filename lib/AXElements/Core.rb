@@ -16,7 +16,7 @@ class << AX
   def attrs_of_element element
     ptr = Pointer.new( '^{__CFArray}' )
     code = AXUIElementCopyAttributeNames(element, ptr)
-    log_ax_call element, code
+    log_error element, code unless code.zero?
     ptr[0]
   end
 
@@ -38,7 +38,7 @@ class << AX
   def attr_of_element_writable? element, attr
     ptr  = Pointer.new( 'B' )
     code = AXUIElementIsAttributeSettable(element, attr, ptr)
-    log_ax_call element, code
+    log_error element, code unless code.zero?
     ptr[0]
   end
 
@@ -52,7 +52,7 @@ class << AX
   # @return [Object] returns the value that was set
   def set_attr_of_element element, attr, value
     code = AXUIElementSetAttributeValue(element, attr, value)
-    log_ax_call element, code
+    log_error element, code unless code.zero?
     value
   end
 
@@ -63,7 +63,7 @@ class << AX
   def actions_of_element element
     array_ptr = Pointer.new( '^{__CFArray}' )
     code = AXUIElementCopyActionNames(element, array_ptr)
-    log_ax_call element, code
+    log_error element, code unless code.zero?
     array_ptr[0]
   end
 
@@ -75,7 +75,7 @@ class << AX
   # @return [Boolean] true if successful
   def action_of_element element, action
     code = AXUIElementPerformAction(element, action)
-    log_ax_call(element, code) == 0
+    code.zero? ? true : (log_error(element, code); false)
   end
 
   ##
@@ -111,7 +111,7 @@ class << AX
   def param_attrs_of_element element
     array_ptr = Pointer.new( '^{__CFArray}' )
     code = AXUIElementCopyParameterizedAttributeNames(element, array_ptr)
-    log_ax_call element, code
+    log_error element, code unless code.zero?
     array_ptr[0]
   end
 
@@ -204,7 +204,7 @@ class << AX
     ptr     = Pointer.new( '^{__AXUIElement}' )
     system  = AXUIElementCreateSystemWide()
     code    = AXUIElementCopyElementAtPosition(system, x, y, ptr)
-    log_ax_call system, code
+    log_error system, code unless code.zero?
     element_attribute ptr[0]
   end
 
@@ -228,7 +228,7 @@ class << AX
   def pid_of_element element
     ptr  = Pointer.new( 'i' )
     code = AXUIElementGetPid(element, ptr)
-    log_ax_call element, code
+    log_error element, code unless code.zero?
     ptr[0]
   end
 
@@ -294,7 +294,7 @@ class << AX
   def post_kb_events element, events
     events.each do |event|
       code = AXUIElementPostKeyboardEvent(element, 0, *event)
-      log_ax_call element, code
+      log_error element, code unless code.zero?
     end
   end
 
@@ -305,8 +305,7 @@ class << AX
   # @param [AXUIElementRef] element
   # @param [Fixnum] code AXError value
   # @return [Fixnum] returns the code that was passed
-  def log_ax_call element, code
-    return code if code.zero?
+  def log_error element, code
     message = AXError[code] || 'UNKNOWN ERROR CODE'
     logger = Accessibility.log
     logger.warn "[#{message} (#{code})] while trying #{caller[0]}"
@@ -315,7 +314,6 @@ class << AX
     # @todo logger.info available parameterized attributes
     logger.debug "Backtrace: #{caller.description}"
     # @todo logger.debug pp hierarchy element or pp element
-    code
   end
 
   ##
@@ -352,7 +350,7 @@ class << AX
   def raw_attr_of_element element, attr
     ptr  = Pointer.new(:id)
     code = AXUIElementCopyAttributeValue( element, attr, ptr )
-    log_ax_call element, code
+    log_error element, code unless code.zero?
     ptr[0]
   end
 
@@ -361,7 +359,7 @@ class << AX
   def raw_param_attr_of_element element, attr, param
     ptr  = Pointer.new(:id)
     code = AXUIElementCopyParameterizedAttributeValue( element, attr, param, ptr )
-    log_ax_call element, code
+    log_error element, code unless code.zero?
     ptr[0]
   end
 
@@ -490,7 +488,7 @@ class << AX
   def make_observer_for element, callback
     ptr  = Pointer.new( '^{__AXObserver}' )
     code = AXObserverCreate(pid_of_element(element), callback, ptr)
-    log_ax_call element, code
+    log_error element, code unless code.zero?
     ptr[0]
   end
 
@@ -506,7 +504,7 @@ class << AX
   # @param [String] notif
   def register_notif_callback observer, element, notif
     code = AXObserverAddNotification(observer, element, notif, nil)
-    log_ax_call element, code
+    log_error element, code unless code.zero?
   end
 
 end
