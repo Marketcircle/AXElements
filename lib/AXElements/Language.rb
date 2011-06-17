@@ -36,9 +36,10 @@ module Accessibility::Language
   end
 
   ##
-  # Focus an element on the screen, if possible
+  # Focus an element on the screen, but do not set focus again if
+  # already focused.
   def set_focus element
-    element.set_attribute :focused, true
+    element.set_attribute :focused, true unless element.focused?
   end
 
   ##
