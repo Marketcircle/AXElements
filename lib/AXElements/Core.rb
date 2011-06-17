@@ -391,15 +391,19 @@ class << AX
   # explicitly defined so that they can be defined them at runtime.
   #
   # @param [#to_sym] name
+  # @param [Class] superklass
   # @return [Class]
-  def create_ax_class name
-    klass = Class.new(AX::Element) {
+  def create_ax_class name, superklass = :Element
+    real_superklass = new_const_get [superklass]
+    klass = Class.new(real_superklass) {
       Accessibility.log.debug "#{name} class created"
     }
     const_set( name, klass )
   end
 
   ##
+  # @todo Should we just use regular #const_get and add #const_missing instead?
+  #
   # Like #const_get except that if the class does not exist yet then
   # it will assume the constant belongs to a class and creates the class
   # for you.
@@ -407,15 +411,12 @@ class << AX
   # @param [#to_sym] const the value you want as a constant
   # @return [Class] a reference to the class being looked up
   def new_const_get const
-    const_defined?(const) ? const_get(const) : create_ax_class(const)
+    const_defined?(const.first) ? const_get(const.first) : create_ax_class(*const)
   end
 
   ##
   # @todo Should we handle cases where a subrole has a value of
   #       'Unknown'? What is the performance impact?
-  # @todo Would it be faster to use AXUIElementCopyMultipleAttributeValues
-  #       for the subrole and role and then just check if the subrole is
-  #       nil?
   #
   # Figures out what the name of the class of an element should be.
   # We have to be careful, because some things claim to have a subrole
@@ -426,17 +427,20 @@ class << AX
   # subrole.
   #
   # @param [AXUIElementRef]
-  # @return [String]
+  # @return [Array(String,String)]
   def class_name element
-    attrs = attrs_of_element(element)
-    [KAXSubroleAttribute,KAXRoleAttribute].each { |attr|
-      if attrs.include?(attr)
-        value = raw_attr_of_element(element, attr)
-        return value if value
-      end
-    }
-    raise "Found an element that has no role: #{CFShow(element)}"
+    ptr  = Pointer.new( '^{__CFArray}' )
+    code = AXUIElementCopyMultipleAttributeValues(element, NAMES, 0, ptr)
+    ret  = ptr[0].select { |x| x.is_a? String }
+    if ret.empty?
+      log_error element, code
+      raise "Found an element that has no role: #{CFShow(element)}"
+    end
+    ret
   end
+
+  # @return [Array(String,String)] array of names where to look for class types
+  NAMES = [KAXSubroleAttribute, KAXRoleAttribute]
 
   ##
   # Takes an AXUIElementRef and gives you some kind of accessibility object.
@@ -444,7 +448,7 @@ class << AX
   # @param [AXUIElementRef] element
   # @return [Element]
   def element_attribute element
-    klass = strip_prefix class_name(element)
+    klass = class_name(element).map! &method(:strip_prefix)
     new_const_get(klass).new(element)
   end
 

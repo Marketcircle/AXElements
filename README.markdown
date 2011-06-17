@@ -23,12 +23,6 @@ An idealized outline of how things will progress in the next couple of releases
 
 ### 0.5
 
-- better super class choosing when creating classes at run time
-  + a close button should be the subclass of a button, but you may
-  need to also create the button class, but in this case superclass
-  should be the general role of the element
-    * then we can search using #kind_of instead of #is_a, though I am
-    not convinced that this change would be beneficial
 - notifications system needs to be cleaned up
   + notification name resolution does not need to happen in the
   Element class, or does it?
