@@ -65,11 +65,7 @@ module Accessibility::Language
   # @return [nil] do not rely on a return value
   def set element, change
     set_focus element
-    key, value = if change.is_a? Hash
-                   change.first
-                 else
-                   [:value, change]
-                 end
+    key, value = change.is_a?(Hash) ? change.first : [:value, change]
     element.set_attribute key, value
   end
 
