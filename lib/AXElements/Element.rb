@@ -251,6 +251,14 @@ class AX::Element
   end
 
   ##
+  # Get the position of the element, if it has one.
+  #
+  # @return [CGPoint]
+  def to_point
+    get_attribute :position
+  end
+
+  ##
   # @todo FINISH THIS METHOD
   #
   # Like {#respond_to?}, this is overriden to include attribute methods.

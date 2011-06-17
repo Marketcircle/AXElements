@@ -13,6 +13,12 @@ class NSArray
     at(2)
   end
 
+  ##
+  # Create a CGPoint from the first two elements in the array.
+  def to_point
+    CGPoint.new(first,second)
+  end
+
   alias_method :ax_array_method_missing, :method_missing
   ##
   # @note I'm on the fence about whether this is worth it, so it might
@@ -133,5 +139,13 @@ class CGPoint
       end
     end
     nil
+  end
+
+  ##
+  # Return self.
+  #
+  # @return [CGPoint]
+  def to_point
+    self
   end
 end
