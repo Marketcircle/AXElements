@@ -42,35 +42,36 @@ module Accessibility::Language
   end
 
   ##
-  # @note Technically, this method allows you to set multiple attributes
-  #       on a single object with a single call; but this behaviour is
-  #       likely to change in the future to only allow setting one attribute
-  #       per call.
-  # @todo In order to support the ideal syntax, I will have to alter
-  #       Element#method_missing to return a triple (self, attr, value)
-  #       in the case when an extra argument is passed.
-  # @todo This needs to have a default key for setting, which is :value
-  #       since you are usually setting the value
-  # @todo We should check if the element can have focus set first, and if
-  #       so then we should set focus first; unless we were setting focus
-  #       in the first place
+  # @note We try to set focus to the element first; this is to avoid false
+  #       positives where developers assumed an element would have to have
+  #       focus before a user could change the value.
   #
-  # The syntax kinda sucks, and you would think that the #set method should
-  # belong to AX::Element, but I think taking it out of the class helps make
-  # the abstraction more concrete.
+  # You would think that the #set method should belong to {AX::Element},
+  # but I think taking it out of the class and putting it in front helps
+  # make the difference between performing actions and inspecting UI more
+  # concrete.
   #
-  # @example How to use it
-  #   set scroll_bar, value: 10
-  # @example How I would like it to work eventually
-  #   set scroll_bar.value 10
+  # @overload set element, attribute_name: new_value
+  #   Set a specified attribute to a new value
+  #   @param [AX::Element] element
+  #   @param [Hash{attribute_name=>new_value}] change
   #
-  # @param [AX::Element] element
-  # @param [Hash] changes
+  # @overload set element, new_value
+  #   Set the `value` attribute to a new value
+  #   @param [AX::Element] element
+  #   @param [Object] change
+  #
   # @return [nil] do not rely on a return value
-  def set element, changes
-    changes.each_pair do |attr_symbol, value|
-      element.set_attribute attr_symbol, value
+  def set element, change
+    if element.actions.include?(KAXFocusedAttribute)
+      set_focus element unless element.attribute(KAXFocusedAttribute)
     end
+    key, value = if change.is_a? Hash
+                   change.first
+                 else
+                   [:value, change]
+                 end
+    element.set_attribute key, value
   end
 
   # @group Keyboard input
