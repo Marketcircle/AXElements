@@ -115,12 +115,7 @@ module Accessibility::Language
   #   Move the mouse to an arbitrary point given as an two element array
   #   @param [Array(Float,Float)] arg
   def move_mouse_to arg
-    arg = if arg.kind_of?(AX::Element)
-            CGPoint.center(arg.position, arg.size)
-          elsif arg.is_a?(Array)
-            CGPoint.new(*arg)
-          end
-    Mouse.move_to arg
+    Mouse.move_to arg.to_point
   end
 
   ##
