@@ -394,47 +394,45 @@ class << AX
   # This method is called for each type of UI element that has not yet been
   # explicitly defined so that they can be defined them at runtime.
   #
-  # @param [#to_sym] name
-  # @param [Class] superklass
+  # @param [String,Symbol] name
+  # @param [String,Symbol] superklass
   # @return [Class]
   def create_ax_class name, superklass = :Element
-    real_superklass = new_const_get [superklass]
+    real_superklass = new_const_get([superklass])
     klass = Class.new(real_superklass) {
       Accessibility.log.debug "#{name} class created"
     }
-    const_set( name, klass )
+    const_set name, klass
   end
 
   ##
-  # @todo Should we just use regular #const_get and add #const_missing instead?
+  # @todo Could we use regular #const_get and add #const_missing instead?
   #
   # Like #const_get except that if the class does not exist yet then
   # it will assume the constant belongs to a class and creates the class
   # for you.
   #
-  # @param [#to_sym] const the value you want as a constant
+  # @param [Array<String>] const the value you want as a constant
   # @return [Class] a reference to the class being looked up
-  def new_const_get const
-    const_defined?(const.first) ? const_get(const.first) : create_ax_class(*const)
+  def determine_class_for names
+    const = names.first
+    const_defined?(const) ? const_get(const) : create_ax_class(*names)
   end
 
   ##
   # @todo Should we handle cases where a subrole has a value of
   #       'Unknown'? What is the performance impact?
   #
-  # Figures out what the name of the class of an element should be.
+  # Fetch subrole and role of an object, pass back a clean array of strings.
+  #
   # We have to be careful, because some things claim to have a subrole
   # but return nil or they have a subrole value of 'Unknown'.
   #
-  # This method prefers to choose a class type based on the subrole value
-  # for an accessibility object, and it will use the role if there is no
-  # subrole.
-  #
   # @param [AXUIElementRef]
-  # @return [Array(String,String)]
-  def class_name element
+  # @return [Array<String>] subrole first, if it exists
+  def roles_for element
     ptr  = Pointer.new( '^{__CFArray}' )
-    code = AXUIElementCopyMultipleAttributeValues(element, NAMES, 0, ptr)
+    code = AXUIElementCopyMultipleAttributeValues(element, NAME_ATTRS, 0, ptr)
     ret  = ptr[0].select { |x| x.is_a? String }
     if ret.empty?
       log_error element, code
@@ -444,7 +442,7 @@ class << AX
   end
 
   # @return [Array(String,String)] array of names where to look for class types
-  NAMES = [KAXSubroleAttribute, KAXRoleAttribute]
+  NAME_ATTRS = [KAXSubroleAttribute, KAXRoleAttribute]
 
   ##
   # Takes an AXUIElementRef and gives you some kind of accessibility object.
@@ -452,8 +450,8 @@ class << AX
   # @param [AXUIElementRef] element
   # @return [Element]
   def element_attribute element
-    klass = class_name(element).map! &method(:strip_prefix)
-    new_const_get(klass).new(element)
+    names = roles_for(element).map! { |x| strip_prefix x }
+    determine_class_for(names).new(element)
   end
 
   ##
