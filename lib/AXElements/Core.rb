@@ -463,7 +463,7 @@ class << AX
   #
   # @return [Array,nil]
   def array_attribute vals
-    return vals if vals.empty? || (ATTR_MASSAGERS[CFGetTypeID(vals.first)] == 1)
+    return vals unless ATTR_MASSAGERS[CFGetTypeID(vals.first)] || !vals.empty?
     vals.map { |val| element_attribute val }
   end
 
