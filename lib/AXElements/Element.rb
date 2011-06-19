@@ -187,7 +187,7 @@ class AX::Element
   #
   # @example Contrived multi-element search with filtering
   #
-  #   window.buttons(title:'New Project', enabled?:true)
+  #   window.buttons(title:'New Project', enabled:true)
   #
   def method_missing method, *args
     attr = attribute_for method
