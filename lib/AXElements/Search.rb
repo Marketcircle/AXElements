@@ -21,7 +21,7 @@ class Accessibility::Search
   # @param [Hash] criteria
   # @return [Array<AX::Element>,Array<>]
   def find_all klass, criteria
-    qualifier = Qualifier.new(klass, filters)
+    qualifier = Qualifier.new(klass, criteria)
     @tree.find_all { |element| qualifier.qualifies? element }
   end
 
@@ -33,7 +33,7 @@ class Accessibility::Search
   # @param [Hash] criteria
   # @return [AX::Element,nil]
   def find klass, criteria
-    qualifier = Qualifier.new(klass, filters)
+    qualifier = Qualifier.new(klass, criteria)
     @tree.find { |element| qualifier.qualifies? element }
   end
 
