@@ -431,18 +431,18 @@ class << AX
   # @param [AXUIElementRef]
   # @return [Array<String>] subrole first, if it exists
   def roles_for element
-    ptr  = Pointer.new( '^{__CFArray}' )
-    code = AXUIElementCopyMultipleAttributeValues(element, NAME_ATTRS, 0, ptr)
-    ret  = ptr[0].select { |x| x.is_a? String }
-    if ret.empty?
-      log_error element, code
-      raise "Found an element that has no role: #{CFShow(element)}"
+    attr_ptr = Pointer.new(:id)
+    array_ptr = Pointer.new( '^{__CFArray}' )
+    AXUIElementCopyAttributeValue(element, KAXRoleAttribute, attr_ptr)
+    ret = [attr_ptr[0]]
+    AXUIElementCopyAttributeNames(element, array_ptr)
+    if array_ptr[0].include? KAXSubroleAttribute
+      AXUIElementCopyAttributeValue(element, KAXSubroleAttribute, attr_ptr)
+      ret.unshift attr_ptr[0]
     end
     ret
+    #raise "Found an element that has no role: #{CFShow(element)}"
   end
-
-  # @return [Array(String,String)] array of names where to look for class types
-  NAME_ATTRS = [KAXSubroleAttribute, KAXRoleAttribute]
 
   ##
   # Takes an AXUIElementRef and gives you some kind of accessibility object.
