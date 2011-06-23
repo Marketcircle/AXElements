@@ -164,7 +164,7 @@ class AX::Element
   #
   def method_missing method, *args
     attr = attribute_for method
-    return attribute(attr) if attr
+    return AX.attr_of_element(@ref, attr) if attr
     return search(method, args.first) if self.respond_to?(:children)
     super
   end
