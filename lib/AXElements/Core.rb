@@ -431,18 +431,23 @@ class << AX
   # @param [AXUIElementRef]
   # @return [Array<String>] subrole first, if it exists
   def roles_for element
-    attr_ptr = Pointer.new(:id)
-    array_ptr = Pointer.new( '^{__CFArray}' )
-    AXUIElementCopyAttributeValue(element, KAXRoleAttribute, attr_ptr)
-    ret = [attr_ptr[0]]
-    AXUIElementCopyAttributeNames(element, array_ptr)
-    if array_ptr[0].include? KAXSubroleAttribute
-      AXUIElementCopyAttributeValue(element, KAXSubroleAttribute, attr_ptr)
-      ret.unshift attr_ptr[0]
+    ptr  = Pointer.new :id
+    aptr = Pointer.new '^{__CFArray}'
+    AXUIElementCopyAttributeValue(element, ROLE, ptr)
+    ret = [ptr[0]]
+    AXUIElementCopyAttributeNames(element, aptr)
+    if ptr[0].include? SUBROLE
+      AXUIElementCopyAttributeValue(element, SUBROLE, ptr)
+      ret.unshift ptr[0]
     end
     ret
     #raise "Found an element that has no role: #{CFShow(element)}"
   end
+
+  # @return [String] local copy of a Cocoa constant; this is a performance hack
+  ROLE    = KAXRoleAttribute
+  # @return [String] local copy of a Cocoa constant; this is a performance hack
+  SUBROLE = KAXSubroleAttribute
 
   ##
   # Takes an AXUIElementRef and gives you some kind of accessibility object.
