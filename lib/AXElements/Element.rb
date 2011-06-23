@@ -25,16 +25,7 @@ class AX::Element
   def get_attribute attr
     real_attribute = attribute_for attr
     raise ArgumentError, "#{attr} is not an attribute" unless real_attribute
-    attribute(real_attribute)
-  end
-
-  ##
-  # A short path when you have the exact name of the attribute you want
-  # to retrieve the value of.
-  #
-  # This API exists for the sake of making search much faster.
-  def attribute name
-    AX.attr_of_element(@ref, name)
+    AX.attr_of_element(@ref, real_attribute)
   end
 
   ##
@@ -74,14 +65,8 @@ class AX::Element
     unless AX.attr_of_element_writable?(@ref, real_attribute)
       raise ArgumentError, "#{attr} not writable"
     end
-    self.send(:attribute=, real_attribute, value)
+    AX.set_attr_of_element(@ref, real_attribute, value)
     value
-  end
-
-  ##
-  # This API exists to be consistent with {#attribute}.
-  def attribute= name, value
-    AX.set_attr_of_element(@ref, name, value)
   end
 
   # @group Parameterized Attributes
@@ -99,13 +84,7 @@ class AX::Element
   def get_param_attribute attr, param
     real_attribute = param_attribute_for attr
     raise ArgumentError, "#{attr} is not a parameterized attribute" unless real_attribute
-    param_attribute(real_attribute, param)
-  end
-
-  ##
-  # This API exists to be consistent with {#attribute}.
-  def param_attribute name, param
-    AX.param_attr_of_element(@ref, name, param)
+    AX.param_attr_of_element(@ref, real_attribute, param)
   end
 
   # @group Actions
@@ -126,13 +105,7 @@ class AX::Element
   def perform_action name
     real_action = action_for name
     raise ArgumentError, "#{name} is not an action" unless real_action
-    action(real_action)
-  end
-
-  ##
-  # This API exists to be consistent with {#attribute}.
-  def action name
-    AX.action_of_element(@ref, name)
+    AX.action_of_element(@ref, real_action)
   end
 
   # @group Search
