@@ -102,7 +102,7 @@ class AX::Element
 
   # @return [Array<String>] available parameterized attributes
   def param_attributes
-    AX.param_attrs_of_element(@ref)
+    AX.param_attrs_of_element(@ref) # should we cache?
   end
 
   ##
@@ -120,7 +120,7 @@ class AX::Element
 
   # @return [Array<String>] cache of available actions
   def actions
-    AX.actions_of_element(@ref)
+    AX.actions_of_element(@ref) # purposely not caching this array
   end
 
   ##
