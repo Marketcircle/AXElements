@@ -1,10 +1,8 @@
 require 'singleton'
 
-module AX
-
 ##
 # Represents the special SystemWide accessibility object.
-class SystemWide < AX::Element
+class AX::SystemWide < AX::Element
   include Singleton
 
   def initialize
@@ -40,5 +38,4 @@ class SystemWide < AX::Element
     raise ArgumentError, string
   end
 
-end
 end
