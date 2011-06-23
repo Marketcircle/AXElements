@@ -87,6 +87,9 @@ class << Accessibility
   end
 
   ##
+  # @todo We don't launch apps if they are not running, but we could if
+  #       we used NSWorkspace#launchApplication, but it will be a headache
+  #
   # Get the accessibility object for an application given its localized
   # name. This will not work if the application is not already running.
   #

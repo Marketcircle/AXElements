@@ -277,6 +277,8 @@ class AX::Element
   alias_method :eql?, :==
   alias_method :equal?, :==
 
+  # do we need to override #=== as well?
+
 
   protected
 
