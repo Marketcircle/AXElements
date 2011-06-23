@@ -1,8 +1,6 @@
-module AX
-
 ##
 # Some additional constructors and conveniences for Application objects.
-class Application < AX::Element
+class AX::Application < AX::Element
 
   ##
   # This is the standard way of creating an application object. It will
@@ -55,5 +53,4 @@ class Application < AX::Element
     AX::DOCK.application_dock_item(title: title).perform_action(:press)
   end
 
-end
 end
