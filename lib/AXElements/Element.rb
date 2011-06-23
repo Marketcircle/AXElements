@@ -5,6 +5,38 @@
 class AX::Element
 
   ##
+  # Raised when an attribute lookup fails
+  class AttributeNotFound < Exception
+    def initialize attr
+      super "#{attr} is not an attribute"
+    end
+  end
+
+  ##
+  # Raised when an parameterized attribute lookup fails
+  class ParamAttributeNotFound < Exception
+    def initialize attr
+      super "#{attr} is not a parameterized attribute"
+    end
+  end
+
+  ##
+  # Raised when an action lookup fails
+  class ActionNotFound < Exception
+    def initialize attr
+      super "#{attr} is not an action"
+    end
+  end
+
+  ##
+  # Raised when trying to set a read-only attribute
+  class AttributeReadOnly < Exception
+    def initialize attr
+      super "#{attr} is not a writable attribute"
+    end
+  end
+
+  ##
   # @todo take a second argument of the attributes array; the attributes
   #       are already retrieved once to decide on the class type; if that
   #       can be cached and used to initialize an element, we can save a
@@ -24,7 +56,7 @@ class AX::Element
   # @param [Symbol] attr
   def get_attribute attr
     real_attribute = attribute_for attr
-    raise ArgumentError, "#{attr} is not an attribute" unless real_attribute
+    raise AttributeNotFound.new(attr) unless real_attribute
     AX.attr_of_element(@ref, real_attribute)
   end
 
@@ -49,7 +81,7 @@ class AX::Element
   # @param [Symbol] attr
   def attribute_writable? attr
     real_attribute = attribute_for attr
-    raise ArgumentError, "#{attr} not found" unless real_attribute
+    raise AttributeNotFound.new(attr) unless real_attribute
     AX.attr_of_element_writable?(@ref, real_attribute)
   end
 
@@ -60,11 +92,8 @@ class AX::Element
   # @param [String] attr an attribute constant
   # @return the value that you set is returned
   def set_attribute attr, value
+    raise AttributeReadOnly.new(attr) unless attribute_writable?
     real_attribute = attribute_for attr
-    raise ArgumentError, "#{attr} is not an attribute" unless real_attribute
-    unless AX.attr_of_element_writable?(@ref, real_attribute)
-      raise ArgumentError, "#{attr} not writable"
-    end
     AX.set_attr_of_element(@ref, real_attribute, value)
     value
   end
@@ -83,7 +112,7 @@ class AX::Element
   # @param [Symbol] attr
   def get_param_attribute attr, param
     real_attribute = param_attribute_for attr
-    raise ArgumentError, "#{attr} is not a parameterized attribute" unless real_attribute
+    raise ParamAttributeNotFound.new(attr) unless real_attribute
     AX.param_attr_of_element(@ref, real_attribute, param)
   end
 
@@ -104,7 +133,7 @@ class AX::Element
   # @return [Boolean] true if successful
   def perform_action name
     real_action = action_for name
-    raise ArgumentError, "#{name} is not an action" unless real_action
+    raise ActionNotFound.new(name) unless real_action
     AX.action_of_element(@ref, real_action)
   end
 
