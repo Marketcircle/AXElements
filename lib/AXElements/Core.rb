@@ -18,7 +18,7 @@ class << AX
   # @param [AXUIElementRef] element low level accessibility object
   # @return [Array<String>]
   def attrs_of_element element
-    ptr = Pointer.new( '^{__CFArray}' )
+    ptr = Pointer.new '^{__CFArray}'
     code = AXUIElementCopyAttributeNames(element, ptr)
     log_error element, code unless code.zero?
     ptr[0]
@@ -40,7 +40,7 @@ class << AX
   # @param [AXUIElementRef] element
   # @param [String] attr an attribute constant
   def attr_of_element_writable? element, attr
-    ptr  = Pointer.new( 'B' )
+    ptr  = Pointer.new 'B'
     code = AXUIElementIsAttributeSettable(element, attr, ptr)
     log_error element, code unless code.zero?
     ptr[0]
@@ -65,7 +65,7 @@ class << AX
   # @param [AXUIElementRef] element low level accessibility object
   # @return [Array<String>]
   def actions_of_element element
-    array_ptr = Pointer.new( '^{__CFArray}' )
+    array_ptr = Pointer.new '^{__CFArray}'
     code = AXUIElementCopyActionNames(element, array_ptr)
     log_error element, code unless code.zero?
     array_ptr[0]
@@ -113,7 +113,7 @@ class << AX
   # @return [Array<String>,nil] nil if the element has no
   #   parameterized attributes
   def param_attrs_of_element element
-    array_ptr = Pointer.new( '^{__CFArray}' )
+    array_ptr = Pointer.new '^{__CFArray}'
     code = AXUIElementCopyParameterizedAttributeNames(element, array_ptr)
     log_error element, code unless code.zero?
     array_ptr[0]
@@ -205,7 +205,7 @@ class << AX
   # @param [Float] y
   # @return [AX::Element]
   def element_at_point x, y
-    ptr     = Pointer.new( '^{__AXUIElement}' )
+    ptr     = Pointer.new '^{__AXUIElement}'
     system  = AXUIElementCreateSystemWide()
     code    = AXUIElementCopyElementAtPosition(system, x, y, ptr)
     log_error system, code unless code.zero?
@@ -489,7 +489,7 @@ class << AX
   # @param [Method,Proc] callback
   # @return [AXObserverRef]
   def make_observer_for element, callback
-    ptr  = Pointer.new( '^{__AXObserver}' )
+    ptr  = Pointer.new '^{__AXObserver}'
     code = AXObserverCreate(pid_of_element(element), callback, ptr)
     log_error element, code unless code.zero?
     ptr[0]
