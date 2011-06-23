@@ -24,9 +24,12 @@ class AX::Application < AX::Element
     AX.keyboard_action( @ref, string )
   end
 
+  ##
+  # Ask the application to terminate itself.
+  #
+  # @return [Boolean]
   def terminate
-    # also cache the bundle identifier?
-    raise NotImplementedError, 'Please implement me :('
+    NSRunningApplication.runningApplicationWithProcessIdentifier(pid).terminate
   end
 
 
