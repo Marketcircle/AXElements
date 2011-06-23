@@ -8,9 +8,7 @@ class Accessibility::Search
 
   # @param [AX::Element] root the starting point of a search
   def initialize root
-    root.attributes.include?(KAXChildrenAttribute) ?
-      (@tree = Accessibility::Tree.new(root)) :
-      raise(ArgumentError, "Can't search #{root.inspect} as it has no children")
+    @tree = Accessibility::Tree.new(root)
   end
 
   ##
