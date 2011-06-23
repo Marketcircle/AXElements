@@ -18,8 +18,8 @@ class Accessibility::Tree
   def each
     pending = [@root]
     until pending.empty?
-      pending.shift.attribute(KAXChildrenAttribute).each do |x|
-        pending << x if x.attributes.include?(KAXChildrenAttribute)
+      pending.shift.get_attribute(:children).each do |x|
+        pending << x if x.respond_to?(:children)
         yield x
       end
     end
@@ -32,8 +32,8 @@ class Accessibility::Tree
   def find
     pending = [@root]
     until pending.empty?
-      pending.shift.attribute(KAXChildrenAttribute).each do |x|
-        pending << x if x.attributes.include?(KAXChildrenAttribute)
+      pending.shift.get_attribute(:children).each do |x|
+        pending << x if x.respond_to?(:children)
         return x if yield x
       end
     end

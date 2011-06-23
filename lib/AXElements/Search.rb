@@ -89,9 +89,9 @@ class Accessibility::Search
         element.is_a?(klass = AX.const_get(klass_sym)) : false
     end
 
-    # @return [Hash{Symbol=>String}]
+    # @return [Hash{Symbol=>Symbol}]
     TABLE = {
-      title_ui_element: KAXValueAttribute
+      :title_ui_element => :value
     }
 
     ##
@@ -104,7 +104,7 @@ class Accessibility::Search
         if filter_value.class == value.class
           filter_value != value
         else
-          filter_value.attribute(TABLE[filter]) != value
+          filter_value.get_attribute(TABLE[filter]) != value
         end
       end
     end
