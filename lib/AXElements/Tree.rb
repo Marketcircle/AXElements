@@ -13,6 +13,8 @@ class Accessibility::Tree
   ##
   # @todo Make search much faster by not wrapping child classes until
   #       we yield
+  # @todo Would it be faster to keep track of the index in the pending
+  #       array instead of shifting?
   #
   # Iterate through the tree in breadth first order.
   def each
