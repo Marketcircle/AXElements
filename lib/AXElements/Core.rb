@@ -219,7 +219,7 @@ class << AX
   # @param [Fixnum] pid The process identifier for the application you want
   # @return [AX::Application]
   def application_for_pid pid
-    element_attribute AXUIElementCreateApplication(pid)
+    AX::Application.new AXUIElementCreateApplication(pid)
   end
 
   # @group Misc.
