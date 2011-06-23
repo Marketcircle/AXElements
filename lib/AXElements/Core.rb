@@ -436,7 +436,7 @@ class << AX
     AXUIElementCopyAttributeValue(element, ROLE, ptr)
     ret = [ptr[0]]
     AXUIElementCopyAttributeNames(element, aptr)
-    if ptr[0].include? SUBROLE
+    if aptr[0].include? SUBROLE
       AXUIElementCopyAttributeValue(element, SUBROLE, ptr)
       ret.unshift ptr[0]
     end
