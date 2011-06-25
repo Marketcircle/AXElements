@@ -71,8 +71,20 @@ module Accessibility::Language
 
   # @group Keyboard input
 
-  # @param [#to_s] string
-  # @param [AX::Application] app
+  ##
+  # Simulate keyboard input by typing out the given string. To learn
+  # more about how to encode modifier keys (e.g. Command), see the
+  # dedicated documentation page on
+  # {file:docs/KeyboardEvents.markdown Keyboard Events}.
+  #
+  # @overload type 'Hello'
+  #   Send input to the currently focused application
+  #   @param [#to_s] string
+  #
+  # @overload type 'Hello', app
+  #   Send input to a specific application
+  #   @param [#to_s] string
+  #   @param [AX::Application] app
   def type string, app = AX::SYSTEM
     app.type_string string.to_s
   end
