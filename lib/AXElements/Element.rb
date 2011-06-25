@@ -276,18 +276,6 @@ class AX::Element
     Kernel.const_defined?(const) ? Kernel.const_get(const) : name
   end
 
-  ##
-  # Make a string that should match the suffix of a attribute/action
-  # constant from an AX::Element object.
-  #
-  # @param [Symbol] name
-  def self.matcher name
-    name = name.to_s
-    name.chomp!('?')
-    name.delete!('_')
-    name
-  end
-
   # @todo Use a mutex to make lookups thread-safe
   def attribute_for sym;       @@array = attributes;       @@const_map[sym] end
   def action_for sym;          @@array = actions;          @@const_map[sym] end
@@ -296,11 +284,14 @@ class AX::Element
   # @return [Hash{Symbol=>String}] Memoized mapping of symbols to constants
   #   used for attribute/action lookups
   @@const_map = Hash.new do |hash,key|
-    suffix = matcher(key)
-    value = @@array.find do |const|
-      AX.strip_prefix(const).caseInsensitiveCompare(suffix) == NSOrderedSame
+    names = @@array.map { |x| [AX.strip_prefix(x).underscore.to_sym, x] }
+    hash.merge! Hash[names]
+    if hash.has_key? key
+      hash[key]
+    else
+      new_key = key.to_s.chomp('?').to_sym
+      hash.has_key?(new_key) ? hash[key] = hash[new_key] : nil
     end
-    hash[key] = value if value
   end
 
 end
