@@ -83,16 +83,6 @@ class << AX
   end
 
   ##
-  # @todo look at CGEventKeyboardSetUnicodeString for posting events
-  #       without needing the keycodes
-  # @todo look at UCKeyTranslate for working with different keyboard
-  #       layouts
-  # @todo a small parser to generate the actual sequence of key presses to
-  #       simulate. Most likely just going to extend built in string escape
-  #       sequences if possible
-  # @note This method only handles lower case letters, spaces, tabs, and
-  #       the escape key right now.
-  #
   # In cases where you need (or want) to simulate keyboard input, such as
   # triggering hotkeys, you will need to use this method.
   #

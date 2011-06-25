@@ -1,7 +1,4 @@
 ##
-# @todo Search does not handle if the object does not respond to a
-#       filter. Though, this is implicitly a low risk scenario.
-#
 # Represents a search entity. Searches through a view hierarchy are
 # breadth first.
 class Accessibility::Search
