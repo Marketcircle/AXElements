@@ -183,7 +183,7 @@ module Accessibility::Language
   end
 
   ##
-  # A macro for showing the About window for an app.
+  # A macro for showing the preferences for an app.
   def show_preferences_window_for app
     set_focus app
     press app.menu_bar_item(title:(app.title))
