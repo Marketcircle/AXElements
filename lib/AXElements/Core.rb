@@ -122,8 +122,6 @@ class << AX
   # @group Notifications
 
   ##
-  # @todo Provide an interface that takes a PID instead of an element?
-  #
   # {file:docs/Notifications.markdown Notifications} are a way to put
   # non-polling delays into your scripts.
   #
