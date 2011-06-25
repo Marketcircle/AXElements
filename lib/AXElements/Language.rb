@@ -99,7 +99,6 @@ module Accessibility::Language
   # @param [AX::Element] element
   # @param [String] notif
   def register_for_notification element, notif, &block
-    # do the notif name translation here?
     element.on_notification notif, &block
   end
 
