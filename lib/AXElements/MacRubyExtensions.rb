@@ -55,8 +55,7 @@ class NSArray
   # @param [Symbol] method
   # @return [Symbol]
   def singularized_method_name method
-    method = method.to_s
-    (method.predicate? ? method[0..-1] : method).singularize.to_sym
+    (method.predicate? ? method[0..-2] : method).to_s.singularize.to_sym
   end
 end
 
