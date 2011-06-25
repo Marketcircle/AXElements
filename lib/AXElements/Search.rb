@@ -68,12 +68,6 @@ class Accessibility::Search
     private
 
     ##
-    # @todo Consider not looking up classes, and instead, just comparing
-    #       the #role of the candidate object with the #klass_sym that
-    #       was given. Is the price of doing const lookups more than
-    #       just doing string comparisons all the time? What is the
-    #       threshold?
-    #
     # Checks if a candidate object is of the correct class.
     #
     # This is an important method to optimize for search as it needs
