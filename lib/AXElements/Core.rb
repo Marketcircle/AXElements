@@ -392,8 +392,6 @@ class << AX
   end
 
   ##
-  # @todo Could we use regular #const_get and add #const_missing instead?
-  #
   # Like #const_get except that if the class does not exist yet then
   # it will assume the constant belongs to a class and creates the class
   # for you.
@@ -436,6 +434,10 @@ class << AX
   SUBROLE = KAXSubroleAttribute
 
   ##
+  # @todo If we use set names to be a thread-local global, then we can just
+  #       call const_get on names.first, and let const_missing create the
+  #       missing class.
+  #
   # Takes an AXUIElementRef and gives you some kind of accessibility object.
   #
   # @param [AXUIElementRef] element
