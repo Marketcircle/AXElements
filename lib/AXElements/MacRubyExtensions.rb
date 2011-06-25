@@ -103,7 +103,7 @@ class CGPoint
   # @param [CGRect] rect
   # @return [CGPoint]
   def self.center_of_rect rect
-    center rect.origin, rect.size
+    rect.origin.center rect.size
   end
 
   ##
@@ -111,13 +111,12 @@ class CGPoint
   # relative to the screen origin; find the center of the
   # rectangle with co-ordinates relative to the screen origin.
   #
-  # @param [CGPoint] origin
   # @param [CGSize] size
   # @return [CGPoint]
-  def self.center origin, size
-    x = origin.x + (size.width / 2.0)
-    y = origin.y + (size.height / 2.0)
-    new(x, y)
+  def center size
+    x = self.x + (size.width / 2.0)
+    y = self.y + (size.height / 2.0)
+    CGPoint.new(x, y)
   end
 
   ##
