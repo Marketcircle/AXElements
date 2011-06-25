@@ -15,8 +15,10 @@ class NSArray
 
   ##
   # Create a CGPoint from the first two elements in the array.
+  #
+  # @return [CGPoint]
   def to_point
-    CGPoint.new(first,second)
+    CGPoint.new(first, second)
   end
 
   alias_method :ax_array_method_missing, :method_missing

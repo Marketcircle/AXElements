@@ -276,7 +276,7 @@ class AX::Element
     Kernel.const_defined?(const) ? Kernel.const_get(const) : name
   end
 
-  # @todo Use a mutex to make lookups thread-safe
+  # @todo Use a thread local variable instead of the class variable @@array
   def attribute_for sym;       @@array = attributes;       @@const_map[sym] end
   def action_for sym;          @@array = actions;          @@const_map[sym] end
   def param_attribute_for sym; @@array = param_attributes; @@const_map[sym] end

@@ -248,7 +248,9 @@ class << AX
 
   private
 
-  # @todo Extract data from /System/Library/Frameworks/Carbon.framework/Versions/A/Frameworks/HIToolbox.framework/Versions/A/Headers/Events.h
+  ##
+  # Keycode reference at /System/Library/Frameworks/Carbon.framework/Versions/A/Frameworks/HIToolbox.framework/Versions/A/Headers/Events.h
+  #
   # Map keyboard characters to their keycodes
   # @return [Hash{String=>Fixnum}]
   KEYCODE_MAP = {
@@ -338,7 +340,7 @@ class << AX
   # @param [AXUIElementRef] element
   # @param [String] attr an attribute constant
   def raw_attr_of_element element, attr
-    ptr  = Pointer.new(:id)
+    ptr  = Pointer.new :id
     code = AXUIElementCopyAttributeValue( element, attr, ptr )
     log_error element, code unless code.zero?
     ptr[0]
@@ -347,7 +349,7 @@ class << AX
   # @param [AXUIElementRef] element
   # @param [String] attr an attribute constant
   def raw_param_attr_of_element element, attr, param
-    ptr  = Pointer.new(:id)
+    ptr  = Pointer.new :id
     code = AXUIElementCopyParameterizedAttributeValue( element, attr, param, ptr )
     log_error element, code unless code.zero?
     ptr[0]
