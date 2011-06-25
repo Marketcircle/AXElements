@@ -123,8 +123,6 @@ class << AX
 
   ##
   # @todo Provide an interface that takes a PID instead of an element?
-  # @note This method is not thread safe right now, it is the only class
-  #       method in AX that uses stored state
   #
   # {file:docs/Notifications.markdown Notifications} are a way to put
   # non-polling delays into your scripts.
