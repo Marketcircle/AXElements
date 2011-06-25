@@ -244,12 +244,11 @@ class AX::Element
   end
 
   ##
-  # @todo FINISH THIS METHOD
-  #
   # Like {#respond_to?}, this is overriden to include attribute methods.
-  # def methods include_super = false, include_objc_super = false
-  #   super
-  # end
+  def methods include_super = true, include_objc_super = false
+    names = attributes.map { |x| AX.strip_prefix(x).underscore.to_sym }
+    names + super
+  end
 
   ##
   # Overridden so that equality testing would work. A hack, but the only
