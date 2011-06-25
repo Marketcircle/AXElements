@@ -134,41 +134,73 @@ module Accessibility::Language
   # with the mouse. Perhaps you want to drag an object to another
   # place, or maybe you want to hightlight an area of the screen.
   #
-  # In the most general of cases, you are alawys dragging to a point,
-  # but having to specify the point yourself is not very helpful.
+  # This method will drag the mouse from its current point on the screen
+  # to the point given by calling `#to_point` on the argument.
   #
-  # We try to inspect the arguments of this method in order to better
-  # determine what it is you want.
+  # Generally, you will pass a {CGPoint} or some kind of {AX::Element},
+  # but you could pass anything that responds to #to_point.
+  #
+  # @param [#to_point] arg
   def drag_mouse_to arg
-    arg = if arg.kind_of?(AX::Element)
-            CGPoint.center(arg.position, arg.size)
-          elsif arg === Array
-            CGPoint.new(*arg)
-          end
-    Mouse.drag_to arg
+    point = arg.to_point
+    point = point.center(arg.size) if arg.kind_of?(AX::Element)
+    Mouse.drag_to point
   end
 
   ##
-  # @todo You really want to be able to pass a scroll bar element
-  #       and have the API move the mouse to the appropriate area
-  #       and then run the scroll event(s).
-  # @todo Need to expose the units option
-  def scroll lines, element = nil
-    move_mouse_to element if element
+  # @todo Need to expose the units option? Would allow scrolling by pixel.
+  #
+  # Scrolls an arbitrary number of lines at the mouses current point on
+  # the screen. Use a positive number to scroll down, and a negative number
+  # to scroll up.
+  #
+  # If the second argument is provided then the mouse will move to that
+  # point first; the argument must be a {CGPoint}, a type of {AX::Element},
+  # an {Array}, or anything else that responds to `#to_point`
+  #
+  # @param [Number] lines
+  # @param [#to_point] obj
+  def scroll lines, obj = nil
+    move_mouse_to obj if obj
     Mouse.scroll lines
   end
 
-  def click element = nil
-    move_mouse_to element if element
+  ##
+  # Perform a regular click.
+  #
+  # If an argument is provided then the mouse will move to that point
+  # first; the argument must be a {CGPoint}, a type of {AX::Element},
+  # an {Array}, or anything else that responds to `#to_point`
+  #
+  # @param [#to_point] obj
+  def click obj = nil
+    move_mouse_to obj if obj
     Mouse.click
   end
 
-  def right_click element = nil
-    move_mouse_to element if element
+  ##
+  # Perform a right (aka secondary) click action.
+  #
+  # If an argument is provided then the mouse will move to that point
+  # first; the argument must be a {CGPoint}, a type of {AX::Element},
+  # an {Array}, or anything else that responds to `#to_point`
+  #
+  # @param [#to_point] obj
+  def right_click obj = nil
+    move_mouse_to obj if obj
     Mouse.right_click
   end
+  alias_method :secondary_click, :right_click
 
-  def double_click element = nil
+  ##
+  # Perform a double click action.
+  #
+  # If an argument is provided then the mouse will move to that point
+  # first; the argument must be a {CGPoint}, a type of {AX::Element},
+  # an {Array}, or anything else that responds to `#to_point`
+  #
+  # @param [#to_point] obj
+  def double_click obj = nil
     raise NotImplementedError, 'Please implement me. :('
   end
 
