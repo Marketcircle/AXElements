@@ -284,13 +284,12 @@ class AX::Element
   # @return [Hash{Symbol=>String}] Memoized mapping of symbols to constants
   #   used for attribute/action lookups
   @@const_map = Hash.new do |hash,key|
-    names = @@array.map { |x| [AX.strip_prefix(x).underscore.to_sym, x] }
-    hash.merge! Hash[names]
+    @@array.map { |x| hash[AX.strip_prefix(x).underscore.to_sym] = x }
     if hash.has_key? key
       hash[key]
     else
-      new_key = key.to_s.chomp('?').to_sym
-      hash.has_key?(new_key) ? hash[key] = hash[new_key] : nil
+      real_key = key.chomp!('?').to_sym
+      hash.has_key?(real_key) ? hash[key] = hash[real_key] : nil
     end
   end
 
