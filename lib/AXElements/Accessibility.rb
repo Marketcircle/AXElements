@@ -15,7 +15,7 @@ class << Accessibility
   # @return [Array<AX::Element>] the path in ascending order
   def path *elements
     element = elements.last
-    return hierarchy(elements << element.parent) if element.respond_to?(:parent)
+    return path(elements << element.parent) if element.respond_to?(:parent)
     return elements
   end
 
