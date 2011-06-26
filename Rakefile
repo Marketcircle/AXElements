@@ -19,7 +19,7 @@ end
 
 ## Console
 
-desc 'Start up IRb with AXElements loaded'
+desc 'Start up irb with AXElements loaded'
 task :console do
   irb = ENV['RUBY_VERSION'] ? 'irb' : 'macirb'
   sh "#{irb} -Ilib -rubygems -rAXElements"
