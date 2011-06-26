@@ -456,7 +456,7 @@ class << AX
   end
 
   # @return [Class,nil] order-sensitive (i.e. why index 0 is nil)
-  AXBoxType = [ nil, CGPoint, CGSize, CGRect, CFRange ]
+  AXBoxType = [ CGPoint, CGSize, CGRect, CFRange ].map!(&:type).unshift(nil)
 
   ##
   # Find out what type of struct is contained in the AXValueRef and then
@@ -465,9 +465,8 @@ class << AX
   # @param [AXValueRef] value
   # @return [Boxed,nil]
   def boxed_attribute value
-    return unless value
     box_type = AXValueGetType(value)
-    ptr      = Pointer.new(AXBoxType[box_type].type)
+    ptr      = Pointer.new(AXBoxType[box_type])
     AXValueGetValue(value, box_type, ptr)
     ptr[0]
   end
