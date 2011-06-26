@@ -17,12 +17,12 @@ module TestLogging
   end
 end
 
+class MiniTest::Unit::TestCase
   def assert_instance_of_boolean value
-    assert value.is_a?(TrueClass) || value.is_a?(FalseClass)
+    message = "Expected #{value.inspect} to be a boolean"
+    assert value.is_a?(TrueClass) || value.is_a?(FalseClass), message
   end
-
 end
-
 
 class TestAX < MiniTest::Unit::TestCase
 
