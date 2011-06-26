@@ -46,6 +46,7 @@ task :benchmark do
   files = Dir.glob('bench/**/bench_*.rb').map { |x| "'#{x}'"}.join(' ')
   ruby '-Ilib -Ibench -rhelper ' + files
 end
+task :bench => :benchmark
 
 Rake::TestTask.new(:test) do |t|
   t.libs     << 'test'
