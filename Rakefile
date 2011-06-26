@@ -41,25 +41,18 @@ end
 
 ## Testing
 
-test_suites = [:core, :elements, :mouse, :actions]
-test_suites.each do |suite|
-  namespace :test do
-    Rake::TestTask.new(suite) do |t|
-      t.libs << 'test'
-      t.pattern = "test/#{suite}/test_*.rb"
-      t.ruby_opts = ['-rhelper', "-r#{suite}/helper"]
-      t.verbose = true
-    end
-  end
 desc 'Run benchmarks'
 task :benchmark do
   files = Dir.glob('bench/**/bench_*.rb').map { |x| "'#{x}'"}.join(' ')
   ruby '-Ilib -Ibench -rhelper ' + files
 end
 
+Rake::TestTask.new(:test) do |t|
+  t.libs     << 'test'
+  t.pattern   = 'test/**/test_*.rb'
+  t.ruby_opts = ['-rhelper']
+  t.verbose   = true
 end
-desc 'Run all test suites'
-task :test => test_suites.map { |suite| "test:#{suite}" }
 
 ## Gem Packaging
 
