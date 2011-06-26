@@ -419,7 +419,7 @@ class << AX
     AXUIElementCopyAttributeNames(element, aptr)
     if aptr[0].include? SUBROLE
       AXUIElementCopyAttributeValue(element, SUBROLE, ptr)
-      ret.unshift ptr[0]
+      ret.unshift ptr[0] if ptr[0]
     end
     ret
     #raise "Found an element that has no role: #{CFShow(element)}"
