@@ -51,6 +51,12 @@ test_suites.each do |suite|
       t.verbose = true
     end
   end
+desc 'Run benchmarks'
+task :benchmark do
+  files = Dir.glob('bench/**/bench_*.rb').map { |x| "'#{x}'"}.join(' ')
+  ruby '-Ilib -Ibench -rhelper ' + files
+end
+
 end
 desc 'Run all test suites'
 task :test => test_suites.map { |suite| "test:#{suite}" }
