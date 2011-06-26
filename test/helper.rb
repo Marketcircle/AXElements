@@ -9,16 +9,13 @@ require 'minitest/pride'
 require 'minitest/benchmark'
 
 
-$init_output = StringIO.new
-Accessibility.log = Logger.new $init_output
-
-
-class MiniTest::Unit::TestCase
-
+module TestLogging
   def setup
+    super
     @log_output = StringIO.new
     Accessibility.log = Logger.new @log_output
   end
+end
 
   def assert_instance_of_boolean value
     assert value.is_a?(TrueClass) || value.is_a?(FalseClass)
