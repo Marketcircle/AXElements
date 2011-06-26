@@ -276,10 +276,10 @@ class AX::Element
     Kernel.const_defined?(const) ? Kernel.const_get(const) : name
   end
 
-  # @todo Use a thread local variable instead of the class variable @@array
-  def attribute_for sym;       @@array = attributes;       @@const_map[sym] end
-  def action_for sym;          @@array = actions;          @@const_map[sym] end
-  def param_attribute_for sym; @@array = param_attributes; @@const_map[sym] end
+  # @todo Use a thread local variable instead of the class variable for @@array
+  def attribute_for sym; (@@array = attributes).find { |x| x == @@const_map[sym] } end
+  def action_for sym; (@@array = actions).find { |x| x == @@const_map[sym] } end
+  def param_attribute_for sym; (@@array = param_attributes).find { |x| x == @@const_map[sym] } end
 
   # @return [Hash{Symbol=>String}] Memoized mapping of symbols to constants
   #   used for attribute/action lookups
