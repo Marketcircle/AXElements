@@ -199,8 +199,11 @@ class << AX
   end
 
   ##
-  # You can call this method to create the application object if the
-  # app is already running; otherwise the object creation will fail.
+  # You can call this method to create the application object given
+  # the process identifier of the app.
+  #
+  # This method will crash MacRuby if the PID does not exist or if
+  # the PID belonges to something that is not an app.
   #
   # @param [Fixnum] pid The process identifier for the application you want
   # @return [AX::Application]
