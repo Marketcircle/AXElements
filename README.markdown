@@ -7,7 +7,8 @@ describes user interactions.
 ## Documentation
 
 AXElements is documented using YARD, and includes a few small
-tutorials in the `docs` directory. The starting point is [here](docs/AXElements.markdown).
+tutorials in the `docs` directory. The starting point is
+{file:docs/AXElements.markdown}.
 
 ## Test Suite
 
