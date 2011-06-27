@@ -219,7 +219,7 @@ class << AX
   # @param [AXUIElementRef] element
   # @return [Fixnum]
   def pid_of_element element
-    ptr  = Pointer.new( 'i' )
+    ptr  = Pointer.new 'i'
     code = AXUIElementGetPid(element, ptr)
     log_error element, code unless code.zero?
     ptr[0]
