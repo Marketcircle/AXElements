@@ -7,3 +7,4 @@ vendor_test/
 *.gem
 xcuserdata
 .DS_Store
+test/Debug
