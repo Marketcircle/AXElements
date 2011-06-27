@@ -41,6 +41,11 @@ end
 
 ## Testing
 
+desc 'Build the test fixture'
+task :fixture do
+  sh 'cd test/AXElementsTester && xcodebuild -configuration Debug && open ../Debug/AXElementsTester.app'
+end
+
 desc 'Run benchmarks'
 task :benchmark do
   files = Dir.glob('bench/**/bench_*.rb').map { |x| "'#{x}'"}.join(' ')
