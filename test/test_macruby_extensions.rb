@@ -205,11 +205,11 @@ end
 class TestCGPointCenter < TestCGPointExtensions
 
   def test_unaltered_with_cgrectzero
-    assert_equal CGPointZero, CGPoint.center(CGPointZero, CGSizeZero)
+    assert_equal CGPointZero, CGPointZero.center(CGSizeZero)
   end
 
   def center origin_x, origin_y, width, height
-    CGPoint.center(CGPoint.new(origin_x,origin_y), CGSize.new(width,height))
+    CGPoint.new(origin_x,origin_y).center CGSize.new(width,height)
   end
 
   def test_simple_square_with_origin_at_zero
