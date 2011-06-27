@@ -92,6 +92,8 @@ class Accessibility::Search
         filter_value = element.get_attribute(filter)
         if filter_value.class == value.class
           filter_value != value
+        elsif filter_value.nil?
+          true
         else
           filter_value.get_attribute(TABLE[filter]) != value
         end
