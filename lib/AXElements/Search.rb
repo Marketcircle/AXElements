@@ -60,7 +60,7 @@ class Accessibility::Search
     # at initialization.
     def qualifies? element
       return false unless the_right_type?(element)
-      return false if does_not_meet_criteria?(element)
+      return false unless meets_criteria?(element)
       return true
     end
 
@@ -86,16 +86,16 @@ class Accessibility::Search
     ##
     # Determines if the element meets all the criteria of the filters
     # the Qualifier object was initialized with.
-    def does_not_meet_criteria? element
-      filters.find do |filter, value|
-        break true unless element.respond_to?(filter)
+    def meets_criteria? element
+      filters.all? do |filter, value|
+        break false unless element.respond_to?(filter)
         filter_value = element.get_attribute(filter)
         if filter_value.class == value.class
-          filter_value != value
+          filter_value == value
         elsif filter_value.nil?
-          true
+          false
         else
-          filter_value.get_attribute(TABLE[filter]) != value
+          filter_value.get_attribute(TABLE[filter]) == value
         end
       end
     end
