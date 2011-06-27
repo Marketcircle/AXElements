@@ -191,9 +191,9 @@ class << AX
   # @param [Float] y
   # @return [AX::Element]
   def element_at_point x, y
-    ptr     = Pointer.new '^{__AXUIElement}'
-    system  = AXUIElementCreateSystemWide()
-    code    = AXUIElementCopyElementAtPosition(system, x, y, ptr)
+    ptr    = Pointer.new '^{__AXUIElement}'
+    system = AXUIElementCreateSystemWide()
+    code   = AXUIElementCopyElementAtPosition(system, x, y, ptr)
     log_error system, code unless code.zero?
     element_attribute ptr[0]
   end
