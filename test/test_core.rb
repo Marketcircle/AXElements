@@ -410,7 +410,7 @@ class TestAXNotifications < TestCore
   end
 
   def short_timeout
-    0.2
+    0.1
   end
 
   def timeout
@@ -423,6 +423,9 @@ class TestAXNotifications < TestCore
     end
   end
 
+  # this test is weird, sometimes the radio group sends the notification
+  # first and other times the button sends it, but for the sake of the
+  # test we only care that one of them sent the notif
   def test_yielded_proper_objects
     element = notification = nil
     AX.register_for_notif(RADIO_GAGA, KAXValueChangedNotification) do |el,notif|
@@ -432,8 +435,8 @@ class TestAXNotifications < TestCore
     action_for RADIO_GAGA, KAXPressAction
 
     assert AX.wait_for_notif(1.0)
-    assert_kind_of AX::RadioButton, element
     assert_kind_of NSString, notification
+    assert_includes ['AX::RadioButton', 'AX::RadioGroup'], element.class.to_s
   end
 
   def test_works_without_a_block
@@ -460,7 +463,7 @@ class TestAXNotifications < TestCore
 
   def test_waits_the_given_timeout
     start = Time.now
-    AX.wait_for_notif(short_timeout)
+    refute AX.wait_for_notif(short_timeout), 'Failed to wait'
     assert_in_delta (Time.now - start), short_timeout, 0.05
   end
 
