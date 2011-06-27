@@ -3,6 +3,12 @@ require 'rubygems'
 require 'AXElements'
 require 'stringio'
 
+at_exit do
+  NSWorkspace.sharedWorkspace.runningApplications.find do |app|
+    app.bundleIdentifier == TestAX::APP_BUNDLE_IDENTIFIER
+  end.terminate
+end
+
 gem     'minitest-macruby-pride'
 require 'minitest/autorun'
 require 'minitest/pride'
@@ -35,7 +41,6 @@ class TestAX < MiniTest::Unit::TestCase
                              additionalEventParamDescriptor: nil,
                                            launchIdentifier: nil
   sleep 3
-  at_exit { 'kill the app' }
 
   # execute the block with full logging turned on
   def with_logging level = Logger::DEBUG
