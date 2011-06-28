@@ -3,11 +3,23 @@ require 'rubygems'
 require 'AXElements'
 require 'stringio'
 
+# We want to launch the test app and make sure it responds to
+# accessibility queries, but that is difficult, so we just sleep
+APP_BUNDLE_IDENTIFIER = 'com.marketcircle.AXElementsTester'
+
+NSWorkspace.sharedWorkspace.launchAppWithBundleIdentifier  APP_BUNDLE_IDENTIFIER,
+                                                  options: NSWorkspaceLaunchAsync,
+                           additionalEventParamDescriptor: nil,
+                                         launchIdentifier: nil
+sleep 3
+
+# Make sure the test app is closed when testing finishes
 at_exit do
   NSWorkspace.sharedWorkspace.runningApplications.find do |app|
     app.bundleIdentifier == TestAX::APP_BUNDLE_IDENTIFIER
   end.terminate
 end
+
 
 gem     'minitest-macruby-pride'
 require 'minitest/autorun'
@@ -31,22 +43,17 @@ module LoggingCapture
 end
 
 class TestAX < MiniTest::Unit::TestCase
-  # We want to launch the test app and make sure it responds to
-  # accessibility queries, but that is difficult, so we just sleep
-
-  APP_BUNDLE_IDENTIFIER = 'com.marketcircle.AXElementsTester'
-
-  NSWorkspace.sharedWorkspace.launchAppWithBundleIdentifier  APP_BUNDLE_IDENTIFIER,
-                                                    options: NSWorkspaceLaunchAsync,
-                             additionalEventParamDescriptor: nil,
-                                           launchIdentifier: nil
-  sleep 3
-
   # execute the block with full logging turned on
   def with_logging level = Logger::DEBUG
     original_level = Accessibility.log.level
     Accessibility.log.level = level
     yield
     Accessibility.log.level = original_level
+  end
+
+  def pid_for name
+    NSWorkspace.sharedWorkspace.runningApplications.find do |app|
+      app.bundleIdentifier == name
+    end.processIdentifier
   end
 end
