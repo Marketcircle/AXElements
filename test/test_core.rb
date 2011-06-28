@@ -273,10 +273,9 @@ class TestSetAttrOfElement < TestCore
   end
 
   def test_set_a_text_field
-    field = search_box
     [Time.now.to_s, ''].each do |value|
-      AX.set_attr_of_element(field, KAXValueAttribute, value)
-      assert_equal value, value_for(field)
+      AX.set_attr_of_element(search_box, KAXValueAttribute, value)
+      assert_equal value, value_for(search_box)
     end
   end
 
@@ -305,23 +304,21 @@ end
 class TestActionOfElement < TestCore
 
   def test_check_a_check_box
-    box = check_box
     2.times do # twice so it should be back where it started
-      value = value_for(box)
-      AX.action_of_element(box, KAXPressAction)
-      refute_equal value, value_for(box)
+      value = value_for(check_box)
+      AX.action_of_element(check_box, KAXPressAction)
+      refute_equal value, value_for(check_box)
     end
   end
 
   def test_sliding_the_slider
-    slidr = slider
-    value = attribute_for(slidr, KAXValueAttribute)
-    AX.action_of_element(slidr, KAXIncrementAction)
-    assert attribute_for(slidr, KAXValueAttribute) > value
+    value = attribute_for(slider, KAXValueAttribute)
+    AX.action_of_element(slider, KAXIncrementAction)
+    assert attribute_for(slider, KAXValueAttribute) > value
 
-    value = attribute_for(slidr, KAXValueAttribute)
-    AX.action_of_element(slidr, KAXDecrementAction)
-    assert attribute_for(slidr, KAXValueAttribute) < value
+    value = attribute_for(slider, KAXValueAttribute)
+    AX.action_of_element(slider, KAXDecrementAction)
+    assert attribute_for(slider, KAXValueAttribute) < value
   end
 
 end
