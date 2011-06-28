@@ -1,11 +1,5 @@
 module CoreHelpers
 
-  def pid_for name
-    NSWorkspace.sharedWorkspace.runningApplications.find do |app|
-      app.bundleIdentifier == name
-    end.processIdentifier
-  end
-
   # returns raw attribute
   def attribute_for element, attr
     ptr = Pointer.new :id
@@ -21,13 +15,6 @@ module CoreHelpers
     attribute_for element, KAXValueAttribute
   end
 
-  def element_at point
-    ptr    = Pointer.new '^{__AXUIElement}'
-    system = AXUIElementCreateSystemWide()
-    AXUIElementCopyElementAtPosition(system, point.x, point.y, ptr)
-    ptr[0]
-  end
-
 end
 
 
@@ -38,6 +25,33 @@ class TestCore < TestAX
   APP_PID = pid_for APP_BUNDLE_IDENTIFIER
   APP     = AXUIElementCreateApplication(APP_PID)
   WINDOW  = attribute_for APP, KAXMainWindowAttribute
+
+  def child name
+    children_for(WINDOW).find do |item|
+      attribute_for(item, KAXRoleAttribute) == name
+    end
+  end
+
+  def slider
+    @@slider ||= child KAXSliderRole
+  end
+
+  def check_box
+    @@check_box ||= child KAXCheckBoxRole
+  end
+
+  def static_text
+    @@static_text ||= child KAXStaticTextRole
+  end
+
+  def search_box
+    @@search_box ||= child KAXTextFieldRole
+  end
+
+  def button
+    @@button ||= child KAXButtonRole
+  end
+
 end
 
 
@@ -133,16 +147,10 @@ class TestAttrOfElementParsesData < TestCore
   end
 
   def test_returns_number_for_number_attribute
-    box = children_for( WINDOW ).find do |item|
-      attribute_for(item, KAXRoleAttribute) == KAXCheckBoxRole
-    end
-    assert_instance_of Fixnum, AX.attr_of_element(box, KAXValueAttribute)
+    assert_instance_of Fixnum, AX.attr_of_element(check_box, KAXValueAttribute)
   end
 
   def test_returns_array_of_numbers_when_attribute_has_an_array_of_numbers
-    slider = children_for( WINDOW ).find do |item|
-      attribute_for(item, KAXRoleAttribute) == KAXSliderRole
-    end
     ret = AX.attr_of_element(slider, KAXAllowedValuesAttribute)
     assert_kind_of NSNumber, ret.first
   end
@@ -156,10 +164,7 @@ class TestAttrOfElementParsesData < TestCore
   end
 
   def test_returns_a_cfrange_for_range_attributes
-    text = children_for( WINDOW ).find do |item|
-      attribute_for(item, KAXRoleAttribute) == KAXStaticTextRole
-    end
-    assert_instance_of CFRange, AX.attr_of_element(text, KAXVisibleCharacterRangeAttribute)
+    assert_instance_of CFRange, AX.attr_of_element(static_text, KAXVisibleCharacterRangeAttribute)
   end
 
   def test_returns_a_cgrect_for_rect_attributes
@@ -201,10 +206,8 @@ class TestAttrOfElementChoosesCorrectClasseForElements < TestCore
   end
 
   def test_chooses_role_if_subrole_is_nil
-    scroll_area = children_for(WINDOW).find do |item|
-      attribute_for(item, KAXRoleAttribute) == KAXScrollAreaRole
-    end
-    web_area = AX.attr_of_element(scroll_area, KAXChildrenAttribute).first
+    scroll_area = child KAXScrollAreaRole
+    web_area    = AX.attr_of_element(scroll_area, KAXChildrenAttribute).first
     assert_instance_of AX::WebArea, web_area
   end
 
@@ -263,9 +266,6 @@ end
 class TestSetAttrOfElement < TestCore
 
   def test_set_a_slider
-    slider = children_for( WINDOW ).find do |item|
-      attribute_for(item, KAXRoleAttribute) == KAXSliderRole
-    end
     [25, 75, 50].each do |value|
       AX.set_attr_of_element(slider, KAXValueAttribute, value)
       assert_equal value, value_for(slider)
@@ -273,12 +273,10 @@ class TestSetAttrOfElement < TestCore
   end
 
   def test_set_a_text_field
-    check_box = children_for( WINDOW ).find do |item|
-      attribute_for(item, KAXRoleAttribute) == KAXTextFieldRole
-    end
+    field = search_box
     [Time.now.to_s, ''].each do |value|
-      AX.set_attr_of_element(check_box, KAXValueAttribute, value)
-      assert_equal value, value_for(check_box)
+      AX.set_attr_of_element(field, KAXValueAttribute, value)
+      assert_equal value, value_for(field)
     end
   end
 
@@ -292,16 +290,10 @@ class TestActionsOfElement < TestCore
   end
 
   def test_returns_array_of_strings
-    button = children_for(WINDOW).find do |item|
-      attribute_for(item,KAXRoleAttribute) == KAXButtonRole
-    end
-    assert_instance_of String, AX.actions_of_element(button).first
+    assert_instance_of String, AX.actions_of_element(yes_button).first
   end
 
   def test_make_sure_certain_actions_are_present
-    slider = children_for(WINDOW).find do |item|
-      attribute_for(item,KAXRoleAttribute) == KAXSliderRole
-    end
     actions = AX.actions_of_element(slider)
     assert_includes actions, KAXIncrementAction
     assert_includes actions, KAXDecrementAction
@@ -313,28 +305,23 @@ end
 class TestActionOfElement < TestCore
 
   def test_check_a_check_box
-    check_box = children_for( WINDOW ).find do |item|
-      attribute_for(item, KAXRoleAttribute) == KAXCheckBoxRole
-    end
+    box = check_box
     2.times do # twice so it should be back where it started
-      value = value_for(check_box)
-      AX.action_of_element(check_box, KAXPressAction)
-      refute_equal value, value_for(check_box)
+      value = value_for(box)
+      AX.action_of_element(box, KAXPressAction)
+      refute_equal value, value_for(box)
     end
   end
 
   def test_sliding_the_slider
-    slider = children_for(WINDOW).find do |item|
-      attribute_for(item,KAXRoleAttribute) == KAXSliderRole
-    end
+    slidr = slider
+    value = attribute_for(slidr, KAXValueAttribute)
+    AX.action_of_element(slidr, KAXIncrementAction)
+    assert attribute_for(slidr, KAXValueAttribute) > value
 
-    value = attribute_for(slider, KAXValueAttribute)
-    AX.action_of_element(slider, KAXIncrementAction)
-    assert attribute_for(slider, KAXValueAttribute) > value
-
-    value = attribute_for(slider, KAXValueAttribute)
-    AX.action_of_element(slider, KAXDecrementAction)
-    assert attribute_for(slider, KAXValueAttribute) < value
+    value = attribute_for(slidr, KAXValueAttribute)
+    AX.action_of_element(slidr, KAXDecrementAction)
+    assert attribute_for(slidr, KAXValueAttribute) < value
   end
 
 end
@@ -385,28 +372,32 @@ end
 
 class TestAXNotifications < TestCore
 
-  RADIO_GROUP = children_for(WINDOW).find do |item|
-    attribute_for(item, KAXRoleAttribute) == KAXRadioGroupRole
+  def radio_group
+    @radio_group ||= child KAXRadioGroup
   end
 
-  RADIO_RADIO = children_for(RADIO_GROUP).find do |item|
-    attribute_for(item, KAXTitleAttribute) == 'Radio'
+  def radio_gaga
+    @@gaga ||= children_for(radio_group).find do |item|
+      attribute_for(item, KAXTitleAttribute) == 'Gaga'
+    end
   end
 
-  RADIO_GAGA = children_for(RADIO_GROUP).find do |item|
-    attribute_for(item, KAXTitleAttribute) == 'Gaga'
+  def radio_flyer
+    @@flyer ||= children_for(radio_group).find do |item|
+      attribute_for(item, KAXTitleAttribute) == 'Flyer'
+    end
+  end
+
+  def yes_button
+    @@yes_button ||= children_for(WINDOW).find do |item|
+      if attribute_for(item, KAXRoleAttribute) == KAXButtonRole
+        attribute_for(item, KAXTitleAttribute) == 'Yes'
+      end
+    end
   end
 
   def action_for element, action
     AXUIElementPerformAction(element, action)
-  end
-
-  def set_attr_for element, attr, value
-    AXUIElementSetAttributeValue(element, attr, value)
-  end
-
-  def menu_for button
-    children_for(button).first
   end
 
   def short_timeout
@@ -418,8 +409,8 @@ class TestAXNotifications < TestCore
   end
 
   def teardown
-    if attribute_for(RADIO_GAGA, KAXValueAttribute) == 1
-      action_for RADIO_RADIO, KAXPressAction
+    if attribute_for(gaga, KAXValueAttribute) == 1
+      action_for gaga, KAXPressAction
     end
   end
 
@@ -428,11 +419,11 @@ class TestAXNotifications < TestCore
   # test we only care that one of them sent the notif
   def test_yielded_proper_objects
     element = notification = nil
-    AX.register_for_notif(RADIO_GAGA, KAXValueChangedNotification) do |el,notif|
+    AX.register_for_notif(gaga, KAXValueChangedNotification) do |el,notif|
       element, notification = el, notif
     end
 
-    action_for RADIO_GAGA, KAXPressAction
+    action_for gaga, KAXPressAction
 
     assert AX.wait_for_notif(1.0)
     assert_kind_of NSString, notification
@@ -440,9 +431,9 @@ class TestAXNotifications < TestCore
   end
 
   def test_works_without_a_block
-    AX.register_for_notif(RADIO_GAGA, KAXValueChangedNotification)
+    AX.register_for_notif(gaga, KAXValueChangedNotification)
     start = Time.now
-    action_for RADIO_GAGA, KAXPressAction
+    action_for gaga, KAXPressAction
 
     AX.wait_for_notif(timeout)
     assert_in_delta Time.now, start, timeout
@@ -450,11 +441,11 @@ class TestAXNotifications < TestCore
 
   def test_follows_block_return_value_when_false
     got_callback   = false
-    AX.register_for_notif(RADIO_GAGA, KAXValueChangedNotification) do |_,_|
+    AX.register_for_notif(gaga, KAXValueChangedNotification) do |_,_|
       got_callback = true
       false
     end
-    action_for RADIO_GAGA, KAXPressAction
+    action_for gaga, KAXPressAction
 
     start = Time.now
     AX.wait_for_notif(short_timeout)
@@ -472,22 +463,18 @@ class TestAXNotifications < TestCore
     AX.register_for_notif(APP, KAXValueChangedNotification) do |el, notif|
       got_callback = true
     end
-    action_for RADIO_GAGA, KAXPressAction
+    action_for gaga, KAXPressAction
     AX.wait_for_notif(timeout)
     assert got_callback
   end
 
   def test_works_with_custom_notifications
     got_callback = false
-    button = children_for(WINDOW).find do |item|
-      if attribute_for(item, KAXRoleAttribute) == KAXButtonRole
-        attribute_for(item, KAXTitleAttribute) == 'Yes'
-      end
-    end
-    AX.register_for_notif(button, 'Cheezburger') do |_,_|
+    button = yes_button
+    AX.register_for_notif(yes_button, 'Cheezburger') do |_,_|
       got_callback = true
     end
-    action_for button, KAXPressAction
+    action_for yes_button, KAXPressAction
     AX.wait_for_notif(timeout)
     assert got_callback
   end
@@ -502,9 +489,6 @@ end
 class TestElementAtPosition < TestCore
 
   def test_returns_a_button_when_i_give_the_coordinates_of_a_button
-    button = children_for(WINDOW).find do |item|
-      attribute_for(item, KAXRoleAttribute) == KAXButtonRole
-    end
     point = attribute_for(button, KAXPositionAttribute)
     ptr   = Pointer.new CGPoint.type
     AXValueGetValue(point, KAXValueCGPointType, ptr)
