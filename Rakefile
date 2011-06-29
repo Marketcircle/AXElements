@@ -1,5 +1,4 @@
 require 'rubygems'
-require 'yard'
 require 'rake/compiletask'
 require 'rake/testtask'
 require 'rake/gempackagetask'
@@ -9,6 +8,13 @@ require 'rubygems/dependency_installer'
 task :default => :test
 
 ## Documentation
+begin
+  require 'yard'
+rescue LoadError => e
+  $stderr.puts 'It seems as though you do not have YARD installed.'
+  install_command = ENV['RUBY_VERSION'] ? 'gem' : 'sudo macgem'
+  $stderr.puts "You can install it by running `#{install_command} install yard`."
+end
 
 YARD::Rake::YardocTask.new
 
