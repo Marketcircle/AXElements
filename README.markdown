@@ -1,8 +1,25 @@
 # AXElements
 
-AXElements is a DSL abstraction on top of the Mac OS X Accessibility Framework
-that allows code to be written in a very natural and declarative style that
-describes user interactions.
+AXElements is a DSL andabstraction and an OO interface on top of the
+Mac OS X Accessibility Framework that allows code to be written in a
+very natural and declarative style that describes user interactions.
+
+## Getting Setup
+
+You need to have the OS X developer tools installed in order to get
+the full experience. Go ahead and install the tools now if you haven't
+done that yet, I'll wait.
+
+Once, you have the developer tools, you should install MacRuby, the
+latest release should be sufficient, but nightly buids are usually
+safe as well. If you are on Snow Leopard, you will also need to
+install the Bridge Support Preview.
+
+At this point you should be able to run `macrake`. Which by default
+will probably complain about things missing. Now you should install
+the dependency gems by running `macrake install_deps`; if you get an
+error about not have permission you will need to add `sudo` to the
+command.
 
 ## Documentation
 
@@ -13,10 +30,12 @@ tutorials in the `docs` directory. The starting point is
 ## Test Suite
 
 The nature of this library requires that the tests take over your
-computer while they run.
+computer while they run. The tests aren't programmed to do anything
+destructive, but if you interfere with them something could go wrong.
 
-The tests aren't programmed to do anything destructive, but if you
-interfere with them something could go wrong.
+First you need to build the test fixture, which you can do by running
+`macrake fixture`. Then you can run the tests by running
+`macrake test`.
 
 ## Road Map
 
