@@ -75,7 +75,9 @@ task :install => :gem do
   Gem::Installer.new("pkg/#{spec.file_name}").install
 end
 
-desc 'Build gem and install with dependencies'
-task :dep_install => :gem do
-  Gem::DependencyInstaller.new.install("pkg/#{spec.file_name}")
+desc 'Install development dependencies'
+task :install_deps do
+  (spec.runtime_dependencies + spec.development_dependencies).each do |dep|
+    Gem::DependencyInstaller.new.install(dep.name, dep.requirement)
+  end
 end
