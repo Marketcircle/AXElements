@@ -1,10 +1,3 @@
-require 'rubygems'
-require 'rake/compiletask'
-require 'rake/testtask'
-require 'rake/gempackagetask'
-require 'rubygems/dependency_installer'
-
-
 task :default => :test
 
 ## Documentation
@@ -32,6 +25,7 @@ task :console do
 end
 
 ## Compilation
+require 'rake/compiletask'
 
 Rake::CompileTask.new do |t|
   t.files = FileList["lib/**/*.rb"]
@@ -46,6 +40,7 @@ task :clean do
 end
 
 ## Testing
+require 'rake/testtask'
 
 desc 'Build the test fixture'
 task :fixture do
@@ -67,6 +62,9 @@ Rake::TestTask.new(:test) do |t|
 end
 
 ## Gem Packaging
+require 'rubygems'
+require 'rubygems/dependency_installer'
+require 'rake/gempackagetask'
 
 spec = Gem::Specification.load('AXElements.gemspec')
 
@@ -75,7 +73,7 @@ Rake::GemPackageTask.new(spec) do |pkg|
   pkg.need_tar = true
 end
 
-# This only works as long as I have no dependencies?
+# This only installs this gem, it does not take deps into consideration
 desc 'Build gem and install it'
 task :install => :gem do
   Gem::Installer.new("pkg/#{spec.file_name}").install
