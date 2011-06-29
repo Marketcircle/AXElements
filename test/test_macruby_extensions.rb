@@ -31,6 +31,19 @@ class TestNSArrayAccessors < MiniTest::Unit::TestCase
 end
 
 
+class TestNSArrayToPoint < MiniTest::Unit::TestCase
+
+  def test_makes_a_point
+    assert_instance_of CGPoint, [1, 1].to_point
+  end
+
+  def test_uses_first_two_elements
+    assert_equal CGPoint.new(1,2), NSArray.arrayWithArray([1, 2, 3]).to_point
+  end
+
+end
+
+
 class TestNSMutableStringCamelizeBang < MiniTest::Unit::TestCase
 
   def test_takes_snake_case_string_and_makes_it_camel_case
@@ -288,6 +301,18 @@ class TestCGPointCarbonize < MiniTest::Unit::TestCase
       point.y = (frame.size.height / 2) + point.y
       assert_equal point, point.dup.carbonize!
     end
+  end
+
+end
+
+
+class TestCGPointToPoint < MiniTest::Unit::TestCase
+
+  # @todo should this be assert_same?
+  def test_returns_self
+    assert_equal CGPointZero, CGPointZero.to_point
+    point = CGPoint.new(1,1)
+    assert_equal point, point.to_point
   end
 
 end
