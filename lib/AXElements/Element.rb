@@ -244,6 +244,8 @@ class AX::Element
   end
 
   ##
+  # @todo Need to add '?' to predicate methods, but how?
+  #
   # Like {#respond_to?}, this is overriden to include attribute methods.
   def methods include_super = true, include_objc_super = false
     names = attributes.map { |x| AX.strip_prefix(x).underscore.to_sym }
