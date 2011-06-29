@@ -7,11 +7,16 @@ require 'stringio'
 # accessibility queries, but that is difficult, so we just sleep
 APP_BUNDLE_IDENTIFIER = 'com.marketcircle.AXElementsTester'
 
-NSWorkspace.sharedWorkspace.launchAppWithBundleIdentifier  APP_BUNDLE_IDENTIFIER,
-                                                  options: NSWorkspaceLaunchAsync,
-                           additionalEventParamDescriptor: nil,
-                                         launchIdentifier: nil
-sleep 3
+if NSWorkspace.sharedWorkspace.launchAppWithBundleIdentifier  APP_BUNDLE_IDENTIFIER,
+                                                     options: NSWorkspaceLaunchAsync,
+                              additionalEventParamDescriptor: nil,
+                                            launchIdentifier: nil
+  sleep 3 # we have no good way of knowing exactly when the app is ready
+else
+  $stderr.puts 'You need to build the fixture app before running tests'
+  $stderr.puts 'Run `rake fixture`'
+  exit 3
+end
 
 # Make sure the test app is closed when testing finishes
 at_exit do
@@ -42,18 +47,23 @@ module LoggingCapture
   end
 end
 
+module AXHelpers
+  def pid_for name
+    NSWorkspace.sharedWorkspace.runningApplications.find do |app|
+      app.bundleIdentifier == name
+    end.processIdentifier
+  end
+end
+
 class TestAX < MiniTest::Unit::TestCase
+  include AXHelpers
+  extend AXHelpers
+
   # execute the block with full logging turned on
   def with_logging level = Logger::DEBUG
     original_level = Accessibility.log.level
     Accessibility.log.level = level
     yield
     Accessibility.log.level = original_level
-  end
-
-  def pid_for name
-    NSWorkspace.sharedWorkspace.runningApplications.find do |app|
-      app.bundleIdentifier == name
-    end.processIdentifier
   end
 end
