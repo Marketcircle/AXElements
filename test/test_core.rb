@@ -476,6 +476,13 @@ class TestAXNotifications < TestCore
     assert got_callback
   end
 
+  # not the block you gave, it returns one it creates
+  # which is actually a wrapper for the block given
+  def test_returns_the_callback_proc
+    callback = AX.register_for_notif(yes_button, 'Cheezburger') do |_,_| end
+    assert_equal 4, callback.arity
+  end
+
   def test_callbacks_are_unregistered_when_a_timeout_occurs
     skip 'This feature is not implemented yet'
   end
@@ -541,6 +548,10 @@ class TestStripPrefix < MiniTest::Unit::TestCase
   end
 
   def test_works_with_long_name
+    prefix_test 'AXTitleUIElement', 'TitleUIElement'
+  end
+
+  def test_strips_predicate_too
     prefix_test 'AXIsApplicationRunning', 'ApplicationRunning'
   end
 
