@@ -13,11 +13,12 @@ class AppDelegate
 
   def applicationDidFinishLaunching(a_notification)
     def window.accessibilityAttributeNames
-      super + ['AXLol', KAXURLAttribute]
+      super + ['AXLol', 'AXIsNyan', KAXURLAttribute]
     end
     def window.accessibilityAttributeValue name
       case name
       when 'AXLol' then NSValue.valueWithRect(CGRectZero)
+      when 'AXIsNyan' then false
       when KAXURLAttribute then NSURL.URLWithString('http://macruby.org/')
       else super
       end
