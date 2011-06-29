@@ -5,7 +5,7 @@ class AX::Application < AX::Element
   ##
   # Overriden to handle the {Kernel#set_focus} case.
   def set_attribute attr, value
-    return set_focus if attr == :focused
+    return set_focus if attr == :focused && value == true
     return super
   end
 
