@@ -1,4 +1,4 @@
-class TestAXConstants < MiniTest::Unit::TestCase
+class TestAXModuleConstants < MiniTest::Unit::TestCase
 
   def test_system_is_the_system_wide_object
     assert_instance_of AX::SystemWide, AX::SYSTEM
