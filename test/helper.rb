@@ -59,6 +59,8 @@ class TestAX < MiniTest::Unit::TestCase
   include AXHelpers
   extend AXHelpers
 
+  APP_REF = AXUIElementCreateApplication(pid_for(APP_BUNDLE_IDENTIFIER))
+
   # execute the block with full logging turned on
   def with_logging level = Logger::DEBUG
     original_level = Accessibility.log.level
