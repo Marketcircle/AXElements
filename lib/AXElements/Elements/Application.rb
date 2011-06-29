@@ -41,7 +41,7 @@ class AX::Application < AX::Element
   #       We could have alternative methods for setting focus, such as
   #       using CMD+TAB or Expose
   def set_focus
-    AX::DOCK.application_dock_item(title: title).perform_action(:press)
+    AX::DOCK.application_dock_item(title: self.title).perform_action(:press)
   end
 
 end
