@@ -24,7 +24,7 @@ class << Accessibility
   #
   # @param [AX::Element]
   def tree element
-    Accessibilitiy::Tree.new(element)
+    Accessibility::Tree.new(element)
   end
 
   # @group Finding an object at a point
