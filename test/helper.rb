@@ -21,7 +21,7 @@ end
 # Make sure the test app is closed when testing finishes
 at_exit do
   NSWorkspace.sharedWorkspace.runningApplications.find do |app|
-    app.bundleIdentifier == TestAX::APP_BUNDLE_IDENTIFIER
+    app.bundleIdentifier == APP_BUNDLE_IDENTIFIER
   end.terminate
 end
 
