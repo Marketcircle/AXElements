@@ -89,13 +89,13 @@ class Accessibility::Search
     def meets_criteria? element
       filters.all? do |filter, value|
         break false unless element.respond_to?(filter)
-        filter_value = element.get_attribute(filter)
+        filter_value = element.attribute(filter)
         if filter_value.class == value.class
           filter_value == value
         elsif filter_value.nil?
           false
         else
-          filter_value.get_attribute(TABLE[filter]) == value
+          filter_value.attribute(TABLE[filter]) == value
         end
       end
     end

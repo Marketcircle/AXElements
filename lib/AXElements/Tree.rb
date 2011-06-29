@@ -20,7 +20,7 @@ class Accessibility::Tree
   def each
     pending = [@root]
     until pending.empty?
-      pending.shift.get_attribute(:children).each do |x|
+      pending.shift.attribute(:children).each do |x|
         pending << x if x.respond_to?(:children)
         yield x
       end
@@ -34,7 +34,7 @@ class Accessibility::Tree
   def find
     pending = [@root]
     until pending.empty?
-      pending.shift.get_attribute(:children).each do |x|
+      pending.shift.attribute(:children).each do |x|
         pending << x if x.respond_to?(:children)
         return x if yield x
       end

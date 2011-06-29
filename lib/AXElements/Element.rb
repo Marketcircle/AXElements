@@ -37,7 +37,7 @@ class AX::Element
   attr_reader :attributes
 
   # @param [Symbol] attr
-  def get_attribute attr
+  def attribute attr
     real_attribute = attribute_for attr
     raise LookupFailure.new(attr) unless real_attribute
     AX.attr_of_element(@ref, real_attribute)
@@ -47,7 +47,7 @@ class AX::Element
   # Needed to override inherited {NSObject#description}. If you want a
   # description of the object use {#inspect} instead.
   def description
-    get_attribute :description
+    attribute :description
   end
 
   ##
@@ -240,7 +240,7 @@ class AX::Element
   #
   # @return [CGPoint]
   def to_point
-    get_attribute :position
+    attribute :position
   end
 
   ##
