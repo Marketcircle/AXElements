@@ -25,8 +25,10 @@ class AX::SystemWide < AX::Element
   end
 
   ##
-  # Raises an `ArgumentError` instead of (possibly) silently failing to
+  # Raises an `NoMethodError` instead of (possibly) silently failing to
   # register for a notification.
+  #
+  # @raise [NoMethodError]
   def on_notification *args
     problem 'AX::SystemWide cannot register for notifications'
   end
@@ -35,7 +37,7 @@ class AX::SystemWide < AX::Element
   private
 
   def problem string
-    raise ArgumentError, string
+    raise NoMethodError, string
   end
 
 end
