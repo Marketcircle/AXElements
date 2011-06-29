@@ -1,3 +1,4 @@
+require 'rubygems'
 task :default => :test
 
 ## Documentation
@@ -62,7 +63,6 @@ Rake::TestTask.new(:test) do |t|
 end
 
 ## Gem Packaging
-require 'rubygems'
 require 'rubygems/dependency_installer'
 require 'rake/gempackagetask'
 
