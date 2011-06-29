@@ -70,7 +70,12 @@ Rake::GemPackageTask.new(spec) do |pkg|
 end
 
 # This only works as long as I have no dependencies?
-desc 'Build the gem and install it'
+desc 'Build gem and install it'
 task :install => :gem do
   Gem::Installer.new("pkg/#{spec.file_name}").install
+end
+
+desc 'Build gem and install with dependencies'
+task :dep_install => :gem do
+  Gem::DependencyInstaller.new.install("pkg/#{spec.file_name}")
 end
