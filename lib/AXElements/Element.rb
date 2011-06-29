@@ -208,7 +208,7 @@ class AX::Element
   # Overriden to produce cleaner output.
   def inspect
     nice_attrs = attributes.map { |name| AX.strip_prefix name }
-    "\#<#{self.class} @attributes=#{nice_attrs}>"
+    "\#<#{self.class} @attributes=#{nice_attrs.inspect.delete('\"') }>"
   end
 
   ##
