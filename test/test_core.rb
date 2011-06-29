@@ -52,6 +52,14 @@ class TestCore < TestAX
     @@button ||= child KAXButtonRole
   end
 
+  def yes_button
+    @@yes_button ||= children_for(WINDOW).find do |item|
+      if attribute_for(item, KAXRoleAttribute) == KAXButtonRole
+        attribute_for(item, KAXTitleAttribute) == 'Yes'
+      end
+    end
+  end
+
 end
 
 
@@ -240,7 +248,7 @@ class TestAttrOfElementSubclassesProperly < TestCore
 end
 
 
-class TestElementAttributeWritable < TestCore
+class TestAttrOfElementWritable < TestCore
 
   def test_true_for_writable_attribute
     assert AX.attr_of_element_writable?(WINDOW, KAXMainAttribute)
@@ -370,7 +378,7 @@ end
 class TestAXNotifications < TestCore
 
   def radio_group
-    @radio_group ||= child KAXRadioGroup
+    @radio_group ||= child KAXRadioGroupRole
   end
 
   def radio_gaga
@@ -382,14 +390,6 @@ class TestAXNotifications < TestCore
   def radio_flyer
     @@flyer ||= children_for(radio_group).find do |item|
       attribute_for(item, KAXTitleAttribute) == 'Flyer'
-    end
-  end
-
-  def yes_button
-    @@yes_button ||= children_for(WINDOW).find do |item|
-      if attribute_for(item, KAXRoleAttribute) == KAXButtonRole
-        attribute_for(item, KAXTitleAttribute) == 'Yes'
-      end
     end
   end
 
@@ -406,8 +406,8 @@ class TestAXNotifications < TestCore
   end
 
   def teardown
-    if attribute_for(gaga, KAXValueAttribute) == 1
-      action_for gaga, KAXPressAction
+    if attribute_for(radio_gaga, KAXValueAttribute) == 1
+      action_for radio_flyer, KAXPressAction
     end
   end
 
@@ -416,11 +416,11 @@ class TestAXNotifications < TestCore
   # test we only care that one of them sent the notif
   def test_yielded_proper_objects
     element = notification = nil
-    AX.register_for_notif(gaga, KAXValueChangedNotification) do |el,notif|
+    AX.register_for_notif(radio_gaga, KAXValueChangedNotification) do |el,notif|
       element, notification = el, notif
     end
 
-    action_for gaga, KAXPressAction
+    action_for radio_gaga, KAXPressAction
 
     assert AX.wait_for_notif(1.0)
     assert_kind_of NSString, notification
@@ -428,9 +428,9 @@ class TestAXNotifications < TestCore
   end
 
   def test_works_without_a_block
-    AX.register_for_notif(gaga, KAXValueChangedNotification)
+    AX.register_for_notif(radio_gaga, KAXValueChangedNotification)
     start = Time.now
-    action_for gaga, KAXPressAction
+    action_for radio_gaga, KAXPressAction
 
     AX.wait_for_notif(timeout)
     assert_in_delta Time.now, start, timeout
@@ -438,11 +438,11 @@ class TestAXNotifications < TestCore
 
   def test_follows_block_return_value_when_false
     got_callback   = false
-    AX.register_for_notif(gaga, KAXValueChangedNotification) do |_,_|
+    AX.register_for_notif(radio_gaga, KAXValueChangedNotification) do |_,_|
       got_callback = true
       false
     end
-    action_for gaga, KAXPressAction
+    action_for radio_gaga, KAXPressAction
 
     start = Time.now
     AX.wait_for_notif(short_timeout)
@@ -460,7 +460,7 @@ class TestAXNotifications < TestCore
     AX.register_for_notif(APP, KAXValueChangedNotification) do |el, notif|
       got_callback = true
     end
-    action_for gaga, KAXPressAction
+    action_for radio_gaga, KAXPressAction
     AX.wait_for_notif(timeout)
     assert got_callback
   end
