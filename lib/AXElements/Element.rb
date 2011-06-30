@@ -289,7 +289,7 @@ class AX::Element
     @@array.map { |x| hash[AX.strip_prefix(x).underscore.to_sym] = x }
     if hash.has_key? key
       hash[key]
-    else
+    else # try other cases of transformations
       real_key = key.chomp('?').to_sym
       hash.has_key?(real_key) ? hash[key] = hash[real_key] : nil
     end
