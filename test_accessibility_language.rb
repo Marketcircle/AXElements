@@ -1,0 +1,3 @@
+class TestLanguageClick < TestAX
+
+end

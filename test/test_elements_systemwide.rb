@@ -4,7 +4,7 @@ class TestAXSystemWide < MiniTest::Unit::TestCase
     assert_raises NoMethodError do
       AX::SystemWide.new
     end
-    assert_includes AX::SystemWide.instance_methods, :instance
+    assert_respond_to AX::SystemWide, :instance
   end
 
 end

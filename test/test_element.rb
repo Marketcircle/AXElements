@@ -1,6 +1,6 @@
 class TestElements < TestAX
 
-  APP_PID = pid_for APP_BUNDLE_IDENTIFIE
+  APP_PID = pid_for APP_BUNDLE_IDENTIFIER
   APP     = AX::Element.new(APP_REF)
   WINDOW  = AX.attr_of_element(APP_REF, KAXMainWindowAttribute)
 

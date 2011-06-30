@@ -9,7 +9,7 @@ class TestAXModuleConstants < MiniTest::Unit::TestCase
   end
 
   def test_dock_is_the_dock_application
-    assert_equal 'Dock', AX::DOCK.attribute(KAXTitleAttribute)
+    assert_equal 'Dock', AX::DOCK.attribute(:title)
   end
 
 end

@@ -61,9 +61,9 @@ class TestAccessibilityApplicationWithBundleIdentifier < MiniTest::Unit::TestCas
   end
 
   def test_gets_app_when_app_is_already_running
-    app = AX::Application.application_with_bundle_identifier 'com.apple.dock'
+    app = Accessibility.application_with_bundle_identifier 'com.apple.dock'
     assert_instance_of AX::Application, app
-    assert_equal 'Dock', app.attribute(KAXTitleAttribute)
+    assert_equal 'Dock', app.attribute(:title)
   end
 
   # how do we test when app is not already running?
