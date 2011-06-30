@@ -39,9 +39,12 @@ class AX::Application < AX::Element
   # @todo This method needs a fall back procedure if the app does not
   #       have a dock icon (e.g. the dock doesn't have a dock icon).
   #       We could have alternative methods for setting focus, such as
-  #       using CMD+TAB or Expose
+  #       using CMD+TAB or Expose, what about looking at the
+  #       NSRunningApplication instance for the object?
   def set_focus
-    AX::DOCK.application_dock_item(title: self.title).perform_action(:press)
+    app = AX::DOCK.application_dock_item(title: self.title)
+    return app.perform_action(:press) if app
+    raise "Could not find #{self.inspect} in the dock to click on"
   end
 
 end
