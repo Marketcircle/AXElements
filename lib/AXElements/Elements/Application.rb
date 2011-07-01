@@ -20,7 +20,7 @@ class AX::Application < AX::Element
   ##
   # Overriden to handle the {Kernel#set_focus} case.
   def set_attribute attr, value
-    if attr == :focused and self.focused?
+    if attr == :focused
       @app.activateWithOptions NSApplicationActivateAllWindows
     else
       super
