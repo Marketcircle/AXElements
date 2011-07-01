@@ -1,12 +1,30 @@
 ##
 # Some additional constructors and conveniences for Application objects.
+#
+# As this class has evolved, it has gathered some functionality from
+# the NSRunningApplication class.
 class AX::Application < AX::Element
+
+  # @return [NSRunningApplication] the NSRunningApplication instance for
+  #   application this object represents
+  attr_reader :app
+
+  ##
+  # Overridden so that we can also cache the NSRunningApplication
+  # instance for this object.
+  def initialize ref
+    super
+    @app = NSRunningApplication.runningApplicationWithProcessIdentifier(pid)
+  end
 
   ##
   # Overriden to handle the {Kernel#set_focus} case.
   def set_attribute attr, value
-    return set_focus if attr == :focused && value == true
-    return super
+    if attr == :focused and !@app.active
+      @app.activateWithOptions NSApplicationActivateAllWindows
+    else
+      super
+    end
   end
 
   ##
@@ -25,26 +43,15 @@ class AX::Application < AX::Element
   end
 
   ##
+  # @note That this object becomes poisonous after the app terminates.
+  #       That is to say, if you try to use it again, you will crash
+  #       MacRuby.
+  #
   # Ask the application to terminate itself.
   #
   # @return [Boolean]
   def terminate
-    NSRunningApplication.runningApplicationWithProcessIdentifier(pid).terminate
-  end
-
-
-  private
-
-  ##
-  # @todo This method needs a fall back procedure if the app does not
-  #       have a dock icon (e.g. the dock doesn't have a dock icon).
-  #       We could have alternative methods for setting focus, such as
-  #       using CMD+TAB or Expose, what about looking at the
-  #       NSRunningApplication instance for the object?
-  def set_focus
-    app = AX::DOCK.application_dock_item(title: self.title)
-    return app.perform_action(:press) if app
-    raise "Could not find #{self.inspect} in the dock to click on"
+    @app.terminate
   end
 
 end
