@@ -20,11 +20,25 @@ class AX::Application < AX::Element
   ##
   # Overriden to handle the {Kernel#set_focus} case.
   def set_attribute attr, value
-    if attr == :focused and !@app.active
+    if attr == :focused and self.focused?
       @app.activateWithOptions NSApplicationActivateAllWindows
     else
       super
     end
+  end
+
+  ##
+  # Overridden to hand the {Kernel#set_focus} case.
+  def attribute attr
+    attr == :focused? || attr == :focused ? active? : super
+  end
+
+  ##
+  # Ask the app whether or not it is the active app. This is equivalent
+  # to the dynamic #focused? method, but might make more sense to use
+  # in some cases.
+  def active?
+    app.active
   end
 
   ##
