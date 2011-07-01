@@ -33,6 +33,9 @@ class AX::Application < AX::Element
     attr == :focused? || attr == :focused ? active? : super
   end
 
+  # @todo Do we need to override #respond_to? and #methods for
+  #       the :focused? case as well?
+
   ##
   # Ask the app whether or not it is the active app. This is equivalent
   # to the dynamic #focused? method, but might make more sense to use

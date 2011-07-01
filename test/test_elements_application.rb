@@ -6,19 +6,8 @@ class TestAXApplication < TestAX
     assert_equal AX::Element, AX::Application.superclass
   end
 
-end
-
-
-class TestAXApplicationSetAttribute < TestAXApplication
-
-  def test_set_attribute_has_special_case_for_focus
-    was_called = false
-    dup_dock   = APP.dup
-    dup_dock.define_singleton_method :set_focus do
-      was_called = true
-    end
-    dup_dock.set_attribute :focused, true
-    assert was_called
+  def test_app_is_the_equivalent_nsrunningapplication
+    assert_equal APP_BUNDLE_IDENTIFIER, APP.app.bundleIdentifier
   end
 
   def test_can_set_focus_to_an_app
@@ -26,35 +15,26 @@ class TestAXApplicationSetAttribute < TestAXApplication
       item.class == AX::ApplicationDockItem
     end
     app.perform_action(:press)
-    refute APP.attribute(:main_window).attribute(:focused?)
+    refute APP.active?
     APP.set_attribute(:focused, true)
     sleep 0.2
-    # @todo need to fix this test
-    skip 'This test is broken'
-    assert APP.attribute(:main_window).attribute(:focused?)
+    assert APP.active?
   end
 
-  def test_set_focus_does_not_work_if_app_not_in_dock
-    assert_raises RuntimeError do
-      AX::DOCK.set_attribute(:focused, true)
-    end
+  def test_attribute_has_special_case_for_focused
+    assert APP.attribute(:focused?)
+    assert APP.attribute(:focused)
   end
 
-end
-
-
-class TestAXApplicationInspect < TestAXApplication
+  def test_attribute_still_works_for_other_attributes
+    assert_equal 'AXElementsTester', APP.title
+  end
 
   def test_inspect_includes_pid
     assert_match /\s@pid=/, APP.inspect
   end
 
-end
-
-
-class TestAXApplicationTypeString < TestAXApplication
-
-  def test_forwards_call
+  def test_type_string_forwards_call
     class << AX
       alias_method :old_keyboard_action, :keyboard_action
       def keyboard_action element, string
@@ -68,21 +48,9 @@ class TestAXApplicationTypeString < TestAXApplication
     end
   end
 
-end
-
-
-class TestAXApplicationTerminate < TestAXApplication
-
-  # this test is a hack that kills the dock and relies on it
-  # to start itself up again
-  def test_kills_app
-    skip 'Crashes MacRuby right now, need to find out why'
+  def test_terminate_kills_app
+    skip 'Not sure how to reset state after this test...'
     assert AX::DOCK.terminate
-    assert_nil AX::DOCK.instance_variable_get(:@ref)
-    AX::DOCK.instance_variable_set(
-                                   :@ref,
-                                   AXUIElementCreateApplication(pid_for('com.apple.dock'))
-                                   )
   end
 
 end
