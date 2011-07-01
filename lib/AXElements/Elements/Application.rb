@@ -18,7 +18,7 @@ class AX::Application < AX::Element
   end
 
   ##
-  # Overriden to handle the {Kernel#set_focus} case.
+  # Overridden to handle the {Kernel#set_focus} case.
   def set_attribute attr, value
     if attr == :focused
       @app.activateWithOptions NSApplicationActivateAllWindows
@@ -48,7 +48,7 @@ class AX::Application < AX::Element
   end
 
   ##
-  # @note Key presses are async
+  # @note Key presses are async...or are they?
   #
   # Send keyboard input to `self`, the control that currently has focus
   # will the control that receives the key presses.
