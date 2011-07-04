@@ -385,9 +385,8 @@ class << AX
   # @return [Class]
   def create_ax_class name, superklass = :Element
     real_superklass = determine_class_for([superklass])
-    klass = Class.new(real_superklass) {
-      Accessibility.log.debug "#{name} class created"
-    }
+    klass = Class.new(real_superklass)
+    Accessibility.log.debug "#{name} class created"
     const_set name, klass
   end
 
