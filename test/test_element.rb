@@ -34,9 +34,7 @@ end
 class TestElementLookupFailure < TestAX
 
   def test_kind_of_argument_error
-    assert_raises ArgumentError do
-      raise AX::Element::LookupFailure.new(:blah)
-    end
+    assert_kind_of ArgumentError, AX::Element::LookupFailure.new(:blah)
   end
 
   def test_correct_message
@@ -50,9 +48,7 @@ end
 class TestElementAttributeReadOnly < TestAX
 
   def test_kind_of_method_missing_error
-    assert_raises NoMethodError do
-      raise AX::Element::AttributeReadOnly.new(:blah)
-    end
+    assert_kind_of NoMethodError, AX::Element::AttributeReadOnly.new(:blah)
   end
 
   def test_correct_message
