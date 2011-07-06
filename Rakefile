@@ -45,7 +45,7 @@ require 'rake/testtask'
 
 desc 'Build the test fixture'
 task :fixture do
-  sh 'cd test/AXElementsTester && xcodebuild -configuration Debug && open ../Debug/AXElementsTester.app'
+  sh 'cd test/AXElementsTester && xcodebuild && open ../fixture/Release/AXElementsTester.app'
 end
 
 desc 'Run benchmarks'

@@ -251,7 +251,7 @@
 				MACOSX_DEPLOYMENT_TARGET = 10.6;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = macosx;
-				SYMROOT = /Users/mrada/Developer/AXElements/test;
+				SYMROOT = "${SOURCE_ROOT}/../fixture";
 				VALID_ARCHS = x86_64;
 			};
 			name = Debug;
@@ -267,7 +267,7 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				MACOSX_DEPLOYMENT_TARGET = 10.6;
 				SDKROOT = macosx;
-				SYMROOT = /Users/mrada/Developer/AXElements/test;
+				SYMROOT = "${SOURCE_ROOT}/../fixture";
 				VALID_ARCHS = x86_64;
 			};
 			name = Release;
@@ -339,6 +339,7 @@
 				AF48AEC313B6E9EE0018BFA6 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		AF48AEC413B6E9EE0018BFA6 /* Build configuration list for PBXLegacyTarget "Deployment" */ = {
 			isa = XCConfigurationList;
@@ -347,6 +348,7 @@
 				AF48AEC613B6E9EE0018BFA6 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
