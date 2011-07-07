@@ -457,8 +457,8 @@ class << AX
     vals.map { |val| element_attribute val }
   end
 
-  # @return [Class,nil] order-sensitive (i.e. why index 0 is nil)
-  AXBoxType = [ CGPoint, CGSize, CGRect, CFRange ].map!(&:type).unshift(nil)
+  # @return [String,nil] order-sensitive (which is why we unshift nil)
+  BOX_TYPES = [ CGPoint, CGSize, CGRect, CFRange ].map!(&:type).unshift(nil)
 
   ##
   # Find out what type of struct is contained in the AXValueRef and then
@@ -468,7 +468,7 @@ class << AX
   # @return [Boxed,nil]
   def boxed_attribute value
     box_type = AXValueGetType(value)
-    ptr      = Pointer.new(AXBoxType[box_type])
+    ptr      = Pointer.new(BOX_TYPES[box_type])
     AXValueGetValue(value, box_type, ptr)
     ptr[0]
   end
