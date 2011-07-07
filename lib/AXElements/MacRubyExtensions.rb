@@ -109,6 +109,9 @@ end
 ##
 # Extensions to CGPoint
 class CGPoint
+  # @return [AXValueType]
+  AXValueConst = 1
+
   ##
   # Get the center point in a rectangle.
   #
@@ -159,6 +162,46 @@ class CGPoint
   def to_point
     self
   end
+end
+
+
+##
+# Extensions to Boxed objects.
+class Boxed
+  ##
+  # Create an AXValue from the Boxed instance. This will only
+  # work if for a few boxed types, check the AXAPI documentation.
+  #
+  # @return [AXValueRef]
+  def to_axvalue
+    ptr = Pointer.new(:id)
+    ptr.assign self
+    AXValueCreate(AXValueConst, ptr)
+  end
+end
+
+
+##
+# Extensions to CGSize.
+class CGSize
+  # @return [AXValueType]
+  AXValueConst = 2
+end
+
+
+##
+# Extensions to CGRect.
+class CGRect
+  # @return [AXValueType]
+  AXValueConst = 3
+end
+
+
+##
+# Extensions to CFRange.
+class CFRange
+  # @return [AXValueType]
+  AXValueConst = 4
 end
 
 

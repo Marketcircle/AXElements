@@ -350,6 +350,29 @@ class TestCGPointToPoint < MiniTest::Unit::TestCase
 end
 
 
+class TestBoxedToAXValue < MiniTest::Unit::TestCase
+
+  KLASSES = [[CGPoint, 1], [CGSize, 2], [CGRect, 3], [CFRange, 4]]
+
+  def test_makes_a_value
+    KLASSES.each do |pair|
+      klass, value = *pair
+      ax_value = AXValueCreate(value, klass.new.to_axvalue)
+      ptr = Pointer.new(klass.type)
+      assert_equal klass.new, AXValueGetValue(ax_value, value, ptr)
+    end
+  end
+
+  def test_values
+    KLASSES.each do |pair|
+      klass, value = *pair
+      assert_equal value, klass.const_get(:AXValueConst)
+    end
+  end
+
+end
+
+
 class TestNilBlank < MiniTest::Unit::TestCase
 
   def test_returns_true
