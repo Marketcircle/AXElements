@@ -41,7 +41,7 @@ class AX::Application < AX::Element
   # to the dynamic #focused? method, but might make more sense to use
   # in some cases.
   def active?
-    app.active
+    app.active?
   end
 
   ##
