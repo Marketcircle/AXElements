@@ -68,10 +68,7 @@ require 'rake/gempackagetask'
 
 spec = Gem::Specification.load('AXElements.gemspec')
 
-Rake::GemPackageTask.new(spec) do |pkg|
-  pkg.need_zip = false
-  pkg.need_tar = true
-end
+Rake::GemPackageTask.new(spec) { }
 
 # This only installs this gem, it does not take deps into consideration
 desc 'Build gem and install it'
