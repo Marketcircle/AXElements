@@ -53,13 +53,34 @@ module AXHelpers
       app.bundleIdentifier == name
     end.processIdentifier
   end
+
+  # returns raw attribute
+  def attribute_for element, attr
+    ptr = Pointer.new :id
+    AXUIElementCopyAttributeValue(element, attr, ptr)
+    ptr[0]
+  end
+
+  def children_for element
+    attribute_for element, KAXChildrenAttribute
+  end
+
+  def value_for element
+    attribute_for element, KAXValueAttribute
+  end
+
+  def action_for element, action
+    AXUIElementPerformAction(element, action)
+  end
+
 end
 
 class TestAX < MiniTest::Unit::TestCase
   include AXHelpers
   extend AXHelpers
 
-  APP_REF = AXUIElementCreateApplication(pid_for(APP_BUNDLE_IDENTIFIER))
+  PID = pid_for APP_BUNDLE_IDENTIFIER
+  REF = AXUIElementCreateApplication(PID)
 
   # execute the block with full logging turned on
   def with_logging level = Logger::DEBUG

@@ -1,30 +1,6 @@
-module CoreHelpers
-
-  # returns raw attribute
-  def attribute_for element, attr
-    ptr = Pointer.new :id
-    AXUIElementCopyAttributeValue(element, attr, ptr)
-    ptr[0]
-  end
-
-  def children_for element
-    attribute_for element, KAXChildrenAttribute
-  end
-
-  def value_for element
-    attribute_for element, KAXValueAttribute
-  end
-
-end
-
-
 class TestCore < TestAX
-  include CoreHelpers
-  extend  CoreHelpers
 
-  APP_PID = pid_for APP_BUNDLE_IDENTIFIER
-  APP     = AXUIElementCreateApplication(APP_PID)
-  WINDOW  = attribute_for APP, KAXMainWindowAttribute
+  WINDOW = attribute_for REF, KAXMainWindowAttribute
 
   def child name
     children_for(WINDOW).find do |item|
@@ -68,23 +44,23 @@ end
 # there are no tests to check what happens when they do not exist.
 class TestAttrsOfElement < TestCore
 
-  def setup
-    @attrs = AX.attrs_of_element(APP)
+  def attrs
+    @@attrs ||= AX.attrs_of_element(REF)
   end
 
   def test_returns_array_of_strings
-    assert_instance_of String, @attrs.first
+    assert_instance_of String, attrs.first
   end
 
   def test_make_sure_certain_attributes_are_provided
-    assert_includes @attrs, KAXRoleAttribute
-    assert_includes @attrs, KAXRoleDescriptionAttribute
+    assert_includes attrs, KAXRoleAttribute
+    assert_includes attrs, KAXRoleDescriptionAttribute
   end
 
   def test_other_attributes_that_the_app_should_have
-    assert_includes @attrs, KAXChildrenAttribute
-    assert_includes @attrs, KAXTitleAttribute
-    assert_includes @attrs, KAXMenuBarAttribute
+    assert_includes attrs, KAXChildrenAttribute
+    assert_includes attrs, KAXTitleAttribute
+    assert_includes attrs, KAXMenuBarAttribute
   end
 
 end
@@ -92,19 +68,19 @@ end
 
 class TestAttrOfElementGetsCorrectAttribute < TestCore
 
-  def test_title
-    assert_equal 'AXElementsTester', AX.attr_of_element(APP, KAXTitleAttribute)
+  def test_title_is_title
+    assert_equal 'AXElementsTester', AX.attr_of_element(REF, KAXTitleAttribute)
   end
 
   # @todo the app gives CGRectZero in Cocoa coordinates, and then they are
-  #       flipped, so we need to flip it again
-  def test_custom_lol
+  #       flipped for us to carbon, so we need to flip them again
+  def test_custom_lol_is_rect
     expected_rect = CGRect.new(CGPointZero.dup.carbonize!, CGSizeZero)
     assert_equal expected_rect, AX.attr_of_element(WINDOW, 'AXLol')
   end
 
-  def test_hidden
-    assert_equal false, AX.attr_of_element(APP, KAXHiddenAttribute)
+  def test_hidden_is_boolean
+    assert_equal false, AX.attr_of_element(REF, KAXHiddenAttribute)
   end
 
 end
@@ -113,15 +89,15 @@ end
 class TestAttrOfElementParsesData < TestCore
 
   def test_does_not_return_raw_values
-    assert_kind_of AX::Element, AX.attr_of_element(APP, KAXMenuBarAttribute)
+    assert_kind_of AX::Element, AX.attr_of_element(REF, KAXMenuBarAttribute)
   end
 
   def test_does_not_return_raw_values_in_array
-    assert_kind_of AX::Element, AX.attr_of_element(APP, KAXChildrenAttribute).first
+    assert_kind_of AX::Element, AX.attr_of_element(REF, KAXChildrenAttribute).first
   end
 
   def test_returns_nil_for_non_existant_attributes
-    assert_nil AX.attr_of_element(APP, 'MADEUPATTRIBUTE')
+    assert_nil AX.attr_of_element(REF, 'MADEUPATTRIBUTE')
   end
 
   def test_returns_nil_for_nil_attributes
@@ -129,29 +105,29 @@ class TestAttrOfElementParsesData < TestCore
   end
 
   def test_returns_boolean_false_for_false_attributes
-    assert_equal false, AX.attr_of_element(APP, 'AXEnhancedUserInterface')
+    assert_equal false, AX.attr_of_element(REF, 'AXEnhancedUserInterface')
   end
 
   def test_returns_boolean_true_for_true_attributes
-    ret = AX.attr_of_element(WINDOW, KAXMainAttribute)
-    assert_equal true, ret
+    assert_equal true, AX.attr_of_element(WINDOW, KAXMainAttribute)
   end
 
   def test_wraps_axuielementref_objects
-    ret = AX.attr_of_element(APP, KAXMenuBarAttribute)
+    # need intermediate step to make sure AX::MenuBar exists
+    ret = AX.attr_of_element(REF, KAXMenuBarAttribute)
     assert_instance_of AX::MenuBar, ret
   end
 
   def test_returns_array_for_array_attributes
-    assert_kind_of Array, AX.attr_of_element(APP, KAXChildrenAttribute)
+    assert_kind_of Array, AX.attr_of_element(REF, KAXChildrenAttribute)
   end
 
   def test_returned_arrays_are_not_empty_when_they_should_have_stuff
-    refute_empty AX.attr_of_element(APP, KAXChildrenAttribute)
+    refute_empty AX.attr_of_element(REF, KAXChildrenAttribute)
   end
 
   def test_returned_element_arrays_do_not_have_raw_elements
-    assert_kind_of AX::Element, AX.attr_of_element(APP, KAXChildrenAttribute).first
+    assert_kind_of AX::Element, AX.attr_of_element(REF, KAXChildrenAttribute).first
   end
 
   def test_returns_number_for_number_attribute
@@ -159,8 +135,8 @@ class TestAttrOfElementParsesData < TestCore
   end
 
   def test_returns_array_of_numbers_when_attribute_has_an_array_of_numbers
-    ret = AX.attr_of_element(slider, KAXAllowedValuesAttribute)
-    assert_kind_of NSNumber, ret.first
+    # could be a float or a fixnum, be more lenient
+    assert_kind_of NSNumber, AX.attr_of_element(slider, KAXAllowedValuesAttribute).first
   end
 
   def test_returns_a_cgsize_for_size_attributes
@@ -180,7 +156,7 @@ class TestAttrOfElementParsesData < TestCore
   end
 
   def test_works_with_strings
-    assert_instance_of String, AX.attr_of_element(APP, KAXTitleAttribute)
+    assert_instance_of String, AX.attr_of_element(REF, KAXTitleAttribute)
   end
 
   def test_works_with_urls
@@ -194,7 +170,7 @@ class TestAttrOfElementErrors < TestCore
   include LoggingCapture
 
   def test_logs_message_for_non_existant_attributes
-    with_logging do AX.attr_of_element(APP, 'MADEUPATTRIBUTE') end
+    with_logging do AX.attr_of_element(REF, 'MADEUPATTRIBUTE') end
     assert_match /#{KAXErrorAttributeUnsupported}/, @log_output.string
   end
 
@@ -229,20 +205,15 @@ class TestAttrOfElementChoosesCorrectClasseForElements < TestCore
     assert_includes children, AX::ApplicationDockItem
   end
 
-  # @todo find out if this only happens with windows or if it happens
-  #       with every type that must have a subrole but does not supply
-  #       one
+  # @todo this happens when accessibility is not implemented correctly,
+  #       and the problem with fixing it is the performance cost
   def test_chooses_role_if_subrole_is_unknown_type
     skip 'This case is not handled right now'
   end
 
-end
-
-
-class TestAttrOfElementSubclassesProperly < TestCore
-
   def test_creates_inheritance_chain
-    assert_includes AX::CloseButton.ancestors, AX::Button
+    assert_equal AX::Button, AX::CloseButton.superclass
+    assert_equal AX::Element, AX::Button.superclass
   end
 
 end
@@ -255,18 +226,18 @@ class TestAttrOfElementWritable < TestCore
   end
 
   def test_false_for_non_writable_attribute
-    refute AX.attr_of_element_writable?(APP, KAXTitleAttribute)
+    refute AX.attr_of_element_writable?(REF, KAXTitleAttribute)
   end
 
   def test_false_for_non_existante_attribute
-    refute AX.attr_of_element_writable?(APP, 'FAKE')
+    refute AX.attr_of_element_writable?(REF, 'FAKE')
   end
 
-  # # @todo this test fails because I am not getting the expected result code
-  # def test_logs_errors
-  #   with_logging do AX.attr_of_element_writable?(DOCK, 'OMG') end
-  #   assert_match /#{KAXErrorAttributeUnsupported}/, @log_output.string
-  # end
+  def test_logs_errors
+    skip 'test fails because we are not getting the expected result code'
+    with_logging do AX.attr_of_element_writable?(DOCK, 'OMG') end
+    assert_match /#{KAXErrorAttributeUnsupported}/, @log_output.string
+  end
 
 end
 
@@ -293,7 +264,7 @@ end
 class TestActionsOfElement < TestCore
 
   def test_works_when_there_are_no_actions
-    assert_empty AX.actions_of_element(APP)
+    assert_empty AX.actions_of_element(REF)
   end
 
   def test_returns_array_of_strings
@@ -393,10 +364,6 @@ class TestAXNotifications < TestCore
     end
   end
 
-  def action_for element, action
-    AXUIElementPerformAction(element, action)
-  end
-
   def short_timeout
     0.1
   end
@@ -457,7 +424,7 @@ class TestAXNotifications < TestCore
 
   def test_listening_to_app_catches_everything
     got_callback   = false
-    AX.register_for_notif(APP, KAXValueChangedNotification) do |el, notif|
+    AX.register_for_notif(REF, KAXValueChangedNotification) do |el, notif|
       got_callback = true
     end
     action_for radio_gaga, KAXPressAction
@@ -507,11 +474,10 @@ end
 class TestApplicationForPID < TestCore
 
   def test_makes_an_app
-    assert_instance_of AX::Application, AX.application_for_pid(APP_PID)
+    assert_instance_of AX::Application, AX.application_for_pid(PID)
   end
 
-  # invalid pid will crash MacRuby, so we don't bother
-  # testing it
+  # invalid pid will crash MacRuby, so we don't bother testing it
 
 end
 
@@ -519,11 +485,11 @@ end
 class TestPIDOfElement < TestCore
 
   def test_pid_of_app
-    assert_equal APP_PID, AX.pid_of_element(APP)
+    assert_equal PID, AX.pid_of_element(REF)
   end
 
   def test_pid_of_dock_app_is_docks_pid
-    assert_equal APP_PID, AX.pid_of_element(WINDOW)
+    assert_equal PID, AX.pid_of_element(WINDOW)
   end
 
 end
@@ -580,7 +546,7 @@ class TestLogAXCall < TestCore
   end
 
   def test_logs_debug_info
-    skip 'TODO'
+    skip 'TODO, low priority until someone wants to change the code'
   end
 
 end
