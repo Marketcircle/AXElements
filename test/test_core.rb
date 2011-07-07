@@ -465,7 +465,7 @@ class TestElementAtPosition < TestCore
     AXValueGetValue(point, KAXValueCGPointType, ptr)
     point = ptr[0]
     element = AX.element_at_point(*point.to_a)
-    assert_equal button, element.instance_variable_get(:@ref)
+    assert_equal button, element.ref
   end
 
 end

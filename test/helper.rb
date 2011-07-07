@@ -72,7 +72,6 @@ module AXHelpers
   def action_for element, action
     AXUIElementPerformAction(element, action)
   end
-
 end
 
 class TestAX < MiniTest::Unit::TestCase
@@ -89,4 +88,10 @@ class TestAX < MiniTest::Unit::TestCase
     yield
     Accessibility.log.level = original_level
   end
+end
+
+##
+# Just pretend that you didnt' see this hack
+class AX::Element
+  attr_reader :ref
 end
