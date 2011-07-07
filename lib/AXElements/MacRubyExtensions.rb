@@ -60,7 +60,7 @@ class NSArray
   # @param [Symbol] method
   # @return [Symbol]
   def singularized_method_name method
-    (method.predicate? ? method[0..-2] : method).to_s.singularize.to_sym
+    (method.predicate? ? method[0..-2] : method).singularize.to_sym
   end
 end
 
@@ -94,6 +94,14 @@ class NSString
   # Returns `true` if the string ends with a '?".
   def predicate?
     self[-1] == '?'
+  end
+
+  ##
+  # Force the #singularize method to be defined on NSString objects,
+  # and therefore on Symbol objects...at least until that bug gets
+  # fixed.
+  def singularize
+    ActiveSupport::Inflector.singularize(self)
   end
 end
 

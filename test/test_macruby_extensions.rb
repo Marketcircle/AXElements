@@ -102,6 +102,21 @@ class TestNSStringPredicate < MiniTest::Unit::TestCase
 end
 
 
+class TestNSStringSingularize < MiniTest::Unit::TestCase
+
+  # a better test might be to take the method and bind it into a
+  # different context where ActiveSupport::Inflector resolved to
+  # a mock class with a mocked version #singularize
+  def test_calls_active_support
+    assert_equal 'octopi', NSString.alloc.initWithString('octopi').singularize
+    assert_equal 'oxen', NSString.alloc.initWithString('ox').singularize
+    assert_equal 'boxes', NSString.alloc.initWithString('box').singularize
+    assert_equal 'box', NSString.alloc.initWithString('box').singularize
+  end
+
+end
+
+
 class TestNSArrayMethodMissing < MiniTest::Unit::TestCase
 
   ELEMENTS = AX::DOCK.list.application_dock_items
