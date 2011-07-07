@@ -44,6 +44,23 @@ class TestNSArrayToPoint < MiniTest::Unit::TestCase
 end
 
 
+class TestNSArrayBlank < MiniTest::Unit::TestCase
+
+  def setup
+    @array = NSArray.alloc.initWithArray([])
+  end
+
+  def test_responds
+    assert_respond_to :blank?, @array
+  end
+
+  def test_is_aliased_to_empty?
+    assert_equal @array.method(:empty?), @array.method(:blank?)
+  end
+
+end
+
+
 class TestNSMutableStringCamelizeBang < MiniTest::Unit::TestCase
 
   def test_takes_snake_case_string_and_makes_it_camel_case
@@ -313,6 +330,15 @@ class TestCGPointToPoint < MiniTest::Unit::TestCase
     assert_equal CGPointZero, CGPointZero.to_point
     point = CGPoint.new(1,1)
     assert_equal point, point.to_point
+  end
+
+end
+
+
+class TestNilBlank < MiniTest::Unit::TestCase
+
+  def test_returns_true
+    assert_equal true, nil.blank?
   end
 
 end

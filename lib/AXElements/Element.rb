@@ -20,6 +20,14 @@ class AX::Element
   end
 
   ##
+  # Raised when an implicit search fails
+  class SearchFailure < Exception
+    def initialize searcher, searchee
+      super "Could not find #{searchee} as a child of #{searcher.inspect}"
+    end
+  end
+
+  ##
   # @todo take a second argument of the attributes array; the attributes
   #       are already retrieved once to decide on the class type; if that
   #       can be cached and used to initialize an element, we can save a
@@ -174,10 +182,22 @@ class AX::Element
   #
   #   window.buttons(title:'New Project', enabled:true)
   #
+  # @example Attribute and element search failure
+  #
+  #   window.application # => SearchFailure is raised
   def method_missing method, *args
-    attr = attribute_for method
-    return AX.attr_of_element(@ref, attr) if attr
-    return search(method, args.first) if self.respond_to?(:children)
+    if attr = attribute_for method
+      return AX.attr_of_element(@ref, attr)
+    end
+
+    if self.respond_to?(:children)
+      if (ret = search(method, args.first)).blank?
+        raise SearchFailure.new(self, method)
+      else
+        return ret
+      end
+    end
+
     super
   end
 
@@ -241,6 +261,13 @@ class AX::Element
   # @return [CGPoint]
   def to_point
     attribute :position
+  end
+
+  ##
+  # Used during implicit search to determine if searches yielded
+  # responses.
+  def blank?
+    false
   end
 
   ##

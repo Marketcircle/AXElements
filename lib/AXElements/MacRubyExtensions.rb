@@ -21,6 +21,9 @@ class NSArray
     CGPoint.new(first, second)
   end
 
+  # Borrowed from Active Support
+  alias_method :blank?, :empty?
+
   alias_method :ax_array_method_missing, :method_missing
   ##
   # @note I'm on the fence about whether this is worth it, so it might
@@ -147,5 +150,16 @@ class CGPoint
   # @return [CGPoint]
   def to_point
     self
+  end
+end
+
+
+##
+# Extensions for searching.
+class NilClass
+  ##
+  # Borrowed from Active Support.
+  def blank?
+    true
   end
 end

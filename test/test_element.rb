@@ -407,6 +407,17 @@ class TestElementToPoint < TestElements
 end
 
 
+class TestElementBlank < TestElements
+
+  def test_always_false
+    assert_equal false, WINDOW.blank?
+    assert_equal false, APP.blank?
+    assert_equal false, slider.blank?
+  end
+
+end
+
+
 class TestElementMethods < TestElements
 
   def test_includes_objects_attributes
