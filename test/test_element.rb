@@ -1,19 +1,15 @@
 class TestElements < TestAX
 
-  APP_PID = pid_for APP_BUNDLE_IDENTIFIER
-  APP     = AX::Element.new(APP_REF)
-  WINDOW  = AX.attr_of_element(APP_REF, KAXMainWindowAttribute)
+  APP    = AX::Element.new(REF)
+  WINDOW = AX.attr_of_element(REF, KAXMainWindowAttribute)
 
   def window_children
-    @@window_children ||= AX.attr_of_element(
-                                             WINDOW.instance_variable_get(:@ref),
-                                             KAXChildrenAttribute
-                                             )
+    @@window_children ||= AX.attr_of_element(WINDOW.ref, KAXChildrenAttribute)
   end
 
   def no_button
     @@no_button ||= window_children.find do |item|
-      item.class == AX::Button && item.attributes.include?(KAXDescriptionAttribute)
+      item.is_a?(AX::Button) && attribute_for(item.ref, KAXTitleAttribute) == 'No'
     end
   end
 
@@ -24,14 +20,13 @@ class TestElements < TestAX
   end
 
   def value_for element
-    ref = element.instance_variable_get(:@ref)
-    AX.attr_of_element(ref, KAXValueAttribute)
+    AX.attr_of_element(element.ref, KAXValueAttribute)
   end
 
 end
 
 
-class TestElementLookupFailure < TestAX
+class TestElementLookupFailure < TestElements
 
   def test_kind_of_argument_error
     assert_kind_of ArgumentError, AX::Element::LookupFailure.new(:blah)
@@ -45,7 +40,7 @@ class TestElementLookupFailure < TestAX
 end
 
 
-class TestElementAttributeReadOnly < TestAX
+class TestElementAttributeReadOnly < TestElements
 
   def test_kind_of_method_missing_error
     assert_kind_of NoMethodError, AX::Element::AttributeReadOnly.new(:blah)
@@ -138,6 +133,10 @@ class TestElementDescription < TestElements
     assert_equal 'The cake is a lie!', no_button.description
   end
 
+  def test_responds_to # true when it exist, false otherwise
+    skip 'Leaving this as a known bug until it is a real problem'
+  end
+
 end
 
 
@@ -191,6 +190,16 @@ class TestElementSetAttribute < TestElements
     end
   end
 
+  # important test since it checks if we wrap boxes
+  def test_set_window_size
+    original_size = attribute_for(WINDOW.ref, KAXSizeAttribute)
+    new_size = original_size.dup
+    new_size.height /= 2
+    WINDOW.set_attribute(:size, new_size)
+    assert_equal new_size, WINDOW.attribute(:size)
+    WINDOW.set_attribute(:size, original_size)
+  end
+
 end
 
 
@@ -198,7 +207,7 @@ end
 class TestElementParamAttributes < TestElements
 
   def test_empty_for_dock
-    assert_empty AX::DOCK.param_attributes
+    assert_empty APP.param_attributes
   end
 
   # def test_not_empty_for_something
@@ -274,12 +283,24 @@ end
 
 class TestElementSearch < TestElements
 
-  def test_plural_calls_find_all
-    assert_instance_of Array, slider.search(:value_indicators)
+  def test_boxes_becomes_find_all_box
+    assert_instance_of AX::CheckBox, WINDOW.search(:check_boxes).first
   end
 
-  def test_singular_calls_find
-    assert_kind_of AX::Element, APP.search(:window)
+  def test_sliders_becomes_find_all_slider
+    assert_equal silder.ref, WINDOW.search(:sliders).first.ref
+  end
+
+  def test_value_indicators_becomes_find_all_value_indicator
+    assert_instance_of AX::ValueIndicator, slider.search(:value_indicators).first
+  end
+
+  def test_window_becomes_find_window
+    assert_kind_of AX::Window, APP.search(:window)
+  end
+
+  def test_value_indicator_becomes_find_value_indicator
+    assert_instance_of AX::ValueIndicator, slider.search(:value_indicator)
   end
 
   def test_works_with_no_filters
@@ -314,28 +335,24 @@ end
 
 class TestElementOnNotification < TestElements
 
+  def setup
+    AX.send(:alias_method, :old_register_for_notif, :register_for_notif)
+  end
+
   def teardown
-    class << AX
-      alias_method :register_for_notif, :old_register_for_notif
-    end
+    AX.send(:alias_method, :register_for_notif, :old_register_for_notif)
   end
 
   def test_forwards_info_properly
-    class << AX
-      alias_method :old_register_for_notif, :register_for_notif
-      def register_for_notif ref, notif, &block
-        CFGetTypeID(ref) == AXUIElementGetTypeID() && notif == KAXWindowCreatedNotification
-      end
+    def AX.register_for_notif ref, notif, &block
+      CFGetTypeID(ref) == AXUIElementGetTypeID() && notif == KAXWindowCreatedNotification
     end
     assert APP.on_notification(:window_created)
   end
 
   def test_does_no_translation_for_custom_notifications
-    class << AX
-      alias_method :old_register_for_notif, :register_for_notif
-      def register_for_notif ref, notif, &block
-        notif == 'Cheezburger'
-      end
+    def AX.register_for_notif ref, notif, &block
+      notif == 'Cheezburger'
     end
     assert APP.on_notification('Cheezburger')
   end
@@ -387,8 +404,8 @@ class TestElementRespondTo < TestElements
   end
 
   def test_still_works_for_regular_methods
-    assert AX::DOCK.respond_to?(:attributes)
-    refute AX::DOCK.respond_to?(:crazy_thing_that_cant_work)
+    assert APP.respond_to?(:attributes)
+    refute APP.respond_to?(:crazy_thing_that_cant_work)
   end
 
 end
@@ -448,7 +465,7 @@ end
 class TestElementEquivalence < TestElements
 
   def app
-    AX::Element.new AXUIElementCreateApplication(APP_PID)
+    AX::Element.new AXUIElementCreateApplication(PID)
   end
 
   def dock
