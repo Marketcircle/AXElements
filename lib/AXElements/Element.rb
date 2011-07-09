@@ -226,9 +226,13 @@ class AX::Element
   # @endgroup
 
   ##
+  # @todo Include values for some key attributes, but which ones?
+  #
   # Overriden to produce cleaner output.
   def inspect
-    nice_attrs = attributes.map { |name| AX.strip_prefix name }
+    nice_attrs = (attributes - IMPLICIT_ATTRIBUTES).map do |name|
+      AX.strip_prefix name
+    end
     "\#<#{self.class} @attributes=#{nice_attrs.inspect.delete('\"') }>"
   end
 
@@ -293,6 +297,13 @@ class AX::Element
 
 
   protected
+
+  # @return [Array<String>] Attributes to not include during {#inspect}
+  IMPLICIT_ATTRIBUTES = [
+                          KAXRoleAttribute,
+                          KAXRoleDescriptionAttribute,
+                          KAXSubroleAttribute
+                        ]
 
   ##
   # Try to turn an arbitrary symbol into notification constant, and
