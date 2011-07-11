@@ -66,6 +66,18 @@ class TestAttrsOfElement < TestCore
 end
 
 
+class TestAttrCountOfElement < TestCore
+
+  def test_returns_number_of_children
+    assert_equal children_for(REF).size, AX.attr_count_of_element(REF, KAXChildrenAttribute)
+    assert_equal 0, AX.attr_count_of_element(button, KAXChidlrenAttribute)
+  end
+
+  # @todo there are things we care about?
+
+end
+
+
 class TestAttrOfElementGetsCorrectAttribute < TestCore
 
   def test_title_is_title

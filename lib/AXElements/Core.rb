@@ -24,6 +24,16 @@ class << AX
     ptr[0]
   end
 
+  # @param [AXUIElementRef] element
+  # @param [String] attr an attribute constant
+  # @return [Fixnum]
+  def attr_count_of_element element, attr
+    ptr = Pointer.new 'q'
+    code = AXUIElementGetAttributeValueCount(element, attr, ptr)
+    log_error element, attr unless code.zero?
+    ptr[0]
+  end
+
   ##
   # Fetch the data from an attribute and process it into something
   # useful.
