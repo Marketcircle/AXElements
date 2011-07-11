@@ -187,7 +187,7 @@ class AX::Element
   #
   #   window.application # => SearchFailure is raised
   def method_missing method, *args
-    if attr = attribute_for method
+    if attr = attribute_for(method)
       return AX.attr_of_element(@ref, attr)
     end
 
@@ -293,7 +293,7 @@ class AX::Element
   alias_method :eql?, :==
   alias_method :equal?, :==
 
-  # do we need to override #=== as well?
+  # @todo Do we need to override #=== as well?
 
 
   protected
@@ -318,6 +318,7 @@ class AX::Element
   end
 
   # @todo Use a thread local variable instead of the class variable for @@array
+  #       but we still need lock writes to @@const_map
   def attribute_for sym; (@@array = attributes).find { |x| x == @@const_map[sym] } end
   def action_for sym; (@@array = actions).find { |x| x == @@const_map[sym] } end
   def param_attribute_for sym; (@@array = param_attributes).find { |x| x == @@const_map[sym] } end
