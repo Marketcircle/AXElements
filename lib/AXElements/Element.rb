@@ -23,7 +23,7 @@ class AX::Element
   # Raised when an implicit search fails
   class SearchFailure < Exception
     def initialize searcher, searchee
-      super "Could not find #{searchee} as a child of #{searcher.inspect}"
+      super "Could not find `#{searchee}` as a child of #{searcher.inspect}"
     end
   end
 
