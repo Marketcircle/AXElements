@@ -1,8 +1,8 @@
 ##
-# A UI element tree that can be iterated using lazy evaluation.
+# A lazy tree structure for a UI hierarchy.
 #
-# This class tries to use as many low level details as possible to get
-# better performance out of searches.
+# Currently the only form of enumeration is breadth first, but this can
+# be properly fleshed out as needed in the future.
 class Accessibility::Tree
   include Enumerable
 
@@ -11,18 +11,28 @@ class Accessibility::Tree
   end
 
   ##
-  # @todo Make search much faster by not wrapping child classes until
-  #       we yield
-  # @todo Would it be faster to keep track of the index in the pending
-  #       array instead of shifting?
+  # Caches the root
+  def initialize current
+    @start  = current
+    @height = 0
+  end
+
+  ##
+  # @todo Lazy-wrap element refs, should make things a bit faster
+  # @todo Implement method a single loop
   #
   # Iterate through the tree in breadth first order.
   def each
-    pending = [@root]
+    pending = [@start]
     until pending.empty?
-      pending.shift.attribute(:children).each do |x|
-        pending << x if x.respond_to?(:children)
-        yield x
+      current = pending
+      pending = []
+      @height += 1
+      current.each do |element|
+        element.attribute(:children).each do |x|
+          pending << x if x.respond_to?(:children)
+          yield x
+        end
       end
     end
   end
