@@ -46,6 +46,15 @@ class Accessibility::Tree
   # but they aren't being used...
   def find
     each { |x| return x if yield x }
+  end
+
+  ##
+  # Make a `dot` format GraphViz graph of the tree.
+  #
+  # @return [String]
+  def to_dot
+    each do |x|
+      puts @height
     end
   end
 
