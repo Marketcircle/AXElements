@@ -138,9 +138,8 @@ class CGPoint
   # Return self.
   #
   # @return [CGPoint]
-  def to_point
-    self
-  end
+  alias_method :to_point, :self
+
 end
 
 

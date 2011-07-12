@@ -245,16 +245,11 @@ class TestCGPointCenter < TestCGPointExtensions
 end
 
 
-class TestCGPointCarbonize < MiniTest::Unit::TestCase
-
-  SCREENS     = NSScreen.screens
-  MAIN_SCREEN = NSScreen.mainScreen
 class TestCGPointToPoint < MiniTest::Unit::TestCase
 
-  # @todo should this be assert_same?
   def test_returns_self
     assert_equal CGPointZero, CGPointZero.to_point
-    point = CGPoint.new(1,1)
+    point = CGPoint.new(1, 1)
     assert_equal point, point.to_point
   end
 
