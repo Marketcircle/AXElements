@@ -31,7 +31,12 @@ class TestAXApplication < TestAX
   end
 
   def test_inspect_includes_pid
-    assert_match /\s@pid=/, APP.inspect
+    assert_match /\spid=\d+/, APP.inspect
+  end
+
+  def test_inspect_includes_focused
+    assert_match /\sfocused=\[✓\]/, APP.inspect
+    assert_match /\sfocused=\[✘\]/, AX::DOCK.inspect
   end
 
   def test_type_string_forwards_call

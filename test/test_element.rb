@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 class TestElements < TestAX
 
   APP    = AX::Element.new(REF)
@@ -13,9 +14,21 @@ class TestElements < TestAX
     end
   end
 
+  def maybe_button
+    @@maybe_button ||= window.children.find do |item|
+      item.is_a?(AX::Button) && attribute_for(item.ref, KAXTitleAttribute) == 'Maybe So'
+    end
+  end
+
   def slider
     @@slider ||= window_children.find do |item|
       item.class == AX::Slider
+    end
+  end
+
+  def incrementer
+    @@incrementer ||= window.children.find do |item|
+      item.class == AX::Incrementer
     end
   end
 
@@ -362,16 +375,38 @@ end
 
 class TestElementInspect < TestElements
 
-  def test_includes_attributes
-    output = APP.inspect
-    assert_match /@attributes=/, output
-    assert_match /Title/, output
+  def test_uses_value
+    assert_match /\svalue=\d+/, slider.inspect
   end
 
-  def test_strips_prefixes_and_quotes_from_attributes
-    output = APP.inspect
-    refute_match /AXTitle/, output
-    refute_match /"Title"/, output
+  def test_falls_back_to_title_if_no_value
+    assert_match /\s"AXElementsTester"/, APP.inspect
+  end
+
+  def test_does_not_fail_if_no_value_title_or_title_ui_element
+    refute_empty incrementer.inspect
+  end
+
+  def test_uses_position_if_available
+    assert_match /\(\d+\.\d,\s\d+\.\d\)/, window.inspect
+    refute_match /\(\d+\.\d,\s\d+\.\d\)/, APP.inspect
+  end
+
+  def test_adds_child_count_if_has_children
+    assert_match /2 children/, APP.inspect
+    assert_match /1 child/, slider.inspect
+    assert_match /0 children/, button.inspect
+  end
+
+  def test_enabled_checkbox_if_object_has_enabled
+    assert_match /\senabled=\[✓\]/, no_button.inspect
+    assert_match /\senabled=\[✘\]/, maybe_button.inspect
+  end
+
+  def test_focused_checkbox_if_object_has_focused
+    AX.set_attr_of_element(no_button.ref, KAXFocusedAttribute, true)
+    assert_match /\sfocused=\[✓\]/, no_button.inspect
+    assert_match /\sfocused=\[✘\]/, slider.inspect
   end
 
 end

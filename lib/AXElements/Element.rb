@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 ##
 # @abstract
 #
@@ -226,29 +227,14 @@ class AX::Element
   # @endgroup
 
   ##
-  # @todo Include values for some key attributes, but which ones?
-  #
   # Overriden to produce cleaner output.
   def inspect
-    nice_attrs = (attributes - IMPLICIT_ATTRIBUTES).map do |name|
-      AX.strip_prefix name
-    end
-    "\#<#{self.class} @attributes=#{nice_attrs.inspect.delete('\"') }>"
-  end
-
-  ##
-  # @todo Find out what is going wrong when I make this recursive;
-  #       it is crashing MacRuby, but the backtrace shows the problem
-  #       occuring in 'com.apple.HIServices' in the
-  #       `_AXMIGCopyAttributeNames` function.
-  #
-  # A more expensive {#inspect} where we actually look up the
-  # values for each attribute and format the output nicely.
-  def pretty_print
-    array = attributes.map do |attr|
-      [AX.strip_prefix(attr), attribute(attr)]
-    end
-    Hash[array]
+    msg  = "\#<#{self.class}" << pp_identifier
+    msg << pp_position if attributes.include? KAXPositionATtribute
+    msg << pp_children if attributes.include? KAXChildrenAttribute
+    msg << pp_checkbox(:enabled) if attributes.include? KAXEnabledAttribute
+    msg << pp_checkbox(:focused) if attributes.include? KAXFocusedAttribute
+    msg << '>'
   end
 
   ##
@@ -298,12 +284,46 @@ class AX::Element
 
   protected
 
-  # @return [Array<String>] Attributes to not include during {#inspect}
-  IMPLICIT_ATTRIBUTES = [
-                          KAXRoleAttribute,
-                          KAXRoleDescriptionAttribute,
-                          KAXSubroleAttribute
-                        ]
+  ##
+  # Create an identifier for {#inspect} that should make it very
+  # easy to identify.
+  #
+  # Currently we look for the value, and if it is not present then
+  # we check the title, and if that is not present we add nothing. In
+  # the future, it would be nice to have a more intelligent heuristic,
+  # but I think this will work at least 80% of the time.
+  def pp_identifier
+    if attributes.include? KAXValueAttribute
+      " value=#{attribute(:value).inspect}"
+    elsif attributes.include? KAXTitleAttribute
+      " #{attribute(:title).inspect}"
+    else # @todo should we have other fallbacks?
+      ''
+    end
+  end
+
+  ##
+  # Add the position of the element to the {#inspect} output.
+  def pp_position
+    position = attribute(:position)
+    " (#{position.x}, #{position.y})"
+  end
+
+  ##
+  # Add the number of children to the {#inspect} output.
+  def pp_children
+    child_count = AX.attr_count_of_element(@ref, KAXChildrenAttribute)
+    " #{child_count} #{child_count == 1 ? 'child' : 'children'}"
+  end
+
+  ##
+  # Add an attribute to {#inspect} with a checkbox to display the value.
+  #
+  # @param [Symbol] value
+  # @return [String]
+  def pp_checkbox value
+    "#{value}[#{attribute(value) ? '✓' : '✘'}]"
+  end
 
   ##
   # Try to turn an arbitrary symbol into notification constant, and

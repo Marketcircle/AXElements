@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 ##
 # Some additional constructors and conveniences for Application objects.
 #
@@ -47,7 +48,7 @@ class AX::Application < AX::Element
   ##
   # Override the base class to make sure the pid is included.
   def inspect
-    (super).sub />$/, " @pid=#{self.pid}>"
+    (super).sub />$/, "#{pp_checkbox(:active?)} pid=#{self.pid}>"
   end
 
   ##
