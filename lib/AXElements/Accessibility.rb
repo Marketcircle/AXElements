@@ -35,7 +35,7 @@ class << Accessibility
   #
   # @return [AX::Element]
   def element_under_mouse
-    AX.element_at_point *NSEvent.mouseLocation.carbonize!
+    AX.element_at_point *Mouse.current_position
   end
 
   ##

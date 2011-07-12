@@ -70,15 +70,21 @@ class << self
     right_click_up   point
   end
 
+  ##
+  # Return the coordinates of the mouse using the flipped coordinate
+  # system.
+  #
+  # @return [CGPoint]
+  def current_position
+    CGEventGetLocation(CGEventCreate(nil))
+  end
+
 
   private
 
   FPS     = 120
   QUANTUM = Rational(1, FPS)
 
-  def current_position
-    NSEvent.mouseLocation.carbonize!
-  end
 
   def mouse_event action, point, object
     CGEventCreateMouseEvent( nil, action, point, object )
