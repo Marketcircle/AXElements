@@ -1,6 +1,7 @@
+# -*- coding: utf-8 -*-
 class TestAXApplication < TestAX
 
-  APP = AX::Application.new(APP_REF)
+  APP = AX::Application.new(REF)
 
   def test_is_a_direct_subclass_of_element
     assert_equal AX::Element, AX::Application.superclass
@@ -11,14 +12,14 @@ class TestAXApplication < TestAX
   end
 
   def test_can_set_focus_to_an_app
-    app = AX::DOCK.attribute(:children).first.attribute(:children).find do |item|
-      item.class == AX::ApplicationDockItem
+    app = NSWorkspace.sharedWorkspace.runningApplications.find do |app|
+      app.localizedName == 'Finder'
     end
-    app.perform_action(:press)
+    app.activateWithOptions NSApplicationActivateIgnoringOtherApps
     refute APP.active?
     APP.set_attribute(:focused, true)
-    sleep 0.2
     assert APP.active?
+    app.hide
   end
 
   def test_attribute_has_special_case_for_focused
