@@ -32,6 +32,8 @@ end
 
 ## Compilation
 
+safe_require 'rake/extensiontask', 'rake-compiler' do
+  Rake::ExtensionTask.new(:keyboarder)
 end
 
 require 'rake/compiletask'
