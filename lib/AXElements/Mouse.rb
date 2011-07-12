@@ -4,8 +4,6 @@
 # @todo Less discrimination against left handed people
 # @todo A more intelligent default duration
 # @todo Point arguments should accept a pair tuple
-# @noto CGEventGetUnflippedLocation can be used to get AppKit
-#       co-ordinates from an event
 module Mouse; end
 class << Mouse
 

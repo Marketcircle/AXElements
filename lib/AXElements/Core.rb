@@ -194,8 +194,9 @@ class << AX
   # there is one). If more than one element is at the position then the
   # z-order of the elements will be used to determine which is "on top".
   #
-  # The co-ordinates should be specified with the origin being in the
-  # top-left corner of the main screen.
+  # The coordinates should be specified using the flipped coordinate
+  # system (origin is in the top-left, increasing downward as if reading
+  # a book).
   #
   # @param [Float] x
   # @param [Float] y

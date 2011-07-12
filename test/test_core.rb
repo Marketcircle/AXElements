@@ -84,10 +84,12 @@ class TestAttrOfElementGetsCorrectAttribute < TestCore
     assert_equal 'AXElementsTester', AX.attr_of_element(REF, KAXTitleAttribute)
   end
 
-  # @todo the app gives CGRectZero in Cocoa coordinates, and then they are
-  #       flipped for us to carbon, so we need to flip them again
+  # @todo the app gives CGRectZero in screen coordinates, and then they are
+  #       flipped for us to, so we need to flip them again
   def test_custom_lol_is_rect
-    expected_rect = CGRect.new(CGPointZero.dup.carbonize!, CGSizeZero)
+    point   = CGPointZero.dup
+    point.y = NSScreen.mainScreen.frame.size.height
+    expected_rect = CGRect.new(point, CGSizeZero)
     assert_equal expected_rect, AX.attr_of_element(WINDOW, 'AXLol')
   end
 
