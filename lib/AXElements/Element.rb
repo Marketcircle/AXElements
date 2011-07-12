@@ -230,7 +230,7 @@ class AX::Element
   # Overriden to produce cleaner output.
   def inspect
     msg  = "\#<#{self.class}" << pp_identifier
-    msg << pp_position if attributes.include? KAXPositionATtribute
+    msg << pp_position if attributes.include? KAXPositionAttribute
     msg << pp_children if attributes.include? KAXChildrenAttribute
     msg << pp_checkbox(:enabled) if attributes.include? KAXEnabledAttribute
     msg << pp_checkbox(:focused) if attributes.include? KAXFocusedAttribute
@@ -322,7 +322,7 @@ class AX::Element
   # @param [Symbol] value
   # @return [String]
   def pp_checkbox value
-    "#{value}[#{attribute(value) ? '✓' : '✘'}]"
+    " #{value}[#{attribute(value) ? '✔' : '✘'}]"
   end
 
   ##
