@@ -1,14 +1,13 @@
 ##
-# @todo Add inertial scrolling abilities
+# @todo Add inertial scrolling abilities?
 # @todo Bezier paths for movements
-# @todo Random background movements
 # @todo Less discrimination against left handed people
 # @todo A more intelligent default duration
 # @todo Point arguments should accept a pair tuple
 # @noto CGEventGetUnflippedLocation can be used to get AppKit
 #       co-ordinates from an event
-module Mouse
-class << self
+module Mouse; end
+class << Mouse
 
   ##
   # Move the mouse from wherever it is to any given point.
@@ -16,18 +15,19 @@ class << self
   # @param [CGPoint] point
   # @param [Float] duration animation duration, in seconds
   def move_to point, duration = 0.2
-    move( current_position, point, duration )
+    move current_position, point, duration
   end
 
   ##
-  # Click and drag from wherever it is to any given point.
+  # Click and drag from the current mouse position to any
+  # given point.
   #
   # @param [CGPoint] point
   # @param [Float] duration animation duration, in seconds
   def drag_to point, duration = 0.2
-    left_click_down( current_position )
-    left_drag(       current_position, point, duration )
-    left_click_up(   point )
+    left_click_down current_position
+    left_drag       current_position, point, duration
+    left_click_up   point
   end
 
   ##
@@ -41,14 +41,14 @@ class << self
   # @param [Float] duration animation duration, in seconds
   # @param [Fixnum] units :line scrolls by line, :pixel scrolls by pixel
   def scroll amount, duration = 0.2, units = :line
-    units   = unit_constant_for units
+    units   = UNIT[units] || raise ArgumentError, "#{units} is not a valid unit"
     steps   = (FPS * duration).floor
     current = 0.0
     steps.times do |step|
       done     = (step+1).to_f / steps
       scroll   = ((done - current)*amount).floor
-      post scroll_event( units, scroll )
-      current += (scroll.to_f)/amount
+      post scroll_event(units, scroll)
+      current += scroll.to_f / amount
     end
   end
 
@@ -82,29 +82,37 @@ class << self
 
   private
 
+  # @return [Number] Number of animation steps per second
   FPS     = 120
+
+  # @return [Number] Smallest unit of time allowed for an animation step
   QUANTUM = Rational(1, FPS)
 
+  # @return []
+  UNIT = {
+    line:  KCGScrollEventUnitLine
+    pixel: KCGScrollEventUnitPixel
+  }
 
   def mouse_event action, point, object
-    CGEventCreateMouseEvent( nil, action, point, object )
+    CGEventCreateMouseEvent(nil, action, point, object)
   end
 
   def scroll_event units, amount
     # the fixnum arg represents the number of scroll wheels
     # on the mouse we are simulating (up to 3)
-    CGEventCreateScrollWheelEvent( nil, units, 1, amount )
+    CGEventCreateScrollWheelEvent(nil, units, 1, amount)
   end
 
   def post event
-    CGEventPost( KCGHIDEventTap, event )
+    CGEventPost(KCGHIDEventTap, event)
     sleep QUANTUM
   end
 
   def animate_event event, button, from, to, duration
     steps = (FPS * duration).floor
-    xstep = ((to.x - from.x) / steps)
-    ystep = ((to.y - from.y) / steps)
+    xstep = (to.x - from.x) / steps
+    ystep = (to.y - from.y) / steps
     steps.times do
       from.x += xstep
       from.y += ystep
@@ -115,41 +123,32 @@ class << self
   end
 
   def move from, to, duration
-    animate_event( KCGEventMouseMoved, KCGMouseButtonLeft, from, to, duration )
+    animate_event KCGEventMouseMoved, KCGMouseButtonLeft, from, to, duration
   end
 
   def left_drag from, to, duration
-    animate_event( KCGEventLeftMouseDragged, KCGMouseButtonLeft, from, to, duration )
+    animate_event KCGEventLeftMouseDragged, KCGMouseButtonLeft, from, to, duration
   end
 
   def left_click_down point
-    post mouse_event( KCGEventLeftMouseDown, point, KCGMouseButtonLeft )
+    post mouse_event KCGEventLeftMouseDown, point, KCGMouseButtonLeft
   end
   def left_click_up point
-    post mouse_event( KCGEventLeftMouseUp,   point, KCGMouseButtonLeft )
+    post mouse_event KCGEventLeftMouseUp,   point, KCGMouseButtonLeft
   end
 
   def right_click_down point
-    post mouse_event( KCGEventRightMouseDown, point, KCGMouseButtonRight )
+    post mouse_event KCGEventRightMouseDown, point, KCGMouseButtonRight
   end
   def right_click_up point
-    post mouse_event( KCGEventRightMouseUp,   point, KCGMouseButtonRight )
+    post mouse_event KCGEventRightMouseUp,   point, KCGMouseButtonRight
   end
 
   def click_down button, point
-    post mouse_event( KCGEventOtherMouseDown, point, button )
+    post mouse_event KCGEventOtherMouseDown, point, button
   end
   def click_up button, point
-    post mouse_event( KCGEventOtherMouseUp,   point, button )
+    post mouse_event KCGEventOtherMouseUp,   point, button
   end
 
-  def unit_constant_for units
-    case units
-    when :line  then KCGScrollEventUnitLine
-    when :pixel then KCGScrollEventUnitPixel
-    else raise ArgumentError, "#{units} is not a valid unit"
-    end
-  end
-
-end
 end
