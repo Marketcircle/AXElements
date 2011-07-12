@@ -1,16 +1,21 @@
 require 'rubygems'
 task :default => :test
 
-## Documentation
-begin
-  require 'yard'
+def safe_require path, name
+  require path
+  yield
 rescue LoadError => e
-  $stderr.puts 'It seems as though you do not have YARD installed.'
-  install_command = ENV['RUBY_VERSION'] ? 'gem' : 'sudo macgem'
-  $stderr.puts "You can install it by running `#{install_command} install yard`."
+  $stderr.puts "It seems as though you do not have #{name} installed."
+  command = ENV['RUBY_VERSION'] ? 'gem' : 'sudo macgem'
+  $stderr.puts "You can install it by running `#{command} install #{name}`."
 end
 
-YARD::Rake::YardocTask.new
+
+## Documentation
+
+safe_require 'yard', 'yard' do
+  YARD::Rake::YardocTask.new
+end
 
 desc 'Generate Graphviz object graph'
 task :garden => :yard do
@@ -26,22 +31,13 @@ task :console do
 end
 
 ## Compilation
+
+end
+
 require 'rake/compiletask'
-
-Rake::CompileTask.new do |t|
-  t.files = FileList["lib/**/*.rb"]
-  t.verbose = true
-end
-
-desc 'Clean MacRuby binaries'
-task :clean do
-  FileList["lib/**/*.rbo"].each do |bin|
-    puts rm bin
-  end
-end
+Rake::CompileTask.new(:rbo)
 
 ## Testing
-require 'rake/testtask'
 
 desc 'Build the test fixture'
 task :fixture do
@@ -50,11 +46,12 @@ end
 
 desc 'Run benchmarks'
 task :benchmark do
-  files = Dir.glob('bench/**/bench_*.rb').map { |x| "'#{x}'"}.join(' ')
+  files = Dir.glob('bench/**/bench_*.rb').map { |x| "'#{x}'" }.join(' ')
   ruby '-Ilib -Ibench -rhelper ' + files
 end
 task :bench => :benchmark
 
+require 'rake/testtask'
 Rake::TestTask.new(:test) do |t|
   t.libs     << 'test'
   t.pattern   = 'test/**/test_*.rb'
