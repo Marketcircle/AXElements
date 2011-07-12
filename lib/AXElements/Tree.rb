@@ -38,16 +38,14 @@ class Accessibility::Tree
   end
 
   ##
-  # Need to override the provided find method because it does not break
-  # properly when something is found, which not only negates the
-  # performance boost.
+  # Explicitly defined so that escaping at the first found element
+  # actually works. Since only a single `break` is called when an item
+  # is found it does not fully escape the method.
+  #
+  # Technically, we need to do this with other 'escape-early' iteraters,
+  # but they aren't being used...
   def find
-    pending = [@root]
-    until pending.empty?
-      pending.shift.attribute(:children).each do |x|
-        pending << x if x.respond_to?(:children)
-        return x if yield x
-      end
+    each { |x| return x if yield x }
     end
   end
 
