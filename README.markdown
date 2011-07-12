@@ -41,30 +41,19 @@ First you need to build the test fixture, which you can do by running
 
 An idealized outline of how things will progress in the next couple of releases
 
-### 0.5 (Luxray Tamer)
-
-- notifications system needs to be cleaned up
-  + notification name resolution does not need to happen in the
-  Element class, or does it?
-  + needs to cleanup properly in failure cases
-- Tests should rely on a special app that is bundled just for tests
-  instead of trying to interact with different assumed parts of the
-  environment
-  + this should help with all the skipped tests and also the
-  benchmarks that should be implemented
-- Keyboard module
-  + support a much larger set of keys and key combinations that can be
-  pressed
-
 ### 0.6 (or maybe 1.0)
 
+- Cleanup properly in failure cases for notifications
 - Mouse module cleanup
+- Test suite duplication cleanup
 - Performance tweaks
+- RSpec matchers
 
 ### Future
 
 - Screenshot taking and diff'ing abilities for those rare cases when
   you need it
+- Address Book helpers
 
 ## Contributing to AXElements
 
