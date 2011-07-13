@@ -251,7 +251,7 @@ class AX::Element
   #
   # @return [CGPoint]
   def to_point
-    attribute :position
+    attribute(:position).center(attribute :size)
   end
 
   ##
