@@ -19,7 +19,7 @@ class Accessibility::Tree
 
   ##
   # @todo Lazy-wrap element refs, should make things a bit faster
-  # @todo Implement method a single loop
+  # @todo Implement method in a single loop
   #
   # Iterate through the tree in breadth first order.
   def each
