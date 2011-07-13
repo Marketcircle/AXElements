@@ -36,8 +36,8 @@ class TestAXApplication < TestAX
   end
 
   def test_inspect_includes_focused
-    assert_match /\sfocused=\[✓\]/, APP.inspect
-    assert_match /\sfocused=\[✘\]/, AX::DOCK.inspect
+    assert_match /\sfocused\[✓\]/, APP.inspect
+    assert_match /\sfocused\[✘\]/, AX::DOCK.inspect
   end
 
   def test_type_string_forwards_call
@@ -49,9 +49,7 @@ class TestAXApplication < TestAX
     end
     assert APP.type_string('test')
   ensure
-    class << AX
-      alias_method :keyboard_action, :old_keyboard_action
-    end
+    class << AX; alias_method :keyboard_action, :old_keyboard_action; end
   end
 
   def test_terminate_kills_app

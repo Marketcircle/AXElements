@@ -70,7 +70,7 @@ class TestAttrCountOfElement < TestCore
 
   def test_returns_number_of_children
     assert_equal children_for(REF).size, AX.attr_count_of_element(REF, KAXChildrenAttribute)
-    assert_equal 0, AX.attr_count_of_element(button, KAXChidlrenAttribute)
+    assert_equal 0, AX.attr_count_of_element(button, KAXChildrenAttribute)
   end
 
   # @todo there are things we care about?
@@ -226,6 +226,7 @@ class TestAttrOfElementChoosesCorrectClasseForElements < TestCore
   end
 
   def test_creates_inheritance_chain
+    AX.attr_of_element(WINDOW, KAXChildrenAttribute)
     assert_equal AX::Button, AX::CloseButton.superclass
     assert_equal AX::Element, AX::Button.superclass
   end
@@ -430,6 +431,8 @@ class TestAXNotifications < TestCore
     refute_in_delta Time.now, start, short_timeout
   end
 
+  # @todo Make this test more resilient, we need to know why it fails
+  #       and there are no good clues right now...
   def test_waits_the_given_timeout
     start = Time.now
     refute AX.wait_for_notif(short_timeout), 'Failed to wait'
@@ -548,14 +551,14 @@ class TestLogAXCall < TestCore
   include LoggingCapture
 
   def test_looks_up_code_properly
-    with_logging { AX.send(:log_error, APP, KAXErrorAPIDisabled) }
+    with_logging { AX.send(:log_error, REF, KAXErrorAPIDisabled) }
     assert_match /API Disabled/, @log_output.string
-    with_logging { AX.send(:log_error, APP, KAXErrorNotImplemented) }
+    with_logging { AX.send(:log_error, REF, KAXErrorNotImplemented) }
     assert_match /Not Implemented/, @log_output.string
   end
 
   def test_handles_unknown_error_codes
-    with_logging { AX.send(:log_error, APP, 1234567) }
+    with_logging { AX.send(:log_error, REF, 1234567) }
     assert_match /UNKNOWN ERROR CODE/, @log_output.string
   end
 

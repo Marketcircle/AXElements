@@ -39,7 +39,7 @@ class << Mouse
   # @param [Float] duration animation duration, in seconds
   # @param [Fixnum] units :line scrolls by line, :pixel scrolls by pixel
   def scroll amount, duration = 0.2, units = :line
-    units   = UNIT[units] || raise ArgumentError, "#{units} is not a valid unit"
+    units   = UNIT[units] || raise(ArgumentError, "#{units} is not a valid unit")
     steps   = (FPS * duration).floor
     current = 0.0
     steps.times do |step|
@@ -88,7 +88,7 @@ class << Mouse
 
   # @return []
   UNIT = {
-    line:  KCGScrollEventUnitLine
+    line:  KCGScrollEventUnitLine,
     pixel: KCGScrollEventUnitPixel
   }
 

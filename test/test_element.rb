@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+
 class TestElements < TestAX
 
   APP    = AX::Element.new(REF)
@@ -15,7 +16,7 @@ class TestElements < TestAX
   end
 
   def maybe_button
-    @@maybe_button ||= window.children.find do |item|
+    @@maybe_button ||= window_children.find do |item|
       item.is_a?(AX::Button) && attribute_for(item.ref, KAXTitleAttribute) == 'Maybe So'
     end
   end
@@ -23,12 +24,6 @@ class TestElements < TestAX
   def slider
     @@slider ||= window_children.find do |item|
       item.class == AX::Slider
-    end
-  end
-
-  def incrementer
-    @@incrementer ||= window.children.find do |item|
-      item.class == AX::Incrementer
     end
   end
 
@@ -301,7 +296,7 @@ class TestElementSearch < TestElements
   end
 
   def test_sliders_becomes_find_all_slider
-    assert_equal silder.ref, WINDOW.search(:sliders).first.ref
+    assert_equal slider.ref, WINDOW.search(:sliders).first.ref
   end
 
   def test_value_indicators_becomes_find_all_value_indicator
@@ -349,11 +344,11 @@ end
 class TestElementOnNotification < TestElements
 
   def setup
-    AX.send(:alias_method, :old_register_for_notif, :register_for_notif)
+    class << AX; alias_method :old_register_for_notif, :register_for_notif; end
   end
 
   def teardown
-    AX.send(:alias_method, :register_for_notif, :old_register_for_notif)
+    class << AX; alias_method :register_for_notif, :old_register_for_notif; end
   end
 
   def test_forwards_info_properly
@@ -375,6 +370,19 @@ end
 
 class TestElementInspect < TestElements
 
+  def incrementor
+    window_children.find do |item|
+      item.class == AX::Incrementor
+    end
+  end
+
+  def web_area
+    area = window_children.find do |item|
+      item.class == AX::ScrollArea
+    end
+    AX.attr_of_element(area.ref, KAXChildrenAttribute).first
+  end
+
   def test_uses_value
     assert_match /\svalue=\d+/, slider.inspect
   end
@@ -384,29 +392,30 @@ class TestElementInspect < TestElements
   end
 
   def test_does_not_fail_if_no_value_title_or_title_ui_element
-    refute_empty incrementer.inspect
+    refute_empty incrementor.inspect
   end
 
   def test_uses_position_if_available
-    assert_match /\(\d+\.\d,\s\d+\.\d\)/, window.inspect
+    assert_match /\(\d+\.\d,\s\d+\.\d\)/, WINDOW.inspect
     refute_match /\(\d+\.\d,\s\d+\.\d\)/, APP.inspect
   end
 
   def test_adds_child_count_if_has_children
     assert_match /2 children/, APP.inspect
     assert_match /1 child/, slider.inspect
-    assert_match /0 children/, button.inspect
+    assert_match /0 children/, web_area.inspect
+    refute_match /child/, no_button.inspect
   end
 
   def test_enabled_checkbox_if_object_has_enabled
-    assert_match /\senabled=\[✓\]/, no_button.inspect
-    assert_match /\senabled=\[✘\]/, maybe_button.inspect
+    assert_match /\senabled\[✔\]/, no_button.inspect
+    assert_match /\senabled\[✘\]/, maybe_button.inspect
   end
 
   def test_focused_checkbox_if_object_has_focused
     AX.set_attr_of_element(no_button.ref, KAXFocusedAttribute, true)
-    assert_match /\sfocused=\[✓\]/, no_button.inspect
-    assert_match /\sfocused=\[✘\]/, slider.inspect
+    assert_match /\sfocused\[✔\]/, no_button.inspect
+    assert_match /\sfocused\[✘\]/, slider.inspect
   end
 
 end
@@ -448,12 +457,12 @@ end
 
 class TestElementToPoint < TestElements
 
-  def test_forwards_to_attribute_method
+  def test_makes_point_in_center_of_element
     obj = WINDOW.dup
     def obj.attribute arg
-      arg == :position
+      arg == :position ? CGPointMake(400, 350) : CGSizeMake(200, 500)
     end
-    assert obj.to_point
+    assert_equal CGPointMake(500, 600), obj.to_point
   end
 
 end
@@ -508,7 +517,7 @@ class TestElementEquivalence < TestElements
   end
 
   def window
-    AX.attr_of_element(APP_REF, KAXMainWindowAttribute)
+    AX.attr_of_element(REF, KAXMainWindowAttribute)
   end
 
   def list

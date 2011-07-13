@@ -51,7 +51,7 @@ class TestNSArrayBlank < MiniTest::Unit::TestCase
   end
 
   def test_responds
-    assert_respond_to :blank?, @array
+    assert_respond_to @array, :blank?
   end
 
   def test_is_aliased_to_empty?
@@ -108,9 +108,9 @@ class TestNSStringSingularize < MiniTest::Unit::TestCase
   # different context where ActiveSupport::Inflector resolved to
   # a mock class with a mocked version #singularize
   def test_calls_active_support
-    assert_equal 'octopi', NSString.alloc.initWithString('octopi').singularize
-    assert_equal 'oxen', NSString.alloc.initWithString('ox').singularize
-    assert_equal 'boxes', NSString.alloc.initWithString('box').singularize
+    assert_equal 'octopus', NSString.alloc.initWithString('octopi').singularize
+    assert_equal 'ox', NSString.alloc.initWithString('oxen').singularize
+    assert_equal 'box', NSString.alloc.initWithString('boxes').singularize
     assert_equal 'box', NSString.alloc.initWithString('box').singularize
   end
 
