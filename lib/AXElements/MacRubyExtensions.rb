@@ -109,9 +109,6 @@ end
 ##
 # Extensions to CGPoint
 class CGPoint
-  # @return [AXValueType]
-  AXValueConst = 1
-
   ##
   # Get the center point in a rectangle.
   #
@@ -133,27 +130,31 @@ class CGPoint
     CGPoint.new(x, y)
   end
 
-  ##
-  # Return self.
-  #
   # @return [CGPoint]
   alias_method :to_point, :self
 
+  @ax_value = KAXValueCGPointType
 end
 
 
 ##
 # Extensions to Boxed objects.
 class Boxed
+  class << self
+    # @return [AXValueType]
+    attr_reader :ax_value
+  end
+
   ##
   # Create an AXValue from the Boxed instance. This will only
   # work if for a few boxed types, check the AXAPI documentation.
   #
   # @return [AXValueRef]
   def to_axvalue
-    ptr = Pointer.new(:id)
+    klass = self.class
+    ptr = Pointer.new klass.type
     ptr.assign self
-    AXValueCreate(AXValueConst, ptr)
+    AXValueCreate(klass.ax_value, ptr).tap { |x| puts 'hey' }
   end
 end
 
@@ -161,24 +162,21 @@ end
 ##
 # Extensions to CGSize.
 class CGSize
-  # @return [AXValueType]
-  AXValueConst = 2
+  @ax_value = KAXValueCGSizeType
 end
 
 
 ##
 # Extensions to CGRect.
 class CGRect
-  # @return [AXValueType]
-  AXValueConst = 3
+  @ax_value = KAXValueCGRectType
 end
 
 
 ##
 # Extensions to CFRange.
 class CFRange
-  # @return [AXValueType]
-  AXValueConst = 4
+  @ax_value = KAXValueCFRangeType
 end
 
 

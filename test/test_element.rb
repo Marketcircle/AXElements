@@ -200,12 +200,13 @@ class TestElementSetAttribute < TestElements
 
   # important test since it checks if we wrap boxes
   def test_set_window_size
-    original_size = attribute_for(WINDOW.ref, KAXSizeAttribute)
+    original_size = AX.attr_of_element(WINDOW.ref, KAXSizeAttribute)
     new_size = original_size.dup
     new_size.height /= 2
-    WINDOW.set_attribute(:size, new_size)
-    assert_equal new_size, WINDOW.attribute(:size)
-    WINDOW.set_attribute(:size, original_size)
+    WINDOW.set_attribute :size, original_size
+    assert_equal original_size, AX.attr_of_element(WINDOW.ref, KAXSizeAttribute)
+  ensure
+    WINDOW.set_attribute :size, original_size
   end
 
 end

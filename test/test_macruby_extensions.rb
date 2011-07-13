@@ -258,21 +258,39 @@ end
 
 class TestBoxedToAXValue < MiniTest::Unit::TestCase
 
-  KLASSES = [[CGPoint, 1], [CGSize, 2], [CGRect, 3], [CFRange, 4]]
+  def test_point_makes_a_value
+    value = CGPointZero.to_axvalue
+    ptr   = Pointer.new :id
+    AXValueGetValue(value, 1, ptr)
+    assert_equal CGPointZero, ptr[0]
+  end
 
-  def test_makes_a_value
-    KLASSES.each do |pair|
-      klass, value = *pair
-      ax_value = AXValueCreate(value, klass.new.to_axvalue)
-      ptr = Pointer.new(klass.type)
-      assert_equal klass.new, AXValueGetValue(ax_value, value, ptr)
-    end
+  def test_size_makes_a_value
+    value = CGSizeZero.to_axvalue
+    ptr   = Pointer.new :id
+    AXValueGetValue(value, 2, ptr)
+    assert_equal CGSizeZero, ptr[0]
+  end
+
+  def test_rect_makes_a_value
+    value = CGRectZero.to_axvalue
+    ptr   = Pointer.new :id
+    AXValueGetValue(value, 3, ptr)
+    assert_equal CGRectZero, ptr[0]
+  end
+
+  def test_range_makes_a_value
+    range = CFRange.new(5, 4)
+    value = range.to_axvalue
+    ptr   = Pointer.new :id
+    AXValueGetValue(value, 4, ptr)
+    assert_equal range, ptr[0]
   end
 
   def test_values
-    KLASSES.each do |pair|
+    [[CGPoint, 1], [CGSize, 2], [CGRect, 3], [CFRange, 4]].each do |pair|
       klass, value = *pair
-      assert_equal value, klass.const_get(:AXValueConst)
+      assert_equal value, klass.instance_variable_get(:@ax_value_const)
     end
   end
 
