@@ -20,7 +20,8 @@ class << Accessibility
   end
 
   ##
-  # Produce an {Accessibility::Tree} rooted at the given element.
+  # Produce an {Accessibility::Tree} rooted at the given element. Just
+  # syntaictic sugar.
   #
   # @param [AX::Element]
   def tree element

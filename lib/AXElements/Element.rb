@@ -86,7 +86,7 @@ class AX::Element
   def set_attribute attr, value
     raise AttributeReadOnly.new(attr) unless attribute_writable? attr
     real_attribute = attribute_for attr
-    value = value.to_axvalue if value.kind_of?(Boxed)
+    value = value.to_axvalue if value.kind_of? Boxed
     AX.set_attr_of_element(@ref, real_attribute, value)
     value
   end
