@@ -21,6 +21,22 @@ class NSArray
     CGPoint.new(first, second)
   end
 
+  ##
+  # Create a CGSize from the first two elements in the array.
+  #
+  # @return [CGSize]
+  def to_size
+    CGSize.new(first, second)
+  end
+
+  ##
+  # Create a CGRect from the first four elements in the array.
+  #
+  # @return [CGRect]
+  def to_rect
+    CGRectMake(*self[0,4])
+  end
+
   # Borrowed from Active Support
   alias_method :blank?, :empty?
 

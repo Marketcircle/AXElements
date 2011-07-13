@@ -44,6 +44,34 @@ class TestNSArrayToPoint < MiniTest::Unit::TestCase
 end
 
 
+class TestNSArrayToSize < MiniTest::Unit::TestCase
+
+  def test_makes_a_point
+    assert_instance_of CGSize, [1, 1].to_size
+  end
+
+  def test_uses_first_two_elements
+    assert_equal CGSize.new(1,2), NSArray.arrayWithArray([1, 2, 3]).to_size
+  end
+
+end
+
+
+class TestNSArrayToRect < MiniTest::Unit::TestCase
+
+  def test_makes_a_rect
+    assert_instance_of CGRect, [1, 1, 1, 1].to_rect
+  end
+
+  def test_uses_first_two_elements
+    expected = CGRect.new(CGPoint.new(4,3),CGSize.new(2,5))
+    actual   = NSArray.arrayWithArray([4, 3, 2, 5, 7]).to_rect
+    assert_equal expected, actual
+  end
+
+end
+
+
 class TestNSArrayBlank < MiniTest::Unit::TestCase
 
   def setup
