@@ -1,9 +1,5 @@
 class TestSearch < TestAX
 
-  def test_can_search
-    assert AX::Element.instance_methods.include?(:search)
-  end
-
   def test_search_one_level_deep
     assert_equal 'AX::List', AX::DOCK.search(:list).class.to_s
   end
