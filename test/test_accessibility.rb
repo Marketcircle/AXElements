@@ -56,8 +56,11 @@ end
 
 class TestAccessibilityElementAtPoint < TestAccessibility
 
-  def test_returns_a_button_when_i_use_a_buttons_coordinates
-    assert Accessibility.element_at_point(close_button).class == AX::CloseButton
+  def test_returns_a_button_when_given_the_buttons_coordinates
+    point = close_button.position
+    assert_equal close_button, Accessibility.element_at_point(*point.to_a)
+    assert_equal close_button, Accessibility.element_at_point(point.to_a)
+    assert_equal close_button, Accessibility.element_at_point(point)
   end
 
   def test_also_responds_to_element_at_position

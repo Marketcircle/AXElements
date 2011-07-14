@@ -50,7 +50,8 @@ class << Accessibility
   # @overload element_at_point(CGPoint.new(x,y))
   #   @param [CGPoint] point
   def element_at_point *point
-    AX.element_at_position(*point.to_a.flatten)
+    arg = point.size == 1 ? point.first : point
+    AX.element_at_point(*arg.to_a.flatten)
   end
   alias_method :element_at_position, :element_at_point
 
