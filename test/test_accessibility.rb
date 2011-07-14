@@ -41,7 +41,7 @@ class TestAccessibilityTree < TestAccessibility
 end
 
 
-class TestAccessibilityElementUnderMouse < MiniTest::Unit::TestCase
+class TestAccessibilityElementUnderMouse < TestAccessibility
 
   def test_returns_some_kind_of_ax_element
     assert_kind_of AX::Element, Accessibility.element_under_mouse
@@ -54,7 +54,7 @@ class TestAccessibilityElementUnderMouse < MiniTest::Unit::TestCase
 end
 
 
-class TestAccessibilityElementAtPoint < MiniTest::Unit::TestCase
+class TestAccessibilityElementAtPoint < TestAccessibility
 
   def test_returns_a_button_when_i_use_a_buttons_coordinates
     assert Accessibility.element_at_point(close_button).class == AX::CloseButton
@@ -67,7 +67,7 @@ class TestAccessibilityElementAtPoint < MiniTest::Unit::TestCase
 end
 
 
-class TestAccessibilityApplicationWithBundleIdentifier < MiniTest::Unit::TestCase
+class TestAccessibilityApplicationWithBundleIdentifier < TestAccessibility
 
   def test_makes_an_app
     ret = Accessibility.application_with_bundle_identifier(APP_BUNDLE_IDENTIFIER)
@@ -97,7 +97,7 @@ class TestAccessibilityApplicationWithBundleIdentifier < MiniTest::Unit::TestCas
 end
 
 
-class TestAccessibilityApplicationWithName < MiniTest::Unit::TestCase
+class TestAccessibilityApplicationWithName < TestAccessibility
 
   def test_application_with_name_with_proper_app
     ret = Accessibility.application_with_name 'Dock'
@@ -112,7 +112,7 @@ class TestAccessibilityApplicationWithName < MiniTest::Unit::TestCase
 end
 
 
-class TestAccessibilityApplicationWithPID < MiniTest::Unit::TestCase
+class TestAccessibilityApplicationWithPID < TestAccessibility
 
   def test_gives_me_an_application
     pid = APP.pid
