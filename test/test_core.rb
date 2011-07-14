@@ -406,7 +406,7 @@ class TestAXNotifications < TestCore
 
     assert AX.wait_for_notif(1.0)
     assert_kind_of NSString, notification
-    assert_includes ['AX::RadioButton', 'AX::RadioGroup'], element.class.to_s
+    assert_kind_of AX::Element, element
   end
 
   def test_works_without_a_block
