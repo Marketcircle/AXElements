@@ -62,6 +62,16 @@ class TestElementAttributeReadOnly < TestElements
 end
 
 
+class TestElementSearchFailure < TestElements
+
+  def test_correct_message
+    exception = AX::Element::SearchFailure.new(:blah,:test)
+    assert_match /Could not find `test` as a child of :blah/, exception.message
+  end
+
+end
+
+
 class TestElementAttributes < TestElements
 
   def test_not_empty
@@ -333,6 +343,12 @@ class TestElementMethodMissing < TestElements
   def test_does_search_if_not_attribute_but_has_children
     indicator = slider.value_indicator
     assert_instance_of AX::ValueIndicator, indicator
+  end
+
+  def test_raises_if_search_returns_blank
+    assert_raises AX::Element::SearchFailure do
+      APP.element_that_does_not_exist
+    end
   end
 
   def test_calls_super_if_not_attribute_and_no_children
