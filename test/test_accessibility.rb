@@ -1,6 +1,12 @@
 class TestAccessibility < TestAX
 
-  APP = AX::Application.new APP_REF
+  APP = AX::Application.new REF
+
+  def close_button
+    @@button ||= APP.attribute(:main_window).attribute(:children).find do |item|
+      item.class == AX::CloseButton
+    end
+  end
 
 end
 
@@ -11,12 +17,12 @@ class TestAccessibilityPath < TestAccessibility
     @list = Accessibility.path(APP.main_window.close_button)
   end
 
-  def test_returns_array_of_elements
+  def test_returns_the_elements_in_a_list
     assert_instance_of Array, @list
     assert_kind_of     AX::Element, @list.first
   end
 
-  def test_correctness
+  def test_returns_correct_elements_in_order_from_highest_to_lowest
     assert_equal 3, @list.size
     assert_instance_of AX::CloseButton,    @list.first
     assert_instance_of AX::StandardWindow, @list.second
@@ -30,9 +36,6 @@ class TestAccessibilityTree < TestAccessibility
 
   def test_gives_me_a_tree
     assert_instance_of Accessibility::Tree, Accessibility.tree(APP)
-    assert_instance_of Accessibility::Tree, Accessibility.tree(APP)
-    assert_instance_of Accessibility::Tree, Accessibility.tree(APP)
-    assert_instance_of Accessibility::Tree, Accessibility.tree(APP)
   end
 
 end
@@ -44,12 +47,23 @@ class TestAccessibilityElementUnderMouse < MiniTest::Unit::TestCase
     assert_kind_of AX::Element, Accessibility.element_under_mouse
   end
 
-  # @todo move the mouse to a known location, and then ask for the element
+  def test_returns_element_under_the_mouse
+    skip 'Need to move the mouse to a known location, then ask for the element'
+  end
 
 end
 
 
 class TestAccessibilityElementAtPoint < MiniTest::Unit::TestCase
+
+  def test_returns_a_button_when_i_use_a_buttons_coordinates
+    assert Accessibility.element_at_point(close_button).class == AX::CloseButton
+  end
+
+  def test_also_responds_to_element_at_position
+    assert_equal Accessibility.method(:element_at_point), Accessibility.method(:element_at_position)
+  end
+
 end
 
 
@@ -66,7 +80,7 @@ class TestAccessibilityApplicationWithBundleIdentifier < MiniTest::Unit::TestCas
     assert_equal 'Dock', app.attribute(:title)
   end
 
-  # how do we test when app is not already running?
+  # @todo how do we test when app is not already running?
 
   def test_launches_app_if_it_is_not_running
     skip 'Another difficult test to implement'
@@ -99,4 +113,16 @@ end
 
 
 class TestAccessibilityApplicationWithPID < MiniTest::Unit::TestCase
+
+  def test_gives_me_an_application
+    pid = APP.pid
+    app = Accessibility.application_with_pid(pid)
+    assert_equal APP, app
+  end
+
+  def test_
+    skip 'A bad PID will cause MacRuby to explode'
+    assert_nil Accessibility.application_with_pid(0)
+  end
+
 end
