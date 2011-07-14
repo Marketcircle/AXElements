@@ -170,7 +170,7 @@ class Boxed
     klass = self.class
     ptr = Pointer.new klass.type
     ptr.assign self
-    AXValueCreate(klass.ax_value, ptr).tap { |x| puts 'hey' }
+    AXValueCreate(klass.ax_value, ptr)
   end
 end
 
