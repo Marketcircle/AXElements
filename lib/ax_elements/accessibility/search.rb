@@ -73,14 +73,14 @@ class Accessibility::Search
     # This is an important method to optimize for search as it needs
     # to be called for each candidate object.
     def the_right_type? element
-      return element.kind_of?(klass) if klass
-      AX.const_defined?(klass_sym) ?
-        element.is_a?(klass = AX.const_get(klass_sym)) : false
+      return element.kind_of? klass if klass
+      AX.const_defined? klass_sym ?
+        element.is_a?(klass = AX.const_get klass_sym) : false
     end
 
     # @return [Hash{Symbol=>Symbol}]
     TABLE = {
-      :title_ui_element => :value
+      title_ui_element: :value
     }
 
     ##
@@ -88,8 +88,8 @@ class Accessibility::Search
     # the Qualifier object was initialized with.
     def meets_criteria? element
       filters.all? do |filter, value|
-        break false unless element.respond_to?(filter)
-        filter_value = element.attribute(filter)
+        break false unless element.respond_to? filter
+        filter_value = element.attribute filter
         if filter_value.class == value.class
           filter_value == value
         elsif filter_value.nil?
