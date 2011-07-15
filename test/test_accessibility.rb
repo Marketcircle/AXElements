@@ -34,7 +34,7 @@ end
 
 class TestAccessibilityTree < TestAccessibility
 
-  def test_gives_me_a_tree
+  def test_tree_gives_me_a_tree
     assert_instance_of Accessibility::Tree, Accessibility.tree(APP)
   end
 
