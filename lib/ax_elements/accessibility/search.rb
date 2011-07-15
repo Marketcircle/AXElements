@@ -74,8 +74,8 @@ class Accessibility::Search
     # to be called for each candidate object.
     def the_right_type? element
       return element.kind_of? klass if klass
-      AX.const_defined? klass_sym ?
-        element.is_a?(klass = AX.const_get klass_sym) : false
+      AX.const_defined?(klass_sym) ?
+        element.is_a?(klass = AX.const_get(klass_sym)) : false
     end
 
     # @return [Hash{Symbol=>Symbol}]
