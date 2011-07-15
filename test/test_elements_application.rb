@@ -12,14 +12,15 @@ class TestAXApplication < TestAX
   end
 
   def test_can_set_focus_to_an_app
-    app = NSWorkspace.sharedWorkspace.runningApplications.find do |app|
-      app.localizedName == 'Finder'
-    end
-    app.activateWithOptions NSApplicationActivateIgnoringOtherApps
-    refute APP.active?
+    APP.app.hide
+    sleep 0.3
+    refute APP.active?, 'App failed to hide'
     APP.set_attribute(:focused, true)
-    assert APP.active?
-    app.hide
+    sleep 0.3
+    assert APP.active?, 'App failed to focus'
+  ensure
+    APP.app.activateWithOptions NSApplicationActivateIgnoringOtherApps
+  end
   end
 
   def test_attribute_has_special_case_for_focused
