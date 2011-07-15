@@ -64,4 +64,9 @@ class TestAXApplication < TestAX
     assert AX::DOCK.terminate
   end
 
+  def test_dock_constant_is_set
+    assert_instance_of AX::Application, AX::DOCK
+    assert_equal 'Dock', AX::DOCK.attribute(:title)
+  end
+
 end

@@ -31,4 +31,8 @@ class TestAXSystemWide < MiniTest::Unit::TestCase
     end
   end
 
+  def test_expose_instance_as_constant
+    assert_instance_of AX::SystemWide, AX::SYSTEM
+  end
+
 end
