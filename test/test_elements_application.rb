@@ -23,8 +23,8 @@ class TestAXApplication < TestAX
   end
 
   def test_attribute_has_special_case_for_focused
-    assert APP.attribute(:focused?)
-    assert APP.attribute(:focused)
+    assert_instance_of_boolean APP.attribute(:focused?)
+    assert_instance_of_boolean APP.attribute(:focused)
   end
 
   def test_attribute_still_works_for_other_attributes
@@ -36,8 +36,7 @@ class TestAXApplication < TestAX
   end
 
   def test_inspect_includes_focused
-    assert_match /\sfocused\[✓\]/, APP.inspect
-    assert_match /\sfocused\[✘\]/, AX::DOCK.inspect
+    assert_match /\sfocused\[(?:✔|✘)\]/, APP.inspect
   end
 
   def test_type_string_forwards_call
