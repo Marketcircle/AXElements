@@ -142,9 +142,7 @@ module Accessibility::Language
   #
   # @param [#to_point] arg
   def drag_mouse_to arg
-    point = arg.to_point
-    point = point.center(arg.size) if arg.kind_of?(AX::Element)
-    Mouse.drag_to point
+    Mouse.drag_to point.to_point
   end
 
   ##
