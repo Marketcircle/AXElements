@@ -444,9 +444,9 @@ class << AX
   SUBROLE = KAXSubroleAttribute
 
   ##
-  # @todo If we use set names to be a thread-local global, then we can just
-  #       call const_get on names.first, and let const_missing create the
-  #       missing class.
+  # @todo Refactor this pipeline so that we can pass the attributes we look
+  #       up to the initializer for Element, and also so we can avoid some
+  #       other duplicated work.
   #
   # Takes an AXUIElementRef and gives you some kind of accessibility object.
   #
