@@ -6,15 +6,10 @@
 class Accessibility::Tree
   include Enumerable
 
-  def initialize root
-    @root = root
-  end
-
   ##
   # Caches the root
-  def initialize current
-    @start  = current
-    @height = 0
+  def initialize root
+    @root = root
   end
 
   ##
