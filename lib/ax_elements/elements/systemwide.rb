@@ -41,3 +41,7 @@ class AX::SystemWide < AX::Element
   end
 
 end
+
+
+# @return [AX::SystemWide]
+AX::SYSTEM = AX::SystemWide.instance

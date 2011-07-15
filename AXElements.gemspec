@@ -1,5 +1,5 @@
 $LOAD_PATH.unshift File.join( File.dirname(__FILE__), 'lib' )
-require 'AXElements/Version'
+require 'ax_elements/version'
 
 Gem::Specification.new do |s|
   s.name     = 'AXElements'

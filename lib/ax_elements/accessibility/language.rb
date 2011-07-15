@@ -223,3 +223,6 @@ module Accessibility::Language
   end
 
 end
+
+# Mix the language methods in to the TopLevel
+include Accessibility::Language

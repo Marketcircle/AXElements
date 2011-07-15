@@ -123,10 +123,15 @@ class << Accessibility
   # @return [Boolean]
   def launch_application bundle
     log.info "Launching app with bundleID '#{bundle}'"
-    NSWorkspace.sharedWorkspace.launchAppWithBundleIdentifier  bundle,
-                                                      options: NSWorkspaceLaunchAsync,
-                               additionalEventParamDescriptor: nil,
-                                             launchIdentifier: nil
+    NSWorkspace.sharedWorkspace.launchAppWithBundleIdentifier bundle,
+                                                     options: NSWorkspaceLaunchAsync,
+                              additionalEventParamDescriptor: nil,
+                                            launchIdentifier: nil
   end
 
 end
+
+
+require 'ax_elements/accessibility/tree'
+require 'ax_elements/accessibility/search'
+require 'ax_elements/accessibility/language'

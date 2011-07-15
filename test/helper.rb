@@ -1,6 +1,6 @@
 require 'rubygems'
 
-require 'AXElements'
+require 'ax_elements'
 require 'stringio'
 
 # We want to launch the test app and make sure it responds to

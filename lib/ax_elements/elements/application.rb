@@ -70,7 +70,7 @@ class AX::Application < AX::Element
   #       That is to say, if you try to use it again, you will crash
   #       MacRuby.
   #
-  # Ask the application to terminate itself.
+  # Ask the application to terminate itself. Be careful how you use this.
   #
   # @return [Boolean]
   def terminate
@@ -78,3 +78,7 @@ class AX::Application < AX::Element
   end
 
 end
+
+
+# @return [AX::Application] the Mac OS X dock application
+AX::DOCK = Accessibility.application_with_bundle_identifier 'com.apple.dock'
