@@ -13,26 +13,26 @@ class TestAXApplication < TestAX
 
   def test_can_set_focus_to_an_app
     APP.app.hide
-    sleep 0.3
-    refute APP.active?, 'App failed to hide'
-    APP.set_attribute(:focused, true)
-    sleep 0.3
-    assert APP.active?, 'App failed to focus'
+    sleep 0.2
+    refute APP.active?, 'Might fail now because of OS X bug'
+    APP.set_attribute :focused, true
+    sleep 0.2
+    assert APP.active?, 'Might fail now because of OS X bug'
   ensure
     APP.app.activateWithOptions NSApplicationActivateIgnoringOtherApps
   end
 
   def test_can_hide_the_app
-    APP.set_attribute(:focused, false)
-    sleep 0.3
-    refute APP.active?, 'App failed to hide'
+    APP.set_attribute :focused, false
+    sleep 0.2
+    refute APP.active?, 'Might fail now because of OS X bug'
   ensure
     APP.app.activateWithOptions NSApplicationActivateIgnoringOtherApps
   end
 
   def test_attribute_has_special_case_for_focused
-    assert_instance_of_boolean APP.attribute(:focused?)
-    assert_instance_of_boolean APP.attribute(:focused)
+    assert_instance_of_boolean APP.attribute :focused?
+    assert_instance_of_boolean APP.attribute :focused
   end
 
   def test_attribute_still_works_for_other_attributes
