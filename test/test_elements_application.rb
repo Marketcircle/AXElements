@@ -21,6 +21,13 @@ class TestAXApplication < TestAX
   ensure
     APP.app.activateWithOptions NSApplicationActivateIgnoringOtherApps
   end
+
+  def test_can_hide_the_app
+    APP.set_attribute(:focused, false)
+    sleep 0.3
+    refute APP.active?, 'App failed to hide'
+  ensure
+    APP.app.activateWithOptions NSApplicationActivateIgnoringOtherApps
   end
 
   def test_attribute_has_special_case_for_focused

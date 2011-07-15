@@ -22,7 +22,12 @@ class AX::Application < AX::Element
   # Overridden to handle the {Kernel#set_focus} case.
   def set_attribute attr, value
     if attr == :focused
-      @app.activateWithOptions NSApplicationActivateIgnoringOtherApps
+      if value
+        @app.unhide
+        @app.activateWithOptions NSApplicationActivateIgnoringOtherApps
+      else
+        @app.hide
+      end
     else
       super
     end
