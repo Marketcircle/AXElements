@@ -43,7 +43,7 @@ class TestAXApplication < TestAX
     class << AX
       alias_method :old_keyboard_action, :keyboard_action
       def keyboard_action element, string
-        true if string == 'test' && element == TestAX::APP_REF
+        true if string == 'test' && element == TestAX::REF
       end
     end
     assert APP.type_string('test')
