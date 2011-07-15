@@ -18,11 +18,10 @@ class Accessibility::Tree
   #
   # Iterate through the tree in breadth first order.
   def each
-    pending = [@start]
+    pending = [@root]
     until pending.empty?
       current = pending
       pending = []
-      @height += 1
       current.each do |element|
         element.attribute(:children).each do |x|
           pending << x if x.respond_to?(:children)
@@ -44,12 +43,35 @@ class Accessibility::Tree
   end
 
   ##
-  # Make a `dot` format GraphViz graph of the tree.
+  # @todo Lazy-wrap element refs, should make things a bit faster
+  # @todo Implement method in a single loop
+  #
+  # Iterate through the tree in breadth first order which keeping track
+  # of the current height of the tree.
+  def each_with_height
+    pending = [@root]
+    height = 0
+    until pending.empty?
+      current = pending
+      pending = []
+      height += 1
+      current.each do |element|
+        element.attribute(:children).each do |x|
+          pending << x if x.respond_to?(:children)
+          yield x, height
+        end
+      end
+    end
+  end
+
+  ##
+  # Make a `dot` format graph of the tree, meant for graphing with
+  # GraphViz.
   #
   # @return [String]
   def to_dot
-    each do |x|
-      puts @height
+    each_with_height do |element, height|
+      puts height
     end
   end
 
