@@ -34,7 +34,7 @@ module Accessibility
   end
 
   @log = Logger.new $stderr
-  @log.level = Logger::WARN
+  @log.level = Logger::ERROR
 end
 
 require 'ax_elements/version'
