@@ -217,9 +217,9 @@ class << AX
   # the PID belonges to something that is not an app.
   #
   # @param [Fixnum] pid The process identifier for the application you want
-  # @return [AX::Application]
+  # @return [AXUIElementRef]
   def application_for_pid pid
-    AX::Application.new AXUIElementCreateApplication(pid)
+    AXUIElementCreateApplication(pid)
   end
 
   # @group Misc.

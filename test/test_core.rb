@@ -490,8 +490,10 @@ end
 
 class TestApplicationForPID < TestCore
 
-  def test_makes_an_app
-    assert_instance_of AX::Application, AX.application_for_pid(PID)
+  def test_a_raw_element
+    ret  = AX.application_for_pid(PID)
+    role = attribute_for ret, KAXRoleAttribute
+    assert_equal KAXApplicationRole, role
   end
 
   # invalid pid will crash MacRuby, so we don't bother testing it
