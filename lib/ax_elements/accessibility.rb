@@ -36,7 +36,7 @@ class << Accessibility
   #
   # @return [AX::Element]
   def element_under_mouse
-    AX.element_at_point *Mouse.current_position
+    element_at_point Mouse.current_position
   end
 
   ##
@@ -52,7 +52,7 @@ class << Accessibility
   # @return [AX::Element]
   def element_at_point *point
     arg = point.size == 1 ? point.first : point
-    AX.element_at_point(*arg.to_a.flatten)
+    AX::Element.process_attribute AX.element_at_point(*arg.to_a.flatten)
   end
   alias_method :element_at_position, :element_at_point
 

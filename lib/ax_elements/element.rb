@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+
 ##
 # @abstract
 #
@@ -194,15 +195,13 @@ class AX::Element
   #   window.application # => SearchFailure is raised
   def method_missing method, *args
     if attr = attribute_for(method)
-      return AX.attr_of_element(@ref, attr)
+      return self.class.process_attribute AX.attr_of_element(@ref, attr) # hmm
     end
 
-    if self.respond_to?(:children)
-      if (ret = search(method, args.first)).blank?
-        raise SearchFailure.new(self, method)
-      else
-        return ret
-      end
+    if self.respond_to? :children
+      result = search method, args.first
+      return result unless result.blank?
+      raise SearchFailure.new(self, method)
     end
 
     super
@@ -226,7 +225,10 @@ class AX::Element
   # @yieldreturn [Boolean]
   # @return [Proc]
   def on_notification notif, &block
-    AX.register_for_notif @ref, notif_for(notif), &block
+    AX.register_for_notif @ref, notif_for(notif) do |element, notif|
+      element = self.class.process_attribute element
+      block ? block.call(element, notif) : true
+    end
   end
 
   # @endgroup
@@ -377,9 +379,8 @@ class AX::Element
     # @param [AXUIElementRef] element
     # @return [AX::Element]
     def element_attribute element
-      klass, sklass = AX.roles_for(element).map! { |x| strip_prefix x }
-      puts 'here'
-      determine_class_for(klass, sklass).new(element)
+      roles = AX.roles_for(element).map! { |x| strip_prefix x }
+      determine_class_for(roles).new(element)
     end
 
     ##

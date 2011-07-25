@@ -16,10 +16,6 @@ class TestCore < TestAX
     @@check_box ||= child KAXCheckBoxRole
   end
 
-  def static_text
-    @@static_text ||= child KAXStaticTextRole
-  end
-
   def search_box
     @@search_box ||= child KAXTextFieldRole
   end
@@ -87,94 +83,17 @@ class TestAttrOfElementGetsCorrectAttribute < TestCore
   # @todo the app gives CGRectZero in screen coordinates, and then they are
   #       flipped for us to, so we need to flip them again
   def test_custom_lol_is_rect
-    point   = CGPointZero.dup
-    point.y = NSScreen.mainScreen.frame.size.height
-    expected_rect = CGRect.new(point, CGSizeZero)
-    assert_equal expected_rect, AX.attr_of_element(WINDOW, 'AXLol')
+    point         = CGPointZero.dup
+    point.y       = NSScreen.mainScreen.frame.size.height
+    expected_rect = CGRect.new point, CGSizeZero
+    ret           = AX.attr_of_element WINDOW, 'AXLol'
+    ptr           = Pointer.new CGRect.type
+    AXValueGetValue(ret, 3, ptr)
+    assert_equal expected_rect, ptr[0]
   end
 
   def test_hidden_is_hidden_value
     assert_equal false, AX.attr_of_element(REF, KAXHiddenAttribute)
-  end
-
-end
-
-
-class TestAttrOfElementParsesData < TestCore
-
-  def test_does_not_return_raw_values
-    assert_kind_of AX::Element, AX.attr_of_element(REF, KAXMenuBarAttribute)
-  end
-
-  def test_does_not_return_raw_values_in_array
-    assert_kind_of AX::Element, AX.attr_of_element(REF, KAXChildrenAttribute).first
-  end
-
-  def test_returns_nil_for_non_existant_attributes
-    assert_nil AX.attr_of_element(REF, 'MADEUPATTRIBUTE')
-  end
-
-  def test_returns_nil_for_nil_attributes
-    assert_nil AX.attr_of_element(WINDOW, KAXProxyAttribute)
-  end
-
-  def test_returns_boolean_false_for_false_attributes
-    assert_equal false, AX.attr_of_element(REF, 'AXEnhancedUserInterface')
-  end
-
-  def test_returns_boolean_true_for_true_attributes
-    assert_equal true, AX.attr_of_element(WINDOW, KAXMainAttribute)
-  end
-
-  def test_wraps_axuielementref_objects
-    # need intermediate step to make sure AX::MenuBar exists
-    ret = AX.attr_of_element(REF, KAXMenuBarAttribute)
-    assert_instance_of AX::MenuBar, ret
-  end
-
-  def test_returns_array_for_array_attributes
-    assert_kind_of Array, AX.attr_of_element(REF, KAXChildrenAttribute)
-  end
-
-  def test_returned_arrays_are_not_empty_when_they_should_have_stuff
-    refute_empty AX.attr_of_element(REF, KAXChildrenAttribute)
-  end
-
-  def test_returned_element_arrays_do_not_have_raw_elements
-    assert_kind_of AX::Element, AX.attr_of_element(REF, KAXChildrenAttribute).first
-  end
-
-  def test_returns_number_for_number_attribute
-    assert_instance_of Fixnum, AX.attr_of_element(check_box, KAXValueAttribute)
-  end
-
-  def test_returns_array_of_numbers_when_attribute_has_an_array_of_numbers
-    # could be a float or a fixnum, be more lenient
-    assert_kind_of NSNumber, AX.attr_of_element(slider, KAXAllowedValuesAttribute).first
-  end
-
-  def test_returns_a_cgsize_for_size_attributes
-    assert_instance_of CGSize, AX.attr_of_element(WINDOW, KAXSizeAttribute)
-  end
-
-  def test_returns_a_cgpoint_for_point_attributes
-    assert_instance_of CGPoint, AX.attr_of_element(WINDOW, KAXPositionAttribute)
-  end
-
-  def test_returns_a_cfrange_for_range_attributes
-    assert_instance_of CFRange, AX.attr_of_element(static_text, KAXVisibleCharacterRangeAttribute)
-  end
-
-  def test_returns_a_cgrect_for_rect_attributes
-    assert_kind_of CGRect, AX.attr_of_element(WINDOW, 'AXLol')
-  end
-
-  def test_works_with_strings
-    assert_instance_of String, AX.attr_of_element(REF, KAXTitleAttribute)
-  end
-
-  def test_works_with_urls
-    assert_instance_of NSURL, AX.attr_of_element(WINDOW, KAXURLAttribute)
   end
 
 end
@@ -186,49 +105,6 @@ class TestAttrOfElementErrors < TestCore
   def test_logs_message_for_non_existant_attributes
     with_logging do AX.attr_of_element REF, 'MADEUPATTRIBUTE' end
     assert_match /#{KAXErrorAttributeUnsupported}/, @log_output.string
-  end
-
-end
-
-
-class TestAttrOfElementChoosesCorrectClasseForElements < TestCore
-
-  def test_chooses_role_if_no_subrole
-    assert_instance_of AX::Application, AX.attr_of_element(WINDOW, KAXParentAttribute)
-  end
-
-  def test_chooses_subrole_if_it_exists
-    classes = AX.attr_of_element(WINDOW, KAXChildrenAttribute).map(&:class)
-    assert_includes classes, AX::CloseButton
-    assert_includes classes, AX::SearchField
-  end
-
-  def test_chooses_role_if_subrole_is_nil
-    scroll_area = child KAXScrollAreaRole
-    web_area    = AX.attr_of_element(scroll_area, KAXChildrenAttribute).first
-    assert_instance_of AX::WebArea, web_area
-  end
-
-  # we use dock items here, because this is an easy case of
-  # the role class being recursively created when trying to
-  # create the subrole class
-  def test_creates_role_for_subrole_if_it_does_not_exist_yet
-    dock     = AXUIElementCreateApplication(pid_for 'com.apple.dock')
-    list     = children_for(dock).first
-    children = AX.attr_of_element(list, KAXChildrenAttribute).map(&:class)
-    assert_includes children, AX::ApplicationDockItem
-  end
-
-  # @todo this happens when accessibility is not implemented correctly,
-  #       and the problem with fixing it is the performance cost
-  def test_chooses_role_if_subrole_is_unknown_type
-    skip 'This case is not handled right now'
-  end
-
-  def test_creates_inheritance_chain
-    AX.attr_of_element(WINDOW, KAXChildrenAttribute)
-    assert_equal AX::Button, AX::CloseButton.superclass
-    assert_equal AX::Element, AX::Button.superclass
   end
 
 end
@@ -393,22 +269,6 @@ class TestAXNotifications < TestCore
     end
   end
 
-  # this test is weird, sometimes the radio group sends the notification
-  # first and other times the button sends it, but for the sake of the
-  # test we only care that one of them sent the notif
-  def test_yielded_proper_objects
-    element = notification = nil
-    AX.register_for_notif(radio_gaga, KAXValueChangedNotification) do |el,notif|
-      element, notification = el, notif
-    end
-
-    action_for radio_gaga, KAXPressAction
-
-    assert AX.wait_for_notif(1.0)
-    assert_kind_of NSString, notification
-    assert_kind_of AX::Element, element
-  end
-
   def test_works_without_a_block
     AX.register_for_notif(radio_gaga, KAXValueChangedNotification)
     start = Time.now
@@ -482,7 +342,7 @@ class TestElementAtPosition < TestCore
     AXValueGetValue(point, KAXValueCGPointType, ptr)
     point = ptr[0]
     element = AX.element_at_point(*point.to_a)
-    assert_equal button, element.ref
+    assert_equal button, element
   end
 
 end
@@ -507,39 +367,6 @@ class TestPIDOfElement < TestCore
 
   def test_pid_of_dock_app_is_docks_pid
     assert_equal PID, AX.pid_of_element(WINDOW)
-  end
-
-end
-
-
-class TestStripPrefix < MiniTest::Unit::TestCase
-
-  def prefix_test before, after
-    assert_equal after, AX.strip_prefix(before)
-  end
-
-  def test_removes_ax_prefix
-    prefix_test 'AXButton', 'Button'
-  end
-
-  def test_removes_combination_prefixes
-    prefix_test 'MCAXButton', 'Button'
-  end
-
-  def test_works_with_all_caps
-    prefix_test 'AXURL', 'URL'
-  end
-
-  def test_works_with_long_name
-    prefix_test 'AXTitleUIElement', 'TitleUIElement'
-  end
-
-  def test_strips_predicate_too
-    prefix_test 'AXIsApplicationRunning', 'ApplicationRunning'
-  end
-
-  def test_is_not_greedy
-    prefix_test 'AXAX', 'AX'
   end
 
 end

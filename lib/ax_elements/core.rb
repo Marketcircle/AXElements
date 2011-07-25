@@ -187,10 +187,7 @@ class << AX
   # @return [Proc] the proc used as a callback when the notification is received
   def register_for_notif element, notif, &blk
     notif_proc = Proc.new do |obsrvr, elmnt, ntfctn, _|
-      wrapped_elmnt = element_attribute elmnt
-      stop_waiting  = blk ? blk.call(wrapped_elmnt, ntfctn) : true
-      break unless stop_waiting
-
+      break unless blk ? blk.call(elmnt, ntfctn) : true
       run_loop   = CFRunLoopGetCurrent()
       app_source = AXObserverGetRunLoopSource(obsrvr)
       CFRunLoopRemoveSource(run_loop, app_source, KCFRunLoopDefaultMode)
@@ -242,7 +239,7 @@ class << AX
     system = AXUIElementCreateSystemWide()
     code   = AXUIElementCopyElementAtPosition(system, x, y, ptr)
     log_error system, code unless code.zero?
-    element_attribute ptr[0]
+    ptr[0]
   end
 
   ##

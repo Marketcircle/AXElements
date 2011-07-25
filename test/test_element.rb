@@ -2,11 +2,11 @@
 
 class TestElements < TestAX
 
-  APP    = AX::Element.new(REF)
-  WINDOW = AX.attr_of_element(REF, KAXMainWindowAttribute)
+  APP    = AX::Element.new REF
+  WINDOW = AX::Element.process_attribute AX.attr_of_element(REF, KAXMainWindowAttribute)
 
   def window_children
-    @@window_children ||= AX.attr_of_element(WINDOW.ref, KAXChildrenAttribute)
+    @@window_children ||= WINDOW.attribute :children
   end
 
   def no_button
@@ -22,9 +22,15 @@ class TestElements < TestAX
   end
 
   def slider
-    @@slider ||= window_children.find do |item|
-      item.class == AX::Slider
-    end
+    @@slider ||= window_children.find { |item| item.class == AX::Slider }
+  end
+
+  def check_box
+    @@check_box ||= window_children.find { |item| item.class == AX::CheckBox }
+  end
+
+  def static_text
+    @@static_text ||= window_children.find { |item| item.class == AX::StaticText }
   end
 
   def value_for element
@@ -75,8 +81,8 @@ class TestElementSearchFailure < TestElements
 
   def test_includes_trace
     trace = @exception.message.split('Element Path:').last
-    assert_match /AX::StandardWindow "AXElementsTester"/, tace
-    assert_match /AX::Application "AXElementsTester" 2 children/, tace
+    assert_match /AX::StandardWindow "AXElementsTester"/, trace
+    assert_match /AX::Application "AXElementsTester" 2 children/, trace
   end
 
 end
@@ -96,17 +102,16 @@ class TestElementAttributes < TestElements
 end
 
 
-class TestElementGetAttribute < TestElements
+class TestElementAttribute < TestElements
 
   def test_raises_for_non_existent_attributes
     assert_raises AX::Element::LookupFailure do
-      APP.attribute(:fakeattribute)
+      APP.attribute :fakeattribute
     end
   end
 
-  def test_raises_if_cache_hit_but_object_does_not_have_attribute
-    # make sure attr exists
-    WINDOW.attribute :nyan?
+  def test_raises_if_cache_hit_but_object_does_not_have_the_attribute
+    WINDOW.attribute :nyan? # make sure attr resolves to a constant first
     assert_raises AX::Element::LookupFailure do
       APP.attribute :nyan?
     end
@@ -146,6 +151,129 @@ class TestElementGetAttributeTransformsSymbolToConstant < TestElements
   def test_matches_exactly_with_multiple_words
     assert_equal   'AXElementsTester', WINDOW.attribute(:title)
     assert_kind_of AX::Element,        WINDOW.attribute(:title_ui_element)
+  end
+
+end
+
+
+class TestElementAttributeParsesData < TestElements
+
+  def test_does_not_return_raw_values
+    assert_kind_of AX::Element, APP.attribute(:menu_bar)
+  end
+
+  def test_does_not_return_raw_values_in_array
+    assert_kind_of AX::Element, APP.attribute(:children).first
+  end
+
+  def test_returns_nil_for_nil_attributes
+    assert_nil WINDOW.attribute(:proxy)
+  end
+
+  def test_returns_boolean_false_for_false_attributes
+    assert_equal false, APP.attribute(:enhanced_user_interface)
+  end
+
+  def test_returns_boolean_true_for_true_attributes
+    assert_equal true, WINDOW.attribute(:main)
+  end
+
+  def test_wraps_axuielementref_objects
+    # need intermediate step to make sure AX::MenuBar exists
+    ret = APP.attribute(:menu_bar)
+    assert_instance_of AX::MenuBar, ret
+  end
+
+  def test_returns_array_for_array_attributes
+    assert_kind_of Array, APP.attribute(:children)
+  end
+
+  def test_returned_arrays_are_not_empty_when_they_should_have_stuff
+    refute_empty APP.attribute(:children)
+  end
+
+  def test_returned_element_arrays_do_not_have_raw_elements
+    assert_kind_of AX::Element, APP.attribute(:children).first
+  end
+
+  def test_returns_number_for_number_attribute
+    assert_instance_of Fixnum, check_box.attribute(:value)
+  end
+
+  def test_returns_array_of_numbers_when_attribute_has_an_array_of_numbers
+    # could be a float or a fixnum, be more lenient
+    assert_kind_of NSNumber, slider.attribute(:allowed_values).first
+  end
+
+  def test_returns_a_cgsize_for_size_attributes
+    assert_instance_of CGSize, WINDOW.attribute(:size)
+  end
+
+  def test_returns_a_cgpoint_for_point_attributes
+    assert_instance_of CGPoint, WINDOW.attribute(:position)
+  end
+
+  def test_returns_a_cfrange_for_range_attributes
+    assert_instance_of CFRange, static_text.attribute(:visible_character_range)
+  end
+
+  def test_returns_a_cgrect_for_rect_attributes
+    assert_kind_of CGRect, WINDOW.attribute(:lol)
+  end
+
+  def test_works_with_strings
+    assert_instance_of String, APP.attribute(:title)
+  end
+
+  def test_works_with_urls
+    assert_instance_of NSURL, WINDOW.attribute(:url)
+  end
+
+end
+
+
+class TestElementAttributeChoosesCorrectClasseForElements < TestElements
+
+  def scroll_area
+    window_children.find { |item| item.class == AX::ScrollArea }
+  end
+
+  def test_chooses_role_if_no_subrole
+    assert_instance_of AX::Application, WINDOW.attribute(:parent)
+  end
+
+  def test_chooses_subrole_if_it_exists
+    classes = window_children.map &:class
+    assert_includes classes, AX::CloseButton
+    assert_includes classes, AX::SearchField
+  end
+
+  def test_chooses_role_if_subrole_is_nil
+    web_area = scroll_area.attribute(:children).first
+    assert_instance_of AX::WebArea, web_area
+  end
+
+  # we use dock items here, because this is an easy case of
+  # the role class being recursively created when trying to
+  # create the subrole class
+  def test_creates_role_for_subrole_if_it_does_not_exist_yet
+    dock     = AX::Element.new AXUIElementCreateApplication(pid_for 'com.apple.dock')
+    list     = dock.attribute(:children).first
+    children = list.attribute(:children).map &:class
+    assert_includes children, AX::ApplicationDockItem
+  end
+
+  # @todo this happens when accessibility is not implemented correctly,
+  #       and the problem with fixing it is the performance cost
+  def test_chooses_role_if_subrole_is_unknown_type
+    skip 'This case is not handled right now'
+  end
+
+  # @todo Get another case to test, something not used elsewhere
+  def test_creates_inheritance_chain
+    WINDOW.attribute :children
+    assert_equal AX::Button, AX::CloseButton.superclass
+    assert_equal AX::Element, AX::Button.superclass
   end
 
 end
@@ -222,11 +350,11 @@ class TestElementSetAttribute < TestElements
 
   # important test since it checks if we wrap boxes
   def test_set_window_size
-    original_size = AX.attr_of_element(WINDOW.ref, KAXSizeAttribute)
+    original_size = WINDOW.attribute :size
     new_size = original_size.dup
     new_size.height /= 2
     WINDOW.set_attribute :size, original_size
-    assert_equal original_size, AX.attr_of_element(WINDOW.ref, KAXSizeAttribute)
+    assert_equal original_size, WINDOW.attribute(:size)
   ensure
     WINDOW.set_attribute :size, original_size
   end
@@ -367,31 +495,52 @@ class TestElementMethodMissing < TestElements
     assert_raises NoMethodError do no_button.list end
   end
 
+  def test_processes_attribute_return_values
+    assert_instance_of AX::StandardWindow, no_button.parent
+    assert_instance_of CGPoint, no_button.position
+  end
+
 end
 
 
 class TestElementOnNotification < TestElements
 
-  def setup
-    class << AX; alias_method :old_register_for_notif, :register_for_notif; end
-  end
-
-  def teardown
-    class << AX; alias_method :register_for_notif, :old_register_for_notif; end
-  end
-
-  def test_forwards_info_properly
-    def AX.register_for_notif ref, notif, &block
-      CFGetTypeID(ref) == AXUIElementGetTypeID() && notif == KAXWindowCreatedNotification
-    end
-    assert APP.on_notification(:window_created)
-  end
-
   def test_does_no_translation_for_custom_notifications
+    class << AX; alias_method :old_register_for_notif, :register_for_notif; end
     def AX.register_for_notif ref, notif, &block
       notif == 'Cheezburger'
     end
     assert APP.on_notification('Cheezburger')
+  ensure
+    class << AX; alias_method :register_for_notif, :old_register_for_notif; end
+  end
+
+  def radio_group
+    @@radio_group ||= window_children.find do |item|
+      item.class == AX::RadioGroup
+    end
+  end
+
+  def radio_gaga
+    @@gaga ||= radio_group.attribute(:children).find do |item|
+      item.attribute(:title) == 'Gaga'
+    end
+  end
+
+  # this test is weird, sometimes the radio group sends the notification
+  # first and other times the button sends it, but for the sake of the
+  # test we only care that one of them sent the notif
+  def test_yielded_proper_objects
+    element = notification = nil
+    radio_gaga.on_notification :value_changed do |el,notif|
+      element, notification = el, notif
+    end
+
+    action_for radio_gaga.ref, KAXPressAction
+
+    assert AX.wait_for_notif 1.0
+    assert_kind_of NSString, notification
+    assert_kind_of AX::Element, element
   end
 
 end
@@ -409,7 +558,7 @@ class TestElementInspect < TestElements
     area = window_children.find do |item|
       item.class == AX::ScrollArea
     end
-    AX.attr_of_element(area.ref, KAXChildrenAttribute).first
+    area.attribute(:children).first
   end
 
   def test_uses_value
@@ -534,7 +683,7 @@ class TestElementEquivalence < TestElements
   end
 
   def window
-    AX.attr_of_element(REF, KAXMainWindowAttribute)
+    AX::Element.new AX.attr_of_element(REF, KAXMainWindowAttribute)
   end
 
   def list
@@ -569,6 +718,39 @@ class TestElementEquivalence < TestElements
     refute app.eql? window
     refute app.equal? window
     assert app != window
+  end
+
+end
+
+
+class TestStripPrefix < MiniTest::Unit::TestCase
+
+  def prefix_test before, after
+    assert_equal after, AX::Element.strip_prefix(before)
+  end
+
+  def test_removes_ax_prefix
+    prefix_test 'AXButton', 'Button'
+  end
+
+  def test_removes_combination_prefixes
+    prefix_test 'MCAXButton', 'Button'
+  end
+
+  def test_works_with_all_caps
+    prefix_test 'AXURL', 'URL'
+  end
+
+  def test_works_with_long_name
+    prefix_test 'AXTitleUIElement', 'TitleUIElement'
+  end
+
+  def test_strips_predicate_too
+    prefix_test 'AXIsApplicationRunning', 'ApplicationRunning'
+  end
+
+  def test_is_not_greedy
+    prefix_test 'AXAX', 'AX'
   end
 
 end
