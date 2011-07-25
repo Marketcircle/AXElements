@@ -18,7 +18,7 @@ module Accessibility::Language
   # @param [String] name an action constant
   def method_missing method, *args
     arg = args.first
-    unless arg.kind_of?(AX::Element)
+    unless arg.kind_of? AX::Element
       # should be able to just call super, but there is a bug in MacRuby (#1320)
       # so we just recreate what should be happening
       message = "undefined method `#{method}' for #{self}:#{self.class}"

@@ -39,7 +39,7 @@ class AX::Element
   # @param [AXUIElementRef] element
   def initialize element
     @ref        = element
-    @attributes = AX.attrs_of_element(element)
+    @attributes = AX.attrs_of_element element
   end
 
   # @group Attributes
@@ -50,8 +50,8 @@ class AX::Element
   # @param [Symbol] attr
   def attribute attr
     real_attribute = attribute_for attr
-    raise LookupFailure.new(attr) unless real_attribute
     AX.attr_of_element(@ref, real_attribute)
+    raise LookupFailure.new attr unless real_attribute
   end
 
   ##
@@ -69,14 +69,14 @@ class AX::Element
   #
   # @return [Fixnum]
   def pid
-    @pid ||= AX.pid_of_element(@ref)
+    @pid ||= AX.pid_of_element @ref
   end
 
   # @param [Symbol] attr
   def attribute_writable? attr
     real_attribute = attribute_for attr
-    raise LookupFailure.new(attr) unless real_attribute
     AX.attr_of_element_writable?(@ref, real_attribute)
+    raise LookupFailure.new attr unless real_attribute
   end
 
   ##
@@ -86,10 +86,10 @@ class AX::Element
   # @param [String] attr an attribute constant
   # @return the value that you set is returned
   def set_attribute attr, value
-    raise AttributeReadOnly.new(attr) unless attribute_writable? attr
+    raise AttributeReadOnly.new attr unless attribute_writable? attr
     real_attribute = attribute_for attr
     value = value.to_axvalue if value.kind_of? Boxed
-    AX.set_attr_of_element(@ref, real_attribute, value)
+    AX.set_attr_of_element @ref, real_attribute, value
     value
   end
 
@@ -97,7 +97,7 @@ class AX::Element
 
   # @return [Array<String>] available parameterized attributes
   def param_attributes
-    AX.param_attrs_of_element(@ref) # should we cache?
+    AX.param_attrs_of_element @ref # should we cache?
   end
 
   ##
@@ -107,15 +107,15 @@ class AX::Element
   # @param [Symbol] attr
   def get_param_attribute attr, param
     real_attribute = param_attribute_for attr
-    raise LookupFailure.new(attr) unless real_attribute
     AX.param_attr_of_element(@ref, real_attribute, param)
+    raise LookupFailure.new attr unless real_attribute
   end
 
   # @group Actions
 
   # @return [Array<String>] cache of available actions
   def actions
-    AX.actions_of_element(@ref) # purposely not caching this array
+    AX.actions_of_element @ref # purposely not caching this array
   end
 
   ##
@@ -128,8 +128,8 @@ class AX::Element
   # @return [Boolean] true if successful
   def perform_action name
     real_action = action_for name
-    raise LookupFailure.new(name) unless real_action
-    AX.action_of_element(@ref, real_action)
+    raise LookupFailure.new name unless real_action
+    AX.action_of_element @ref, real_action
   end
 
   # @group Search
@@ -223,7 +223,7 @@ class AX::Element
   # @yieldreturn [Boolean]
   # @return [Proc]
   def on_notification notif, &block
-    AX.register_for_notif(@ref, notif_for(notif), &block)
+    AX.register_for_notif @ref, notif_for(notif), &block
   end
 
   # @endgroup
@@ -244,7 +244,7 @@ class AX::Element
   # attribute lookups, but will return false on potential
   # search names.
   def respond_to? name
-    return true if attribute_for(name)
+    return true if attribute_for name
     super
   end
 
