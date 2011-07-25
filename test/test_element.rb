@@ -362,29 +362,37 @@ class TestElementSetAttribute < TestElements
 end
 
 
-# @todo implement missing test cases
 class TestElementParamAttributes < TestElements
 
   def test_empty_for_dock
     assert_empty APP.param_attributes
   end
 
-  # def test_not_empty_for_something
-  # end
-  # def test_contains_proper_info
-  # end
+  def test_not_empty_for_search_field
+    assert_includes static_text.param_attributes, KAXStringForRangeParameterizedAttribute
+    assert_includes static_text.param_attributes, KAXLineForIndexParameterizedAttribute
+    assert_includes static_text.param_attributes, KAXBoundsForRangeParameterizedAttribute
+  end
+
   # @todo some other tests copied from testing #attributes
 
 end
 
 
-# @todo I'll get to this when I need to get to parameterized attributes
 class TestElementGetParamAttribute < TestElements
 
-#   def test_returns_nil_for_non_existent_attributes
-#   end
-#   def test_fetches_attribute
-#   end
+  def test_raises_exception_for_non_existent_attribute
+    assert_raises AX::Element::LookupFailure do
+      static_text.param_attribute :bob_loblaw, nil
+    end
+  end
+
+  def test_contains_proper_info
+    attr = static_text.param_attribute(:string_for_range, CFRange.new(0, 5))
+    assert_equal 'AXEle', attr
+  end
+
+  # @todo some other cases to make sure values are processed
 
 end
 

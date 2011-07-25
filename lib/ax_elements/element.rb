@@ -109,9 +109,10 @@ class AX::Element
   #       understand it more, it just adds overhead right now
   #
   # @param [Symbol] attr
-  def get_param_attribute attr, param
+  def param_attribute attr, param
     real_attribute = param_attribute_for attr
     raise LookupFailure.new attr unless real_attribute
+    param = param.to_axvalue if param.kind_of? Boxed
     self.class.process_attribute AX.param_attr_of_element(@ref, real_attribute, param)
   end
 
