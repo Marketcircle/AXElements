@@ -59,8 +59,8 @@ class Accessibility::Search
     # Whether or not a candidate object matches the criteria given
     # at initialization.
     def qualifies? element
-      return false unless the_right_type?(element)
-      return false unless meets_criteria?(element)
+      return false unless the_right_type? element
+      return false unless meets_criteria? element
       return true
     end
 
