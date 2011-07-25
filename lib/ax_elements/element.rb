@@ -4,6 +4,8 @@
 #
 # The abstract base class for all accessibility objects.
 class AX::Element
+  include Accessibility::Inspector
+
   ##
   # Raised when a lookup fails
   class LookupFailure < ArgumentError

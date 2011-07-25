@@ -39,5 +39,6 @@ end
 
 require 'ax_elements/version'
 require 'ax_elements/core'
+require 'ax_elements/inspector'
 require 'ax_elements/accessibility'
 require 'ax_elements/element'
