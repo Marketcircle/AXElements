@@ -53,8 +53,8 @@ class AX::Element
   # @param [Symbol] attr
   def attribute attr
     real_attribute = attribute_for attr
-    AX.attr_of_element(@ref, real_attribute)
     raise LookupFailure.new attr unless real_attribute
+    self.class.process_attribute AX.attr_of_element(@ref, real_attribute)
   end
 
   ##
@@ -78,8 +78,8 @@ class AX::Element
   # @param [Symbol] attr
   def attribute_writable? attr
     real_attribute = attribute_for attr
-    AX.attr_of_element_writable?(@ref, real_attribute)
     raise LookupFailure.new attr unless real_attribute
+    AX.attr_of_element_writable? @ref, real_attribute
   end
 
   ##
@@ -110,8 +110,8 @@ class AX::Element
   # @param [Symbol] attr
   def get_param_attribute attr, param
     real_attribute = param_attribute_for attr
-    AX.param_attr_of_element(@ref, real_attribute, param)
     raise LookupFailure.new attr unless real_attribute
+    self.class.process_attribute AX.param_attr_of_element(@ref, real_attribute, param)
   end
 
   # @group Actions
@@ -271,7 +271,7 @@ class AX::Element
   #
   # Like {#respond_to?}, this is overriden to include attribute methods.
   def methods include_super = true, include_objc_super = false
-    names = attributes.map { |x| AX.strip_prefix(x).underscore.to_sym }
+    names = attributes.map { |x| self.class.strip_prefix(x).underscore.to_sym }
     names + super
   end
 
@@ -301,8 +301,7 @@ class AX::Element
     Kernel.const_defined?(const) ? Kernel.const_get(const) : name
   end
 
-  # @todo Use a thread local variable instead of the class variable for @@array
-  #       but we still need lock writes to @@const_map
+  # @todo Use a lock to make these methods thread safe...
   def attribute_for sym; (@@array = attributes).find { |x| x == @@const_map[sym] } end
   def action_for sym; (@@array = actions).find { |x| x == @@const_map[sym] } end
   def param_attribute_for sym; (@@array = param_attributes).find { |x| x == @@const_map[sym] } end
@@ -310,7 +309,7 @@ class AX::Element
   # @return [Hash{Symbol=>String}] Memoized mapping of symbols to constants
   #   used for attribute/action lookups
   @@const_map = Hash.new do |hash,key|
-    @@array.map { |x| hash[AX.strip_prefix(x).underscore.to_sym] = x }
+    @@array.map { |x| hash[strip_prefix(x).underscore.to_sym] = x }
     if hash.has_key? key
       hash[key]
     else # try other cases of transformations
@@ -319,8 +318,123 @@ class AX::Element
     end
   end
 
-end
 
+  class << self
+
+    ##
+    # Takes a return value from {#raw_attr_of_element} and, if required,
+    # converts the data to something more usable.
+    #
+    # Generally, used to process an AXValue into a CGPoint or an
+    # AXUIElementRef into some kind of AX::Element object.
+    def process_attribute value
+      return nil if value.nil?
+      id = ATTR_MASSAGERS[CFGetTypeID(value)]
+      id ? self.send(id, value) : value
+    end
+
+    ##
+    # @note In the case of a predicate name, this will strip the 'Is'
+    #       part of the name if it is present
+    #
+    # Takes an accessibility constant and returns a new string with the
+    # namespace prefix removed.
+    #
+    # @example
+    #
+    #   AX.strip_prefix 'AXTitle'                    # => 'Title'
+    #   AX.strip_prefix 'AXIsApplicationEnabled'     # => 'ApplicationEnabled'
+    #   AX.strip_prefix 'MCAXEnabled'                # => 'Enabled'
+    #   AX.strip_prefix KAXWindowCreatedNotification # => 'WindowCreated'
+    #   AX.strip_prefix NSAccessibilityButtonRole    # => 'Button'
+    #
+    # @param [String] constant
+    # @return [String]
+    def strip_prefix constant
+      constant.sub /^[A-Z]*?AX(?:Is)?/, ''
+    end
+
+
+    private
+
+    ##
+    # Mapping low level type ID numbers to methods to massage useful
+    # objects from data.
+    #
+    # @return [Array<Symbol>]
+    ATTR_MASSAGERS = []
+    ATTR_MASSAGERS[AXUIElementGetTypeID()] = :element_attribute
+    ATTR_MASSAGERS[CFArrayGetTypeID()]     = :array_attribute
+    ATTR_MASSAGERS[AXValueGetTypeID()]     = :boxed_attribute
+
+    ##
+    # @todo Refactor this pipeline so that we can pass the attributes we look
+    #       up to the initializer for Element, and also so we can avoid some
+    #       other duplicated work.
+    #
+    # Takes an AXUIElementRef and gives you some kind of accessibility object.
+    #
+    # @param [AXUIElementRef] element
+    # @return [AX::Element]
+    def element_attribute element
+      klass, sklass = AX.roles_for(element).map! { |x| strip_prefix x }
+      puts 'here'
+      determine_class_for(klass, sklass).new(element)
+    end
+
+    ##
+    # Like #const_get except that if the class does not exist yet then
+    # it will assume the constant belongs to a class and creates the class
+    # for you.
+    #
+    # @param [Array<String>] const the value you want as a constant
+    # @return [Class] a reference to the class being looked up
+    def determine_class_for names
+      const = names.first
+      AX.const_defined?(const) ? AX.const_get(const) : create_class(*names)
+    end
+
+    ##
+    # Creates new class at run time and puts it into the {AX} namespace.
+    #
+    # @param [String,Symbol] name
+    # @param [String,Symbol] superklass
+    # @return [Class]
+    def create_class name, superklass = :Element
+      real_superklass = determine_class_for [superklass]
+      klass = Class.new real_superklass
+      Accessibility.log.debug "#{name} class created"
+      AX.const_set name, klass
+    end
+
+    ##
+    # @todo Consider mapping in all cases to avoid returning a CFArray
+    #
+    # We assume a homogeneous array.
+    #
+    # @return [Array]
+    def array_attribute vals
+      return vals if vals.empty? || !ATTR_MASSAGERS[CFGetTypeID(vals.first)]
+      vals.map { |val| element_attribute val }
+    end
+
+    ##
+    # Extract the stuct contained in an AXValueRef.
+    #
+    # @param [AXValueRef] value
+    # @return [Boxed]
+    def boxed_attribute value
+      box_type = AXValueGetType(value)
+      ptr      = Pointer.new(BOX_TYPES[box_type])
+      AXValueGetValue(value, box_type, ptr)
+      ptr[0]
+    end
+
+    # @return [String,nil] order-sensitive (which is why we unshift nil)
+    BOX_TYPES = [CGPoint, CGSize, CGRect, CFRange].map!(&:type).unshift(nil)
+
+  end
+end
 
 require 'ax_elements/elements/application'
 require 'ax_elements/elements/systemwide'

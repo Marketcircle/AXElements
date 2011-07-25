@@ -41,8 +41,41 @@ class << AX
   # @param [AXUIElementRef] element
   # @param [String] attr an attribute constant
   def attr_of_element element, attr
-    process_ax_data raw_attr_of_element(element, attr)
+    ptr  = Pointer.new :id
+    code = AXUIElementCopyAttributeValue(element, attr, ptr)
+    log_error element, code unless code.zero?
+    ptr[0]
   end
+
+  ##
+  # @todo Should we handle cases where a subrole has a value of
+  #       'Unknown'? What is the performance impact?
+  #
+  # Fetch subrole and role of an object, pass back a clean array of strings.
+  #
+  # We have to be careful, because some things claim to have a subrole
+  # but return nil or they have a subrole value of 'Unknown'.
+  #
+  # @param [AXUIElementRef]
+  # @return [Array<String>] subrole first, if it exists
+  def roles_for element
+    ptr  = Pointer.new :id
+    aptr = Pointer.new '^{__CFArray}'
+    AXUIElementCopyAttributeValue(element, ROLE, ptr)
+    ret = [ptr[0]]
+    AXUIElementCopyAttributeNames(element, aptr)
+    if aptr[0].include? SUBROLE
+      AXUIElementCopyAttributeValue(element, SUBROLE, ptr)
+      ret.unshift ptr[0] if ptr[0]
+    end
+    ret
+    #raise "Found an element that has no role: #{CFShow(element)}"
+  end
+
+  # @return [String] local copy of a Cocoa constant; this is a performance hack
+  ROLE    = KAXRoleAttribute
+  # @return [String] local copy of a Cocoa constant; this is a performance hack
+  SUBROLE = KAXSubroleAttribute
 
   ##
   # Check if an attribute of an element is writable.
@@ -126,7 +159,10 @@ class << AX
   # @param [AXUIElementRef] element
   # @param [String] attr an attribute constant
   def param_attr_of_element element, attr, param
-    process_ax_data raw_param_attr_of_element(element, attr, param)
+    ptr  = Pointer.new :id
+    code = AXUIElementCopyParameterizedAttributeValue(element, attr, param, ptr)
+    log_error element, code unless code.zero?
+    ptr[0]
   end
 
   # @group Notifications
@@ -236,27 +272,6 @@ class << AX
     ptr[0]
   end
 
-  ##
-  # @note In the case of a predicate name, this will strip the 'Is'
-  #       part of the name if it is present
-  #
-  # Takes an accessibility constant and returns a new string with the
-  # namespace prefix removed.
-  #
-  # @example
-  #
-  #   AX.strip_prefix 'AXTitle'                    # => 'Title'
-  #   AX.strip_prefix 'AXIsApplicationEnabled'     # => 'ApplicationEnabled'
-  #   AX.strip_prefix 'MCAXEnabled'                # => 'Enabled'
-  #   AX.strip_prefix KAXWindowCreatedNotification # => 'WindowCreated'
-  #   AX.strip_prefix NSAccessibilityButtonRole    # => 'Button'
-  #
-  # @param [String] constant
-  # @return [String]
-  def strip_prefix constant
-    constant.sub(/^[A-Z]*?AX(?:Is)?/, '')
-  end
-
   # @endgroup
 
 
@@ -305,24 +320,6 @@ class << AX
   end
 
   ##
-  # Uses the call stack and error code to log a message that might be
-  # helpful in debugging.
-  #
-  # @param [AXUIElementRef] element
-  # @param [Fixnum] code AXError value
-  # @return [Fixnum] returns the code that was passed
-  def log_error element, code
-    message = AXError[code] || 'UNKNOWN ERROR CODE'
-    logger = Accessibility.log
-    logger.warn "[#{message} (#{code})] while trying #{caller[0]}"
-    logger.info "Available attributes were:\n#{attrs_of_element(element)}"
-    logger.info "Available actions were:\n#{actions_of_element(element)}"
-    # @todo logger.info available parameterized attributes
-    logger.debug "Backtrace: #{caller.description}"
-    # @todo logger.debug pp hierarchy element or pp element
-  end
-
-  ##
   # A mapping of the AXError constants to human readable strings, though
   # this has to be actively maintained in case of changes to Apple's
   # documentation in the future.
@@ -346,142 +343,22 @@ class << AX
     KAXErrorNotEnoughPrecision                => 'Not Enough Precision'
   }
 
-  # @param [AXUIElementRef] element
-  # @param [String] attr an attribute constant
-  def raw_attr_of_element element, attr
-    ptr  = Pointer.new :id
-    code = AXUIElementCopyAttributeValue( element, attr, ptr )
-    log_error element, code unless code.zero?
-    ptr[0]
-  end
-
-  # @param [AXUIElementRef] element
-  # @param [String] attr an attribute constant
-  def raw_param_attr_of_element element, attr, param
-    ptr  = Pointer.new :id
-    code = AXUIElementCopyParameterizedAttributeValue( element, attr, param, ptr )
-    log_error element, code unless code.zero?
-    ptr[0]
-  end
-
   ##
-  # Takes a return value from {#raw_attr_of_element} and, if required,
-  # converts the data to something more usable.
-  #
-  # Generally, used to process an AXValue into a CGPoint or an
-  # AXUIElementRef into some kind of AX::Element object.
-  def process_ax_data value
-    return if value.nil?
-    id = ATTR_MASSAGERS[CFGetTypeID(value)]
-    id ? self.send(id, value) : value
-  end
-
-  ##
-  # Mapping low level type ID numbers to methods to massage useful
-  # objects from data.
-  #
-  # @return [Array<Symbol>]
-  ATTR_MASSAGERS = []
-  ATTR_MASSAGERS[AXUIElementGetTypeID()] = :element_attribute
-  ATTR_MASSAGERS[CFArrayGetTypeID()]     = :array_attribute
-  ATTR_MASSAGERS[AXValueGetTypeID()]     = :boxed_attribute
-
-  ##
-  # Creates new class at run time and puts it into the {AX} namespace.
-  # This method is called for each type of UI element that has not yet been
-  # explicitly defined so that they can be defined them at runtime.
-  #
-  # @param [String,Symbol] name
-  # @param [String,Symbol] superklass
-  # @return [Class]
-  def create_ax_class name, superklass = :Element
-    real_superklass = determine_class_for([superklass])
-    klass = Class.new(real_superklass)
-    Accessibility.log.debug "#{name} class created"
-    const_set name, klass
-  end
-
-  ##
-  # Like #const_get except that if the class does not exist yet then
-  # it will assume the constant belongs to a class and creates the class
-  # for you.
-  #
-  # @param [Array<String>] const the value you want as a constant
-  # @return [Class] a reference to the class being looked up
-  def determine_class_for names
-    const = names.first
-    const_defined?(const) ? const_get(const) : create_ax_class(*names)
-  end
-
-  ##
-  # @todo Should we handle cases where a subrole has a value of
-  #       'Unknown'? What is the performance impact?
-  #
-  # Fetch subrole and role of an object, pass back a clean array of strings.
-  #
-  # We have to be careful, because some things claim to have a subrole
-  # but return nil or they have a subrole value of 'Unknown'.
-  #
-  # @param [AXUIElementRef]
-  # @return [Array<String>] subrole first, if it exists
-  def roles_for element
-    ptr  = Pointer.new :id
-    aptr = Pointer.new '^{__CFArray}'
-    AXUIElementCopyAttributeValue(element, ROLE, ptr)
-    ret = [ptr[0]]
-    AXUIElementCopyAttributeNames(element, aptr)
-    if aptr[0].include? SUBROLE
-      AXUIElementCopyAttributeValue(element, SUBROLE, ptr)
-      ret.unshift ptr[0] if ptr[0]
-    end
-    ret
-    #raise "Found an element that has no role: #{CFShow(element)}"
-  end
-
-  # @return [String] local copy of a Cocoa constant; this is a performance hack
-  ROLE    = KAXRoleAttribute
-  # @return [String] local copy of a Cocoa constant; this is a performance hack
-  SUBROLE = KAXSubroleAttribute
-
-  ##
-  # @todo Refactor this pipeline so that we can pass the attributes we look
-  #       up to the initializer for Element, and also so we can avoid some
-  #       other duplicated work.
-  #
-  # Takes an AXUIElementRef and gives you some kind of accessibility object.
+  # Uses the call stack and error code to log a message that might be
+  # helpful in debugging.
   #
   # @param [AXUIElementRef] element
-  # @return [Element]
-  def element_attribute element
-    names = roles_for(element).map! { |x| strip_prefix x }
-    determine_class_for(names).new(element)
-  end
-
-  ##
-  # @todo Consider mapping in all cases to avoid returning a CFArray
-  #
-  # We assume a homogeneous array.
-  #
-  # @return [Array,nil]
-  def array_attribute vals
-    return vals if vals.empty? || !ATTR_MASSAGERS[CFGetTypeID(vals.first)]
-    vals.map { |val| element_attribute val }
-  end
-
-  # @return [String,nil] order-sensitive (which is why we unshift nil)
-  BOX_TYPES = [ CGPoint, CGSize, CGRect, CFRange ].map!(&:type).unshift(nil)
-
-  ##
-  # Find out what type of struct is contained in the AXValueRef and then
-  # wrap it properly.
-  #
-  # @param [AXValueRef] value
-  # @return [Boxed,nil]
-  def boxed_attribute value
-    box_type = AXValueGetType(value)
-    ptr      = Pointer.new(BOX_TYPES[box_type])
-    AXValueGetValue(value, box_type, ptr)
-    ptr[0]
+  # @param [Fixnum] code AXError value
+  # @return [Fixnum] returns the code that was passed
+  def log_error element, code
+    message = AXError[code] || 'UNKNOWN ERROR CODE'
+    logger = Accessibility.log
+    logger.warn "[#{message} (#{code})] while trying #{caller[0]}"
+    logger.info "Available attributes were:\n#{attrs_of_element(element)}"
+    logger.info "Available actions were:\n#{actions_of_element(element)}"
+    # @todo logger.info available parameterized attributes
+    logger.debug "Backtrace: #{caller.description}"
+    # @todo logger.debug pp hierarchy element or pp element
   end
 
   ##
