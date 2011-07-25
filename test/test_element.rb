@@ -64,9 +64,19 @@ end
 
 class TestElementSearchFailure < TestElements
 
+  def setup
+    @exception = AX::Element::SearchFailure.new(WINDOW, :test)
+  end
+
   def test_correct_message
-    exception = AX::Element::SearchFailure.new(:blah,:test)
-    assert_match /Could not find `test` as a child of :blah/, exception.message
+    pattern = /Could not find `test` as a child of AX::StandardWindow/
+    assert_match pattern, @exception.message
+  end
+
+  def test_includes_trace
+    trace = @exception.message.split('Element Path:').last
+    assert_match /AX::StandardWindow "AXElementsTester"/, tace
+    assert_match /AX::Application "AXElementsTester" 2 children/, tace
   end
 
 end

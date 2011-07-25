@@ -26,7 +26,10 @@ class AX::Element
   # Raised when an implicit search fails
   class SearchFailure < Exception
     def initialize searcher, searchee
-      super "Could not find `#{searchee}` as a child of #{searcher.inspect}"
+      path = Accessibility.path(searcher).map &:inspect
+      msg  = "Could not find `#{searchee}` as a child of #{searcher.class}"
+      msg << "\nElement Path:\n\t" << path.join("\n\t")
+      super msg
     end
   end
 
