@@ -42,10 +42,6 @@ class NSArray
 
   alias_method :ax_array_method_missing, :method_missing
   ##
-  # @note I'm on the fence about whether this is worth it, so it might
-  #       go away in the future. If it doesn't go away, it could be
-  #       opened up to work with all data types.
-  #
   # If the array contains {AX::Element} objects and the method name
   # belongs to an attribute then the method will be mapped
   # across the array. In this case, you can artificially pluralize
