@@ -123,7 +123,7 @@ class TestAccessibilityApplicationWithPID < TestAccessibility
     assert_equal APP, app
   end
 
-  def test_
+  def test_bad_pid
     skip 'A bad PID will cause MacRuby to explode'
     assert_nil Accessibility.application_with_pid(0)
   end

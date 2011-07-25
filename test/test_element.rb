@@ -108,7 +108,7 @@ class TestElementGetAttribute < TestElements
     # make sure attr exists
     WINDOW.attribute :nyan?
     assert_raises AX::Element::LookupFailure do
-      APP.attribute(:nyan?)
+      APP.attribute :nyan?
     end
   end
 
@@ -154,7 +154,9 @@ end
 class TestElementDescription < TestElements
 
   def test_raise_error_if_object_has_no_description
-    assert_raises AX::Element::LookupFailure do APP.description end
+    assert_raises AX::Element::LookupFailure do
+      APP.description
+    end
   end
 
   def test_gets_description
@@ -188,7 +190,7 @@ class TestElementAttributeWritable < TestElements
 
   def test_raises_error_for_non_existant_attributes
     assert_raises AX::Element::LookupFailure do
-      APP.attribute_writable?(:fake_attribute)
+      APP.attribute_writable? :fake_attribute
     end
   end
 
@@ -213,7 +215,7 @@ class TestElementSetAttribute < TestElements
 
   def test_passes_values_down_to_core_correctly
     [25, 75, 50].each do |value|
-      slider.set_attribute(:value, value)
+      slider.set_attribute :value, value
       assert_equal value, value_for(slider).to_i
     end
   end
@@ -280,7 +282,7 @@ class TestElementPerformAction < TestElements
 
   def test_raise_error_for_non_existant_action
     assert_raises AX::Element::LookupFailure do
-      APP.perform_action(:fake_action)
+      APP.perform_action :fake_action
     end
   end
 
@@ -299,11 +301,11 @@ class TestElementPerformAction < TestElements
   end
 
   def test_actually_performs_action
-    before = value_for(slider)
-    slider.perform_action(:increment)
-    after = value_for(slider)
+    before = value_for slider
+    slider.perform_action :increment
+    after = value_for slider
     assert after > before
-    slider.perform_action(:decrement)
+    slider.perform_action :decrement
     assert_equal before, value_for(slider)
   end
 
@@ -337,8 +339,8 @@ class TestElementSearch < TestElements
   end
 
   def test_forwards_all_filters
-    assert_equal WINDOW, APP.search(:window, title:'AXElementsTester')
-    assert_equal nil, slider.search(:value_indicator, help:'Cookie')
+    assert_equal WINDOW, APP.search(:window, title: 'AXElementsTester')
+    assert_equal nil, slider.search(:value_indicator, help: 'Cookie')
   end
 
 end
@@ -446,18 +448,6 @@ class TestElementInspect < TestElements
   end
 
 end
-
-
-# @todo Test this once the recursive feature starts working
-# class TestElementPrettyPrint < TestElements
-#   def test_hash_of_attributes
-#     # is a hash
-#     # has attributes as the keys
-#     # has the correct values
-#   end
-#   # def test_is_recursive
-#   # end
-# end
 
 
 class TestElementRespondTo < TestElements

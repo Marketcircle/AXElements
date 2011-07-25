@@ -33,6 +33,11 @@ require 'minitest/autorun'
 require 'minitest/pride'
 
 class MiniTest::Unit::TestCase
+  # You may need this to help track down an issue if a test is crashing MacRuby
+  # def self.test_order
+  #   :alpha
+  # end
+
   def assert_instance_of_boolean value
     message = "Expected #{value.inspect} to be a boolean"
     assert value.is_a?(TrueClass) || value.is_a?(FalseClass), message

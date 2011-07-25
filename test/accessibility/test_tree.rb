@@ -3,7 +3,7 @@ class TestAccessibilityTreeClass < TestAX
   APP = AX::Application.new REF
 
   def test_is_height_aware
-    tree = Accessibility::Tree.new(APP.attribute :main_window)
+    tree = Accessibility::Tree.new APP.attribute :main_window
     tree.each_with_height do |element, height|
       msg = element.inspect
       case element.class.to_s

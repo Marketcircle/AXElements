@@ -236,7 +236,7 @@ class << AX
   #
   # @param [Float] x
   # @param [Float] y
-  # @return [AX::Element]
+  # @return [AXUIElementRef]
   def element_at_point x, y
     ptr    = Pointer.new '^{__AXUIElement}'
     system = AXUIElementCreateSystemWide()

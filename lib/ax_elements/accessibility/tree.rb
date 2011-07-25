@@ -24,7 +24,7 @@ class Accessibility::Tree
       pending = []
       current.each do |element|
         element.attribute(:children).each do |x|
-          pending << x if x.respond_to?(:children)
+          pending << x if x.respond_to? :children
           yield x
         end
       end
@@ -57,7 +57,7 @@ class Accessibility::Tree
       height += 1
       current.each do |element|
         element.attribute(:children).each do |x|
-          pending << x if x.respond_to?(:children)
+          pending << x if x.respond_to? :children
           yield x, height
         end
       end

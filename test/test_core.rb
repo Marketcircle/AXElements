@@ -45,7 +45,7 @@ end
 class TestAttrsOfElement < TestCore
 
   def attrs
-    @@attrs ||= AX.attrs_of_element(REF)
+    @@attrs ||= AX.attrs_of_element REF
   end
 
   def test_returns_array_of_strings
@@ -93,7 +93,7 @@ class TestAttrOfElementGetsCorrectAttribute < TestCore
     assert_equal expected_rect, AX.attr_of_element(WINDOW, 'AXLol')
   end
 
-  def test_hidden_is_boolean
+  def test_hidden_is_hidden_value
     assert_equal false, AX.attr_of_element(REF, KAXHiddenAttribute)
   end
 
@@ -184,7 +184,7 @@ class TestAttrOfElementErrors < TestCore
   include LoggingCapture
 
   def test_logs_message_for_non_existant_attributes
-    with_logging do AX.attr_of_element(REF, 'MADEUPATTRIBUTE') end
+    with_logging do AX.attr_of_element REF, 'MADEUPATTRIBUTE' end
     assert_match /#{KAXErrorAttributeUnsupported}/, @log_output.string
   end
 
@@ -250,7 +250,7 @@ class TestAttrOfElementWritable < TestCore
 
   def test_logs_errors
     skip 'test fails because we are not getting the expected result code'
-    with_logging do AX.attr_of_element_writable?(DOCK, 'OMG') end
+    with_logging do AX.attr_of_element_writable? DOCK, 'OMG' end
     assert_match /#{KAXErrorAttributeUnsupported}/, @log_output.string
   end
 
@@ -261,7 +261,7 @@ class TestSetAttrOfElement < TestCore
 
   def test_set_a_slider
     [25, 75, 50].each do |value|
-      AX.set_attr_of_element(slider, KAXValueAttribute, value)
+      AX.set_attr_of_element slider, KAXValueAttribute, value
       assert_equal value, value_for(slider)
     end
   end
@@ -279,7 +279,7 @@ end
 class TestActionsOfElement < TestCore
 
   def test_works_when_there_are_no_actions
-    assert_empty AX.actions_of_element(REF)
+    assert_empty AX.actions_of_element REF
   end
 
   def test_returns_array_of_strings
@@ -287,7 +287,7 @@ class TestActionsOfElement < TestCore
   end
 
   def test_make_sure_certain_actions_are_present
-    actions = AX.actions_of_element(slider)
+    actions = AX.actions_of_element slider
     assert_includes actions, KAXIncrementAction
     assert_includes actions, KAXDecrementAction
   end
@@ -299,19 +299,19 @@ class TestActionOfElement < TestCore
 
   def test_check_a_check_box
     2.times do # twice so it should be back where it started
-      value = value_for(check_box)
-      AX.action_of_element(check_box, KAXPressAction)
+      value = value_for check_box
+      AX.action_of_element check_box, KAXPressAction
       refute_equal value, value_for(check_box)
     end
   end
 
   def test_sliding_the_slider
-    value = attribute_for(slider, KAXValueAttribute)
-    AX.action_of_element(slider, KAXIncrementAction)
+    value = attribute_for slider, KAXValueAttribute
+    AX.action_of_element slider, KAXIncrementAction
     assert attribute_for(slider, KAXValueAttribute) > value
 
-    value = attribute_for(slider, KAXValueAttribute)
-    AX.action_of_element(slider, KAXDecrementAction)
+    value = attribute_for slider, KAXValueAttribute
+    AX.action_of_element slider, KAXDecrementAction
     assert attribute_for(slider, KAXValueAttribute) < value
   end
 
@@ -477,7 +477,7 @@ end
 class TestElementAtPosition < TestCore
 
   def test_returns_a_button_when_i_give_the_coordinates_of_a_button
-    point = attribute_for(button, KAXPositionAttribute)
+    point = attribute_for button, KAXPositionAttribute
     ptr   = Pointer.new CGPoint.type
     AXValueGetValue(point, KAXValueCGPointType, ptr)
     point = ptr[0]
@@ -491,12 +491,10 @@ end
 class TestApplicationForPID < TestCore
 
   def test_a_raw_element
-    ret  = AX.application_for_pid(PID)
+    ret  = AX.application_for_pid PID
     role = attribute_for ret, KAXRoleAttribute
     assert_equal KAXApplicationRole, role
   end
-
-  # invalid pid will crash MacRuby, so we don't bother testing it
 
 end
 

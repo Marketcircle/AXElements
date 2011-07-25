@@ -15,17 +15,17 @@ class << Accessibility
   # @return [Array<AX::Element>] the path in ascending order
   def path *elements
     element = elements.last
-    return path(elements << element.parent) if element.respond_to?(:parent)
+    return path(elements << element.parent) if element.respond_to? :parent
     return elements
   end
 
   ##
   # Produce an {Accessibility::Tree} rooted at the given element. Just
-  # syntaictic sugar.
+  # syntaictic sugar for {Accessibility::Tree.new}.
   #
   # @param [AX::Element]
   def tree element
-    Accessibility::Tree.new(element)
+    Accessibility::Tree.new element
   end
 
   # @group Finding an object at a point
@@ -49,6 +49,7 @@ class << Accessibility
   #   @param [Array(Float,Float)] point
   # @overload element_at_point(CGPoint.new(x,y))
   #   @param [CGPoint] point
+  # @return [AX::Element]
   def element_at_point *point
     arg = point.size == 1 ? point.first : point
     AX.element_at_point(*arg.to_a.flatten)
