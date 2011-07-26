@@ -40,10 +40,10 @@ class Accessibility::Search
   class Qualifier
 
     # @return [Symbol,String]
-    attr_reader :klass_sym
+    attr_reader :sym
 
     # @return [Class]
-    attr_accessor :klass
+    attr_reader :klass
 
     # @return [Hash]
     attr_reader :filters
@@ -51,8 +51,8 @@ class Accessibility::Search
     # @param [Symbol,String] target_klass
     # @param [Hash] filter_criteria
     def initialize target_klass, filter_criteria
-      @klass_sym = target_klass
-      @filters   = filter_criteria
+      @sym     = target_klass
+      @filters = filter_criteria
     end
 
     ##
@@ -74,8 +74,12 @@ class Accessibility::Search
     # to be called for each candidate object.
     def the_right_type? element
       return element.kind_of? klass if klass
-      AX.const_defined?(klass_sym) ?
-        element.is_a?(klass = AX.const_get(klass_sym)) : false
+      if AX.const_defined? sym
+        klass = AX.const_get sym
+        element.kind_of? klass
+      else
+        false
+      end
     end
 
     # @return [Hash{Symbol=>Symbol}]

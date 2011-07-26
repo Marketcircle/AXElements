@@ -1,18 +1,34 @@
 class TestSearch < TestAX
 
+  APP = AX::Application.new REF
+
+  def setup
+    @search = Accessibility::Search.new APP
+  end
+
   def test_search_one_level_deep
+    assert_equal APP.attribute(:main_window), @search.find(:StandardWindow, {})
   end
 
   def test_search_two_levels_deep
+    expected = APP.attribute(:main_window).attribute(:close_button)
+    assert_equal expected, @search.find(:CloseButton, {})
   end
 
   def test_search_with_no_filters
+    assert_equal APP.attribute(:menu_bar), @search.find(:MenuBar, {})
   end
 
   def test_search_with_one_filter
+    assert_equal 'Yes', @search.find(:Button, title: 'Yes').attribute(:title)
+    assert_equal 'No',  @search.find(:Button, title: 'No').attribute(:title)
+    assert_equal 'Maybe So', @search.find(:Button, enabled: false).attribute(:title)
   end
 
   def test_search_with_two_filters
+    assert_nil @search.find(:Button, title: 'Maybe So', enabled: true)
+    assert_equal 'Yes', @search.find(:Button, title: 'Yes', enabled: true).attribute(:title)
+    assert_equal 'No',  @search.find(:Button, title: 'No').attribute(:title)
   end
 
   def test_find_returns_element_when_found
