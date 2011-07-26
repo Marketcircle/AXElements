@@ -325,7 +325,7 @@ class AX::Element
   class << self
 
     ##
-    # Takes a return value from {#raw_attr_of_element} and, if required,
+    # Takes a return value from {AX.raw_attr_of_element} and, if required,
     # converts the data to something more usable.
     #
     # Generally, used to process an AXValue into a CGPoint or an
