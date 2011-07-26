@@ -1,3 +1,5 @@
+require 'active_support/inflector'
+
 ##
 # Extensions to NSArray.
 class NSArray

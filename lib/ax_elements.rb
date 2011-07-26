@@ -14,10 +14,6 @@ You need to install the latest BridgeSupport preview for AXElements to work.
   EOS
 end
 
-require 'active_support/inflector'
-require 'ax_elements/macruby_extensions'
-require 'ax_elements/mouse'
-
 ##
 # Container for all the accessibility objects as well as the set of
 # stateless singleton methods that interact with OS X Accessibility
@@ -38,7 +34,9 @@ module Accessibility
 end
 
 require 'ax_elements/version'
+require 'ax_elements/macruby_extensions'
 require 'ax_elements/core'
 require 'ax_elements/inspector'
 require 'ax_elements/accessibility'
 require 'ax_elements/element'
+require 'ax_elements/mouse'
