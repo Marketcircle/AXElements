@@ -374,8 +374,6 @@ class TestElementParamAttributes < TestElements
     assert_includes static_text.param_attributes, KAXBoundsForRangeParameterizedAttribute
   end
 
-  # @todo some other tests copied from testing #attributes
-
 end
 
 
@@ -392,7 +390,11 @@ class TestElementGetParamAttribute < TestElements
     assert_equal 'AXEle', attr
   end
 
-  # @todo some other cases to make sure values are processed
+  def test_get_attributed_string
+    attr = static_text.param_attribute(:attributed_string_for_range, CFRange.new(0, 5))
+    assert_kind_of NSAttributedString, attr
+    assert_equal 'AXEle', attr.string
+  end
 
 end
 
