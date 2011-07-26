@@ -92,6 +92,8 @@ class Accessibility::Search
         filter_value = element.attribute filter
         if filter_value.class == value.class
           filter_value == value
+        elsif filter_value == true || filter_value == false
+          value == filter_value
         elsif filter_value.nil?
           false
         else

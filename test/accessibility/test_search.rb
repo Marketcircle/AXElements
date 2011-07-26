@@ -42,4 +42,12 @@ class TestSearch < TestAX
     # case 2: classes do not match
   end
 
+  def test_true_false_class_mismatch
+    # since search does a class comparison to try and infer things,
+    # it does not work with boolean values since they have different
+    # classes, so we have another workaround for that case
+    assert_nil @search.find(:Button, title: 'Maybe So', enabled: true)
+    assert_nil @search.find(:Button, title: 'Yes',      enabled: false)
+  end
+
 end
