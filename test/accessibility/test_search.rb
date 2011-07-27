@@ -66,4 +66,9 @@ class TestSearch < TestAX
     assert_nil @search.find(:Button, title: 'Yes',      enabled: false)
   end
 
+  def test_attribute_is_nil_is_handled_as_special_case
+    # some attributes store nil as their value, but the filter
+    # might have been expecting string types
+  end
+
 end
