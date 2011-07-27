@@ -33,5 +33,4 @@ describes user interactions.
   s.add_development_dependency 'minitest-macruby-pride', ['~> 2.3.1']
   s.add_development_dependency 'yard',                   ['~> 0.7.2']
   s.add_development_dependency 'redcarpet',              ['~> 1.17']
-  s.add_development_dependency 'rake-compiler', ['~> 0.7.9']
 end
