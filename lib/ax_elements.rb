@@ -15,9 +15,8 @@ You need to install the latest BridgeSupport preview for AXElements to work.
 end
 
 ##
-# Container for all the accessibility objects as well as the set of
-# stateless singleton methods that interact with OS X Accessibility
-# APIs.
+# Container for all the accessibility objects as well as core abstraction
+# layer that that interact with OS X Accessibility APIs.
 module AX; end
 
 ##

@@ -20,6 +20,7 @@ which is always descendant of the {AX::Element} class, such as the
 {AX::Application} class.
 
 There are a two ways to get a reference to an accessibility object:
+
 * An point on the screen
   + Under the mouse
   + An arbitrary point

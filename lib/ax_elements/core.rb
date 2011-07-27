@@ -1,7 +1,7 @@
 ##
 # @todo The current strategy dealing with errors is just to log them,
-#       but that may not always be the correct thing to do. This
-#       requires some meditation.
+#       but that may not always be the correct thing to do. The core
+#       has to be refactored around this issue to become more robust.
 #
 # The singleton methods for the AX module represent the core layer of
 # abstraction for AXElements.
@@ -15,6 +15,9 @@ class << AX
 
   # @group Attributes
 
+  ##
+  # List of attributes for the given element.
+  #
   # @param [AXUIElementRef] element low level accessibility object
   # @return [Array<String>]
   def attrs_of_element element
@@ -24,6 +27,10 @@ class << AX
     ptr[0]
   end
 
+  ##
+  # Number of elements that would be returned for the given element's
+  # given attribute.
+  #
   # @param [AXUIElementRef] element
   # @param [String] attr an attribute constant
   # @return [Fixnum]
@@ -35,8 +42,10 @@ class << AX
   end
 
   ##
-  # Fetch the data from an attribute and process it into something
-  # useful.
+  # Fetch the given attribute's value from the given element. You will
+  # be given raw data from this method; that is, {Boxed} objects will
+  # still be wrapped in a {AXValueRef}, and elements will be
+  # {AXUIElementRef} objects.
   #
   # @param [AXUIElementRef] element
   # @param [String] attr an attribute constant
@@ -51,10 +60,8 @@ class << AX
   # @todo Should we handle cases where a subrole has a value of
   #       'Unknown'? What is the performance impact?
   #
-  # Fetch subrole and role of an object, pass back a clean array of strings.
-  #
-  # We have to be careful, because some things claim to have a subrole
-  # but return nil or they have a subrole value of 'Unknown'.
+  # Fetch subrole and role of an object, pass back an array with the
+  # subrole first if it exists.
   #
   # @param [AXUIElementRef]
   # @return [Array<String>] subrole first, if it exists
@@ -66,19 +73,29 @@ class << AX
     AXUIElementCopyAttributeNames(element, aptr)
     if aptr[0].include? SUBROLE
       AXUIElementCopyAttributeValue(element, SUBROLE, ptr)
+      # Be careful, because some things claim to have a subrole
+      # but return nil
       ret.unshift ptr[0] if ptr[0]
     end
     ret
     #raise "Found an element that has no role: #{CFShow(element)}"
   end
 
-  # @return [String] local copy of a Cocoa constant; this is a performance hack
+  ##
+  # Local copy of a Cocoa constant; this is a performance hack
+  #
+  # @return [String]
   ROLE    = KAXRoleAttribute
-  # @return [String] local copy of a Cocoa constant; this is a performance hack
+
+  ##
+  # Local copy of a Cocoa constant; this is a performance hack
+  #
+  # @return [String]
   SUBROLE = KAXSubroleAttribute
 
   ##
-  # Check if an attribute of an element is writable.
+  # Whether or not the given attribute of a given element can be
+  # changed using the accessibility APIs.
   #
   # @param [AXUIElementRef] element
   # @param [String] attr an attribute constant
@@ -90,8 +107,10 @@ class << AX
   end
 
   ##
-  # Set the value of an attribute. This method does not check
-  # if the attribute is writable.
+  # @note This method does not check writability of the attribute
+  #       you are setting.
+  #
+  # Set the given value to the given attribute of the given element.
   #
   # @param [AXUIElementRef] element
   # @param [String] attr an attribute constant
@@ -105,6 +124,9 @@ class << AX
 
   # @group Actions
 
+  ##
+  # List of actions that the given element can perform.
+  #
   # @param [AXUIElementRef] element low level accessibility object
   # @return [Array<String>]
   def actions_of_element element
@@ -115,7 +137,7 @@ class << AX
   end
 
   ##
-  # Trigger and action that an element can perform.
+  # Trigger the given action for the given element.
   #
   # @param [AXUIElementRef] element
   # @param [String] action an action constant
@@ -133,15 +155,19 @@ class << AX
   # {file:docs/KeyboardEvents.markdown Keyboard Events}
   # to get a detailed explanation on how to encode strings.
   #
-  # @param [AXUIElementRef] element an application to post the event to
+  # @param [AXUIElementRef] element an application to post the event to, or
+  #   the system wide accessibility object
   # @param [String] string the string you want typed on the screen
   def keyboard_action element, string
-    post_kb_events(element, parse_kb_string(string))
+    post_kb_events element, parse_kb_string(string)
     nil
   end
 
   # @group Parameterized Attributes
 
+  ##
+  # List of parameterized attributes for the given element.
+  #
   # @param [AXUIElementRef] element low level accessibility object
   # @return [Array<String>,nil] nil if the element has no
   #   parameterized attributes
@@ -153,8 +179,9 @@ class << AX
   end
 
   ##
-  # Fetch the data from a parameterized attribute and process it into
-  # something useful.
+  # Fetch the given attribute's value from the given element using the given
+  # parameter. You will be given raw data from this method; that is, {Boxed}
+  # objects will still be wrapped in a {AXValueRef}, etc.
   #
   # @param [AXUIElementRef] element
   # @param [String] attr an attribute constant
@@ -181,7 +208,7 @@ class << AX
   # @yield Validate the notification; the block should return truthy if
   #        the notification received is the expected one and the script can stop
   #        waiting, otherwise should return falsy.
-  # @yieldparam [AX::Element] element the element that sent the notification
+  # @yieldparam [AXUIElementRef] element the element that sent the notification
   # @yieldparam [String] notif the name of the notification
   # @yieldreturn [Boolean] determines if the script should continue or wait
   # @return [Proc] the proc used as a callback when the notification is received
@@ -206,30 +233,30 @@ class << AX
   # @todo Handle failure cases gracefully; instead of just returning false,
   #       we need to unregister the notification so that it doesn't screw
   #       up future things.
+  # @todo Prime candidate for robustness refactoring.
   #
   # Pause execution of the program until a notification is received or a
   # timeout occurs.
   #
-  # We use RunInMode because it has timeout functionality; this method
-  # actually has 4 return values, but only two codes will occur under
-  # regular circumstances.
-  #
   # @param [Float] timeout
   # @return [Boolean] true if the notification was received, otherwise false
   def wait_for_notif timeout
+    # We use RunInMode because it has timeout functionality; this method
+    # actually has 4 return values, but only two codes will occur under
+    # regular circumstances.
     CFRunLoopRunInMode(KCFRunLoopDefaultMode, timeout, false) == 2
   end
 
-  # @group Dynamic Elements
+  # @group Element Entry Points
 
   ##
-  # This will give you the UI element located at the position given (if
-  # there is one). If more than one element is at the position then the
-  # z-order of the elements will be used to determine which is "on top".
+  # This will give you the UI element located at the position given. If
+  # more than one element is at the position then the z-order of the
+  # elements will be used to determine which is "on top".
   #
   # The coordinates should be specified using the flipped coordinate
   # system (origin is in the top-left, increasing downward as if reading
-  # a book).
+  # a book in English).
   #
   # @param [Float] x
   # @param [Float] y
@@ -243,13 +270,13 @@ class << AX
   end
 
   ##
+  # @note This method will crash MacRuby if the PID does not exist or if
+  #       the PID belonges to something that is not an app.
+  #
   # You can call this method to create the application object given
   # the process identifier of the app.
   #
-  # This method will crash MacRuby if the PID does not exist or if
-  # the PID belonges to something that is not an app.
-  #
-  # @param [Fixnum] pid The process identifier for the application you want
+  # @param [Fixnum] pid process identifier for the application you want
   # @return [AXUIElementRef]
   def application_for_pid pid
     AXUIElementCreateApplication(pid)
@@ -258,7 +285,7 @@ class << AX
   # @group Misc.
 
   ##
-  # Get the PID of the application that an element belongs to.
+  # Get the PID of the application that the given element belongs to.
   #
   # @param [AXUIElementRef] element
   # @return [Fixnum]
@@ -359,7 +386,8 @@ class << AX
   end
 
   ##
-  # Create and return a notification observer for the object's application.
+  # Create and return a notification observer for the given object's
+  # application.
   #
   # @param [AXUIElementRef] element
   # @param [Method,Proc] callback
@@ -372,7 +400,8 @@ class << AX
   end
 
   ##
-  # @todo Consider exposing the refcon argument
+  # @todo Consider exposing the refcon argument. Probably not until
+  #       someone actually wants to pass a context around.
   # @todo Need to cache a list of callbacks so that they can be unregistered
   #       in cases when an error occurs.
   #
