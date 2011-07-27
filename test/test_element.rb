@@ -54,14 +54,14 @@ class TestElementLookupFailure < TestElements
 end
 
 
-class TestElementAttributeReadOnly < TestElements
+class TestElementReadOnlyAttribute < TestElements
 
   def test_kind_of_method_missing_error
-    assert_kind_of NoMethodError, AX::Element::AttributeReadOnly.new(:blah)
+    assert_kind_of NoMethodError, AX::Element::ReadOnlyAttribute.new(:blah)
   end
 
   def test_correct_message
-    exception = AX::Element::AttributeReadOnly.new(:test)
+    exception = AX::Element::ReadOnlyAttribute.new(:test)
     assert_match /read only attribute/, exception.message
   end
 
@@ -336,7 +336,7 @@ end
 class TestElementSetAttribute < TestElements
 
   def test_raises_error_if_attribute_is_not_writable
-    assert_raises AX::Element::AttributeReadOnly do
+    assert_raises AX::Element::ReadOnlyAttribute do
       APP.set_attribute :title, 'pantaloons'
     end
   end

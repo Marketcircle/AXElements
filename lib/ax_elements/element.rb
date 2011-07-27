@@ -19,7 +19,7 @@ class AX::Element
 
   ##
   # Raised when trying to set an attribute that cannot be written
-  class AttributeReadOnly < NoMethodError
+  class ReadOnlyAttribute < NoMethodError
     def initialize name
       super "#{name} is a read only attribute"
     end
