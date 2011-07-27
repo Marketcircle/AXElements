@@ -15,7 +15,7 @@ module Accessibility::Inspector
   # @return [String]
   def pp_identifier
     if attributes.include? KAXValueAttribute
-      " value=#{attribute(:value).inspect}"
+      " #{attribute(:value).inspect}"
     elsif attributes.include? KAXTitleAttribute
       " #{attribute(:title).inspect}"
     elsif attributes.include? 'AXIdentifier'
@@ -30,7 +30,7 @@ module Accessibility::Inspector
   #
   # @return [String]
   def pp_position
-    position = attribute(:position)
+    position = attribute :position
     " (#{position.x}, #{position.y})"
   end
 
@@ -39,7 +39,7 @@ module Accessibility::Inspector
   #
   # @return [String]
   def pp_children
-    child_count = AX.attr_count_of_element(@ref, KAXChildrenAttribute)
+    child_count = AX.attr_count_of_element @ref, KAXChildrenAttribute
     " #{child_count} #{child_count == 1 ? 'child' : 'children'}"
   end
 
