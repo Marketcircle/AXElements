@@ -92,7 +92,7 @@ class AX::Element
   # @param [String] attr an attribute constant
   # @return the value that you set is returned
   def set_attribute attr, value
-    raise AttributeReadOnly.new attr unless attribute_writable? attr
+    raise ReadOnlyAttribute.new attr unless attribute_writable? attr
     real_attribute = attribute_for attr
     value = value.to_axvalue if value.kind_of? Boxed
     AX.set_attr_of_element @ref, real_attribute, value
