@@ -27,13 +27,32 @@ end
 desc 'Start up irb with AXElements loaded'
 task :console do
   irb = ENV['RUBY_VERSION'] ? 'irb' : 'macirb'
-  sh "#{irb} -Ilib -rubygems -rax_elements"
+  sh "#{irb} -Ilib -Iext -rubygems -rax_elements"
 end
 
 ## Compilation
 
 require 'rake/compiletask'
 Rake::CompileTask.new(:rbo)
+
+desc 'Compile the C extension'
+task :key_coder do
+  Dir.chdir 'ext/key_coder' do
+    ruby 'extconf.rb'
+    sh   'make'
+  end
+end
+
+desc 'Clean temporary files created by the C extension'
+task :clobber_key_coder do
+  Dir.chdir 'ext/key_coder' do
+    ['Makefile', 'key_coder.o', 'key_coder.bundle'].each do |file|
+      $stdout.puts "rm ext/key_coder/#{file}"
+      rm file
+    end
+  end
+end
+task :clobber => :clobber_key_coder
 
 ## Testing
 
@@ -45,7 +64,7 @@ end
 desc 'Run benchmarks'
 task :benchmark do
   files = Dir.glob('bench/**/bench_*.rb').map { |x| "'#{x}'" }.join(' ')
-  ruby '-Ilib -Ibench -rhelper ' + files
+  ruby '-Ilib -Iext -Ibench -rhelper ' + files
 end
 task :bench => :benchmark
 

@@ -18,8 +18,13 @@ describes user interactions.
   s.licenses    = ['MIT']
   s.has_rdoc    = 'yard'
 
+  s.require_paths << 'ext'
+  s.extensions    << 'ext/key_coder/extconf.rb'
+
+
   s.files            =
-    Dir.glob('lib/**/*.rb*')
+    Dir.glob('lib/**/*.rb*') +
+    [ 'ext/key_coder/extconf.rb', 'ext/key_coder/key_coder.m' ] +
   s.test_files       =
     [ 'Rakefile', 'test/helper.rb' ] +
     Dir.glob('test/**/test_*.rb')

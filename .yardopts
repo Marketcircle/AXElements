@@ -6,6 +6,7 @@
 --asset docs/images:images
 --readme README.markdown
 lib/**/*.rb
+ext/**/*.m
 -
 docs/AXElements.markdown
 docs/KeyboardEvents.markdown
