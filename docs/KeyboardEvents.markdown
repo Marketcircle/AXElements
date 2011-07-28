@@ -5,11 +5,21 @@ directly by assigning to the accessibility object's value
 attribute. In these cases you can post keyboard events to an
 application object.
 
-Keyboard events must be posted to an application object.
+Other cases for using keyboard input simulation might include keyboard
+navigation or hotkey activation.
 
-Key codes are independant of the layout in the sense that they are
-absolute key positions on the keyboard and that different layouts will
-fuck things up differently.
+The DSL exposes Keyboard events through the `type` keyword. An example
+would look like this:
+
+```ruby
+type "hello, world!", app
+```
+
+First the keyword `type`, and then the string you want to type
+out. Finally, there is a second argument, which is optional, that
+should be the application that you wish to send the keyboard input
+to; if you do not include the argument, then the input will go to the
+currently activate application.
 
 ## Behaviour
 
@@ -30,8 +40,3 @@ encoding of all key sequences/combinations.
 <tr><td>Escape</td><td>`\e`</td></tr>
 <tr><td>Space</td><td>` `</td></tr>
 </table>
-
-<a href="images/imtx-virtual-keycodes.png">
-<img style="heigh: 500px; width: 950px" src="/docs/file/docs/images/imtx-virtual-keycodes.png" />
-</a>
-
