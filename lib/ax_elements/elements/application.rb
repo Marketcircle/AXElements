@@ -6,16 +6,12 @@
 # the NSRunningApplication class.
 class AX::Application < AX::Element
 
-  # @return [NSRunningApplication] the NSRunningApplication instance for
-  #   application this object represents
-  attr_reader :app
-
   ##
   # Overridden so that we can also cache the NSRunningApplication
   # instance for this object.
   def initialize ref
     super
-    @app = NSRunningApplication.runningApplicationWithProcessIdentifier(pid)
+    @app = NSRunningApplication.runningApplicationWithProcessIdentifier pid
   end
 
   ##
@@ -47,7 +43,7 @@ class AX::Application < AX::Element
   # to the dynamic #focused? method, but might make more sense to use
   # in some cases.
   def active?
-    app.active?
+    @app.active?
   end
 
   ##

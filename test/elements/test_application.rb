@@ -7,19 +7,19 @@ class TestAXApplication < TestAX
     assert_equal AX::Element, AX::Application.superclass
   end
 
-  def test_app_is_the_equivalent_nsrunningapplication
-    assert_equal APP_BUNDLE_IDENTIFIER, APP.app.bundleIdentifier
+  def app inst
+    inst.instance_variable_get :@app
   end
 
   def test_can_set_focus_to_an_app
-    APP.app.hide
+    app(APP).hide
     sleep 0.2
     refute APP.active?, 'Might fail now because of OS X bug'
     APP.set_attribute :focused, true
     sleep 0.2
     assert APP.active?, 'Might fail now because of OS X bug'
   ensure
-    APP.app.activateWithOptions NSApplicationActivateIgnoringOtherApps
+    app(APP).activateWithOptions NSApplicationActivateIgnoringOtherApps
   end
 
   def test_can_hide_the_app
@@ -27,7 +27,7 @@ class TestAXApplication < TestAX
     sleep 0.2
     refute APP.active?, 'Might fail now because of OS X bug'
   ensure
-    APP.app.activateWithOptions NSApplicationActivateIgnoringOtherApps
+    app(APP).activateWithOptions NSApplicationActivateIgnoringOtherApps
   end
 
   def test_attribute_has_special_case_for_focused
