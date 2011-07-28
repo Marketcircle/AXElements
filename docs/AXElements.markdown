@@ -65,5 +65,5 @@ longer exists will crash MacRuby.
 When writing scripts, it is often faster to inspect the view hierarchy
 using the Accessibility Inspector tool that is part of the Developer
 Tools. The inspector will be located in
-`/Developer/Applications/Utilities/Accessibility%20Tools/` once you
+`/Developer/Applications/Utilities/Accessibility Tools/` once you
 have the Developer Tools installed.
