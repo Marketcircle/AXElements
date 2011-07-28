@@ -1,0 +1,247 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		AF3F169C13E0EE58000AD4AE /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AF3F169B13E0EE58000AD4AE /* Foundation.framework */; };
+		AF3F169F13E0EE58000AD4AE /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = AF3F169E13E0EE58000AD4AE /* main.m */; };
+		AF3F16A313E0EE58000AD4AE /* KeyCoder.1 in CopyFiles */ = {isa = PBXBuildFile; fileRef = AF3F16A213E0EE58000AD4AE /* KeyCoder.1 */; };
+		AF3F16AA13E0EEBD000AD4AE /* CoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AF3F16A913E0EEBD000AD4AE /* CoreServices.framework */; };
+		AF3F16AC13E0EED0000AD4AE /* Carbon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AF3F16AB13E0EED0000AD4AE /* Carbon.framework */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		AF3F169513E0EE58000AD4AE /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = /usr/share/man/man1/;
+			dstSubfolderSpec = 0;
+			files = (
+				AF3F16A313E0EE58000AD4AE /* KeyCoder.1 in CopyFiles */,
+			);
+			runOnlyForDeploymentPostprocessing = 1;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
+/* Begin PBXFileReference section */
+		AF3F169713E0EE58000AD4AE /* KeyCoder */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = KeyCoder; sourceTree = BUILT_PRODUCTS_DIR; };
+		AF3F169B13E0EE58000AD4AE /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
+		AF3F169E13E0EE58000AD4AE /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		AF3F16A113E0EE58000AD4AE /* KeyCoder-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "KeyCoder-Prefix.pch"; sourceTree = "<group>"; };
+		AF3F16A213E0EE58000AD4AE /* KeyCoder.1 */ = {isa = PBXFileReference; lastKnownFileType = text.man; path = KeyCoder.1; sourceTree = "<group>"; };
+		AF3F16A913E0EEBD000AD4AE /* CoreServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreServices.framework; path = System/Library/Frameworks/CoreServices.framework; sourceTree = SDKROOT; };
+		AF3F16AB13E0EED0000AD4AE /* Carbon.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Carbon.framework; path = System/Library/Frameworks/Carbon.framework; sourceTree = SDKROOT; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		AF3F169413E0EE58000AD4AE /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				AF3F16AC13E0EED0000AD4AE /* Carbon.framework in Frameworks */,
+				AF3F16AA13E0EEBD000AD4AE /* CoreServices.framework in Frameworks */,
+				AF3F169C13E0EE58000AD4AE /* Foundation.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		AF3F168C13E0EE57000AD4AE = {
+			isa = PBXGroup;
+			children = (
+				AF3F16AB13E0EED0000AD4AE /* Carbon.framework */,
+				AF3F16A913E0EEBD000AD4AE /* CoreServices.framework */,
+				AF3F169D13E0EE58000AD4AE /* KeyCoder */,
+				AF3F169A13E0EE58000AD4AE /* Frameworks */,
+				AF3F169813E0EE58000AD4AE /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		AF3F169813E0EE58000AD4AE /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				AF3F169713E0EE58000AD4AE /* KeyCoder */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		AF3F169A13E0EE58000AD4AE /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				AF3F169B13E0EE58000AD4AE /* Foundation.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		AF3F169D13E0EE58000AD4AE /* KeyCoder */ = {
+			isa = PBXGroup;
+			children = (
+				AF3F169E13E0EE58000AD4AE /* main.m */,
+				AF3F16A213E0EE58000AD4AE /* KeyCoder.1 */,
+				AF3F16A013E0EE58000AD4AE /* Supporting Files */,
+			);
+			path = KeyCoder;
+			sourceTree = "<group>";
+		};
+		AF3F16A013E0EE58000AD4AE /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				AF3F16A113E0EE58000AD4AE /* KeyCoder-Prefix.pch */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		AF3F169613E0EE58000AD4AE /* KeyCoder */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = AF3F16A613E0EE58000AD4AE /* Build configuration list for PBXNativeTarget "KeyCoder" */;
+			buildPhases = (
+				AF3F169313E0EE58000AD4AE /* Sources */,
+				AF3F169413E0EE58000AD4AE /* Frameworks */,
+				AF3F169513E0EE58000AD4AE /* CopyFiles */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = KeyCoder;
+			productName = KeyCoder;
+			productReference = AF3F169713E0EE58000AD4AE /* KeyCoder */;
+			productType = "com.apple.product-type.tool";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		AF3F168E13E0EE57000AD4AE /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0420;
+				ORGANIZATIONNAME = "Marketcircle Incorporated";
+			};
+			buildConfigurationList = AF3F169113E0EE57000AD4AE /* Build configuration list for PBXProject "KeyCoder" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+			);
+			mainGroup = AF3F168C13E0EE57000AD4AE;
+			productRefGroup = AF3F169813E0EE58000AD4AE /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				AF3F169613E0EE58000AD4AE /* KeyCoder */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXSourcesBuildPhase section */
+		AF3F169313E0EE58000AD4AE /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				AF3F169F13E0EE58000AD4AE /* main.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		AF3F16A413E0EE58000AD4AE /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
+				CLANG_ENABLE_OBJC_ARC = NO;
+				COPY_PHASE_STRIP = NO;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
+				GCC_ENABLE_OBJC_GC = supported;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_MISSING_PROTOTYPES = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.7;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = macosx10.6;
+			};
+			name = Debug;
+		};
+		AF3F16A513E0EE58000AD4AE /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
+				CLANG_ENABLE_OBJC_ARC = NO;
+				COPY_PHASE_STRIP = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
+				GCC_ENABLE_OBJC_GC = supported;
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_MISSING_PROTOTYPES = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.7;
+				SDKROOT = macosx10.6;
+			};
+			name = Release;
+		};
+		AF3F16A713E0EE58000AD4AE /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "KeyCoder/KeyCoder-Prefix.pch";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		AF3F16A813E0EE58000AD4AE /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "KeyCoder/KeyCoder-Prefix.pch";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		AF3F169113E0EE57000AD4AE /* Build configuration list for PBXProject "KeyCoder" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				AF3F16A413E0EE58000AD4AE /* Debug */,
+				AF3F16A513E0EE58000AD4AE /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		AF3F16A613E0EE58000AD4AE /* Build configuration list for PBXNativeTarget "KeyCoder" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				AF3F16A713E0EE58000AD4AE /* Debug */,
+				AF3F16A813E0EE58000AD4AE /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = AF3F168E13E0EE57000AD4AE /* Project object */;
+}
