@@ -79,6 +79,11 @@ module AXHelpers
   def action_for element, action
     AXUIElementPerformAction(element, action)
   end
+
+  # remember to wrap structs in an AXValueRef
+  def set_attribute_for element, attr, value
+    AXUIElementSetAttributeValue(element, attr, value)
+  end
 end
 
 class TestAX < MiniTest::Unit::TestCase

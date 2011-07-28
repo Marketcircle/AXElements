@@ -198,34 +198,37 @@ class TestActionOfElement < TestCore
 end
 
 
-# @todo As soon as I add the new mapping thing
-# class TestKeyboardAction < TestCore
+class TestKeyboardAction < TestCore
 
-#   SYSTEM = AXUIElementCreateSystemWide()
+  SYSTEM = AXUIElementCreateSystemWide()
 
-#   def post_to_system string
-#     spotlight_text_field do |field|
-#       AX.keyboard_action(SYSTEM, string)
-#       sleep 0.01
-#       assert_equal string, attribute_for( field, KAXValueAttribute )
-#     end
-#   end
+  def post string
+    set_attribute_for search_box, KAXFocusedAttribute, true
+    AX.keyboard_action REF, string
+    # sleep 0.01
+    assert_equal string, attribute_for(search_box, KAXValueAttribute)
+  ensure
+    button = children_for(search_box).find { |x| x.class == AX::Button }
+    action_for button, KAXPressAction
+  end
 
-#   def test_uppercase_letters
-#     post_to_system 'HELLO, WORLD'
-#   end
+  def test_uppercase_letters
+    post 'HELLO, WORLD'
+  end
 
-#   def test_numbers
-#     post_to_system '42'
-#   end
+  def test_numbers
+    post '42'
+  end
 
-#   def test_letters
-#     post_to_system 'the cake is a lie'
-#   end
+  def test_letters
+    post 'the cake is a lie'
+  end
 
-#   def test_escape_sequences
-#     post_to_system "\s"
-#   end
+  def test_escape_sequences
+    post "\s"
+  end
+
+end
 
 
 class TestAXParamAttrsOfElement < TestCore
