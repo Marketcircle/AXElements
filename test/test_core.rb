@@ -24,6 +24,10 @@ class TestCore < TestAX
     @@button ||= child KAXButtonRole
   end
 
+  def static_text
+    @@static_text ||= child KAXStaticTextRole
+  end
+
   def yes_button
     @@yes_button ||= children_for(WINDOW).find do |item|
       if attribute_for(item, KAXRoleAttribute) == KAXButtonRole
@@ -223,18 +227,41 @@ end
 #     post_to_system "\s"
 #   end
 
-# end
+
+class TestAXParamAttrsOfElement < TestCore
+
+  def test_empty_for_dock
+    assert_empty AX.param_attrs_of_element REF
+  end
+
+  def test_not_empty_for_search_field
+    assert_includes AX.param_attrs_of_element(static_text), KAXStringForRangeParameterizedAttribute
+    assert_includes AX.param_attrs_of_element(static_text), KAXLineForIndexParameterizedAttribute
+    assert_includes AX.param_attrs_of_element(static_text), KAXBoundsForRangeParameterizedAttribute
+  end
+
+end
 
 
-# @todo I haven't really gotten around to using the parameterized
-#       attributes code, and am working out some details, so I do
-#       not have regression tests yet
+class TestAXParamAttrOfElement < TestCore
 
-# class TestAXParamAttrsOfElement < TestCore
-# end
+  def test_contains_proper_info
+    attr = AX.param_attr_of_element(static_text,
+                                    KAXStringForRangeParameterizedAttribute,
+                                    CFRange.new(0, 5).to_axvalue)
+    assert_equal 'AXEle', attr
+  end
 
-# class TestAXParamAttrOfElement < TestCore
-# end
+  def test_get_attributed_string
+    attr = AX.param_attr_of_element(static_text,
+                                    # this is why we need name tranformers
+                                    KAXAttributedStringForRangeParameterizedAttribute,
+                                    CFRange.new(0, 5).to_axvalue)
+    assert_kind_of NSAttributedString, attr
+    assert_equal 'AXEle', attr.string
+  end
+
+end
 
 
 class TestAXNotifications < TestCore
