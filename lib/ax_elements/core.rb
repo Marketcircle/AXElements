@@ -307,10 +307,10 @@ class << AX
     sequence = []
     string.each_char do |char|
       if char.match(/[A-Z]/)
-        code  = KEYCODE_MAP[char.downcase]
+        code  = AX::KEYCODE_MAP[char.downcase]
         event = [[56,true], [code,true], [code,false], [56,false]]
       else
-        code  = KEYCODE_MAP[char]
+        code  = AX::KEYCODE_MAP[char]
         event = [[code,true],[code,false]]
       end
       sequence.concat event
