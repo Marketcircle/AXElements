@@ -25,7 +25,7 @@ end
 ## Console
 
 desc 'Start up irb with AXElements loaded'
-task :console do
+task :console => :key_coder do
   irb = ENV['RUBY_VERSION'] ? 'irb' : 'macirb'
   sh "#{irb} -Ilib -Iext -rubygems -rax_elements"
 end
@@ -38,6 +38,7 @@ Rake::CompileTask.new(:rbo)
 desc 'Compile the C extension'
 task :key_coder do
   Dir.chdir 'ext/key_coder' do
+    break if File.exists?('key_coder.bundle') && File.mtime('key_coder.bundle') > File.mtime('key_coder.m')
     ruby 'extconf.rb'
     sh   'make'
   end
@@ -62,7 +63,7 @@ task :fixture do
 end
 
 desc 'Run benchmarks'
-task :benchmark do
+task :benchmark => :key_coder do
   files = Dir.glob('bench/**/bench_*.rb').map { |x| "'#{x}'" }.join(' ')
   ruby '-Ilib -Iext -Ibench -rhelper ' + files
 end
