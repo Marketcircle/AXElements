@@ -571,10 +571,13 @@ class TestElementInspect < TestElements
     area.attribute(:children).first
   end
 
-  def test_uses_value
-    skip
-    assert_match /\svalue=\d+/, slider.inspect
-  end
+  # def test_uses_value_as_string
+  #   assert_match /\s"AXElementsTester"/, static_text.inspect
+  # end
+
+  # def test_uses_value_not_as_string
+  #   assert_match /\svalue=\d+/, slider.inspect
+  # end
 
   def test_falls_back_to_title_if_no_value
     assert_match /\s"AXElementsTester"/, APP.inspect

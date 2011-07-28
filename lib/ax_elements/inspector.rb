@@ -15,7 +15,8 @@ module Accessibility::Inspector
   # @return [String]
   def pp_identifier
     if attributes.include? KAXValueAttribute
-      " #{attribute(:value).inspect}"
+      val = attribute :value
+      val.kind_of?(NSString) ? " #{val.inspect}" : " value=#{val.inspect}"
     elsif attributes.include? KAXTitleAttribute
       " #{attribute(:title).inspect}"
     elsif attributes.include? 'AXIdentifier'
