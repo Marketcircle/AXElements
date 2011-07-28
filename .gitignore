@@ -8,3 +8,6 @@ vendor_test/
 xcuserdata
 .DS_Store
 test/fixture
+ext/key_coder/Makefile
+ext/key_coder/key_coder.bundle
+ext/key_coder/key_coder.o
