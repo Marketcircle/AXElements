@@ -205,11 +205,21 @@ class NilClass
 end
 
 
-##
-# Correct a problem with ArgumentError not providing a proper backtrace.
-class ArgumentError
-  alias_method :original_message, :message
-  def message
-    "#{original_message}\n\t#{caller.join("\n\t")}"
-  end
-end
+# ##
+# # Correct a problem with ArgumentError not providing a proper backtrace.
+# class ArgumentError
+#   alias_method :original_message, :message
+#   def message
+#     "#{original_message}\n\t#{backtrace.join("\n\t")}"
+#   end
+# end
+
+
+# ##
+# # Correct a problem with ArgumentError not providing a proper backtrace.
+# class NameError
+#   alias_method :original_message, :message
+#   def message
+#     "#{original_message}\n\t#{backtrace.join("\n\t")}"
+#   end
+# end
