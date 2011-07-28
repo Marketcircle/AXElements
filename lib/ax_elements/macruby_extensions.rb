@@ -39,7 +39,10 @@ class NSArray
     CGRectMake(*self[0,4])
   end
 
-  # Borrowed from Active Support
+  ##
+  # @method blank?
+  #
+  # Borrowed from Active Support.
   alias_method :blank?, :empty?
 
   alias_method :ax_array_method_missing, :method_missing
@@ -50,12 +53,9 @@ class NSArray
   # the attribute name and the lookup will singularize the method name
   # for you.
   #
-  # Be careful when mapping actions as some actions could, in theory,
-  # invalidate other elements in the array.
-  #
   # You also have to be careful in cases where the array contains
-  # various types of {AX::Element} objects that may not have the same
-  # attributes or you could trigger a {NoMethodError}.
+  # various types of {AX::Element} objects that may not all respond to
+  # the same attribute.
   def method_missing method, *args
     if first.kind_of?(AX::Element)
       return map(&method) if first.respond_to?(method)
@@ -114,6 +114,8 @@ class NSString
   # Force the #singularize method to be defined on NSString objects,
   # and therefore on Symbol objects...at least until that bug gets
   # fixed.
+  #
+  # @return [String]
   def singularize
     ActiveSupport::Inflector.singularize(self)
   end

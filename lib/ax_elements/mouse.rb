@@ -80,13 +80,19 @@ class << Mouse
 
   private
 
-  # @return [Number] Number of animation steps per second
+  ##
+  # Number of animation steps per second
+  #
+  # @return [Number]
   FPS     = 120
 
-  # @return [Number] Smallest unit of time allowed for an animation step
+  ##
+  # Smallest unit of time allowed for an animation step
+  #
+  # @return [Number]
   QUANTUM = Rational(1, FPS)
 
-  # @return []
+  # @return [Hash{Symbol=>Fixnum}]
   UNIT = {
     line:  KCGScrollEventUnitLine,
     pixel: KCGScrollEventUnitPixel

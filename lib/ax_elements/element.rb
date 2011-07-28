@@ -106,10 +106,6 @@ class AX::Element
     AX.param_attrs_of_element @ref # should we cache?
   end
 
-  ##
-  # @todo Merge this into {#method_missing} and other places once I
-  #       understand it more, it just adds overhead right now
-  #
   # @param [Symbol] attr
   def param_attribute attr, param
     real_attribute = param_attribute_for attr

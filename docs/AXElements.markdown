@@ -5,9 +5,9 @@ Accessibility and CGEvent APIs that allows code to be written in a
 very natural and declarative style that describes user interactions.
 
 The framework is optimized for writing tests that require automatic
-GUI manipulation, whether it be  finding controls on the screen,
-typing, clicking, or the various other ways in which a user can
-interact with the computer.
+GUI manipulation, whether it be finding controls on the screen,
+typing, clicking, or other ways in which a user can interact with the
+computer.
 
 ## Getting Started
 
@@ -25,48 +25,45 @@ There are a two ways to get a reference to an accessibility object:
   + Under the mouse
   + An arbitrary point
 * An application object
-  + Given a PID
   + Given a bundle identifier
   + Given an app name
-
-{file:docs/images/AX.png}
+  + Given a PID
 
 The most common way to start is by creating a new object for an
-application. I prefer to use the bundle identfier approach like so:
+application. I prefer to use the bundle identfier approach as it will
+try to launch the application if it is not already running. An example
+would look like this:
 
 ```ruby
 Accessibility.application_with_bundle_identifier 'com.apple.mail'
 ```
 
-## Concepts
+## How To Proceed
 
-The important thing to note from the previous section is the idea of
-changing state and then verifying it.
+With your foot in the door, there are many things you can do
+now. The more common tasks will be to inspect the user interface and
+to trigger actions such as a click or even simulate keyboard
+input.
 
-Because of the way that things change, it is easy to keep accidentally
-keep a reference to an object that no longer exists. The safest thing
-to do would be to not cache anything. AXElements does not provide a
-facility for cache invalidation and elements will almost always be
-invalidated after performing actions.
+* {file:docs/Inspecting.markdown Inspecting}
+* {file:docs/Acting.markdown Acting and other macros}
+* {file:docs/MouseEvents.markdown Mouse manipulation}
+* {file:docs/KeyboardEvents.markdown Keyboard manipulation}
+* {file:docs/Searching.markdown Searching}
+* {file:docs/Notifications.markdown Notifications}
 
-## Mouse Stuff
+## A Note About Caching
 
-All the different ways in which you can click on an object. See
-[Mouse Events](./MouseEvents.markdown) for more detailed documentation
-on how to manipulate the mouse.
+You need to be careful when you cache elements. When you trigger an
+action you are changing the state of an application, and are likely to
+invalidate some elements when they disappear (e.g. closing a
+window). Trying to use an elment object when the UI it links to no
+longer exists will crash MacRuby.
 
 ## Tools
 
-One of the most helpful tools for understanding the layout of the view
-hierarchy is the
-[Accessibility Inspector](file:///Developer/Applications/Utilities/Accessibility%20Tools/).
-The inspector can be used to quickly understand the accessibility
-layout of an app.
-
-## Adding Accessibility To Your Own Apps
-
-If you need/want to add accessibility to your own applications, you
-will need to make sure you follow some simple rules:
-
-* Constants need to have a namespace prefix that ends with AX (e.g. MCAX)
-* Most of the time, all you need to do is link some things in Interface Builder
+When writing scripts, it is often faster to inspect the view hierarchy
+using the Accessibility Inspector tool that is part of the Developer
+Tools. The inspector will be located in
+`/Developer/Applications/Utilities/Accessibility%20Tools/` once you
+have the Developer Tools installed.

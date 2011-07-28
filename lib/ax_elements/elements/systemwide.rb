@@ -5,6 +5,8 @@ require 'singleton'
 class AX::SystemWide < AX::Element
   include Singleton
 
+  ##
+  # Overridden since there is only one way to get the element ref.
   def initialize
     super AXUIElementCreateSystemWide()
   end
@@ -15,13 +17,13 @@ class AX::SystemWide < AX::Element
   #
   # Generate keyboard events by simulating keyboard input.
   def type_string string
-    AX.keyboard_action( @ref, string )
+    AX.keyboard_action @ref, string
   end
 
   ##
   # Overridden to avoid a difficult to understand error message.
   def search *args
-    problem 'AX::SystemWide cannot search'
+    raise NoMethodError, 'AX::SystemWide cannot search'
   end
 
   ##
@@ -30,18 +32,14 @@ class AX::SystemWide < AX::Element
   #
   # @raise [NoMethodError]
   def on_notification *args
-    problem 'AX::SystemWide cannot register for notifications'
-  end
-
-
-  private
-
-  def problem string
-    raise NoMethodError, string
+    raise NoMethodError, 'AX::SystemWide cannot register for notifications'
   end
 
 end
 
 
+##
+# Singleton instance of the SystemWide element
+#
 # @return [AX::SystemWide]
 AX::SYSTEM = AX::SystemWide.instance

@@ -2,7 +2,7 @@
 # Helper methods for Table Views
 class AX::Table < AX::Element
 
-  def helper_dude
-  end
+  # @todo Write a helper for getting things from specific
+  #       rows/columns in the table
 
 end

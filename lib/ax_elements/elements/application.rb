@@ -53,18 +53,17 @@ class AX::Application < AX::Element
   end
 
   ##
-  # @note Key presses are async...or are they?
-  #
   # Send keyboard input to `self`, the control that currently has focus
   # will the control that receives the key presses.
+  #
+  # @return [nil]
   def type_string string
     AX.keyboard_action( @ref, string )
   end
 
   ##
-  # @note That this object becomes poisonous after the app terminates.
-  #       That is to say, if you try to use it again, you will crash
-  #       MacRuby.
+  # @note This object becomes poisonous after the app terminates. If you
+  #       try to use it again, you will crash MacRuby.
   #
   # Ask the application to terminate itself. Be careful how you use this.
   #
@@ -75,6 +74,8 @@ class AX::Application < AX::Element
 
 end
 
-
-# @return [AX::Application] the Mac OS X dock application
+##
+# The Mac OS X dock application.
+#
+# @return [AX::Application]
 AX::DOCK = Accessibility.application_with_bundle_identifier 'com.apple.dock'
