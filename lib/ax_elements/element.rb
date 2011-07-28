@@ -152,7 +152,7 @@ class AX::Element
   #
   #   AX::DOCK.search( :application_dock_item, title:'Finder' )
   #
-  # @param [Symbol,String] element_type
+  # @param [#to_s] element_type
   # @param [Hash{Symbol=>Object}] filters
   # @return [AX::Element,nil,Array<AX::Element>,Array<>]
   def search element_type, filters = nil
@@ -311,8 +311,10 @@ class AX::Element
   def action_for sym; (@@array = actions).find { |x| x == @@const_map[sym] } end
   def param_attribute_for sym; (@@array = param_attributes).find { |x| x == @@const_map[sym] } end
 
-  # @return [Hash{Symbol=>String}] Memoized mapping of symbols to constants
-  #   used for attribute/action lookups
+  ##
+  # Memoized map for symbols to constants used for attribute/action lookups
+  #
+  # @return [Hash{Symbol=>String}]
   @@const_map = Hash.new do |hash,key|
     @@array.map { |x| hash[strip_prefix(x).underscore.to_sym] = x }
     if hash.has_key? key
@@ -363,8 +365,8 @@ class AX::Element
     private
 
     ##
-    # Mapping low level type ID numbers to methods to massage useful
-    # objects from data.
+    # Map low level type ID numbers to methods. This is how we use
+    # double dispatch to massage low-level data into something nice.
     #
     # @return [Array<Symbol>]
     ATTR_MASSAGERS = []
@@ -429,7 +431,7 @@ class AX::Element
     # @return [Boxed]
     def boxed_attribute value
       box_type = AXValueGetType(value)
-      ptr      = Pointer.new(BOX_TYPES[box_type])
+      ptr      = Pointer.new BOX_TYPES[box_type]
       AXValueGetValue(value, box_type, ptr)
       ptr[0]
     end
