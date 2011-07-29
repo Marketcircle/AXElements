@@ -5,8 +5,7 @@ class TestAccessibilityTreeClass < TestAX
   def test_is_height_aware
     tree = Accessibility::Tree.new APP.attribute :main_window
     tree.each_with_height do |element, height|
-      sleep 0.01 # sometimes this test is too intense for MacRuby
-      msg = element.inspect
+      # msg = element.inspect # for debugging, otherwise makes test too intense for MacRuby
       case element.class.to_s
       when 'AX::CloseButton','AX::ZoomButton','AX::Slider','AX::RadioGroup','AX::ScrollArea','AX::CheckBox','AX::Incrementor','AX::SearchField'
         assert_equal 1, height
