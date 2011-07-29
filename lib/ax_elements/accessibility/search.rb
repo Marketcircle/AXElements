@@ -98,7 +98,7 @@ class Accessibility::Search
           filter_value == value
         elsif filter_value == true || filter_value == false
           value == filter_value
-        elsif filter_value.nil?
+        elsif filter_value.nil? || value.nil?
           false
         else
           filter_value.attribute(TABLE[filter]) == value
