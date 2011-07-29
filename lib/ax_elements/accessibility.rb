@@ -52,7 +52,7 @@ class << Accessibility
   # @return [AX::Element]
   def element_at_point *point
     arg = point.size == 1 ? point.first : point
-    AX::Element.process_attribute AX.element_at_point(*arg.to_a.flatten)
+    AX::Element.process AX.element_at_point(*arg.to_a.flatten)
   end
   alias_method :element_at_position, :element_at_point
 

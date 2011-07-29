@@ -20,7 +20,7 @@ class TestAccessibilityTreeClass < TestAX
 
   def test_is_breadth_first
     tree = Accessibility::Tree.new(APP.main_window.children.find { |x| x.class == AX::TabGroup })
-    actual = tree.map(&:class)
+    actual = tree.map &:class
     expected = [
                 AX::RadioButton, AX::RadioButton, AX::TabGroup,
                 AX::RadioButton, AX::RadioButton, AX::TabGroup,

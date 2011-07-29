@@ -55,9 +55,9 @@ class AX::Element
 
   # @param [Symbol] attr
   def attribute attr
-    real_attribute = attribute_for attr
-    raise LookupFailure.new attr unless real_attribute
-    self.class.process_attribute AX.attr_of_element(@ref, real_attribute)
+    real_attr = attribute_for attr
+    raise LookupFailure.new attr unless real_attr
+    self.class.attribute_for @ref, real_attr
   end
 
   ##
@@ -108,10 +108,10 @@ class AX::Element
 
   # @param [Symbol] attr
   def param_attribute attr, param
-    real_attribute = param_attribute_for attr
-    raise LookupFailure.new attr unless real_attribute
+    real_attr = param_attribute_for attr
+    raise LookupFailure.new attr unless real_attr
     param = param.to_axvalue if param.kind_of? Boxed
-    self.class.process_attribute AX.param_attr_of_element(@ref, real_attribute, param)
+    self.class.param_attribute_for @ref, real_attr, param
   end
 
   # @group Actions
@@ -194,16 +194,20 @@ class AX::Element
   #   window.application # => SearchFailure is raised
   def method_missing method, *args
     if attr = attribute_for(method)
-      return self.class.process_attribute AX.attr_of_element(@ref, attr) # hmm
-    end
+      return self.class.attribute_for(@ref, attr)
 
-    if self.respond_to? :children
+    elsif attr = param_attribute_for(method)
+      return self.class.param_attribute_for(@ref, attr, args.first)
+
+    elsif self.respond_to? :children
       result = search method, args.first
       return result unless result.blank?
       raise SearchFailure.new(self, method)
-    end
 
-    super
+    else
+      super
+
+    end
   end
 
   # @group Notifications
@@ -225,7 +229,7 @@ class AX::Element
   # @return [Proc]
   def on_notification notif, &block
     AX.register_for_notif @ref, notif_for(notif) do |element, notif|
-      element = self.class.process_attribute element
+      element = self.class.process element
       block ? block.call(element, notif) : true
     end
   end
@@ -324,13 +328,22 @@ class AX::Element
 
   class << self
 
+    def attribute_for ref, attr
+      process AX.attr_of_element(ref, attr)
+    end
+
+    def param_attribute_for ref, attr, param
+      param = param.to_axvalue if param.kind_of? Boxed
+      process AX.param_attr_of_element(ref, attr, param)
+    end
+
     ##
-    # Takes a return value from {AX.raw_attr_of_element} and, if required,
-    # converts the data to something more usable.
+    # Meant for taking a return value from {AX.attr_of_element} and,
+    # if required, converts the data to something more usable.
     #
     # Generally, used to process an AXValue into a CGPoint or an
     # AXUIElementRef into some kind of AX::Element object.
-    def process_attribute value
+    def process value
       return nil if value.nil?
       id = ATTR_MASSAGERS[CFGetTypeID(value)]
       id ? self.send(id, value) : value
@@ -366,9 +379,9 @@ class AX::Element
     #
     # @return [Array<Symbol>]
     ATTR_MASSAGERS = []
-    ATTR_MASSAGERS[AXUIElementGetTypeID()] = :element_attribute
-    ATTR_MASSAGERS[CFArrayGetTypeID()]     = :array_attribute
-    ATTR_MASSAGERS[AXValueGetTypeID()]     = :boxed_attribute
+    ATTR_MASSAGERS[AXUIElementGetTypeID()] = :process_element
+    ATTR_MASSAGERS[CFArrayGetTypeID()]     = :process_array
+    ATTR_MASSAGERS[AXValueGetTypeID()]     = :process_box
 
     ##
     # @todo Refactor this pipeline so that we can pass the attributes we look
@@ -379,7 +392,7 @@ class AX::Element
     #
     # @param [AXUIElementRef] element
     # @return [AX::Element]
-    def element_attribute element
+    def process_element element
       roles = AX.roles_for(element).map! { |x| strip_prefix x }
       determine_class_for(roles).new(element)
     end
@@ -415,9 +428,9 @@ class AX::Element
     # We assume a homogeneous array.
     #
     # @return [Array]
-    def array_attribute vals
+    def process_array vals
       return vals if vals.empty? || !ATTR_MASSAGERS[CFGetTypeID(vals.first)]
-      vals.map { |val| element_attribute val }
+      vals.map { |val| process_element val }
     end
 
     ##
@@ -425,7 +438,7 @@ class AX::Element
     #
     # @param [AXValueRef] value
     # @return [Boxed]
-    def boxed_attribute value
+    def process_box value
       box_type = AXValueGetType(value)
       ptr      = Pointer.new BOX_TYPES[box_type]
       AXValueGetValue(value, box_type, ptr)

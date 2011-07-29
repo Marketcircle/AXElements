@@ -3,7 +3,7 @@
 class TestElements < TestAX
 
   APP    = AX::Element.new REF
-  WINDOW = AX::Element.process_attribute AX.attr_of_element(REF, KAXMainWindowAttribute)
+  WINDOW = AX::Element.attribute_for REF, KAXMainWindowAttribute
 
   def window_children
     @@window_children ||= WINDOW.attribute :children
@@ -490,7 +490,11 @@ class TestElementMethodMissing < TestElements
     assert_equal 'AXElementsTester', APP.title
   end
 
-  def test_does_search_if_not_attribute_but_has_children
+  def test_gets_param_attribute_if_param_attribute_found_and_not_attribute
+    assert_equal 'AXEle', static_text.string_for_range(CFRange.new 0, 5)
+  end
+
+  def test_does_search_if_not_attribute_and_not_param_attribute_but_has_children
     indicator = slider.value_indicator
     assert_instance_of AX::ValueIndicator, indicator
   end
