@@ -99,6 +99,7 @@ class << Accessibility
   # @param [String] name name of the application to launch
   # @return [AX::Application,nil]
   def application_with_name name
+    NSRunLoop.currentRunLoop.runUntilDate Time.now
     workspace = NSWorkspace.sharedWorkspace
     app = workspace.runningApplications.find { |app| app.localizedName == name }
     application_with_pid(app.processIdentifier) if app

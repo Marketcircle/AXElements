@@ -14,10 +14,10 @@ class TestAXApplication < TestAX
   def test_can_set_focus_to_an_app
     app(APP).hide
     sleep 0.2
-    refute APP.active?, 'Might fail now because of OS X bug'
+    refute APP.active?
     APP.set_attribute :focused, true
     sleep 0.2
-    assert APP.active?, 'Might fail now because of OS X bug'
+    assert APP.active?
   ensure
     app(APP).activateWithOptions NSApplicationActivateIgnoringOtherApps
   end
@@ -25,7 +25,7 @@ class TestAXApplication < TestAX
   def test_can_hide_the_app
     APP.set_attribute :focused, false
     sleep 0.2
-    refute APP.active?, 'Might fail now because of OS X bug'
+    refute APP.active?
   ensure
     app(APP).activateWithOptions NSApplicationActivateIgnoringOtherApps
   end

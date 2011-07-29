@@ -43,6 +43,7 @@ class AX::Application < AX::Element
   # to the dynamic #focused? method, but might make more sense to use
   # in some cases.
   def active?
+    NSRunLoop.currentRunLoop.runUntilDate Time.now
     @app.active?
   end
 
