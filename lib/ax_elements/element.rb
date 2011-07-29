@@ -326,10 +326,22 @@ class AX::Element
 
   class << self
 
+    ##
+    # Retrieve and process the value of the given attribute for the
+    # given element reference.
+    #
+    # @param [AXUIElementRef] ref
+    # @param [String] attr
     def attribute_for ref, attr
       process AX.attr_of_element(ref, attr)
     end
 
+    ##
+    # Retrieve and process the value of the given parameterized attribute
+    # for the parameter and given element reference.
+    #
+    # @param [AXUIElementRef] ref
+    # @param [String] attr
     def param_attribute_for ref, attr, param
       param = param.to_axvalue if param.kind_of? Boxed
       process AX.param_attr_of_element(ref, attr, param)
