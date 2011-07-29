@@ -71,11 +71,12 @@ task :bench => :benchmark
 
 require 'rake/testtask'
 Rake::TestTask.new(:test) do |t|
-  t.libs     << 'test'
+  t.libs     << 'test' << 'ext/key_coder'
   t.pattern   = 'test/**/test_*.rb'
   t.ruby_opts = ['-rhelper']
   t.verbose   = true
 end
+task :test => :key_coder
 
 ## Gem Packaging
 require 'rubygems/dependency_installer'
