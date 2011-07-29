@@ -128,12 +128,6 @@ class TestAttrOfElementWritable < TestCore
     refute AX.attr_of_element_writable?(REF, 'FAKE')
   end
 
-  def test_logs_errors
-    skip 'test fails because we are not getting the expected result code'
-    with_logging do AX.attr_of_element_writable? DOCK, 'OMG' end
-    assert_match /#{KAXErrorAttributeUnsupported}/, @log_output.string
-  end
-
 end
 
 
@@ -417,10 +411,6 @@ class TestLogAXCall < TestCore
   def test_handles_unknown_error_codes
     with_logging { AX.send(:log_error, REF, 1234567) }
     assert_match /UNKNOWN ERROR CODE/, @log_output.string
-  end
-
-  def test_logs_debug_info
-    skip 'TODO, low priority until someone wants to change the code'
   end
 
 end
