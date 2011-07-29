@@ -68,8 +68,6 @@ class AX::Element
   end
 
   ##
-  # @todo Is it worth caching? Does it matter if it matters to cache the PID?
-  #
   # Get the process identifier for the application that the element
   # belongs to.
   #
