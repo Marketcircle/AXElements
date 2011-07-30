@@ -331,3 +331,31 @@ class TestNilBlank < MiniTest::Unit::TestCase
   end
 
 end
+
+
+class TestBooleanPredicate < MiniTest::Unit::TestCase
+
+  def check expected, value
+    assert_equal expected, value.boolean?
+  end
+
+  def test_true_class_returns_true
+    check true, true
+  end
+
+  def test_false_class_returns_true
+    check true, false
+  end
+
+  def test_other_objects_return_false
+    check false, nil
+    check false, 0
+    check false, 1
+    check false, 10000000000000000000000000
+    check false, 'testing'
+    check false, Object.new
+    check false, /majigger/
+    check false, 0...100
+  end
+
+end

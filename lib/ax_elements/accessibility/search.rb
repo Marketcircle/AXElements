@@ -94,9 +94,7 @@ class Accessibility::Search
       filters.all? do |filter, value|
         break false unless element.respond_to? filter
         filter_value = element.attribute filter
-        if filter_value.class == value.class
-          filter_value == value
-        elsif filter_value == true || filter_value == false
+        if filter_value.class == value.class || filter_value.boolean?
           filter_value == value
         elsif filter_value.nil? || value.nil?
           false
