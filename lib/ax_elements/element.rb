@@ -463,4 +463,3 @@ end
 
 require 'ax_elements/elements/application'
 require 'ax_elements/elements/systemwide'
-require 'ax_elements/elements/table'

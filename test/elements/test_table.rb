@@ -1,3 +1,0 @@
-class TestElementsTable < TestAX
-
-end
