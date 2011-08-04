@@ -29,7 +29,7 @@ class AX::Element
   # Raised when an implicit search fails
   class SearchFailure < NoMethodError
     def initialize searcher, searchee
-      path = Accessibility.path(searcher).map &:inspect
+      path = Accessibility.path(searcher).map { |x| x.inspect }
       msg  = "Could not find `#{searchee}` as a child of #{searcher.class}"
       msg << "\nElement Path:\n\t" << path.join("\n\t")
       super msg
@@ -456,7 +456,7 @@ class AX::Element
     end
 
     # @return [String,nil] order-sensitive (which is why we unshift nil)
-    BOX_TYPES = [CGPoint, CGSize, CGRect, CFRange].map!(&:type).unshift(nil)
+    BOX_TYPES = [CGPoint, CGSize, CGRect, CFRange].map! { |x| x.type }.unshift(nil)
 
   end
 end
