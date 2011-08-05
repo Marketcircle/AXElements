@@ -4,12 +4,14 @@ class << Accessibility
 
   ##
   # Get a list of elements, starting with an element you give, and riding
-  # the hierarchy up to the top level object (i.e. the {AX::Application}.
+  # the hierarchy up to the top level object (i.e. the {AX::Application}).
   #
   # @example
-  #   element = AX::DOCK.list.application_dock_item
-  #   Accessibility.path(element)
-  #     # => [AX::ApplicationDockItem, AX::List, AX::Application]
+  #
+  #```ruby
+  # element = AX::DOCK.list.application_dock_item
+  # Accessibility.path(element) # => [AX::ApplicationDockItem, AX::List, AX::Application]
+  #```
   #
   # @param [AX::Element] element
   # @return [Array<AX::Element>] the path in ascending order
@@ -20,8 +22,8 @@ class << Accessibility
   end
 
   ##
-  # Produce an {Accessibility::Tree} rooted at the given element. Just
-  # syntaictic sugar for {Accessibility::Tree.new}.
+  # Produce a {Accessibility::Tree} rooted at the given element. Just
+  # syntaictic sugar for `Accessibility::Tree.new`.
   #
   # @param [AX::Element]
   def tree element

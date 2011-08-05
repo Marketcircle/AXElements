@@ -10,9 +10,9 @@ class Accessibility::Search
 
   ##
   # Find all elements in the view hierarchy that match the given class
-  # and any other search criteria.
+  # and the filter criteria.
   #
-  # @param [Symbol,String] target_klass
+  # @param [Symbol,String] klass
   # @param [Hash] criteria
   # @return [Array<AX::Element>,Array<>]
   def find_all klass, criteria
@@ -22,9 +22,9 @@ class Accessibility::Search
 
   ##
   # Find the first element in the tree that has a certain type and
-  # matches any other criteria that has been specified.
+  # matches the filter criteria that has been specified.
   #
-  # @param [Symbol,String] target_klass
+  # @param [Symbol,String] klass
   # @param [Hash] criteria
   # @return [AX::Element,nil]
   def find klass, criteria
