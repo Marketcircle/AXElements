@@ -3,7 +3,7 @@
 ##
 # Convenience methods to use when building an #inspect method for
 # {AX::Element} and its descendants.
-module Accessibility::Inspector
+module Accessibility::PPInspector
 
   protected
 

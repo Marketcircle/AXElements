@@ -7,7 +7,7 @@ require 'active_support/inflector'
 #
 # The abstract base class for all accessibility objects.
 class AX::Element
-  include Accessibility::Inspector
+  include Accessibility::PPInspector
 
   ##
   # Raised when a lookup fails
