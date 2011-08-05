@@ -39,18 +39,9 @@ class Accessibility::Search
   # Create a search "block" to be used for element validation in a search.
   class Qualifier
 
-    # @return [Symbol,String]
-    attr_reader :sym
-
-    # @return [Class]
-    attr_reader :klass
-
-    # @return [Hash]
-    attr_reader :filters
-
-    # @param [Symbol,String] target_klass
-    # @param [Hash] filter_criteria
-    def initialize target_klass, filter_criteria
+    # @param [Symbol,String] target
+    # @param [Hash] filters
+    def initialize target, filters
       @sym     = target_klass
       @filters = filter_criteria
     end
@@ -58,6 +49,8 @@ class Accessibility::Search
     ##
     # Whether or not a candidate object matches the criteria given
     # at initialization.
+    #
+    # @param [AX::Element] element
     def qualifies? element
       return false unless the_right_type? element
       return false unless meets_criteria? element
@@ -70,28 +63,25 @@ class Accessibility::Search
     ##
     # Checks if a candidate object is of the correct class.
     #
-    # This is an important method to optimize for search as it needs
-    # to be called for each candidate object.
+    # This is an important method to optimize for search.
+    #
+    # @param [AX::Element] element
     def the_right_type? element
-      return element.kind_of? klass if klass
-      if AX.const_defined? sym
-        klass = AX.const_get sym
-        element.kind_of? klass
+      return element.kind_of? @klass if @klass
+      if AX.const_defined? @sym
+        @klass = AX.const_get @sym
+        return element.kind_of? @klass
       else
-        false
+        return false
       end
     end
 
-    # @return [Hash{Symbol=>Symbol}]
-    TABLE = {
-      title_ui_element: :value
-    }
-
     ##
-    # Determines if the element meets all the criteria of the filters
-    # the Qualifier object was initialized with.
+    # Determines if the element meets all the criteria of the filters.
+    #
+    # @param [AX::Element] element
     def meets_criteria? element
-      filters.all? do |filter, value|
+      @filters.all? do |filter, value|
         break false unless element.respond_to? filter
         filter_value = element.attribute filter
         if filter_value.class == value.class || filter_value.boolean?
@@ -103,6 +93,11 @@ class Accessibility::Search
         end
       end
     end
+
+    # @return [Hash{Symbol=>Symbol}]
+    TABLE = {
+      title_ui_element: :value
+    }
 
   end
 
