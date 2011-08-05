@@ -28,8 +28,8 @@ module Accessibility
     attr_accessor :log
   end
 
-  @log = Logger.new $stderr
-  @log.level = Logger::ERROR
+  @log       = Logger.new $stderr
+  @log.level = Logger::ERROR # @todo need to fix this
 end
 
 require 'ax_elements/version'
