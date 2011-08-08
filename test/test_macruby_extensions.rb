@@ -72,23 +72,6 @@ class TestNSArrayToRect < MiniTest::Unit::TestCase
 end
 
 
-class TestNSArrayBlank < MiniTest::Unit::TestCase
-
-  def setup
-    @array = NSArray.alloc.initWithArray([])
-  end
-
-  def test_responds
-    assert_respond_to @array, :blank?
-  end
-
-  def test_is_aliased_to_empty?
-    assert_equal @array.method(:empty?), @array.method(:blank?)
-  end
-
-end
-
-
 class TestNSMutableStringCamelizeBang < MiniTest::Unit::TestCase
 
   def test_takes_snake_case_string_and_makes_it_camel_case
@@ -319,15 +302,6 @@ class TestBoxedToAXValue < MiniTest::Unit::TestCase
     [[CGPoint, 1], [CGSize, 2], [CGRect, 3], [CFRange, 4]].each do |klass, value|
       assert_equal value, klass.instance_variable_get(:@ax_value)
     end
-  end
-
-end
-
-
-class TestNilBlank < MiniTest::Unit::TestCase
-
-  def test_returns_true
-    assert_equal true, nil.blank?
   end
 
 end
