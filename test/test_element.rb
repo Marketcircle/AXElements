@@ -70,19 +70,25 @@ end
 
 class TestElementSearchFailure < TestElements
 
-  def setup
-    @exception = AX::Element::SearchFailure.new(WINDOW, :test)
+  def minimal_exception
+    AX::Element::SearchFailure.new(WINDOW, :test)
   end
 
   def test_correct_message
     pattern = /Could not find `test` as a child of AX::StandardWindow/
-    assert_match pattern, @exception.message
+    assert_match pattern, minimal_exception.message
   end
 
   def test_includes_trace
-    trace = @exception.message.split('Element Path:').last
+    trace = minimal_exception.message.split('Element Path:').last
     assert_match /AX::StandardWindow "AXElementsTester"/, trace
     assert_match /AX::Application "AXElementsTester" 2 children/, trace
+  end
+
+  def test_includes_filters_if_filters_given
+    exception = AX::Element::SearchFailure.new(WINDOW, :test, attr: 'value', other: 1)
+    pattern   = /Could not find `test(attr: "value", other: 1)` as a child of AX::StandardWindow/
+    assert_match pattern, exception.message
   end
 
 end

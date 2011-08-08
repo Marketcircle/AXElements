@@ -28,9 +28,14 @@ class AX::Element
   ##
   # Raised when an implicit search fails
   class SearchFailure < NoMethodError
-    def initialize searcher, searchee
-      path = Accessibility.path(searcher).map { |x| x.inspect }
-      msg  = "Could not find `#{searchee}` as a child of #{searcher.class}"
+    def initialize searcher, searchee, filters = {}
+      path       = Accessibility.path(searcher).map { |x| x.inspect }
+      pp_filters = filters.map do |key, value|
+        "#{key}: #{value.inspect}"
+      end.join(',')
+      msg  = "Could not find `#{searchee}"
+      msg << "(#{pp_filters})" unless pp_filters.empty?
+      msg << "` as a child of #{searcher.class}"
       msg << "\nElement Path:\n\t" << path.join("\n\t")
       super msg
     end
@@ -203,7 +208,7 @@ class AX::Element
     elsif self.respond_to? :children
       result = search method, args.first
       return result unless result.blank?
-      raise SearchFailure.new(self, method)
+      raise SearchFailure.new(self, method, args.first)
 
     else
       super
