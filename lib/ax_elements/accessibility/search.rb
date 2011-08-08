@@ -42,8 +42,8 @@ class Accessibility::Search
     # @param [Symbol,String] target
     # @param [Hash] filters
     def initialize target, filters
-      @sym     = target_klass
-      @filters = filter_criteria
+      @sym     = target
+      @filters = filters
     end
 
     ##
