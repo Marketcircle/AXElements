@@ -50,7 +50,10 @@ class AX::Element
 
   # @group Attributes
 
-  # @return [Array<String>] cache of available attributes
+  ##
+  # Cache of available attributes.
+  #
+  # @return [Array<String>]
   attr_reader :attributes
 
   # @param [Symbol] attr
@@ -220,7 +223,6 @@ class AX::Element
   #
   # @param [String,Symbol] notif
   # @param [Float] timeout
-  # @yield
   # @yieldparam [AX::Element] element
   # @yieldparam [String] notif
   # @yieldreturn [Boolean]
@@ -304,13 +306,29 @@ class AX::Element
     Kernel.const_defined?(const) ? Kernel.const_get(const) : name
   end
 
-  # @todo Use a lock to make these methods thread safe...
-  def attribute_for sym; (@@array = attributes).find { |x| x == @@const_map[sym] } end
-  def action_for sym; (@@array = actions).find { |x| x == @@const_map[sym] } end
-  def param_attribute_for sym; (@@array = param_attributes).find { |x| x == @@const_map[sym] } end
+  ##
+  # Find the constant value for the given symbol. If nothing is found
+  # then `nil` will be returned.
+  #
+  # @param [Symbol]
+  # @return [String,nil]
+  def attribute_for sym
+    (@@array = attributes).find { |x| x == @@const_map[sym] }
+  end
+
+  # (see #attribute_for)
+  def action_for sym
+    (@@array = actions).find { |x| x == @@const_map[sym] }
+  end
+
+  # (see #attribute_for)
+  def param_attribute_for sym
+    (@@array = param_attributes).find { |x| x == @@const_map[sym] }
+  end
 
   ##
-  # Memoized map for symbols to constants used for attribute/action lookups
+  # Memoized map for symbols to constants used for attribute/action
+  # lookups.
   #
   # @return [Hash{Symbol=>String}]
   @@const_map = Hash.new do |hash,key|
@@ -368,16 +386,18 @@ class AX::Element
     #
     # @example
     #
+    # ```ruby
     #   AX.strip_prefix 'AXTitle'                    # => 'Title'
     #   AX.strip_prefix 'AXIsApplicationEnabled'     # => 'ApplicationEnabled'
     #   AX.strip_prefix 'MCAXEnabled'                # => 'Enabled'
     #   AX.strip_prefix KAXWindowCreatedNotification # => 'WindowCreated'
     #   AX.strip_prefix NSAccessibilityButtonRole    # => 'Button'
+    # ```
     #
-    # @param [String] constant
+    # @param [String] const
     # @return [String]
-    def strip_prefix constant
-      constant.sub /^[A-Z]*?AX(?:Is)?/, ''
+    def strip_prefix const
+      const.sub /^[A-Z]*?AX(?:Is)?/, ''
     end
 
 
