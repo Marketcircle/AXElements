@@ -70,9 +70,7 @@ class Accessibility::Tree
   #
   # @return [String]
   def to_dot
-    each_with_height do |element, height|
-      puts height
-    end
+    raise NotImplementedError, 'Please implement me, :('
   end
 
 end
