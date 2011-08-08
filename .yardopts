@@ -11,6 +11,7 @@ ext/**/*.m
 -
 docs/AXElements.markdown
 docs/KeyboardEvents.markdown
+docs/Inspecting.markdown
 docs/Notifications.markdown
 docs/MouseEvents.markdown
 docs/Searching.markdown
