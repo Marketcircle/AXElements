@@ -10,6 +10,7 @@ class AppDelegate
 
   attr_accessor :window
   attr_accessor :yes_button
+  attr_accessor :array_controller
 
   def applicationDidFinishLaunching(a_notification)
     def window.accessibilityAttributeNames
@@ -23,10 +24,27 @@ class AppDelegate
       else super
       end
     end
+
+    def array_controller.selectsInsertedObjects
+      false
+    end
+    objects = window.accessibilityAttributeNames.map do |name|
+      TableRow.new name, window.accessibilityAttributeValue(name).inspect
+    end
+    array_controller.addObjects objects
   end
 
   def post_notification sender
     NSAccessibilityPostNotification(yes_button.cell, 'Cheezburger')
   end
 
+end
+
+class TableRow
+  attr_accessor :name
+  attr_accessor :value
+
+  def initialize init_name, init_value
+    @name, @value = init_name, init_value
+  end
 end

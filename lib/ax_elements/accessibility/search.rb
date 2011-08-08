@@ -96,7 +96,8 @@ class Accessibility::Search
 
     # @return [Hash{Symbol=>Symbol}]
     TABLE = {
-      title_ui_element: :value
+      title_ui_element: :value,
+      header:           :title
     }
 
   end

@@ -85,6 +85,25 @@ class TestSearch < TestAX
     assert_equal expected, actual
   end
 
+  def test_table_header_filtering
+    area  = APP.attribute(:main_window).attribute(:children).find do |child|
+      child.class == AX::ScrollArea && child.attribute(:identifier) == '_NS:221'
+    end
+    table = area.children.find do |child|
+      child.class == AX::Table
+    end
+    @search = Accessibility::Search.new APP.attribute(:main_window)
+
+    # case 1: classes match
+    column        = table.attribute(:columns).first
+    button        = column.attribute(:header)
+    search_result = @search.find(:Column, header: button)
+    assert_equal column, search_result
+
+    # case 2: classes do not match
+    assert_equal 'One', @search.find(:Column, header: 'One').attribute(:header).attribute(:title)
+  end
+
   def test_true_false_class_mismatch
     # since search does a class comparison to try and infer things,
     # it does not work with boolean values since they have different
