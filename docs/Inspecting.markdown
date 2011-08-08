@@ -118,7 +118,9 @@ not always choose the best attributes to show.
 process identifier for the application is also included. In other
 cases, the screen co-ordinates or whether the element is enabled may
 not be relevant, so you can override the method in the specific
-subclass to not inculde those attributes and/or include other attributes.
+subclass to not inculde those attributes and/or include other
+attributes. The key idea is to make `#inspect` helpful when exploring
+a UI through the console or debugging a script.
 
 ## Accessing Children
 
