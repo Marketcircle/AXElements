@@ -87,7 +87,9 @@ class TestSearch < TestAX
 
   def test_table_header_filtering
     area  = APP.attribute(:main_window).attribute(:children).find do |child|
-      child.class == AX::ScrollArea && child.attribute(:identifier) == '_NS:221'
+      child.class == AX::ScrollArea &&
+        child.attributes.include?(KAXIdentifierAttribute) &&
+        child.attribute(:identifier) == 'table'
     end
     table = area.children.find do |child|
       child.class == AX::Table
