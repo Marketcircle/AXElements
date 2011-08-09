@@ -71,7 +71,7 @@ end
 class TestElementSearchFailure < TestElements
 
   def minimal_exception
-    AX::Element::SearchFailure.new(WINDOW, :test)
+    AX::Element::SearchFailure.new(WINDOW, :test, nil)
   end
 
   def test_correct_message
@@ -87,8 +87,7 @@ class TestElementSearchFailure < TestElements
 
   def test_includes_filters_if_filters_given
     exception = AX::Element::SearchFailure.new(WINDOW, :test, attr: 'value', other: 1)
-    pattern   = /Could not find `test(attr: "value", other: 1)` as a child of AX::StandardWindow/
-    assert_match pattern, exception.message
+    assert_match /`test\(attr: "value", other: 1\)`/, exception.message
   end
 
 end

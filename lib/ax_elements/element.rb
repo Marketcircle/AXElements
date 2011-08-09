@@ -28,11 +28,11 @@ class AX::Element
   ##
   # Raised when an implicit search fails
   class SearchFailure < NoMethodError
-    def initialize searcher, searchee, filters = {}
+    def initialize searcher, searchee, filters
       path       = Accessibility.path(searcher).map { |x| x.inspect }
-      pp_filters = filters.map do |key, value|
+      pp_filters = (filters || {}).map do |key, value|
         "#{key}: #{value.inspect}"
-      end.join(',')
+      end.join(', ')
       msg  = "Could not find `#{searchee}"
       msg << "(#{pp_filters})" unless pp_filters.empty?
       msg << "` as a child of #{searcher.class}"
@@ -198,6 +198,7 @@ class AX::Element
   # @example Attribute and element search failure
   #
   #   window.application # => SearchFailure is raised
+  #
   def method_missing method, *args
     if attr = attribute_for(method)
       return self.class.attribute_for(@ref, attr)
