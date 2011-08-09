@@ -1,4 +1,4 @@
-class TestBlankPredicate < MiniTest::Unit::TestCase
+class TestBlankPredicate < TestAX
 
   def test_nil_returns_true
     assert_equal true, nil.blank?
@@ -14,9 +14,10 @@ class TestBlankPredicate < MiniTest::Unit::TestCase
   end
 
   def test_element_always_returns_false
-    assert_equal false, WINDOW.blank?
-    assert_equal false, APP.blank?
-    assert_equal false, slider.blank?
+    app    = AX::Element.new REF
+    window = app.attribute(:main_window)
+    assert_equal false, window.blank?
+    assert_equal false, app.blank?
   end
 
   # other objects do not implement the method because it is not
