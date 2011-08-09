@@ -76,8 +76,6 @@ following code, one line at a time:
   puts "The window's title is #{title}"
 ```
 
-##### Example Analysis
-
 In the first line, we are creating the UI element object for the
 application. As mentioned earlier, you will usually start navigating
 the UI tree from the application object. Giving the name of the
@@ -157,6 +155,9 @@ object you want.
 
 ## Next Steps
 
+You may want to play with what you have learned so far. Find bugs, or
+at least what might seem like a bug.
+
 From here the next logical step would be to figure out how to trigger
-some sort of action and then inspect the UI for changes, actions are
-covered in the {file:docs/Acting.markdown Acting Tutorial}.
+some sort of action and then inspect the UI for changes; for that
+topic you should read the {file:docs/Acting.markdown Acting Tutorial}.
