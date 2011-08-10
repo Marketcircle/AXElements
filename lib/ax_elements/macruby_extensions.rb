@@ -47,6 +47,12 @@ class NSArray
 
   alias_method :ax_array_method_missing, :method_missing
   ##
+  # @todo We should really rethink what this does in terms of the
+  #       semantics of the language. For instance, when we say something
+  #       like "outline.rows.text_field" did we want the text field for
+  #       each row or did we want a row that has a text field or did we
+  #       the first text field that is a child of one of the rows?
+  #
   # If the array contains {AX::Element} objects and the method name
   # belongs to an attribute then the method will be mapped
   # across the array. In this case, you can artificially pluralize
@@ -57,11 +63,11 @@ class NSArray
   # various types of {AX::Element} objects that may not all respond to
   # the same attribute.
   def method_missing method, *args
-    if first.kind_of?(AX::Element)
+    if first.kind_of? AX::Element
       return map(&method) if first.respond_to?(method)
       return map(&singularized_method_name(method))
     end
-    ax_array_method_missing(method, *args)
+    ax_array_method_missing method, *args
   end
 
 
