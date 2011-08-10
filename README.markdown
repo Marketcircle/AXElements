@@ -43,11 +43,13 @@ An idealized outline of how things will progress in the next couple of releases
 
 ### 0.6 (or maybe 1.0)
 
+- Make a decision about NSArray#method_missing
+- Merge notifications with actions
+- Rewrite core module to handle errors more gracefully
 - Cleanup properly in failure cases for notifications
-- Mouse module cleanup
+- Mouse module cleanup and regression testing
 - Test suite duplication cleanup
 - Performance tweaks
-- RSpec matchers
 
 ### Future
 
