@@ -67,12 +67,39 @@ class Accessibility::Tree
   end
 
   ##
+  # Dump a tree to the console, indenting for each level down the
+  # tree that we go, and inspecting each element.
+  #
+  # @return [nil] do not count on a return
+  def dump
+    depth_first_dump @root, 0
+    nil
+  end
+
+  ##
   # Make a `dot` format graph of the tree, meant for graphing with
   # GraphViz.
   #
   # @return [String]
   def to_dot
     raise NotImplementedError, 'Please implement me, :('
+  end
+
+
+  private
+
+  ##
+  # Walk the UI element tree in a depth first order, and inspect
+  # each element along the way.
+  #
+  # @param [AX::Element] element
+  def depth_first_dump element, depth
+    puts "\t"*depth + element.inspect
+    if element.respond_to? :children
+      element.attribute(:children).each do |x|
+        depth_first x, depth + 1
+      end
+    end
   end
 
 end
