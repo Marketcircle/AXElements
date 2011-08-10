@@ -7,7 +7,9 @@ class Accessibility::Tree
   include Enumerable
 
   ##
-  # Caches the root
+  # Caches the root.
+  #
+  # @param [AX::Element]
   def initialize root
     @root = root
   end

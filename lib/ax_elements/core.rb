@@ -73,7 +73,7 @@ class << AX
     AXUIElementCopyAttributeNames(element, aptr)
     if aptr[0].include? SUBROLE
       AXUIElementCopyAttributeValue(element, SUBROLE, ptr)
-      # Be careful, because some things claim to have a subrole
+      # Be careful, some things claim to have a subrole
       # but return nil
       ret.unshift ptr[0] if ptr[0]
     end
