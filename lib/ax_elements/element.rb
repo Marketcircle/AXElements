@@ -441,8 +441,12 @@ class AX::Element
     # @param [Array<String>] const the value you want as a constant
     # @return [Class] a reference to the class being looked up
     def determine_class_for names
-      const = names.first
-      AX.const_defined?(const) ? AX.const_get(const) : create_class(*names)
+      klass = names.first
+      if AX.const_defined? klass, false
+        AX.const_get klass
+      else
+        create_class *names
+      end
     end
 
     ##
