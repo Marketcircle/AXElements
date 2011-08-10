@@ -78,6 +78,8 @@ class Accessibility::Search
 
     ##
     # @todo This method is getting very large
+    # @todo How could we handle filters that use parameterized
+    #       attributes?
     #
     # Determines if the element meets all the criteria of the filters.
     #
