@@ -86,7 +86,7 @@ class Accessibility::Search
       @filters.all? do |filter, value|
         unless element.respond_to? filter
           break false unless element.respond_to? :children
-          return element.search(filter, value)
+          break element.search(filter, value)
         end
 
         filter_value = element.attribute filter
