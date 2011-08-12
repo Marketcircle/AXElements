@@ -147,8 +147,8 @@ class AX::Element
   # Perform a breadth first search through the view hierarchy rooted at
   # the current element.
   #
-  # See the documentation page {file:docs/Searching.markdown Searching}
-  # on the details of how to search.
+  # See the {file:docs/Searching.markdown Searching} tutorial for the
+  # details on searching.
   #
   # @example Find the dock item for the Finder app
   #
