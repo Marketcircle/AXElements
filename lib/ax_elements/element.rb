@@ -109,7 +109,7 @@ class AX::Element
 
   # @return [Array<String>] available parameterized attributes
   def param_attributes
-    AX.param_attrs_of_element @ref # should we cache?
+    @param_attributes ||= AX.param_attrs_of_element @ref
   end
 
   # @param [Symbol] attr
