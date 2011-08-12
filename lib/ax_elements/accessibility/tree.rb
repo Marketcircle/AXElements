@@ -89,6 +89,8 @@ class Accessibility::Tree
   private
 
   ##
+  # @todo DFS without recursion?
+  #
   # Walk the UI element tree in a depth first order, and inspect
   # each element along the way.
   #
@@ -97,7 +99,7 @@ class Accessibility::Tree
     puts "\t"*depth + element.inspect
     if element.respond_to? :children
       element.attribute(:children).each do |x|
-        depth_first x, depth + 1
+        depth_first_dump x, depth + 1
       end
     end
   end
