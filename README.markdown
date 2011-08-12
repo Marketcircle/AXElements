@@ -43,6 +43,8 @@ An idealized outline of how things will progress in the next couple of releases
 
 ### 0.6 (or maybe 1.0)
 
+- Better decoupling of algorithm for walking Tree
+  + Need to at least be able to swap DFS and BFS
 - Make a decision about NSArray#method_missing
 - Merge notifications with actions
 - Rewrite core module to handle errors more gracefully
