@@ -625,20 +625,24 @@ end
 class TestElementRespondTo < TestElements
 
   def test_true_for_attributes_object_has
-    assert APP.respond_to?(:title)
+    assert_respond_to APP, :title
   end
 
   def test_false_for_attributes_object_does_not_have
-    APP.respond_to?(:title_ui_element)
+    refute_respond_to APP, :title_ui_element
+  end
+
+  def test_true_for_parameterized_attributes
+    assert_respond_to static_text, :string_for_range
   end
 
   def test_false_for_search_names
-    refute APP.respond_to?(:window)
+    refute_respond_to APP, :window
   end
 
   def test_still_works_for_regular_methods
-    assert APP.respond_to?(:attributes)
-    refute APP.respond_to?(:crazy_thing_that_cant_work)
+    assert_respond_to APP, :attributes
+    refute_respond_to APP, :crazy_thing_that_cant_work
   end
 
 end
