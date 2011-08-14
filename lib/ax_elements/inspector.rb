@@ -9,21 +9,34 @@ module Accessibility::PPInspector
 
   ##
   # Create an identifier for {#inspect} that should make it very
-  # easy to identify the element. Ironically, we do not use the
-  # AXIdentifier attribute available in Lion.
+  # easy to identify the element.
   #
   # @return [String]
   def pp_identifier
     if attributes.include? KAXValueAttribute
       val = attribute :value
-      val.kind_of?(NSString) ? " #{val.inspect}" : " value=#{val.inspect}"
-    elsif attributes.include? KAXTitleAttribute
-      " #{attribute(:title).inspect}"
-    elsif attributes.include? 'AXIdentifier'
-      " id=#{attribute(:identifier)}"
-    else # @todo should we have other fallbacks?
-      ''
+      if val.kind_of? NSString
+        return " #{val.inspect}" unless val.empty?
+      else
+        return " value=#{val.inspect}"
+      end
     end
+
+    if attributes.include? KAXTitleAttribute
+      val = attribute(:title)
+      return " #{val.inspect}" if val && !val.empty?
+    end
+
+    if    attributes.include? KAXTitleUIElementAttribute
+      return ' ' + attribute(:title_ui_element).inspect
+    elsif attributes.include? KAXDescriptionAttribute
+      return ' ' + attribute(:description)
+    elsif attributes.include? 'AXIdentifier'
+      return " id=#{attribute(:identifier)}"
+    end
+
+    # @todo should we have other fallbacks?
+    return NSString.string
   end
 
   ##
