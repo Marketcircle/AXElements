@@ -28,7 +28,7 @@ at_exit do
 end
 
 
-gem     'minitest-macruby-pride'
+gem     'minitest'
 require 'minitest/autorun'
 require 'minitest/pride'
 
