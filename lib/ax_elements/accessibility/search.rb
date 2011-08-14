@@ -77,7 +77,6 @@ class Accessibility::Search
     end
 
     ##
-    # @todo This method is getting very large
     # @todo How could we handle filters that use parameterized
     #       attributes?
     #
@@ -86,28 +85,15 @@ class Accessibility::Search
     # @param [AX::Element] element
     def meets_criteria? element
       @filters.all? do |filter, value|
-        unless element.respond_to? filter
-          break false unless element.respond_to? :children
-          break element.search(filter, value)
-        end
-
-        filter_value = element.attribute filter
-        if filter_value.class == value.class || filter_value.boolean?
-          filter_value == value
-        elsif filter_value.nil? || value.nil?
+        if element.respond_to? filter
+          element.send(filter) == value
+        elsif element.respond_to? :children
+          !element.search(filter, value).blank?
+        else # this legitimately occurs
           false
-        else
-          filter_value.attribute(TABLE[filter]) == value
         end
       end
     end
-
-    # @return [Hash{Symbol=>Symbol}]
-    TABLE = {
-      title_ui_element: :value,
-      header:           :title
-    }
-
   end
 
 end

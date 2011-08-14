@@ -495,3 +495,6 @@ end
 require 'ax_elements/elements/application'
 require 'ax_elements/elements/systemwide'
 require 'ax_elements/elements/row'
+require 'ax_elements/elements/button'
+require 'ax_elements/elements/static_text'
+require 'ax_elements/elements/radio_button'
