@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 class TestAccessibilityTreeClass < TestAX
 
   APP = AX::Application.new REF
@@ -53,6 +54,31 @@ class TestAccessibilityTreeClass < TestAX
 
   def test_to_dot_generates_a_nice_dot_graph
     skip 'Not done yet'
+  end
+
+  def test_dump_includes_everyone_in_the_right_order_with_correct_indentation
+    output = Accessibility::Tree(APP.main_window.children.find { |item| item.role == KAXTabGroupRole }).dump
+    refute_empty dump
+
+    expected = [
+                ['AX::TabGroup',    0],
+                ['AX::RadioButton', 1], ['AX::RadioButton', 1], ['AX::TabGroup', 1],
+                ['AX::RadioButton', 2], ['AX::RadioButton', 2], ['AX::TabGroup', 2],
+                ['AX::RadioButton', 3], ['AX::RadioButton', 3], ['AX::TabGroup', 3],
+                ['AX::RadioButton', 4], ['AX::RadioButton', 4], ['AX::TabGroup', 4],
+                ['AX::TextField',   5], ['AX::StaticText',  6],
+                ['AX::TextField' ,  5], ['AX::StaticText',  6]
+               ]
+
+    output = output.split("\n")
+    until output.empty?
+      actual_line             = output.shift
+      expected_klass, indents = expected.shift
+      assert_equal indents, actual_line.match(/^\t+/).to_a.first.length
+
+      actual_line.strip!
+      assert_match /^\#<#{expected.shift}/, line
+    end
   end
 
 end
