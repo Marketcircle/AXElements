@@ -43,21 +43,23 @@ An idealized outline of how things will progress in the next couple of releases
 
 ### 0.6 (or maybe 1.0)
 
+- Pre-loading AX hierarchy and attribute cache from
+  /System/Library/Accessibility/AccessibilityDefinitions.plist
 - Better decoupling of algorithm for walking Tree
   + Need to at least be able to swap DFS and BFS
 - Make a decision about NSArray#method_missing
-- Merge notifications with actions
+- Merge notifications with actions as they are commonly combined
 - Rewrite core module to handle errors more gracefully
 - Cleanup properly in failure cases for notifications
 - Mouse module cleanup and regression testing
-- Test suite duplication cleanup
+- Test suite duplication cleanup and better isolation
 - Performance tweaks
 
 ### Future
 
 - Screenshot taking and diff'ing abilities for those rare cases when
   you need it
-- Address Book helpers
+- Address Book helpers, and other friends
 
 ## Contributing to AXElements
 
