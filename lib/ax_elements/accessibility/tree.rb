@@ -47,6 +47,7 @@ class Accessibility::Tree
   ##
   # @todo Lazy-wrap element refs, should make things a bit faster
   # @todo Implement method in a single loop
+  # @todo Iterate in DFS order, lol
   #
   # Iterate through the tree in breadth first order which keeping track
   # of the current height of the tree.

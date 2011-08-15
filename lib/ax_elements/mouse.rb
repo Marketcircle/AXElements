@@ -4,6 +4,7 @@
 # @todo Less discrimination against left handed people
 # @todo A more intelligent default duration
 # @todo Point arguments should accept a pair tuple
+# @todo This module feels too DRY
 module Mouse; end
 class << Mouse
 
@@ -69,6 +70,14 @@ class << Mouse
   end
 
   ##
+  # Perform a double left click, defaults to clicking at the current
+  # position.
+  #
+  # @param [CGPoint] point
+  def double_click point = current_position
+  end
+
+  ##
   # Return the coordinates of the mouse using the flipped coordinate
   # system.
   #
@@ -87,7 +96,10 @@ class << Mouse
   FPS     = 120
 
   ##
-  # Smallest unit of time allowed for an animation step
+  # @note We keep the number as a rational to try and avoid rounding
+  #       error introduced by the way MacRuby deals with floats.
+  #
+  # Smallest unit of time allowed for an animation step.
   #
   # @return [Number]
   QUANTUM = Rational(1, FPS)
