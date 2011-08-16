@@ -199,7 +199,12 @@ $ELEMENT.$KLASS($DESCANDANT: { $DESCENDANT_FILTER_ATTRIBUTE: $DESCENDANT_FILTER_
 ```
 
 Where `$DESCENDANT` plays the same role as `$KLASS`, but for a new
-search that will be applied to candidates of `$KLASS` as a search result.
+search that will be applied to descendants of `$KLASS`.
+
+Nested searching is a feature you won't need too often if the UI
+hierarchy makes good use of identifiers or other attributes that can
+be used to uniquely identify an element. Nested searching is best used
+when you can only identify an element by describing its children.
 
 ### Element Attribute Inference
 
