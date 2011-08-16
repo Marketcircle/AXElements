@@ -17,9 +17,7 @@ attribute inference.
 
 First, the basic form of a search looks like this:
 
-```ruby
-$ELEMENT.$KLASS($FILTER_ATTRIBUTE1: $FILTER_VALUE1, ...)
-```
+    $ELEMENT.$KLASS($FILTER_ATTRIBUTE1: $FILTER_VALUE1, ...)
 
 Actually, that is just the form for an implicit search, which is a
 little nicer to write than an explicit search. The only difference
@@ -39,9 +37,7 @@ searching for was the method and the filters would be the parameters
 for the method. If we substitute real values in, an example would like
 this:
 
-```ruby
-window.button(title: 'Main Window')
-```
+    window.button(title: 'Main Window')
 
 Meaning that we want to find a `button` that is a child (or descedant)
 of `window`, but only if the `button` has a `title` of `'Main Window'`
@@ -57,15 +53,13 @@ simply need to pluralize the method name.
 
 For example:
 
-```ruby
-window.buttons
-```
+    window.buttons
 
 is translated into something like this
 
 ![All The Buttons](images/all_the_buttons.jpg)
 
-It is just that easy. The rules for pluralization are the same as
+It's just that easy. The rules for pluralization are the same as
 English since we are using the `ActiveSupport::Inflector` to do the
 work of translating from pluralized form back to the singular
 form. Even something like 'boxes' will get translated back to 'box'
@@ -99,56 +93,42 @@ are other several other subclasses of `AX::Button` as well. And
 elements are a subclass of `AX::Element`. What this means is that when
 you have code like:
 
-```ruby
-app.close_button
-```
+    app.close_button
 
 you will only ever find something that is a `AX::CloseButton`, but
 when you write something like:
 
-```ruby
-app.button
-```
+    app.button
 
 any button or subclass of button, including all the traffic light
 buttons, can be found. I believe this makes search follow the
 [DWIM](http://en.wikipedia.org/wiki/DWIM) principle, and allows you to
 shorten the code you need to write in a number of cases. For example:
 
-```ruby
-app.window
-```
+    app.window
 
 can be substituted in place of
 
-```ruby
-app.standard_window
-```
+    app.standard_window
 
 to find the first window. This makes sense if there is only one window
 for the app, which is often the case. Similarly, if you are searching
 from a container, such as an `AX::Group`, which only has a one button,
 which happens to be a `AX::SortButton`, then you can say
 
-```ruby
-table.button
-```
+    table.button
 
 because it is not ambiguous and AXElements knows what you
 mean. What if we take it a step further, what if made an even
 broader search. Since _all_ UI elements are a subclass of
 `AX::Element`, we could just write something like:
 
-```ruby
-app.element
-```
+    app.element
 
 and the first child would be returned. If we combined this with
 pluralization, we could do something like
 
-```ruby
-app.elements
-```
+    app.elements
 
 which will return an array with _all_ the children in it; so as always
 you will need to be aware of the layout of the UI element tree when
@@ -163,9 +143,7 @@ looking for, which can often allow you to skip the need for a search
 filter. As an example, if you want to find the `AX::CloseButton`, then
 you just need to write:
 
-```ruby
-window.close_button
-```
+    window.close_button
 
 since there will only ever be at most one `AX::CloseButton` for a
 window.
@@ -187,16 +165,12 @@ in with other filter parameters.
 
 The answer, by example:
 
-```ruby
-window.outline.row(text_field: { value: 'Calendar' })
-```
+    window.outline.row(text_field: { value: 'Calendar' })
 
 This would be asking for the outline row that has a text field with
 the value of `'Calendar'`. The proper form for this would be:
 
-```ruby
-$ELEMENT.$KLASS($DESCANDANT: { $DESCENDANT_FILTER_ATTRIBUTE: $DESCENDANT_FILTER_VALUE1, ... }, ...)
-```
+    $ELEMENT.$KLASS($DESCANDANT: { $DESCENDANT_FILTER_ATTRIBUTE: $DESCENDANT_FILTER_VALUE1, ... }, ...)
 
 Where `$DESCENDANT` plays the same role as `$KLASS`, but for a new
 search that will be applied to descendants of `$KLASS`.
@@ -218,18 +192,14 @@ element will end up being another UI element. The problem with this is
 that you then need to know about that element before you search and
 the need to use the element as the filter value, for example:
 
-```ruby
-title_field = window.text_field(value: 'Name')
-window.button(title_ui_element: title_field)
-```
+    title_field = window.text_field(value: 'Name')
+    window.button(title_ui_element: title_field)
 
 While that code is legitimate, it is not the most succinct way of
 writing what was meant, and maybe not as clear as it could be. Perhaps
 something more like:
 
-```ruby
-window.button(title_ui_element: 'Name')
-```
+    window.button(title_ui_element: 'Name')
 
 Would also work without introducing inconsistencies in the language we
 have created for searching. You are saying that button you are looking
@@ -280,9 +250,7 @@ look. Does the syntax for search start to get too crazy at that point?
 For instance, you cannot use the label syntax for hash keys with an
 array (unfortunately), so code would look like:
 
-```ruby
-window.button([:string_for_range, CFRange.new(0,5)] => 'AXEle')
-```
+    window.button([:string_for_range, CFRange.new(0,5)] => 'AXEle')
 
 This topic is open to debate, but you should expect that I will play
 the part of the devil's advocate.

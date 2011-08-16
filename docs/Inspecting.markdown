@@ -69,12 +69,10 @@ example. In the terminal, navigate to the AXElements repository and
 start a console session with `macrake console`. Then you can try the
 following code, one line at a time:
 
-```ruby
-  app    = Accessibility.application_with_name 'Terminal'
-  window = app.main_window
-  title  = window.title
-  puts "The window's title is #{title}"
-```
+    app    = Accessibility.application_with_name 'Terminal'
+    window = app.main_window
+    title  = window.title
+    puts "The window's title is #{title}"
 
 In the first line, we are creating the UI element object for the
 application. As mentioned earlier, you will usually start navigating
@@ -126,19 +124,15 @@ Following first principles shown in the example from above you might
 be led to believe that in order to navigate around the UI tree you
 will have to write code that looks something like
 
-```ruby
-  app.main_window.children.find do |child|
-    child.role == AX::Button && child.title == 'Add'
-  end
-```
+    app.main_window.children.find do |child|
+      child.role == AX::Button && child.title == 'Add'
+    end
 
 in order to find a specific child element. However, AXElements
 provides a way to specify what you want that is much more convenient
 to use. Behold
 
-```ruby
-  app.main_window.button(title: 'Add')
-```
+    app.main_window.button(title: 'Add')
 
 which is quite the simplification! If we break it down, you see that
 the method name is the class of the object you want, and then if you

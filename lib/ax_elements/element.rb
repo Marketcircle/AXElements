@@ -393,13 +393,11 @@ class AX::Element
     #
     # @example
     #
-    # ```ruby
     #   AX.strip_prefix 'AXTitle'                    # => 'Title'
     #   AX.strip_prefix 'AXIsApplicationEnabled'     # => 'ApplicationEnabled'
     #   AX.strip_prefix 'MCAXEnabled'                # => 'Enabled'
     #   AX.strip_prefix KAXWindowCreatedNotification # => 'WindowCreated'
     #   AX.strip_prefix NSAccessibilityButtonRole    # => 'Button'
-    # ```
     #
     # @param [String] const
     # @return [String]
