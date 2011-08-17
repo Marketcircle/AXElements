@@ -34,7 +34,7 @@ describes user interactions.
     [ 'LICENSE.txt', 'README.markdown' ]
 
 
-  s.add_runtime_dependency 'activesupport', '~> 3.0.9'
+  s.add_runtime_dependency 'activesupport', '~> 3.0.10'
   s.add_runtime_dependency 'i18n',          '~> 0.6.0'
 
   s.add_development_dependency 'minitest',  '~> 2.4.0'
