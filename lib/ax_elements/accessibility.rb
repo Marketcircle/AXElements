@@ -1,3 +1,5 @@
+require 'mouse'
+
 class << Accessibility
 
   # @group Debug helpers

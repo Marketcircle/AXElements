@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 
+require 'mouse'
+
 ##
 # @todo Allow the animation duration to be overridden for Mouse stuff
 #
@@ -213,9 +215,3 @@ module Accessibility::Language
   end
 
 end
-
-# @todo Consider moving this to lib/ax_elements so that this
-#       file can be loaded without being forced to have it
-#       mix in to the TopLevel
-# Mix the language methods in to the TopLevel
-include Accessibility::Language

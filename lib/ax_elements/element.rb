@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 require 'active_support/inflector'
+require 'ax_elements/inspector'
 
 ##
 # @abstract

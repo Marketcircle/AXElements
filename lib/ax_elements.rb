@@ -23,10 +23,17 @@ module AX; end
 # with the accessibility APIs.
 module Accessibility; end
 
-require 'ax_elements/version'
 require 'ax_elements/macruby_extensions'
+require 'ax_elements/version'
 require 'ax_elements/core'
-require 'ax_elements/inspector'
-require 'ax_elements/accessibility'
 require 'ax_elements/element'
-require 'ax_elements/mouse'
+require 'ax_elements/accessibility'
+
+# Mix the language methods in to the TopLevel
+include Accessibility::Language
+
+##
+# The Mac OS X dock application.
+#
+# @return [AX::Application]
+AX::DOCK = Accessibility.application_with_bundle_identifier 'com.apple.dock'

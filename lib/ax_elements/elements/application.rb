@@ -74,9 +74,3 @@ class AX::Application < AX::Element
   end
 
 end
-
-##
-# The Mac OS X dock application.
-#
-# @return [AX::Application]
-AX::DOCK = Accessibility.application_with_bundle_identifier 'com.apple.dock'
