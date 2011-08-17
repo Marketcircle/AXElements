@@ -460,7 +460,6 @@ class AX::Element
     def create_class name, superklass = :Element
       real_superklass = determine_class_for [superklass]
       klass = Class.new real_superklass
-      Accessibility.log.debug "#{name} class created"
       AX.const_set name, klass
     end
 

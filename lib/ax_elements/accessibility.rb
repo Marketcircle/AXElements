@@ -124,7 +124,6 @@ class << Accessibility
   # @param [String] bundle the bundle identifier for the app
   # @return [Boolean]
   def launch_application bundle
-    log.info "Launching app with bundleID '#{bundle}'"
     NSWorkspace.sharedWorkspace.launchAppWithBundleIdentifier bundle,
                                                      options: NSWorkspaceLaunchAsync,
                               additionalEventParamDescriptor: nil,

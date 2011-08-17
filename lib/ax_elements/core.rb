@@ -1,3 +1,15 @@
+require 'logger'
+
+module Accessibility
+  class << self
+    # @return [Logger]
+    attr_accessor :log
+  end
+
+  @log       = Logger.new $stderr
+  @log.level = Logger::ERROR # @todo need to fix this
+end
+
 ##
 # @todo The current strategy dealing with errors is just to log them,
 #       but that may not always be the correct thing to do. The core

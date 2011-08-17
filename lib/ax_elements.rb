@@ -1,5 +1,4 @@
 framework 'Cocoa'
-require   'logger'
 
 # check that the Accessibility APIs are enabled and are available to MacRuby
 begin
@@ -22,15 +21,7 @@ module AX; end
 ##
 # The module that contains all the things that we need for working
 # with the accessibility APIs.
-module Accessibility
-  class << self
-    # @return [Logger]
-    attr_accessor :log
-  end
-
-  @log       = Logger.new $stderr
-  @log.level = Logger::ERROR # @todo need to fix this
-end
+module Accessibility; end
 
 require 'ax_elements/version'
 require 'ax_elements/macruby_extensions'
