@@ -1,10 +1,13 @@
 ##
-# The UI element for radio buttons on the screen. No, I couldn't come up
-# with anything useful for this docstring.
+# Radio buttons are not the same as a generic button, radio buttons work
+# in mutually exclusive groups (you can only select one at a time). You
+# usually have radio buttons when dealing with tab groups.
 class AX::RadioButton < AX::Element
 
   ##
-  # Overridden to support DWIM behavior.
+  # Test equality with another object. Equality can be with another
+  # {AX::Element} or it can be with a string that matches the title
+  # of the radio button.
   #
   # @return [Boolean]
   def == other
