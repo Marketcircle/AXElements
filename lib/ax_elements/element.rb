@@ -166,7 +166,7 @@ class AX::Element
   ##
   # We use {#method_missing} to dynamically handle requests to lookup
   # attributes or search for elements in the view hierarchy. An attribute
-  # lookup is tried first.
+  # lookup is always tried first.
   #
   # Failing both lookups, this method calls `super`.
   #
@@ -409,8 +409,11 @@ class AX::Element
     private
 
     ##
-    # Map low level type ID numbers to methods. This is how we use
-    # double dispatch to massage low-level data into something nice.
+    # Map Core Foundation type ID numbers to methods. This is how
+    # double dispatch is used to massage low level data into
+    # something nice.
+    #
+    # Indexes are looked up and added to the array at runtime.
     #
     # @return [Array<Symbol>]
     ATTR_MASSAGERS = []
@@ -484,7 +487,14 @@ class AX::Element
       ptr[0]
     end
 
-    # @return [String,nil] order-sensitive (which is why we unshift nil)
+    ##
+    # Map type encodings for wrapping when coming from an AXValueRef.
+    #
+    # The list is order sensitive, which is why (which is why we
+    # unshift nil), but should probably be more rigorously defined
+    # at runtime.
+    #
+    # @return [String,nil]
     BOX_TYPES = [CGPoint, CGSize, CGRect, CFRange].map! { |x| x.type }.unshift(nil)
 
   end
