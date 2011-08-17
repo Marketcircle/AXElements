@@ -8,10 +8,8 @@ class << Accessibility
   #
   # @example
   #
-  #```ruby
-  # element = AX::DOCK.list.application_dock_item
-  # Accessibility.path(element) # => [AX::ApplicationDockItem, AX::List, AX::Application]
-  #```
+  #   element = AX::DOCK.list.application_dock_item
+  #   Accessibility.path(element) # => [AX::ApplicationDockItem, AX::List, AX::Application]
   #
   # @param [AX::Element] element
   # @return [Array<AX::Element>] the path in ascending order
