@@ -65,20 +65,26 @@ work of translating from pluralized form back to the singular
 form. Even something like 'boxes' will get translated back to 'box'
 and work as you expect.
 
-Just as with a search that is not plural you can attach filters to
-trim down the list of items that are returned and implicit searches
-still must find something.
+Except for the fact that you will get a collection of UI elements back
+instead of a single item, pluralized search works the same as a
+non-pluralized search. You can attach any filters you could use with a
+non-pluralized search, and if the search is implicit then it must find
+something.
 
-Pluralized searches is useful when you want to do some custom
+Pluralized searches are useful when you want to do some custom
 refinement on a search, or if you need to make sure something is not
-available. It can also be helpful when you want to explore the UI
-element tree and find out what types of things are available.
+in the UI element tree (and hopefully that means it is not on the
+screen anymore either). It can also be helpful when you want to
+explore the UI element tree and find out what types of UI elements are
+present on the screen. The detail to remember is that a pluralized
+search will have to explore the entire UI subtree from the starting
+point and so it could be very slow.
 
 ### Kind Of
 
 Remember earlier when I said the method name should be the class of
-the element being searched for? Well, that was kind of a lie. Kind of,
-get it? Have I killed the joke yet? No? Good.
+the element being searched for? Well, that was kind of a lie. Kind of.
+Get it? Have I killed the joke yet? Kind of? Good.
 
 The search class that you enter is actually matched using `#kind_of?`
 instead of matching the classes exactly. And since class hierarchies
