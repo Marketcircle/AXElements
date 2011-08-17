@@ -5,17 +5,19 @@
 #
 # The idea here is to pull actions out from an object and put them
 # in front of object to give AXElements more of a DSL feel to make
-# communicating test steps more clear.
+# communicating test steps more clear. See the
+# {file:docs/Acting.markdown Acting} tutorial for examples on how to use
+# methods from this module.
 module Accessibility::Language
 
   # @group Actions
 
   ##
   # We assume that any method that has the first argument with a type
-  # of AX::Element is intended to be an action and so #method_missing
+  # of {AX::Element} is intended to be an action and so `#method_missing`
   # will forward the message to the element.
   #
-  # @param [String] name an action constant
+  # @param [String] method an action constant
   def method_missing method, *args
     arg = args.first
     unless arg.kind_of? AX::Element
@@ -69,8 +71,6 @@ module Accessibility::Language
     element.set_attribute key, value
   end
 
-  # @group Keyboard input
-
   ##
   # Simulate keyboard input by typing out the given string. To learn
   # more about how to encode modifier keys (e.g. Command), see the
@@ -79,12 +79,12 @@ module Accessibility::Language
   #
   # @overload type 'Hello'
   #   Send input to the currently focused application
-  #   @param [#to_s] string
+  #   @param [#to_s]
   #
   # @overload type 'Hello', app
   #   Send input to a specific application
-  #   @param [#to_s] string
-  #   @param [AX::Application] app
+  #   @param [#to_s]
+  #   @param [AX::Application]
   def type string, app = AX::SYSTEM
     app.type_string string.to_s
   end
@@ -96,8 +96,8 @@ module Accessibility::Language
   #       is supported by YARD or someone complains, which ever comes
   #       first.
   #
-  # @param [AX::Element] element
-  # @param [String] notif
+  # @param [AX::Element]
+  # @param [String]
   def register_for_notification element, notif, &block
     element.on_notification notif, &block
   end
@@ -107,20 +107,20 @@ module Accessibility::Language
     AX.wait_for_notif timeout
   end
 
-  # @group Mouse input
+  # @group Mouse Input
 
   ##
   # @overload move_mouse_to(element)
   #   Move the mouse to a UI element
-  #   @param [AX::Element] arg
+  #   @param [AX::Element]
   #
   # @overload move_mouse_to(point)
   #   Move the mouse to an arbitrary point
-  #   @param [CGPoint] arg
+  #   @param [CGPoint]
   #
   # @overload move_mouse_to([x,y])
   #   Move the mouse to an arbitrary point given as an two element array
-  #   @param [Array(Float,Float)] arg
+  #   @param [Array(Float,Float)]
   def move_mouse_to arg
     Mouse.move_to arg.to_point
   end
@@ -136,7 +136,7 @@ module Accessibility::Language
   # Generally, you will pass a {CGPoint} or some kind of {AX::Element},
   # but you could pass anything that responds to #to_point.
   #
-  # @param [#to_point] arg
+  # @param [#to_point]
   def drag_mouse_to arg
     Mouse.drag_to point.to_point
   end
@@ -149,11 +149,10 @@ module Accessibility::Language
   # to scroll up.
   #
   # If the second argument is provided then the mouse will move to that
-  # point first; the argument must be a {CGPoint}, a type of {AX::Element},
-  # an {Array}, or anything else that responds to `#to_point`
+  # point first; the argument must respond to `#to_point`.
   #
-  # @param [Number] lines
-  # @param [#to_point] obj
+  # @param [Number]
+  # @param [#to_point]
   def scroll lines, obj = nil
     move_mouse_to obj if obj
     Mouse.scroll lines
@@ -163,10 +162,9 @@ module Accessibility::Language
   # Perform a regular click.
   #
   # If an argument is provided then the mouse will move to that point
-  # first; the argument must be a {CGPoint}, a type of {AX::Element},
-  # an {Array}, or anything else that responds to `#to_point`
+  # first; the argument must respond to `#to_point`.
   #
-  # @param [#to_point] obj
+  # @param [#to_point]
   def click obj = nil
     move_mouse_to obj if obj
     Mouse.click
@@ -176,10 +174,9 @@ module Accessibility::Language
   # Perform a right (aka secondary) click action.
   #
   # If an argument is provided then the mouse will move to that point
-  # first; the argument must be a {CGPoint}, a type of {AX::Element},
-  # an {Array}, or anything else that responds to `#to_point`
+  # first; the argument must respond to `#to_point`.
   #
-  # @param [#to_point] obj
+  # @param [#to_point]
   def right_click obj = nil
     move_mouse_to obj if obj
     Mouse.right_click
@@ -190,10 +187,9 @@ module Accessibility::Language
   # Perform a double click action.
   #
   # If an argument is provided then the mouse will move to that point
-  # first; the argument must be a {CGPoint}, a type of {AX::Element},
-  # an {Array}, or anything else that responds to `#to_point`
+  # first; the argument must respond to `#to_point`.
   #
-  # @param [#to_point] obj
+  # @param [#to_point]
   def double_click obj = nil
     raise NotImplementedError, 'Please implement me. :('
   end
@@ -218,5 +214,8 @@ module Accessibility::Language
 
 end
 
+# @todo Consider moving this to lib/ax_elements so that this
+#       file can be loaded without being forced to have it
+#       mix in to the TopLevel
 # Mix the language methods in to the TopLevel
 include Accessibility::Language
