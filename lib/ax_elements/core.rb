@@ -11,6 +11,11 @@ module Accessibility
 end
 
 ##
+# Container for all the accessibility objects as well as core abstraction
+# layer that that interact with OS X Accessibility APIs.
+module AX; end
+
+##
 # @todo The current strategy dealing with errors is just to log them,
 #       but that may not always be the correct thing to do. The core
 #       has to be refactored around this issue to become more robust.

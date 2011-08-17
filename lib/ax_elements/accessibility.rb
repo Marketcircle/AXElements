@@ -1,5 +1,10 @@
 require 'mouse'
 
+##
+# The module that contains all the things that we need for working
+# with the accessibility APIs.
+module Accessibility; end
+
 class << Accessibility
 
   # @group Debug helpers

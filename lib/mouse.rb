@@ -6,6 +6,7 @@
 # @todo Point arguments should accept a pair tuple
 # @todo This module feels too DRY
 module Mouse; end
+
 class << Mouse
 
   ##

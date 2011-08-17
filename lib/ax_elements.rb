@@ -13,16 +13,6 @@ You need to install the latest BridgeSupport preview for AXElements to work.
   EOS
 end
 
-##
-# Container for all the accessibility objects as well as core abstraction
-# layer that that interact with OS X Accessibility APIs.
-module AX; end
-
-##
-# The module that contains all the things that we need for working
-# with the accessibility APIs.
-module Accessibility; end
-
 require 'ax_elements/macruby_extensions'
 require 'ax_elements/version'
 require 'ax_elements/core'
