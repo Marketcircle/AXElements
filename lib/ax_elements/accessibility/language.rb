@@ -32,8 +32,89 @@ module Accessibility::Language
   end
 
   ##
-  # Needed to override inherited {Kernel#raise} so that the raise action
-  # works, but in such a way that the original {#raise} also works.
+  # Try to perform the `press` action on the given element.
+  #
+  # @param [AX::Element]
+  # @return [Boolean]
+  def press element
+    element.perform_action :press
+  end
+
+  ##
+  # Try to perform the `show_menu` action on the given element.
+  #
+  # @param [AX::Element]
+  # @return [Boolean]
+  def show_menu element
+    element.perform_action :show_menu
+  end
+
+  ##
+  # Try to perform the `pick` action on the given element.
+  #
+  # @param [AX::Element]
+  # @return [Boolean]
+  def pick element
+    element.perform_action :pick
+  end
+
+  ##
+  # Try to perform the `decrement` action on the given element.
+  #
+  # @param [AX::Element]
+  # @return [Boolean]
+  def decrement element
+    element.perform_action :decrement
+  end
+
+  ##
+  # Try to perform the `confirm` action on the given element.
+  #
+  # @param [AX::Element]
+  # @return [Boolean]
+  def confirm element
+    element.perform_action :confirm
+  end
+
+  ##
+  # Try to perform the `increment` action on the given element.
+  #
+  # @param [AX::Element]
+  # @return [Boolean]
+  def increment element
+    element.perform_action :increment
+  end
+
+  ##
+  # Try to perform the `delete` action on the given element.
+  #
+  # @param [AX::Element]
+  # @return [Boolean]
+  def delete element
+    element.perform_action :delete
+  end
+
+  ##
+  # Try to perform the `cancel` action on the given element.
+  #
+  # @param [AX::Element] element
+  # @return [Boolean]
+  def cancel element
+    element.perform_action :cancel
+  end
+
+  ##
+  # @note This method overrides `Kernel#raise` so we have to check the
+  #       class of the first argument to decide which code path to take.
+  #
+  # Try to perform the `press` action on the given element.
+  #
+  # @overload raise element
+  #   @param [AX::Element] element
+  #   @return [Boolean]
+  #
+  # @overload raise exception[, message[, backtrace]]
+  #   The normal way to raise an exception.
   def raise *args
     arg = args.first
     arg.kind_of?(AX::Element) ? arg.perform_action(:raise) : super
@@ -42,6 +123,8 @@ module Accessibility::Language
   ##
   # Focus an element on the screen, but do not set focus again if
   # already focused.
+  #
+  # @param [AX::Element]
   def set_focus element
     element.set_attribute(:focused, true) unless element.attribute(:focused?)
   end
