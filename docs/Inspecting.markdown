@@ -147,10 +147,49 @@ be chosen. The {file:docs/Searching.markdown Searching Tutorial} goes
 into more depth on how key-value pairs are used to specify which
 object you want.
 
+## Parameterized Attributes
+
+There is a special type of attribute that is called the parameterized
+attribute. The difference from a regular attribute is that you need to
+supply a parameter. An example of this would look like this:
+
+     static_text.string_for_range CFRange.new(0,5)
+
+The method name suggests that you need to provide a range and in
+return you will be given part of the string that corresponds to the
+range. Of course, this example is quite contrived since string slicing
+is so trivial in ruby (but the parameterized attribute actually exists).
+
+Parameterized attributes are different enough from regular attributes
+that Apple does not want them mixing together and producing
+offspring. AXElements is a bit progressive, but still keeps the list
+of parameterized attributes separate from attributes; you can get a
+list of parameterized attributes for an object with
+{AX::Element#param_attributes}. Similarly, you have probably already
+noticed that parameterized attributes have their own section in the
+Accessibility Inspector, but not all UI elements have parameterized
+attributes.
+
+In my experience, parameterized attributes have not been that useful,
+but I haven't looked hard enough and am still looking for a good
+example to put in this section of the tutorial.
+
+## Explicit Attribute Access
+
+In cases where you know what you want is going to be an attribute, you
+can get better performance from accessing attributes by calling
+{AX::Element#attribute} and passing the attribute name.
+
+    app.attribute(:main_window)
+
+Similarly, for parameterized attributes, you need to call
+{AX::Element#param_attribute} and pass the attribute name and
+parameter as parameters to that method.
+
 ## Next Steps
 
-You may want to play with what you have learned so far. Find bugs, or
-at least what might seem like a bug.
+You may want to play with what you have learned so far. See if you can
+find bugs and then fix them, or perhaps a missing feature.
 
 From here the next logical step would be to figure out how to trigger
 some sort of action and then inspect the UI for changes; for that
