@@ -84,7 +84,8 @@ point and so it could be very slow.
 
 Remember earlier when I said the method name should be the class of
 the element being searched for? Well, that was kind of a lie. Kind of.
-Get it? Have I killed the joke yet? Kind of? Good.
+Get it? Have I killed the joke yet? Kind of? AXElements needs its own
+version of talking foxes.
 
 The search class that you enter is actually matched using `#kind_of?`
 instead of matching the classes exactly. And since class hierarchies
