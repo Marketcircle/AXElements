@@ -5,8 +5,5 @@ module Accessibility
   VERSION   = '0.5.0'
 
   # @return [String]
-  CODE_NAME = 'PokéMaster'
-
-  # @return [String]
-  RELEASE   = 'Luxray'
+  CODE_NAME = 'Luxray'
 end
