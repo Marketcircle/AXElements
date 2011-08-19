@@ -102,7 +102,20 @@ of the `#inspect` output that it prints out.
 Using `#inspect` is a great way to see the important details of a UI
 element, it shows the values of the most important attrtibutes so that
 you can quickly identify which element it really is on screen, but not
-so many details that it becomes a pain.
+so many details that it becomes a pain. A typical example of
+`#inspect` output looks ilke this:
+
+    #<AX::StandardWindow "AXElementsTester" (1584.0, 184.0) 17 children focused[✘]>
+
+That output includes all the pieces that you will normally see from
+`#inspect`, but you may see less or more depending on the UI element
+that is being inspected. First you have the class name so that you can
+tell what kind of UI element it is; then you have some sort of
+identifying information bit, which is the title of the window in this
+case; then you have numbers in parentheses which are the screen
+coordinates for the UI element; then you have the number of children
+that the UI element has, but only because this element has children;
+and finally you have a checkbox for the `focused` attribute.
 
 The values shown in `#inspect` are pieced together using helper
 methods from the {Accessibility::PPInspector} module and a generic
@@ -110,10 +123,10 @@ implementation is written in {AX::Element#inspect} so that all UI
 elements have a useful `#inspect`. However, the generic `#inspect` may
 not always choose the best attributes to show.
 
-{AX::Application#inspect} overrides the generic `#inspect` so that the
-process identifier for the application is also included. In other
-cases, the screen co-ordinates or whether the element is enabled may
-not be relevant, so you can override the method in the specific
+{AX::Application#inspect} overrides the generic `Object#inspect` so
+that the process identifier for the application is also included. In
+other cases, the screen co-ordinates or whether the element is enabled
+may not be relevant, so you can override the method in the specific
 subclass to not inculde those attributes and/or include other
 attributes. The key idea is to make `#inspect` helpful when exploring
 a UI through the console or debugging a script.
