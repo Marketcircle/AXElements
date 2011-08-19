@@ -66,10 +66,13 @@ class << Accessibility
   # @overload element_at_point(x,y)
   #   @param [Float] x
   #   @param [Float] y
+  #
   # @overload element_at_point([x,y])
   #   @param [Array(Float,Float)] point
+  #
   # @overload element_at_point(CGPoint.new(x,y))
   #   @param [CGPoint] point
+  #
   # @return [AX::Element]
   def element_at_point *point
     arg = point.size == 1 ? point.first : point
@@ -154,6 +157,6 @@ class << Accessibility
 end
 
 
-require 'ax_elements/accessibility/search'
 require 'ax_elements/accessibility/enumerators'
+require 'ax_elements/accessibility/qualifier'
 require 'ax_elements/accessibility/language'

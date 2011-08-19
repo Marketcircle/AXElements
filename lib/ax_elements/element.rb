@@ -155,13 +155,17 @@ class AX::Element
   #
   #   AX::DOCK.search( :application_dock_item, title:'Finder' )
   #
-  # @param [#to_s] element_type
+  # @param [#to_s] kind
   # @param [Hash{Symbol=>Object}] filters
   # @return [AX::Element,nil,Array<AX::Element>,Array<>]
-  def search element_type, filters = nil
-    type = element_type.to_s.camelize!
-    meth = ((klass = type.singularize) == type) ? :find : :find_all
-    Accessibility::Search.new(self).send(meth, klass, (filters || {}))
+  def search kind, filters = {}
+    kind      = kind.to_s.camelize!
+    klass     = kind.singularize
+    search    = klass == kind ? :find : :find_all
+    qualifier = Accessibility::Qualifier.new(klass, filters)
+    tree      = Accessibility::BFEnumerator.new(self)
+
+    tree.send(search) { |element| qualifier.qualifies? element }
   end
 
   ##
@@ -208,7 +212,7 @@ class AX::Element
       return self.class.param_attribute_for(@ref, attr, args.first)
 
     elsif self.respond_to? :children
-      result = search method, args.first
+      result = search method, *args
       return result unless result.blank?
       raise SearchFailure.new(self, method, args.first)
 
