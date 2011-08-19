@@ -27,7 +27,7 @@ end
 desc 'Start up irb with AXElements loaded'
 task :console => :key_coder do
   irb = ENV['RUBY_VERSION'] ? 'irb' : 'macirb'
-  sh "#{irb} -Ilib -Iext -rubygems -rax_elements"
+  sh "#{irb} -Ilib -Iext/key_coder -rubygems -rax_elements"
 end
 
 ## Compilation
