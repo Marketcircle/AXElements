@@ -27,12 +27,26 @@ class << Accessibility
   end
 
   ##
-  # Produce a {Accessibility::Tree} rooted at the given element. Just
-  # syntaictic sugar for `Accessibility::Tree.new`.
+  # Make a `dot` format graph of the tree, meant for graphing with
+  # GraphViz.
   #
-  # @param [AX::Element]
-  def tree element
-    Accessibility::Tree.new element
+  # @return [String]
+  def graph root
+    raise NotImplementedError, 'Please implement me, :('
+  end
+
+  ##
+  # Dump a tree to the console, indenting for each level down the
+  # tree that we go, and inspecting each element.
+  #
+  # @return [nil] do not count on a return
+  def dump element
+    output = element.inspect + "\n"
+    enum   = Accessibility::DFEnumerator.new(element)
+    enum.each_with_height do |element, depth|
+      output << "\t"*depth + element.inspect + "\n"
+    end
+    output
   end
 
   # @group Finding an object at a point
@@ -140,6 +154,6 @@ class << Accessibility
 end
 
 
-require 'ax_elements/accessibility/tree'
 require 'ax_elements/accessibility/search'
+require 'ax_elements/accessibility/enumerators'
 require 'ax_elements/accessibility/language'
