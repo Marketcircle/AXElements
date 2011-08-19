@@ -15,7 +15,7 @@ class TestAccessibilityLanguageActions < TestAX
 
   def setup
     @language = Language.new
-    @element  = LanguageTest.new
+    @element  = LanguageTest.new REF
   end
 
   def test_static_actions_forward
