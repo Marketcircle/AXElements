@@ -84,7 +84,7 @@ class TestAttrOfElementGetsCorrectAttribute < TestCore
     assert_equal 'AXElementsTester', AX.attr_of_element(REF, KAXTitleAttribute)
   end
 
-  # @todo the app gives CGRectZero in screen coordinates, and then they are
+  # @note the app gives CGRectZero in screen coordinates, and then they are
   #       flipped for us to, so we need to flip them again
   def test_custom_lol_is_rect
     point         = CGPointZero.dup
