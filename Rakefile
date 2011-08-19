@@ -33,7 +33,7 @@ end
 ## Compilation
 
 require 'rake/compiletask'
-Rake::CompileTask.new :rbo
+Rake::CompileTask.new
 
 desc 'Compile the C extension'
 task :key_coder do
