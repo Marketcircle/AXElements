@@ -41,7 +41,8 @@ end
 
 ##
 # AFAICT every accessibility object **MUST** have attributes, so
-# there are no tests to check what happens when they do not exist.
+# there are no tests to check what happens when they do not exist;
+# though I am quite sure that AXElements will explode.
 class TestAttrsOfElement < TestCore
 
   def attrs
