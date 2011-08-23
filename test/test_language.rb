@@ -70,10 +70,16 @@ class TestAccessibilityLanguageActions < TestAX
 
 end
 
-# class TestAccessibilityLanguage < TestAX
+class TestAccessibilityLanguage < TestAX
 
-#   def test_set_focus
-#   end
+  def test_set_focus
+    window  = attribute_for(REF, KAXMainWindowAttribute)
+    group   = children_for(window).find do |element|
+      attribute_for(element,KAXRoleAttribute) == KAXRadioGroupRole
+    end
+    buttons = children_for group
+    # @todo swich focus between radio buttons in the radio group
+  end
 
 #   def test_set_arbitrary_attribute
 #   end
@@ -138,4 +144,4 @@ end
 #   def test_is_mixed_into_toplevel
 #   end
 
-# end
+end
