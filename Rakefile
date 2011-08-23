@@ -25,7 +25,7 @@ end
 ## Console
 
 desc 'Start up irb with AXElements loaded'
-task :console => :key_coder do
+task :console => :ext do
   irb = ENV['RUBY_VERSION'] ? 'irb' : 'macirb'
   sh "#{irb} -Ilib -Iext/key_coder -rubygems -rax_elements"
 end
@@ -35,8 +35,8 @@ end
 require 'rake/compiletask'
 Rake::CompileTask.new
 
-desc 'Compile the C extension'
-task :key_coder do
+desc 'Compile C extensions'
+task :ext do
   Dir.chdir 'ext/key_coder' do
     break if File.exists?('key_coder.bundle') && File.mtime('key_coder.bundle') > File.mtime('key_coder.m')
     ruby 'extconf.rb'
@@ -45,7 +45,7 @@ task :key_coder do
 end
 
 desc 'Clean temporary files created by the C extension'
-task :clobber_key_coder do
+task :clobber_ext do
   Dir.chdir 'ext/key_coder' do
     ['Makefile', 'key_coder.o', 'key_coder.bundle'].each do |file|
       $stdout.puts "rm ext/key_coder/#{file}"
@@ -53,7 +53,7 @@ task :clobber_key_coder do
     end
   end
 end
-task :clobber => :clobber_key_coder
+task :clobber => :clobber_ext
 
 ## Testing
 
@@ -63,7 +63,7 @@ task :fixture do
 end
 
 desc 'Run benchmarks'
-task :benchmark => :key_coder do
+task :benchmark => :ext do
   files = Dir.glob('bench/**/bench_*.rb').map { |x| "'#{x}'" }.join(' ')
   ruby '-Ilib -Iext -Ibench -rhelper ' + files
 end
@@ -76,7 +76,7 @@ Rake::TestTask.new(:test) do |t|
   t.ruby_opts = ['-rhelper']
   t.verbose   = true
 end
-task :test => :key_coder
+task :test => :ext
 
 ## Gem Packaging
 require 'rubygems/dependency_installer'
