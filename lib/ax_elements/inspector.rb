@@ -5,7 +5,14 @@
 # {AX::Element} and its descendants.
 module Accessibility::PPInspector
 
+
   protected
+
+  ##
+  # Added for backwards compatability with Snow Leopard.
+  #
+  # @return [String]
+  KAXIdentifierAttribute = 'AXIdentifier'
 
   ##
   # Create an identifier for {#inspect} that should make it very
@@ -27,11 +34,17 @@ module Accessibility::PPInspector
       return " #{val.inspect}" if val && !val.empty?
     end
 
-    if    attributes.include? KAXTitleUIElementAttribute
-      return ' ' + attribute(:title_ui_element).inspect
-    elsif attributes.include? KAXDescriptionAttribute
-      return ' ' + attribute(:description)
-    elsif attributes.include? 'AXIdentifier'
+    if attributes.include? KAXTitleUIElementAttribute
+      val = attribute :title_ui_element
+      return ' ' + val.inspect if val
+    end
+
+    if attributes.include? KAXDescriptionAttribute
+      val = attribute(:description).to_s
+      return ' ' + val unless val.empty?
+    end
+
+    if attributes.include? KAXIdentifierAttribute
       return " id=#{attribute(:identifier)}"
     end
 
@@ -54,7 +67,13 @@ module Accessibility::PPInspector
   # @return [String]
   def pp_children
     child_count = AX.attr_count_of_element @ref, KAXChildrenAttribute
-    " #{child_count} #{child_count == 1 ? 'child' : 'children'}"
+    if child_count > 1
+      " #{child_count} children"
+    elsif child_count == 1
+      ' 1 child'
+    else
+      NSString.string
+    end
   end
 
   ##
