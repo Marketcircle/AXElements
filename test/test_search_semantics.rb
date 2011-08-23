@@ -137,7 +137,7 @@ class TestSearchSemantics < TestAX
 
   def test_nested_search_triggered_for_hash_filters # when filter is also an attribute
     assert_equal window, app.search(:standard_window, close_button: { enabled: true  })
-    assert_nil   window, app.search(:standard_window, close_button: { enabled: false })
+    assert_nil   app.search(:standard_window, close_button: { enabled: false })
   end
 
 end
