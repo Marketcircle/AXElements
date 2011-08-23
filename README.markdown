@@ -35,7 +35,9 @@ destructive, but if you interfere with them something could go wrong.
 
 First you need to build the test fixture, which you can do by running
 `macrake fixture`. Then you can run the tests by running
-`macrake test`.
+`macrake test`. NOTE: some tests are dependent on Accessibility
+features that are new in OS X Lion and those tests will fail on OS X
+Snow Leopard.
 
 ## Road Map
 
@@ -45,8 +47,7 @@ An idealized outline of how things will progress in the next couple of releases
 
 - Pre-loading AX hierarchy and attribute cache from
   /System/Library/Accessibility/AccessibilityDefinitions.plist
-- Better decoupling of algorithm for walking Tree
-  + Need to at least be able to swap DFS and BFS
+  + DO NOT load_plist and then parse, use NSXMLParser
 - Make a decision about NSArray#method_missing
 - Merge notifications with actions as they are commonly combined
 - Rewrite core module to handle errors more gracefully
