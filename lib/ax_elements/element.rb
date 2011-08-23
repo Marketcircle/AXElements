@@ -250,7 +250,7 @@ class AX::Element
   ##
   # Overriden to produce cleaner output.
   def inspect
-    msg  = "\#<#{self.class}" << pp_identifier
+    msg  = "#<#{self.class}" << pp_identifier
     msg << pp_position if attributes.include? KAXPositionAttribute
     msg << pp_children if attributes.include? KAXChildrenAttribute
     msg << pp_checkbox(:enabled) if attributes.include? KAXEnabledAttribute
