@@ -128,12 +128,16 @@ class TestSearchSemantics < TestAX
     assert_nil window.search(:button, parent: nil)
   end
 
-  def test_nested_search
-    # singular
-    # plural
-    # without filters
-    # with filters
-    # expected results
+  def test_nested_search_passes_filters_through
+    filters = { title: 'Yes' }
+    assert_equal window, app.search(:standard_window,  button: filters)
+    assert_equal window, app.search(:standard_windows, button: filters).first
+    assert_equal window, app.search(:standard_window,  button: NSDictionary.dictionary)
+  end
+
+  def test_nested_search_triggered_for_hash_filters # when filter is also an attribute
+    assert_equal window, app.search(:standard_window, close_button: { enabled: true  })
+    assert_nil   window, app.search(:standard_window, close_button: { enabled: false })
   end
 
 end

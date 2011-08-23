@@ -6,7 +6,11 @@ class Accessibility::Qualifier
   # @return [Hash]
   #attr_reader :criteria
 
-  # @param [Symbol,String] klass
+  ##
+  # Initialize a qualifier with the kind of object that you want to
+  # qualify and a dictionary of filter criteria.
+  #
+  # @param [String,Symbol] klass
   # @param [Hash] criteria
   def initialize klass, criteria
     @sym      = klass
@@ -46,6 +50,8 @@ class Accessibility::Qualifier
   ##
   # @todo How could we handle filters that use parameterized
   #       attributes?
+  # @todo Optimize searching by compiling filters into an
+  #       optimized filter qualifier. eval is not an option.
   #
   # Determines if the element meets all the criteria of the filters,
   # spawning sub-searches if necessary.
@@ -53,10 +59,14 @@ class Accessibility::Qualifier
   # @param [AX::Element] element
   def meets_criteria? element
     @criteria.all? do |filter, value|
-      if element.respond_to? filter
+      if value.kind_of? Hash
+        if element.respond_to? :children
+          !element.search(filter, value).blank?
+        else
+          false
+        end
+      elsif element.respond_to? filter
         element.send(filter) == value
-      elsif element.respond_to? :children
-        !element.search(filter, value).blank?
       else # this legitimately occurs
         false
       end
