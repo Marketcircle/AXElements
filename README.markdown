@@ -29,7 +29,10 @@ add `sudo` to the beginning of the command.
 
 AXElements is documented using YARD, and includes a few small
 tutorials in the `docs` directory. The starting point is
-{file:docs/AXElements.markdown}.
+{file:docs/AXElements.markdown}. When you are on the Marketcircle
+internal network you should be able to access the [documentation
+website](http://docs.marketcircle.com:8808/) to save you the time of
+running the server yourself.
 
 ## Test Suite
 
