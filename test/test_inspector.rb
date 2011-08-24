@@ -35,22 +35,34 @@ class TestPPInspector < MiniTest::Unit::TestCase
 
   def test_identifier_using_title_ui_element
     @attributes = [KAXTitleUIElementAttribute]
-    @attribute  = 3
-    assert_match //, pp_identifier
+    @attribute  = 'hey'
+    assert_match /"hey"/, pp_identifier
   end
 
+  # hmmm...
   def test_identifier_using_description
     @attributes = [KAXDescriptionAttribute]
-    assert_match //, pp_identifier
+
+    @attribute  = 'roflcopter'
+    assert_match /roflcopter/, pp_identifier
+
+    @attribute  = NSString.string
+    assert_equal NSString.string, pp_identifier
   end
 
   def test_identifier_using_identifier
-    assert_match //, pp_identifier
+    @attributes = [KAXIdentifierAttribute]
+
+    @attribute  = '_NS:151'
+    assert_match /_NS:151/, pp_identifier
+
+    @attribute  = 'contact table'
+    assert_match /contact table/, pp_identifier
   end
 
   def test_identifier_empty_string_as_final_fallback
     @attributes = NSArray.array
-
+    assert_equal NSString.string, pp_identifier
   end
 
   def test_position
