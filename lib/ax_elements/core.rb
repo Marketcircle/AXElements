@@ -30,6 +30,37 @@ module AX; end
 # uses a different pattern for that sort of thing).
 class << AX
 
+
+  ##
+  # Pointer type encoding for `CFArrayRef` objects
+  #
+  # @return [String]
+  ARRAY_POINTER = '^{__CFArray}'
+
+  ##
+  # Pointer type encoding for `AXUIElementRef` objects
+  #
+  # @return [String]
+  AX_POINTER  = NSString.stringWithString '^{__AXUIElement}'
+
+  ##
+  # Pointer type encoding for `AXObserverRef` objects
+  #
+  # @return [String]
+  AX_OBSERVER = NSString.stringWithString '^{__AXObserver}'
+
+  ##
+  # Local copy of a Cocoa constant; this is a performance hack
+  #
+  # @return [String]
+  ROLE    = KAXRoleAttribute
+
+  ##
+  # Local copy of a Cocoa constant; this is a performance hack
+  #
+  # @return [String]
+  SUBROLE = KAXSubroleAttribute
+
   # @group Attributes
 
   ##
@@ -38,7 +69,7 @@ class << AX
   # @param [AXUIElementRef] element low level accessibility object
   # @return [Array<String>]
   def attrs_of_element element
-    ptr = Pointer.new '^{__CFArray}'
+    ptr = Pointer.new ARRAY_POINTER
     code = AXUIElementCopyAttributeNames(element, ptr)
     log_error element, code unless code.zero?
     ptr[0]
@@ -52,7 +83,7 @@ class << AX
   # @param [String] attr an attribute constant
   # @return [Fixnum]
   def attr_count_of_element element, attr
-    ptr = Pointer.new 'q'
+    ptr  = Pointer.new :long_long
     code = AXUIElementGetAttributeValueCount(element, attr, ptr)
     log_error element, attr unless code.zero?
     ptr[0]
@@ -84,7 +115,7 @@ class << AX
   # @return [Array<String>] subrole first, if it exists
   def roles_for element
     ptr  = Pointer.new :id
-    aptr = Pointer.new '^{__CFArray}'
+    aptr = Pointer.new ARRAY_POINTER
     AXUIElementCopyAttributeValue(element, ROLE, ptr)
     ret = [ptr[0]]
     AXUIElementCopyAttributeNames(element, aptr)
@@ -99,25 +130,13 @@ class << AX
   end
 
   ##
-  # Local copy of a Cocoa constant; this is a performance hack
-  #
-  # @return [String]
-  ROLE    = KAXRoleAttribute
-
-  ##
-  # Local copy of a Cocoa constant; this is a performance hack
-  #
-  # @return [String]
-  SUBROLE = KAXSubroleAttribute
-
-  ##
   # Whether or not the given attribute of a given element can be
   # changed using the accessibility APIs.
   #
   # @param [AXUIElementRef] element
   # @param [String] attr an attribute constant
   def attr_of_element_writable? element, attr
-    ptr  = Pointer.new 'B'
+    ptr  = Pointer.new :bool
     code = AXUIElementIsAttributeSettable(element, attr, ptr)
     log_error element, code unless code.zero?
     ptr[0]
@@ -147,7 +166,7 @@ class << AX
   # @param [AXUIElementRef] element low level accessibility object
   # @return [Array<String>]
   def actions_of_element element
-    array_ptr = Pointer.new '^{__CFArray}'
+    array_ptr = Pointer.new ARRAY_POINTER
     code = AXUIElementCopyActionNames(element, array_ptr)
     log_error element, code unless code.zero?
     array_ptr[0]
@@ -189,7 +208,7 @@ class << AX
   # @return [Array<String>,nil] nil if the element has no
   #   parameterized attributes
   def param_attrs_of_element element
-    array_ptr = Pointer.new '^{__CFArray}'
+    array_ptr = Pointer.new ARRAY_POINTER
     code = AXUIElementCopyParameterizedAttributeNames(element, array_ptr)
     log_error element, code unless code.zero?
     array_ptr[0]
@@ -279,7 +298,7 @@ class << AX
   # @param [Float] y
   # @return [AXUIElementRef]
   def element_at_point x, y
-    ptr    = Pointer.new '^{__AXUIElement}'
+    ptr    = Pointer.new AX_POINTER
     system = AXUIElementCreateSystemWide()
     code   = AXUIElementCopyElementAtPosition(system, x, y, ptr)
     log_error system, code unless code.zero?
@@ -307,7 +326,7 @@ class << AX
   # @param [AXUIElementRef] element
   # @return [Fixnum]
   def pid_of_element element
-    ptr  = Pointer.new 'i'
+    ptr  = Pointer.new :int
     code = AXUIElementGetPid(element, ptr)
     log_error element, code unless code.zero?
     ptr[0]
@@ -392,7 +411,7 @@ class << AX
   # @param [Method,Proc] callback
   # @return [AXObserverRef]
   def make_observer_for element, callback
-    ptr  = Pointer.new '^{__AXObserver}'
+    ptr  = Pointer.new AX_OBSERVER
     code = AXObserverCreate(pid_of_element(element), callback, ptr)
     log_error element, code unless code.zero?
     ptr[0]
