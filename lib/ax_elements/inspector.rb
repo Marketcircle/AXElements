@@ -3,6 +3,13 @@
 ##
 # Convenience methods to use when building an #inspect method for
 # {AX::Element} and its descendants.
+#
+# The module only expects three methods in order to operate:
+#
+#  - `#attributes` returns a list of available attributes
+#  - `#attribute` returns the value of a given attribute
+#  - `#size_of` returns the size for an attribute
+#
 module Accessibility::PPInspector
 
 
@@ -15,11 +22,16 @@ module Accessibility::PPInspector
   KAXIdentifierAttribute = 'AXIdentifier'
 
   ##
+  # @todo I feel a bit bad about having such a large method that has
+  #       a large number of inefficiencies.
+  #
   # Create an identifier for {#inspect} that should make it very
   # easy to identify the element.
   #
   # @return [String]
   def pp_identifier
+    # use or lack of use of #inspect is intentional for visual effect
+
     if attributes.include? KAXValueAttribute
       val = attribute :value
       if val.kind_of? NSString
