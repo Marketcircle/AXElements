@@ -57,10 +57,10 @@ class << Mouse
   # @param [CGPoint] point
   # @param [Float] duration animation duration, in seconds
   def drag_to point, duration = 0.2
-    event = CGEventCreateMouseEvent(nil, KCGEventLeftMouseDown, point, KCGMouseButtonLeft)
+    event = CGEventCreateMouseEvent(nil, KCGEventLeftMouseDown, current_position, KCGMouseButtonLeft)
     CGEventPost(KCGHIDEventTap, event)
     animate KCGEventLeftMouseDragged, KCGMouseButtonLeft, current_position, point, duration
-    event = CGEventCreateMouseEvent(nil, KCGEventLeftMouseDown, current_position, KCGMouseButtonLeft)
+    event = CGEventCreateMouseEvent(nil, KCGEventLeftMouseUp, current_position, KCGMouseButtonLeft)
     CGEventPost(KCGHIDEventTap, event)
   end
 
