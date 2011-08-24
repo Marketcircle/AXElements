@@ -57,7 +57,7 @@ class << Mouse
   # @param [CGPoint] point
   # @param [Float] duration animation duration, in seconds
   def drag_to point, duration = 0.2
-    click point do |_|
+    click current_position do |_|
       animate KCGEventLeftMouseDragged, KCGMouseButtonLeft, current_position, point, duration
     end
   end
@@ -82,7 +82,7 @@ class << Mouse
       # the fixnum arg represents the number of scroll wheels
       # on the mouse we are simulating (up to 3)
       event = CGEventCreateScrollWheelEvent(nil, units, 1, scroll)
-      CGEventPost(CGHIDEventTap, event)
+      CGEventPost(KCGHIDEventTap, event)
       sleep QUANTUM
       current += scroll.to_f / amount
     end
@@ -96,7 +96,7 @@ class << Mouse
   # @param [CGPoint] point
   def click point = current_position
     event = CGEventCreateMouseEvent(nil, KCGEventLeftMouseDown, point, KCGMouseButtonLeft)
-    CGEventPost(KCGHIDEvent, event)
+    CGEventPost(KCGHIDEventTap, event)
 
     yield event if block_given?
 
@@ -112,7 +112,7 @@ class << Mouse
   # @param [CGPoint] point
   def right_click point = current_position
     event = CGEventCreateMouseEvent(nil, KCGEventRightMouseDown, point, KCGMouseButtonRight)
-    CGEventPost(KCGHIDEvent, event)
+    CGEventPost(KCGHIDEventTap, event)
 
     yield event if block_given?
 
@@ -156,13 +156,14 @@ class << Mouse
   # @param [Number]
   def arbitrary_click point = current_position, button = KCGMouseButtonCenter
     event = CGEventCreateMouseEvent(nil, KCGEventOtherMouseDown, point, button)
-    CGEventPost(KCGHIDEvent, event)
+    CGEventPost(KCGHIDEventTap, event)
 
     yield event if block_given?
 
     CGEventSetType(event, KCGEventOtherMouseUp)
     CGEventPost(KCGHIDEventTap, event)
   end
+  alias_method :other_click, :arbitrary_click
 
 
   private
