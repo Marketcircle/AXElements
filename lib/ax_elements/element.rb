@@ -77,6 +77,22 @@ class AX::Element
   end
 
   ##
+  # Return the size of an array attribute.
+  #
+  # @example
+  #
+  #   button.size_of :children # => 0
+  #   window.size_of :children # => 16
+  #
+  # @param [Symbol] attr
+  # @return [Number]
+  def size_of attr
+    real_attr = attribute_for attr
+    raise LookupFailure.new attr unless real_attr
+    AX.attr_count_of_element @ref, real_attr
+  end
+
+  ##
   # Get the process identifier for the application that the element
   # belongs to.
   #

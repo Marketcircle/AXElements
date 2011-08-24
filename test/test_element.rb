@@ -565,58 +565,80 @@ class TestElementOnNotification < TestElements
 end
 
 
+class TestElementSizeOf < TestElements
+
+  def test_raises_for_bad
+    assert_raises AX::Element::LookupFailure do
+      APP.size_of :roflcopter
+    end
+  end
+
+  def test_returns_number
+    assert_equal 2, APP.size_of(:children)
+  end
+
+end
+
+
 class TestElementInspect < TestElements
 
-  def incrementor
-    window_children.find do |item|
-      item.class == AX::Incrementor
-    end
+  def app
+    @@app ||= APP.inspect
   end
 
-  def web_area
-    area = window_children.find do |item|
-      item.class == AX::ScrollArea
-    end
-    area.attribute(:children).first
+  def window
+    @@window ||= WINDOW.inspect
   end
 
-  # def test_uses_value_as_string
-  #   assert_match /\s"AXElementsTester"/, static_text.inspect
-  # end
-
-  # def test_uses_value_not_as_string
-  #   assert_match /\svalue=\d+/, slider.inspect
-  # end
-
-  def test_falls_back_to_title_if_no_value
-    assert_match /\s"AXElementsTester"/, APP.inspect
+  def text
+    @@text ||= static_text.inspect
   end
 
-  def test_does_not_fail_if_no_value_title_or_title_ui_element
-    refute_empty incrementor.inspect
+  def button
+    @@button ||= no_button.inspect
   end
 
-  def test_uses_position_if_available
-    assert_match /\(\d+\.\d,\s\d+\.\d\)/, WINDOW.inspect
-    refute_match /\(\d+\.\d,\s\d+\.\d\)/, APP.inspect
+  def slidr
+    @@slidr ||= slider.inspect
   end
 
-  def test_adds_child_count_if_has_children
-    assert_match /2 children/, APP.inspect
-    assert_match /1 child/, slider.inspect
-    assert_match /0 children/, web_area.inspect
-    refute_match /child/, no_button.inspect
+  def test_inspect_includes_header_and_tail
+    assert_match /^\#<AX::Element/, app
+    assert_match />$/,              app
   end
 
-  def test_enabled_checkbox_if_object_has_enabled
-    assert_match /\senabled\[✔\]/, no_button.inspect
-    assert_match /\senabled\[✘\]/, maybe_button.inspect
+  def test_inspect_includes_position_if_possible
+    position_regexp = /\(\d+\.\d+, \d+\.\d+\)/
+    assert_match position_regexp, window
+    refute_match position_regexp, app
   end
 
-  def test_focused_checkbox_if_object_has_focused
-    AX.set_attr_of_element(no_button.ref, KAXFocusedAttribute, true)
-    assert_match /\sfocused\[✔\]/, no_button.inspect
-    assert_match /\sfocused\[✘\]/, slider.inspect
+  def test_inspect_includes_children_if_possible
+    child_regexp = /\d+ child/
+    assert_match child_regexp, app
+    refute_match child_regexp, text
+  end
+
+  def test_inspect_includes_enabled_if_possible
+    enabled_regexp = /enabled\[.\]/
+    assert_match enabled_regexp, button
+    refute_match enabled_regexp, app
+  end
+
+  def test_inspect_includes_focused_if_possible
+    focused_regexp = /focused\[.\]/
+    assert_match focused_regexp, slider.inspect
+    refute_match focused_regexp, app
+  end
+
+  def test_inspect_always_has_identifier
+    title_regexp = /"AXElementsTester"/
+    assert_match title_regexp, app
+    assert_match title_regexp, window
+    assert_match title_regexp, text
+
+    assert_match /"No"/, button
+    assert_match /value=50/, slidr
   end
 
 end

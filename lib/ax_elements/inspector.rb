@@ -66,7 +66,7 @@ module Accessibility::PPInspector
   #
   # @return [String]
   def pp_children
-    child_count = AX.attr_count_of_element @ref, KAXChildrenAttribute
+    child_count = size_of :children
     if child_count > 1
       " #{child_count} children"
     elsif child_count == 1
