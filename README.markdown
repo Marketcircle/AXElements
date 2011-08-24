@@ -74,5 +74,5 @@ An idealized outline of how things will progress in the next couple of releases
 
 ## Copyright
 
-Copyright (c) 2010-2011 Marketcircle Incorporated. See LICENSE.txt for further details.
+Copyright (c) 2010-2011 Marketcircle Incorporated. See {file:LICENSE.txt LICENSE.txt} for further details.
 
