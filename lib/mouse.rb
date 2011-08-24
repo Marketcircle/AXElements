@@ -57,9 +57,11 @@ class << Mouse
   # @param [CGPoint] point
   # @param [Float] duration animation duration, in seconds
   def drag_to point, duration = 0.2
-    click current_position do |_|
-      animate KCGEventLeftMouseDragged, KCGMouseButtonLeft, current_position, point, duration
-    end
+    event = CGEventCreateMouseEvent(nil, KCGEventLeftMouseDown, point, KCGMouseButtonLeft)
+    CGEventPost(KCGHIDEventTap, event)
+    animate KCGEventLeftMouseDragged, KCGMouseButtonLeft, current_position, point, duration
+    event = CGEventCreateMouseEvent(nil, KCGEventLeftMouseDown, current_position, KCGMouseButtonLeft)
+    CGEventPost(KCGHIDEventTap, event)
   end
 
   ##
@@ -91,15 +93,10 @@ class << Mouse
   ##
   # A standard click. Default position is the current position.
   #
-  # @yield You can pass a block that will be executed after clicking down
-  #        but before clicking up
   # @param [CGPoint] point
   def click point = current_position
     event = CGEventCreateMouseEvent(nil, KCGEventLeftMouseDown, point, KCGMouseButtonLeft)
     CGEventPost(KCGHIDEventTap, event)
-
-    yield event if block_given?
-
     CGEventSetType(event, KCGEventLeftMouseUp)
     CGEventPost(KCGHIDEventTap, event)
   end
@@ -107,15 +104,10 @@ class << Mouse
   ##
   # Standard secondary click. Default position is the current position.
   #
-  # @yield You can pass a block that will be executed after clicking down
-  #        but before clicking up
   # @param [CGPoint] point
   def right_click point = current_position
     event = CGEventCreateMouseEvent(nil, KCGEventRightMouseDown, point, KCGMouseButtonRight)
     CGEventPost(KCGHIDEventTap, event)
-
-    yield event if block_given?
-
     CGEventSetType(event, KCGEventRightMouseUp)
     CGEventPost(KCGHIDEventTap, event)
   end
@@ -150,16 +142,11 @@ class << Mouse
   # And the rest are not documented! See the `CGMouseButton` enum in the
   # reference documentation for the most up to date list.
   #
-  # @yield You can pass a block that will be executed after clicking down
-  #        but before clicking up
   # @param [CGPoint]
   # @param [Number]
   def arbitrary_click point = current_position, button = KCGMouseButtonCenter
     event = CGEventCreateMouseEvent(nil, KCGEventOtherMouseDown, point, button)
     CGEventPost(KCGHIDEventTap, event)
-
-    yield event if block_given?
-
     CGEventSetType(event, KCGEventOtherMouseUp)
     CGEventPost(KCGHIDEventTap, event)
   end
