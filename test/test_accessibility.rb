@@ -48,8 +48,14 @@ class TestAccessibility < TestAX
     end
   end
 
-  def test_element_under_mouse_returns_correct_element
-    skip 'Need to move the mouse to a known location, then ask for the element'
+  def test_returns_some_kind_of_ax_element
+    assert_kind_of AX::Element, Accessibility.element_under_mouse
+  end
+
+  def test_returns_element_under_the_mouse
+    button = APP.main_window.close_button
+    Mouse.move_to button.position, 0.0
+    assert_equal button, Accessibility.element_under_mouse
   end
 
   def test_element_at_point_returns_button_when_given_buttons_coordinates
@@ -89,8 +95,17 @@ class TestAccessibility < TestAX
   end
 
   # @todo how do we test when app is not already running?
-  def test_app_with_bundle_id_launches_app_if_it_is_not_running
-    skip 'Another difficult test to implement'
+
+  def test_launches_app_if_it_is_not_running
+    def grabbers
+      NSRunningApplication.runningApplicationsWithBundleIdentifier( 'com.apple.Grab' )
+    end
+    grabbers.each do |dude| dude.terminate end
+    assert_empty grabbers
+    Accessibility.application_with_bundle_identifier( 'com.apple.Grab' )
+    refute_empty grabbers
+  ensure
+    grabbers.each do |dude| dude.terminate end
   end
 
   def test_app_with_bundle_id_times_out_if_app_cannot_be_launched
