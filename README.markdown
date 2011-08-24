@@ -13,7 +13,8 @@ done that yet, I'll wait.
 Once, you have the developer tools, you should install MacRuby, the
 latest release should be sufficient, but nightly buids are usually
 safe as well. If you are on Snow Leopard, you will also need to
-install the Bridge Support Preview.
+install the
+[Bridge Support Preview](http://www.macruby.org/blog/2010/10/08/bridgesupport-preview.html).
 
 At this point you should be able to run `macrake`. Which by default
 will likely complain about things missing. You can easily install all
@@ -44,7 +45,9 @@ Snow Leopard.
 
 ## Road Map
 
-An idealized outline of how things will progress in the next couple of releases
+There are still a bunch of things that could be done to improve
+AXElements. The README only contains an idealized outline of some of
+the high-level items that should get done in the next couple of releases.
 
 ### 0.7 (or maybe 1.0)
 

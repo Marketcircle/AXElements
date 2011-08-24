@@ -33,6 +33,8 @@ encoding of all key sequences/combinations.
 
 <table style="1px solid black">
 <tr><td>Key</td><td>Escape Sequence</td></tr>
+<tr><td>Delete Backwards (Backspace)</td><td>`\b`</td></tr>
+<tr><td>New Line</td><td>`\n` or `\r`</td></tr>
 <tr><td>Control</td><td>`\^`</td></tr>
 <tr><td>Command</td><td>`\C`</td></tr>
 <tr><td>Option/Alt</td><td>`\O`</td></tr>

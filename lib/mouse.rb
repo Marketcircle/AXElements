@@ -73,7 +73,7 @@ class << Mouse
   # @param [Fixnum] amount number of pixels/lines to scroll; positive
   #   to scroll up or negative to scroll down
   # @param [Float] duration animation duration, in seconds
-  # @param [Fixnum] units :line scrolls by line, :pixel scrolls by pixel
+  # @param [Fixnum] units `:line` scrolls by line, `:pixel` scrolls by pixel
   def scroll amount, duration = 0.2, units = :line
     units   = UNIT[units] || raise(ArgumentError, "#{units} is not a valid unit")
     steps   = (FPS * duration).floor
