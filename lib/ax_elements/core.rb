@@ -61,8 +61,8 @@ class << AX
   ##
   # Fetch the given attribute's value from the given element. You will
   # be given raw data from this method; that is, {Boxed} objects will
-  # still be wrapped in a {AXValueRef}, and elements will be
-  # {AXUIElementRef} objects.
+  # still be wrapped in a `AXValueRef`, and elements will be
+  # `AXUIElementRef` objects.
   #
   # @param [AXUIElementRef] element
   # @param [String] attr an attribute constant

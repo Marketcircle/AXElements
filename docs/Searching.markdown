@@ -220,7 +220,7 @@ participate. Since search works by getting the value of the search
 filter and checking if it is `#==` to the filter value, we just need
 to implement `#==` on specific classes that we want to support custom
 behaviour with. Examples of how this would work would be
-{AX::TextField#==} and {AX::Button#==} and could be easily added to
+{AX::StaticText#==} and {AX::Button#==} and could be easily added to
 other classes where it made sense. However, this type of idea can be
 further expanded to cases that might not be so easily implemented and
 is discussed in future prospects.
@@ -238,10 +238,10 @@ The only caveat to note right now is that a UI element will always
 return `false` when you ask if it can `#respond_to?` something that
 would be an implicit search. This is because of the semantics of a
 search do not make sense in the context of `#respond_to?`, it would
-be as if {Accessibility::Search::Qualifier} had to be used. That is,
-you would need to perform the search in order to know if the search
-would succeed. This is both redundant and costly for the computer to
-work through.
+be as if {Accessibility::Qualifier} had to be used. That is, you would
+need to perform the search in order to know if the search would
+succeed. This is both redundant and costly for the computer to work
+through.
 
 ## The Future
 

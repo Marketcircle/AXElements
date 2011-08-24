@@ -25,7 +25,7 @@ module Accessibility::PPInspector
   # @todo I feel a bit bad about having such a large method that has
   #       a large number of inefficiencies.
   #
-  # Create an identifier for {#inspect} that should make it very
+  # Create an identifier for {AX::Element#inspect} that should make it very
   # easy to identify the element.
   #
   # @return [String]
