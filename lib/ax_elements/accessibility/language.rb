@@ -276,7 +276,8 @@ module Accessibility::Language
   #
   # @param [#to_point]
   def double_click obj = nil
-    raise NotImplementedError, 'Please implement me. :('
+    move_mouse_to obj if obj
+    Mouse.double_click
   end
 
   # @group Macros
