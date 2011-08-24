@@ -141,8 +141,14 @@ class << Mouse
 
   ##
   # Click with an arbitrary mouse button, using numbers to represent
-  # the mouse button. The left button is 0, right button is 1, middle
-  # button is 2, and the rest are not documented!
+  # the mouse button. At the time of writing, the documented values are:
+  #
+  #  - KCGMouseButtonLeft   = 0
+  #  - KCGMouseButtonRight  = 1
+  #  - KCGMouseButtonCenter = 2
+  #
+  # And the rest are not documented! See the `CGMouseButton` enum in the
+  # reference documentation for the most up to date list.
   #
   # @yield You can pass a block that will be executed after clicking down
   #        but before clicking up
