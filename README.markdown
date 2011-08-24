@@ -16,10 +16,13 @@ safe as well. If you are on Snow Leopard, you will also need to
 install the Bridge Support Preview.
 
 At this point you should be able to run `macrake`. Which by default
-will probably complain about things missing. Now you should install
-the dependency gems by running `macrake install_deps`; if you get an
-error about not have permission you will need to add `sudo` to the
-command.
+will likely complain about things missing. You can easily install all
+development dependencies by running the `setup_dev` task like so:
+
+    macrake setup_dev
+
+If you get an error about not having permissions then you will need to
+add `sudo` to the beginning of the command.
 
 ## Documentation
 
