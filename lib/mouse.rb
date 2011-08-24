@@ -86,15 +86,15 @@ class << Mouse
   # @param [CGPoint] point
   def double_click point = current_position
     event = CGEventCreateMouseEvent(nil, KCGEventLeftMouseDown, point, KCGMouseButtonLeft)
-    CGEventPost   (KCGHIDEventTap, event)
-    CGEventSetType(event,          KCGEventLeftMouseUp)
-    CGEventPost   (KCGHIDEventTap, event)
+    CGEventPost(KCGHIDEventTap, event)
+    CGEventSetType(event,       KCGEventLeftMouseUp)
+    CGEventPost(KCGHIDEventTap, event)
 
-    CGEventSetIntegerValueField    (event, KCGMouseEventClickState, 2)
-    CGEventSetType(event,          KCGEventLeftMouseDown)
-    CGEventPost   (KCGHIDEventTap, event)
-    CGEventSetType(event,          KCGEventLeftMouseUp)
-    CGEventPost   (KCGHIDEventTap, event)
+    CGEventSetIntegerValueField(event, KCGMouseEventClickState, 2)
+    CGEventSetType(event,       KCGEventLeftMouseDown)
+    CGEventPost(KCGHIDEventTap, event)
+    CGEventSetType(event,       KCGEventLeftMouseUp)
+    CGEventPost(KCGHIDEventTap, event)
   end
 
   ##
