@@ -231,36 +231,3 @@ end
 #     "#{original_message}\n\t#{backtrace.join("\n\t")}"
 #   end
 # end
-
-
-##
-# Extensions to TrueClass.
-class TrueClass
-  ##
-  # Whether or not the instance is a boolean
-  def boolean?
-    true
-  end
-end
-
-
-##
-# Extensions to Object.
-class FalseClass
-  ##
-  # Whether or not the instance is a boolean
-  def boolean?
-    true
-  end
-end
-
-
-##
-# Extensions to Object.
-class Object
-  ##
-  # Whether or not the instance is a boolean
-  def boolean?
-    false
-  end
-end
