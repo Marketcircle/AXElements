@@ -59,7 +59,7 @@ task :clobber => :clobber_ext
 
 desc 'Build the test fixture'
 task :fixture do
-  sh 'cd test/AXElementsTester && xcodebuild && open ../fixture/Release/AXElementsTester.app'
+  sh 'cd test/AXElementsTester && xcodebuild'
 end
 
 desc 'Run benchmarks'
@@ -76,7 +76,7 @@ Rake::TestTask.new(:test) do |t|
   t.ruby_opts = ['-rhelper']
   t.verbose   = true
 end
-task :test => :ext
+task :test => [:ext, :fixture]
 
 ## Gem Packaging
 require 'rubygems/dependency_installer'
