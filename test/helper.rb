@@ -30,7 +30,8 @@ end
 
 gem     'minitest'
 require 'minitest/autorun'
-require 'minitest/pride'
+require ENV['BENCH'] ? 'minitest/benchmark' : 'minitest/pride'
+
 
 class MiniTest::Unit::TestCase
   # You may need this to help track down an issue if a test is crashing MacRuby
@@ -41,6 +42,10 @@ class MiniTest::Unit::TestCase
   def assert_instance_of_boolean value
     message = "Expected #{value.inspect} to be a boolean"
     assert value.is_a?(TrueClass) || value.is_a?(FalseClass), message
+  end
+
+  def self.bench_range
+    bench_exp 10, 10_000
   end
 end
 

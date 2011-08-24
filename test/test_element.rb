@@ -33,6 +33,15 @@ class TestElements < TestAX
     @@static_text ||= window_children.find { |item| item.class == AX::StaticText }
   end
 
+  def table
+    @@table ||= WINDOW.attribute(:children).find do |element|
+      element.respond_to?(:identifier) &&
+        element.attribute(:identifier) == 'table'
+    end.attribute(:children).find do |element|
+      element.class == AX::Table
+    end
+  end
+
   def value_for element
     AX.attr_of_element(element.ref, KAXValueAttribute)
   end
@@ -69,6 +78,21 @@ end
 
 
 class TestElementSearchFailure < TestElements
+
+# some interesting scenarios
+#  searching a table with a lot of rows
+#    in this test, our variable is the number of rows
+#  search a tall tree
+#    in this test, our variable is how tall the tree is
+#  search with no filters
+#    this is a simple case that should be thrown in as a
+#    control, it will help gauge how much search performance
+#    depends on the core implementation of the AX module
+#  search with a lot of filters
+#    this test will become more important as the filtering
+#    logic becomes more complex due to supporting different
+#    ideas (e.g. the :title_ui_element hack that exists in v0.4)
+
 
   def minimal_exception
     AX::Element::SearchFailure.new(WINDOW, :test, nil)
@@ -119,6 +143,36 @@ class TestElementAttribute < TestElements
     WINDOW.attribute :nyan? # make sure attr resolves to a constant first
     assert_raises AX::Element::LookupFailure do
       APP.attribute :nyan?
+    end
+  end
+
+  def bench_string_attribute
+    assert_performance_linear do |n|
+      n.times { APP.attribute(:title) }
+    end
+  end
+
+  def bench_boolean_attribute
+    assert_performance_linear do |n|
+      n.times { WINDOW.attribute(:focused) }
+    end
+  end
+
+  def bench_children_array
+    assert_performance_linear do |n|
+      n.times { table.attribute(:columns) }
+    end
+  end
+
+  def bench_element_attribute
+    assert_performance_linear do |n|
+      n.times { WINDOW.attribute(:parent) }
+    end
+  end
+
+  def bench_boxed_attribute
+    assert_performance_linear do |n|
+      n.times { WINDOW.attribute(:position) }
     end
   end
 
@@ -517,6 +571,36 @@ class TestElementMethodMissing < TestElements
   def test_processes_attribute_return_values
     assert_instance_of AX::StandardWindow, no_button.parent
     assert_instance_of CGPoint, no_button.position
+  end
+
+  def bench_attribute_string
+    assert_performance_linear do |n|
+      n.times { WINDOW.attribute(:title) }
+    end
+  end
+
+  def bench_attribute_boolean
+    assert_performance_linear do |n|
+      n.times { WINDOW.focused? }
+    end
+  end
+
+  def bench_attribute_child_array
+    assert_performance_linear do |n|
+      n.times { table.columns }
+    end
+  end
+
+  def bench_attribute_boxed
+    assert_performance_linear do |n|
+      n.times { WINDOW.position }
+    end
+  end
+
+  def bench_attribute_element
+    assert_performance_linear do |n|
+      n.times { WINDOW.parent }
+    end
   end
 
 end

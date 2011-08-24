@@ -62,13 +62,6 @@ task :fixture do
   sh 'cd test/AXElementsTester && xcodebuild'
 end
 
-desc 'Run benchmarks'
-task :benchmark => :ext do
-  files = Dir.glob('bench/**/bench_*.rb').map { |x| "'#{x}'" }.join(' ')
-  ruby '-Ilib -Iext -Ibench -rhelper ' + files
-end
-task :bench => :benchmark
-
 require 'rake/testtask'
 Rake::TestTask.new(:test) do |t|
   t.libs     << 'test' << 'ext/key_coder'

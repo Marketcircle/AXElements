@@ -36,15 +36,24 @@ running the server yourself.
 
 ## Test Suite
 
-The nature of this library requires that the tests take over your
-computer while they run. The tests aren't programmed to do anything
-destructive, but if you interfere with them something could go wrong.
+Before starting development on your machine, you should run the test
+suite and make sure things are kosher. The nature of this library
+requires that the tests take over your computer while they run. The
+tests aren't programmed to do anything destructive, but if you
+interfere with them then something could go wrong.
 
-First you need to build the test fixture, which you can do by running
-`macrake fixture`. Then you can run the tests by running
-`macrake test`. NOTE: some tests are dependent on Accessibility
-features that are new in OS X Lion and those tests will fail on OS X
-Snow Leopard.
+To run the tests you simply need to run the `test` task:
+
+    macrake test
+
+__NOTE__: some tests are dependent on Accessibility features that are
+new in OS X Lion and those tests will fail on OS X Snow Leopard.
+
+Benchmarks are also included as part of the test suite, but they are
+disabled by default. In order to enable them you need to set the
+`BENCH` environment variable:
+
+    BENCH=1 macrake test
 
 ## Road Map
 
