@@ -281,7 +281,7 @@ class AX::Element
   def respond_to? name
     return true if attribute_for name
     return true if param_attribute_for name
-    super
+    return super
   end
 
   ##
