@@ -1,0 +1,7 @@
+//
+// Prefix header for all source files of the 'Double Click' target in the 'Double Click' project
+//
+
+#ifdef __OBJC__
+    #import <Foundation/Foundation.h>
+#endif

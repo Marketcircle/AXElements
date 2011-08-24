@@ -1,0 +1,241 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		AFBAEDF114053C7200A34106 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AFBAEDF014053C7200A34106 /* Foundation.framework */; };
+		AFBAEDF414053C7200A34106 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = AFBAEDF314053C7200A34106 /* main.m */; };
+		AFBAEDF814053C7200A34106 /* Double_Click.1 in CopyFiles */ = {isa = PBXBuildFile; fileRef = AFBAEDF714053C7200A34106 /* Double_Click.1 */; };
+		AFBAEDFF14053DDC00A34106 /* ApplicationServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AFBAEDFE14053DDC00A34106 /* ApplicationServices.framework */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		AFBAEDEA14053C7200A34106 /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = /usr/share/man/man1/;
+			dstSubfolderSpec = 0;
+			files = (
+				AFBAEDF814053C7200A34106 /* Double_Click.1 in CopyFiles */,
+			);
+			runOnlyForDeploymentPostprocessing = 1;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
+/* Begin PBXFileReference section */
+		AFBAEDEC14053C7200A34106 /* Double Click */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = "Double Click"; sourceTree = BUILT_PRODUCTS_DIR; };
+		AFBAEDF014053C7200A34106 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
+		AFBAEDF314053C7200A34106 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		AFBAEDF614053C7200A34106 /* Double Click-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Double Click-Prefix.pch"; sourceTree = "<group>"; };
+		AFBAEDF714053C7200A34106 /* Double_Click.1 */ = {isa = PBXFileReference; lastKnownFileType = text.man; path = Double_Click.1; sourceTree = "<group>"; };
+		AFBAEDFE14053DDC00A34106 /* ApplicationServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ApplicationServices.framework; path = System/Library/Frameworks/ApplicationServices.framework; sourceTree = SDKROOT; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		AFBAEDE914053C7200A34106 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				AFBAEDFF14053DDC00A34106 /* ApplicationServices.framework in Frameworks */,
+				AFBAEDF114053C7200A34106 /* Foundation.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		AFBAEDE114053C7200A34106 = {
+			isa = PBXGroup;
+			children = (
+				AFBAEDFE14053DDC00A34106 /* ApplicationServices.framework */,
+				AFBAEDF214053C7200A34106 /* Double Click */,
+				AFBAEDEF14053C7200A34106 /* Frameworks */,
+				AFBAEDED14053C7200A34106 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		AFBAEDED14053C7200A34106 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				AFBAEDEC14053C7200A34106 /* Double Click */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		AFBAEDEF14053C7200A34106 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				AFBAEDF014053C7200A34106 /* Foundation.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		AFBAEDF214053C7200A34106 /* Double Click */ = {
+			isa = PBXGroup;
+			children = (
+				AFBAEDF314053C7200A34106 /* main.m */,
+				AFBAEDF714053C7200A34106 /* Double_Click.1 */,
+				AFBAEDF514053C7200A34106 /* Supporting Files */,
+			);
+			path = "Double Click";
+			sourceTree = "<group>";
+		};
+		AFBAEDF514053C7200A34106 /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				AFBAEDF614053C7200A34106 /* Double Click-Prefix.pch */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		AFBAEDEB14053C7200A34106 /* Double Click */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = AFBAEDFB14053C7200A34106 /* Build configuration list for PBXNativeTarget "Double Click" */;
+			buildPhases = (
+				AFBAEDE814053C7200A34106 /* Sources */,
+				AFBAEDE914053C7200A34106 /* Frameworks */,
+				AFBAEDEA14053C7200A34106 /* CopyFiles */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "Double Click";
+			productName = "Double Click";
+			productReference = AFBAEDEC14053C7200A34106 /* Double Click */;
+			productType = "com.apple.product-type.tool";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		AFBAEDE314053C7200A34106 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0420;
+				ORGANIZATIONNAME = "Marketcircle Incorporated";
+			};
+			buildConfigurationList = AFBAEDE614053C7200A34106 /* Build configuration list for PBXProject "Double Click" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+			);
+			mainGroup = AFBAEDE114053C7200A34106;
+			productRefGroup = AFBAEDED14053C7200A34106 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				AFBAEDEB14053C7200A34106 /* Double Click */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXSourcesBuildPhase section */
+		AFBAEDE814053C7200A34106 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				AFBAEDF414053C7200A34106 /* main.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		AFBAEDF914053C7200A34106 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
+				CLANG_ENABLE_OBJC_ARC = YES;
+				COPY_PHASE_STRIP = NO;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_MISSING_PROTOTYPES = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.7;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = macosx;
+			};
+			name = Debug;
+		};
+		AFBAEDFA14053C7200A34106 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
+				CLANG_ENABLE_OBJC_ARC = YES;
+				COPY_PHASE_STRIP = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_MISSING_PROTOTYPES = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.7;
+				SDKROOT = macosx;
+			};
+			name = Release;
+		};
+		AFBAEDFC14053C7200A34106 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "Double Click/Double Click-Prefix.pch";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		AFBAEDFD14053C7200A34106 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "Double Click/Double Click-Prefix.pch";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		AFBAEDE614053C7200A34106 /* Build configuration list for PBXProject "Double Click" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				AFBAEDF914053C7200A34106 /* Debug */,
+				AFBAEDFA14053C7200A34106 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		AFBAEDFB14053C7200A34106 /* Build configuration list for PBXNativeTarget "Double Click" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				AFBAEDFC14053C7200A34106 /* Debug */,
+				AFBAEDFD14053C7200A34106 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = AFBAEDE314053C7200A34106 /* Project object */;
+}
