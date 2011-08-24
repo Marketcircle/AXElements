@@ -39,7 +39,11 @@ class << Accessibility
   # Dump a tree to the console, indenting for each level down the
   # tree that we go, and inspecting each element.
   #
-  # @return [nil] do not count on a return
+  # @example
+  #
+  #   puts Accessibility.dump(app)
+  #
+  # @return [String]
   def dump element
     output = element.inspect + "\n"
     enum   = Accessibility::DFEnumerator.new(element)
