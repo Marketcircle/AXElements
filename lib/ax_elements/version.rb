@@ -2,8 +2,8 @@
 
 module Accessibility
   # @return [String]
-  VERSION   = '0.5.0'
+  VERSION   = '0.6.0'
 
   # @return [String]
-  CODE_NAME = 'Luxray'
+  CODE_NAME = 'Croagunk'
 end

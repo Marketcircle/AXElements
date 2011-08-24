@@ -43,7 +43,7 @@ Snow Leopard.
 
 An idealized outline of how things will progress in the next couple of releases
 
-### 0.6 (or maybe 1.0)
+### 0.7 (or maybe 1.0)
 
 - Pre-loading AX hierarchy and attribute cache from
   /System/Library/Accessibility/AccessibilityDefinitions.plist
