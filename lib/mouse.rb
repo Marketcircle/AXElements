@@ -1,10 +1,11 @@
 ##
+# [Reference](http://developer.apple.com/library/mac/#documentation/Carbon/Reference/QuartzEventServicesRef/Reference/reference.html).
+#
 # @todo Add inertial scrolling abilities?
 # @todo Bezier paths for movements
 # @todo Less discrimination against left handed people
 # @todo A more intelligent default duration
 # @todo Point arguments should accept a pair tuple
-# @todo This module feels too DRY
 module Mouse; end
 
 class << Mouse
@@ -15,7 +16,7 @@ class << Mouse
   # @param [CGPoint] point
   # @param [Float] duration animation duration, in seconds
   def move_to point, duration = 0.2
-    move current_position, point, duration
+    animate_event KCGEventMouseMoved, KCGMouseButtonLeft, current_position, point, duration
   end
 
   ##
@@ -25,9 +26,9 @@ class << Mouse
   # @param [CGPoint] point
   # @param [Float] duration animation duration, in seconds
   def drag_to point, duration = 0.2
-    left_click_down current_position
-    left_drag       current_position, point, duration
-    left_click_up   point
+    click point do
+      animate_event KCGEventLeftMouseDragged, KCGMouseButtonLeft, current_position, point, duration
+    end
   end
 
   ##
@@ -37,7 +38,7 @@ class << Mouse
   # animation to look weird, possibly causing the app to mess things up.
   #
   # @param [Fixnum] amount number of pixels/lines to scroll; positive
-  #                        to scroll up or negative to scroll down
+  #   to scroll up or negative to scroll down
   # @param [Float] duration animation duration, in seconds
   # @param [Fixnum] units :line scrolls by line, :pixel scrolls by pixel
   def scroll amount, duration = 0.2, units = :line
@@ -47,7 +48,9 @@ class << Mouse
     steps.times do |step|
       done     = (step+1).to_f / steps
       scroll   = ((done - current)*amount).floor
-      post scroll_event(units, scroll)
+      # the fixnum arg represents the number of scroll wheels
+      # on the mouse we are simulating (up to 3)
+      post CGEventCreateScrollWheelEvent(nil, units, 1, scroll)
       current += scroll.to_f / amount
     end
   end
@@ -55,19 +58,25 @@ class << Mouse
   ##
   # Left click, defaults to clicking at the current position.
   #
+  # @yield You can pass a block that will be executed after clicking down
+  #        but before clicking up
   # @param [CGPoint] point
   def click point = current_position
-    left_click_down point
-    left_click_up   point
+    post mouse_event KCGEventLeftMouseDown, point, KCGMouseButtonLeft
+    yield if block_given?
+    post mouse_event KCGEventLeftMouseUp,   point, KCGMouseButtonLeft
   end
 
   ##
   # Right click, defaults to clicking at the current position.
   #
+  # @yield You can pass a block that will be executed after clicking down
+  #        but before clicking up
   # @param [CGPoint] point
   def right_click point = current_position
-    right_click_down point
-    right_click_up   point
+    post mouse_event KCGEventRightMouseDown, point, KCGMouseButtonRight
+    yield if block_given?
+    post mouse_event KCGEventRightMouseUp,   point, KCGMouseButtonRight
   end
 
   ##
@@ -79,6 +88,18 @@ class << Mouse
   end
 
   ##
+  # Click with an arbitrary mouse button, using numbers to represent
+  # the mouse button. The left button is 0, right button is 1, middle
+  # button is 2, and the rest are not documented!
+  #
+  # @param [CGPoint]
+  # @param [Number]
+  def arbitrary_click point = current_position, button = KCGMouseButtonCenter
+    post mouse_event KCGEventOtherMouseDown, point, button
+    post mouse_event KCGEventOtherMouseUp,   point, button
+  end
+
+  ##
   # Return the coordinates of the mouse using the flipped coordinate
   # system.
   #
@@ -86,9 +107,6 @@ class << Mouse
   def current_position
     CGEventGetLocation(CGEventCreate(nil))
   end
-
-
-  private
 
   ##
   # Number of animation steps per second
@@ -105,25 +123,25 @@ class << Mouse
   # @return [Number]
   QUANTUM = Rational(1, FPS)
 
+  ##
+  # Available unit constants when scrolling.
+  #
   # @return [Hash{Symbol=>Fixnum}]
   UNIT = {
     line:  KCGScrollEventUnitLine,
     pixel: KCGScrollEventUnitPixel
   }
 
-  def mouse_event action, point, object
-    CGEventCreateMouseEvent(nil, action, point, object)
-  end
 
-  def scroll_event units, amount
-    # the fixnum arg represents the number of scroll wheels
-    # on the mouse we are simulating (up to 3)
-    CGEventCreateScrollWheelEvent(nil, units, 1, amount)
-  end
+  private
 
   def post event
     CGEventPost(KCGHIDEventTap, event)
     sleep QUANTUM
+  end
+
+  def mouse_event action, point, object
+    CGEventCreateMouseEvent(nil, action, point, object)
   end
 
   def animate_event event, button, from, to, duration
@@ -133,39 +151,10 @@ class << Mouse
     steps.times do
       from.x += xstep
       from.y += ystep
-      post mouse_event( event, from, button )
+      post mouse_event(event, from, button)
     end
     $stderr.puts 'Not moving anywhere' if from == to
-    post mouse_event( event, to, button )
-  end
-
-  def move from, to, duration
-    animate_event KCGEventMouseMoved, KCGMouseButtonLeft, from, to, duration
-  end
-
-  def left_drag from, to, duration
-    animate_event KCGEventLeftMouseDragged, KCGMouseButtonLeft, from, to, duration
-  end
-
-  def left_click_down point
-    post mouse_event KCGEventLeftMouseDown, point, KCGMouseButtonLeft
-  end
-  def left_click_up point
-    post mouse_event KCGEventLeftMouseUp,   point, KCGMouseButtonLeft
-  end
-
-  def right_click_down point
-    post mouse_event KCGEventRightMouseDown, point, KCGMouseButtonRight
-  end
-  def right_click_up point
-    post mouse_event KCGEventRightMouseUp,   point, KCGMouseButtonRight
-  end
-
-  def click_down button, point
-    post mouse_event KCGEventOtherMouseDown, point, button
-  end
-  def click_up button, point
-    post mouse_event KCGEventOtherMouseUp,   point, button
+    post mouse_event(event, to, button)
   end
 
 end
