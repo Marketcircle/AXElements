@@ -70,7 +70,7 @@ class AX::Element
   end
 
   ##
-  # Needed to override inherited {NSObject#description}. If you want a
+  # Needed to override inherited `NSObject#description`. If you want a
   # description of the object use {#inspect} instead.
   def description
     attribute :description
