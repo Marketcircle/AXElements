@@ -27,7 +27,7 @@ class Accessibility::BFEnumerator < Accessibility::AbstractEnumerator
   #
   # Lazily iterate through the tree.
   #
-  # @yieldparam [AX::Element] elemnet a descendant of the root element
+  # @yieldparam [AX::Element] element a descendant of the root element
   def each
     queue = [@root]
     until queue.empty?
