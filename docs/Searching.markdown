@@ -5,7 +5,7 @@ toolkit provides by _significantly_ simplifying the process of
 describing UI elements.
 
 Search works by looking at the child elements of the current element,
-and possibily at the grandchildren, and so on and so forth in a
+and possibly at the grandchildren, and so on and so forth in a
 breadth first search through the UI hierarchy rooted at the current
 node.
 
@@ -39,7 +39,7 @@ this:
 
     window.button(title: 'Main Window')
 
-Meaning that we want to find a `button` that is a child (or descedant)
+Meaning that we want to find a `button` that is a child (or descendant)
 of `window`, but only if the `button` has a `title` of `'Main Window'`
 on it.
 
@@ -77,7 +77,7 @@ in the UI element tree (and hopefully that means it is not on the
 screen anymore either). It can also be helpful when you want to
 explore the UI element tree and find out what types of UI elements are
 present on the screen. The detail to remember is that a pluralized
-search will have to explore the entire UI subtree from the starting
+search will have to explore the entire UI sub-tree from the starting
 point and so it could be very slow.
 
 ### Kind Of
@@ -177,7 +177,7 @@ The answer, by example:
 This would be asking for the outline row that has a text field with
 the value of `'Calendar'`. The proper form for this would be:
 
-    $ELEMENT.$KLASS($DESCANDANT: { $DESCENDANT_FILTER_ATTRIBUTE: $DESCENDANT_FILTER_VALUE1, ... }, ...)
+    $ELEMENT.$KLASS($DESCENDANT: { $DESCENDANT_FILTER_ATTRIBUTE: $DESCENDANT_FILTER_VALUE1, ... }, ...)
 
 Where `$DESCENDANT` plays the same role as `$KLASS`, but for a new
 search that will be applied to descendants of `$KLASS`.
@@ -262,7 +262,7 @@ array (unfortunately), so code would look like:
 This topic is open to debate, but you should expect that I will play
 the part of the devil's advocate.
 
-### Ineference
+### Inference
 
 There is also space for enhancement in the element attribute inference
 feature(s). Wouldn't it be nice to be able to specify a filter value as a
