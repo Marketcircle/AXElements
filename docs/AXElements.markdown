@@ -27,7 +27,6 @@ and how to use it.
 
 * {file:docs/Inspecting.markdown Inspecting}
 * {file:docs/Acting.markdown Acting and other macros}
-* {file:docs/MouseEvents.markdown Mouse manipulation}
 * {file:docs/KeyboardEvents.markdown Keyboard manipulation}
 * {file:docs/Searching.markdown Searching}
 * {file:docs/Notifications.markdown Notifications}
