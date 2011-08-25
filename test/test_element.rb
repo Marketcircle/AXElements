@@ -79,21 +79,6 @@ end
 
 class TestElementSearchFailure < TestElements
 
-# some interesting scenarios
-#  searching a table with a lot of rows
-#    in this test, our variable is the number of rows
-#  search a tall tree
-#    in this test, our variable is how tall the tree is
-#  search with no filters
-#    this is a simple case that should be thrown in as a
-#    control, it will help gauge how much search performance
-#    depends on the core implementation of the AX module
-#  search with a lot of filters
-#    this test will become more important as the filtering
-#    logic becomes more complex due to supporting different
-#    ideas (e.g. the :title_ui_element hack that exists in v0.4)
-
-
   def minimal_exception
     AX::Element::SearchFailure.new(WINDOW, :test, nil)
   end
@@ -455,6 +440,14 @@ class TestElementGetParamAttribute < TestElements
     assert_equal 'AXEle', attr.string
   end
 
+  def bench_string_for_range_attribute
+    skip 'This takes a very long time for some reason that is not my fault'
+    range = 0..1
+    assert_performance_linear do |n|
+      n.times { static_text.param_attribute(:string_for_range, range) }
+    end
+  end
+
 end
 
 
@@ -540,6 +533,30 @@ class TestElementSearch < TestElements
     assert_equal nil, slider.search(:value_indicator, help: 'Cookie')
   end
 
+  def bench_search_table
+  #  searching a table with a lot of rows
+  #    in this test, our variable is the number of rows
+  end
+
+  def bench_search_tall_tree
+  #  search a tall tree
+  #    in this test, our variable is how tall the tree is
+  end
+
+  def bench_search_simple
+  #  search with no filters
+  #    this is a simple case that should be thrown in as a
+  #    control, it will help gauge how much search performance
+  #    depends on the core implementation of the AX module
+  end
+
+  def bench_search_many_filters
+  #  search with a lot of filters
+  #    this test will become more important as the filtering
+  #    logic becomes more complex due to supporting different
+  #    ideas (e.g. the :title_ui_element hack that exists in v0.4)
+  end
+
 end
 
 
@@ -600,6 +617,14 @@ class TestElementMethodMissing < TestElements
   def bench_attribute_element
     assert_performance_linear do |n|
       n.times { WINDOW.parent }
+    end
+  end
+
+  def bench_param_attribute
+    skip 'This takes a very long time for some reason that is not my fault'
+    range = 0..1
+    assert_performance_linear do |n|
+      n.times { static_text.string_for_range(range) }
     end
   end
 
