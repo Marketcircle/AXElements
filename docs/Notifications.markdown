@@ -1,5 +1,7 @@
 # Notifications
 
+@todo Need to finish this soon...
+
 Notifications are a tool that you can use to add a delay in script
 that waits until a certain event happens, such as waiting for a window
 to be created or a menu to be opened.

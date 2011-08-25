@@ -1,5 +1,7 @@
 # Debugging
 
+@todo Mostly done here, just need to fill in some details
+
 Some times you need to see the big picture, the whole UI tree at
 once or at least be able to see the root of the hierarchy from where
 you are. For these troubling cases, AXElements provides a few tools.
