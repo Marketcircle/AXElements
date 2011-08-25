@@ -1,7 +1,7 @@
 # Inspecting The User Interface
 
 When it comes to inspecting the user interface there are _many_ nooks
-and cranies that are interesting to talk about. This document covers
+and crannies that are interesting to talk about. This document covers
 the core concepts that you will need to first understand.
 
 ## The UI Tree
@@ -35,7 +35,7 @@ the launchpad if you are on OS X Lion.
 
 ## Attributes
 
-Each item in the tree has attributes; buttons have a title, silders
+Each item in the tree has attributes; buttons have a title, sliders
 have a value, etc.. Attributes often include pointers to the parent of
 the element and, if applicable, a pointer to an array of children;
 this is how you navigate through the UI tree.
@@ -100,10 +100,10 @@ of the `#inspect` output that it prints out.
 ### Inspect Output
 
 Using `#inspect` is a great way to see the important details of a UI
-element, it shows the values of the most important attrtibutes so that
+element, it shows the values of the most important attributes so that
 you can quickly identify which element it really is on screen, but not
 so many details that it becomes a pain. A typical example of
-`#inspect` output looks ilke this:
+`#inspect` output looks like this:
 
     #<AX::StandardWindow "AXElementsTester" (1584.0, 184.0) 17 children focused[✘]>
 
@@ -115,7 +115,7 @@ identifying information bit, which is the title of the window in this
 case; then you have numbers in parentheses which are the screen
 coordinates for the UI element; then you have the number of children
 that the UI element has, but only because this element has children;
-and finally you have a checkbox for the `focused` attribute.
+and finally you have a check box for the `focused` attribute.
 
 The values shown in `#inspect` are pieced together using helper
 methods from the {Accessibility::PPInspector} module and a generic
@@ -127,7 +127,7 @@ not always choose the best attributes to show.
 that the process identifier for the application is also included. In
 other cases, the screen co-ordinates or whether the element is enabled
 may not be relevant, so you can override the method in the specific
-subclass to not inculde those attributes and/or include other
+subclass to not include those attributes and/or include other
 attributes. The key idea is to make `#inspect` helpful when exploring
 a UI through the console or debugging a script.
 
@@ -228,7 +228,7 @@ of a C structs you should leave them wrapped in an NSValue object.
 
 Similarly, parameterized attributes are added using methods with
 `Parameter` in the name. The method for getting the value of a
-parameterized attribute will of coures take an extra parameter for the
+parameterized attribute will of course take an extra parameter for the
 parameterized attributes parameter.
 
 ### Where To Implement The Methods
@@ -248,7 +248,7 @@ accessibility. In these cases Apple has provided something similar to
 singleton methods, but less useful, with the
 `accessibilitySetOverrideValue:forAttribute:` method. You can use the
 method to override an attribute or even add a new one. The main issue
-with this method is that any attribute that is overriden, or added,
+with this method is that any attribute that is overridden, or added,
 will not be writable using the accessibility APIs. Another issue is
 that you have to calculate the value when you override instead of when
 the attribute value is queried by the client.
@@ -270,12 +270,12 @@ to the attribute.
 ### Remember `super`
 
 It is important to remember that these methods are already implemented
-for the built in features. When overridding, you should only implement
+for the built in features. When overriding, you should only implement
 the custom behaviour and call `super` to handle everything else.
 
 ## Next Steps
 
-You may want to play with what you have learned so far. See if you can
+You may want to play with what you have learnt so far. See if you can
 find bugs and then fix them, or perhaps a missing feature.
 
 From here the next logical step would be to figure out how to trigger
