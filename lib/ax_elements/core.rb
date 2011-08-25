@@ -35,7 +35,7 @@ class << AX
   # Pointer type encoding for `CFArrayRef` objects
   #
   # @return [String]
-  ARRAY_POINTER = '^{__CFArray}'
+  ARRAY_POINTER = NSString.stringWithString '^{__CFArray}'
 
   ##
   # Pointer type encoding for `AXUIElementRef` objects
