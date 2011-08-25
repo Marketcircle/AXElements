@@ -441,8 +441,7 @@ class TestElementGetParamAttribute < TestElements
   end
 
   def bench_string_for_range_attribute
-    skip 'This takes a very long time for some reason that is not my fault'
-    range = 0..1
+    range = CFRange.new(0, 1)
     assert_performance_linear do |n|
       n.times { static_text.param_attribute(:string_for_range, range) }
     end
@@ -621,8 +620,7 @@ class TestElementMethodMissing < TestElements
   end
 
   def bench_param_attribute
-    skip 'This takes a very long time for some reason that is not my fault'
-    range = 0..1
+    range = CFRange.new(0, 1)
     assert_performance_linear do |n|
       n.times { static_text.string_for_range(range) }
     end
