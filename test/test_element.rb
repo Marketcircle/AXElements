@@ -163,9 +163,15 @@ class TestElementAttribute < TestElements
     end
   end
 
-  def bench_element_attribute
+  def bench_simlpe_element_attribute
     assert_performance_linear do |n|
       n.times { WINDOW.attribute(:parent) }
+    end
+  end
+
+  def bench_complex_element_attribute
+    assert_performance_linear do |n|
+      n.times { WINDOW.attribute(:close_button) }
     end
   end
 
