@@ -94,7 +94,7 @@ end
 class TestElementSearchFailure < TestElements
 
   def minimal_exception
-    AX::Element::SearchFailure.new(WINDOW, :test, nil)
+    @@minimal_exception ||= AX::Element::SearchFailure.new(WINDOW, :test, nil)
   end
 
   def test_correct_message
