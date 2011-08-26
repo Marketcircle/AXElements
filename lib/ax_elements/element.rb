@@ -220,6 +220,11 @@ class AX::Element
   #
   #   window.application # => SearchFailure is raised
   #
+  # @example Parameterized Attribute lookup
+  #
+  #   text = window.title_ui_element
+  #   text.string_for_range(CFRange.new(0, 1))
+  #
   def method_missing method, *args
     if attr = attribute_for(method)
       return self.class.attribute_for(@ref, attr)
