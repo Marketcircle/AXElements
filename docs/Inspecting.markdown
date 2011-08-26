@@ -160,6 +160,57 @@ be chosen. The {file:docs/Searching.markdown Searching Tutorial} goes
 into more depth on how key-value pairs are used to specify which
 object you want.
 
+## Setting Attributes
+
+Some attributes can also be changed through the accessibility
+APIs. The {Accessibility::Language} module has two methods, `#set` and
+`#set_focus`, which allow you to change the value for certain attributes.
+
+In the Accessibility Inspector, a writable attribute will have `(W)`
+next to the attribute name, and the programmatic way to tell if an
+attribute is writable is to call {AX::Element#attribute_writable?} and
+pass the name of the attribute as a parameter:
+
+    app.main_window.attribute_writable? :size
+    app.main_window.attribute_writable? :title
+
+You can only set an attribute if it is writable. When you have an
+attribute that is writable, and you would like to change it, then you
+simply need to call `#set` in a manner like so:
+
+    set app.main_window, size: [500, 500].to_size
+
+The first parameter is the UI element, and the second parameter is a
+key-value pair with the attribute as the key and the value as the
+new value.
+
+`#set_focus` is just syntactic sugar for `#set` where the key-value is
+set for you and the only parameter you provide is the UI element you
+want to set focus to:
+
+    set_focus app.main_window.text_field
+
+Though, `#set` itself has a special case. The most frequently changed
+attribute for a UI element is `value`. It is used almost as much as
+`focused` and so `#set` allows you to skip passing the key in this
+case. When you call `#set`, if you do not pass a key-value pair for
+the second parameter, and instead just pass the new value, then it
+will be assumed that the attribute you want to change is `value`:
+
+    set app.main_window.text_field, 'Mark Rada'
+
+Another important detail that you might be curious about is that we
+called `#to_size` on the first snippet showing how to set an
+attribute. The developers of MacRuby have added a feature that allows
+you to pass an array as an argument when you would normally be
+expected to pass a structure such as a CGPoint. Since AXElements APIs
+inherently need to handle any type of object, it is not sane to try
+and do the same type of run time type analysis. In its place, I have
+provided some convenience methods for {NSArray arrays} to let you
+quickly transform them to the appropriate type of object. In my
+opinion, you should just use the proper type of object in the first
+place and avoid the overhead.
+
 ## Parameterized Attributes
 
 There is a special type of attribute that is called the parameterized
@@ -185,7 +236,8 @@ attributes.
 
 In my experience, parameterized attributes have not been that useful,
 but I haven't looked hard enough and am still looking for a good
-example to put in this section of the tutorial.
+example to put in this section of the tutorial. Parameterized
+attributes are not writable (though I should double check this fact).
 
 ## Explicit Attribute Access
 
