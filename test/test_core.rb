@@ -383,6 +383,15 @@ class TestApplicationForPID < TestCore
     assert_equal KAXApplicationRole, role
   end
 
+  def test_raises_if_pid_is_zero
+    assert_raises ArgumentError do
+      AX.application_for_pid 0
+    end
+    assert_raises ArgumentError do
+      AX.application_for_pid -1
+    end
+  end
+
 end
 
 

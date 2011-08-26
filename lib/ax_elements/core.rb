@@ -306,15 +306,13 @@ class << AX
   end
 
   ##
-  # @note This method will crash MacRuby if the PID does not exist or if
-  #       the PID belonges to something that is not an app.
-  #
   # You can call this method to create the application object given
   # the process identifier of the app.
   #
   # @param [Fixnum] pid process identifier for the application you want
   # @return [AXUIElementRef]
   def application_for_pid pid
+    raise ArgumentError, 'pid must be greater than 0' unless pid > 0
     AXUIElementCreateApplication(pid)
   end
 
