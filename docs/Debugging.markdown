@@ -59,16 +59,26 @@ AXElements provides some customized exceptions in the OO layer that
 should help give you much better hints at what went wrong when you
 have a problem.
 
+Custom exceptions have been created to help identify the point of
+failure that would have caused a more cryptic exception to have been
+raised instead. These cusotm exceptions also capture more metadata
+about the problem that occured which should give good hints as to what
+went wrong.
+
 ### Search Failures
 
-An {AX::Element::SearchFailure SearchFailure} will occur when you
+An {AX::Element::SearchFailure `SearchFailure`} will occur when you
 perform an implicit search that fails to find anything.
 
-In cases where implicit searches are chained, when one of the searches
-fails you will get a `NoMethodError` about something having
-failed. Earlier on in AXElements development it was difficult to
-figure out where the point of failure was and this helped out quite a
-bit.
+In cases where implicit searches are chained, which happens frequently
+with deep UI hierarchies, if one of the searches were to fail then you
+would receive a `NoMethodError` about something having
+failed. Sometimes the failure would happen because the search returned
+`nil`, and of course `nil` would not respond to another search, though
+this problem was easy to identify if you are familiar with the
+AXElements source code; in other cases the failure would occur
+somewhere in the search {Accessibility::Qualifier qualifier} or in the
+{Accessibility::BFEnumerator enumerator}, and it was not always clear why.
 
 The other feature of a search failure is that the exception message
 will include an element back trace using {Accessibility.path}. This is
@@ -76,20 +86,20 @@ meant to give a hint about why the search failed.
 
 ### Attribute Not Writable
 
-You can receive {AX::Element::ReadOnlyAttribute ReadOnlyAttribute}
+You will receive {AX::Element::ReadOnlyAttribute `ReadOnlyAttribute`}
 exceptions only when you try to set an attribute that is not
 writable. Again, this was originally designed to more easily identify the
 point of failure when you try to write to an attribute that you should
 not write to.
 
-Specifically, `#set_focus` is called by methods under the hood and it
-was causing some problems when elements were unexpectedly not allowing
-their `focused` attribute to be written.
+Specifically, `#set_focus` is called by methods internally by
+AXElements and at one time it was causing some problems when elements
+were unexpectedly not allowing their `focused` attribute to be written.
 
 ### Attribute Not Found
 
 A very simple fail safe that AXElements uses is the
-{AX::Element::LookupFailure LookupFailure} exception which will be
+{AX::Element::LookupFailure `LookupFailure`} exception which will be
 raised when you try to explicitly access an attribute which does not
 exist, or at least does not exist for the particular element that you
 are trying to access.
