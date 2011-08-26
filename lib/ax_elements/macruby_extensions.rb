@@ -229,8 +229,18 @@ end
 
 
 # ##
-# # Correct a problem with ArgumentError not providing a proper backtrace.
+# # Correct a problem with NameError not providing a proper backtrace.
 # class NameError
+#   alias_method :original_message, :message
+#   def message
+#     "#{original_message}\n\t#{backtrace.join("\n\t")}"
+#   end
+# end
+
+
+# ##
+# # Correct a problem with NoMethodError not providing a proper backtrace.
+# class NoMethodError
 #   alias_method :original_message, :message
 #   def message
 #     "#{original_message}\n\t#{backtrace.join("\n\t")}"
