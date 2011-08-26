@@ -61,8 +61,8 @@ have a problem.
 
 Custom exceptions have been created to help identify the point of
 failure that would have caused a more cryptic exception to have been
-raised instead. These cusotm exceptions also capture more metadata
-about the problem that occured which should give good hints as to what
+raised instead. These custom exceptions also capture more metadata
+about the problem that occurred which should give good hints as to what
 went wrong.
 
 ### Search Failures
@@ -103,3 +103,126 @@ A very simple fail safe that AXElements uses is the
 raised when you try to explicitly access an attribute which does not
 exist, or at least does not exist for the particular element that you
 are trying to access.
+
+## Not So Custom Exceptions
+
+Sometimes it is possible that the back trace for other exceptions can
+get lost. This may be a result of
+[MacRuby Ticket #1369](http://www.macruby.org/trac/ticket/1369), but
+it might also be because of
+[MacRuby Ticket #1320](http://www.macruby.org/trac/ticket/1320) or
+some other freedom patch
+that AXElements or ActiveSupport adds to the run time. I have not been
+able to create a reduction of the problem so that Eloy can look at the
+problem, and since AXElements is not open source I cannot just ask
+someone else to look at the problem.
+
+The real problem is that loss of back trace happens for multiple
+exception classes. The [work around](https://gist.github.com/1107314)
+for this case is copied to `lib/ax_elements/macruby_extensions.rb`,
+but has been commented out since it causes some regression tests to
+fail. If you do not get a back trace with an error then you will need
+to uncomment the freedom patches or copy them to your own script.
+
+## Disabling Compiled Code
+
+Back traces can be lost for other reasons than bugs. When using
+compiled MacRuby code, you cannot get a Ruby level back trace in case
+of an error. This feature is on the road map for MacRuby, but I am not
+sure when it will be done.
+
+In the mean time, if you suspect that the portion of a back trace that
+would come from a compiled file is the problem, then you can disable
+loading compiled files which will force MacRuby to load source ruby
+files instead.
+
+You can disable loading compiled files by setting the `VM_DISABLE_RBO`
+environment variable before running a script. You can disable loading
+for a single session like so:
+
+    VM_DISABLE_RBO=1 macruby my_script.rb
+
+Other debugging options are also available from MacRuby itself. You
+should check out [Hacking.rdoc](https://github.com/MacRuby/MacRuby/blob/master/HACKING.rdoc)
+in the MacRuby source repository for more details.
+
+## Long Load Times
+
+When using certain gems, or when you have many gems installed, you
+will notice that the load time for your scripts is very
+long---possibly more than 10 seconds.
+
+There are many reasons why this happens, some of which we can fix
+ourselves and some of which you MacRuby developers will have to fix.
+
+### Huge Literal Collections
+
+Some gems contain source code with almost
+[unbelievably large literal collection](https://github.com/sporkmonger/addressable/blob/master/lib/addressable/idna/pure.rb#L318),
+such as the `addressable` gem. This is a problem for MacRuby for two
+reasons.
+
+First, it requires several thousand allocations at once. Most of
+MacRuby's performance issues come from code that allocates too much,
+and large collections can allocate several thousand objects all at
+once.
+
+The second problem is that MacRuby normally will try to JIT the code,
+and the LLVM chokes on things this large. Some work has been done to
+break the function up into smaller pieces (it used to take over 2
+minutes to load the `addressable` gem), but it can still take a while
+for MacRuby and the LLVM to work through the code
+
+As it turns out, JIT isn't that great for short lived processes that
+need to start up over and over again. In fact, JIT mode for MacRuby
+was meant more for debugging, but complications in development have
+made it the norm for the time being.
+
+The work around to this situation will have to come from upstream gem
+developers and MacRuby itself. In the mean time, compiling these gems
+will usually make them load _significantly_ faster. To compile gems,
+you need to install the
+[`rubygems-compile`](https://github.com/ferrous26/rubygems-compile)
+plug-in for rubygems. Follow the instructions from the plug-ins `README`
+to learn how to use it and to know which version to install.
+
+### Complex Metaprogramming
+
+Another problem that can cause long load times is complex
+metaprogramming. Gems such as `rspec` do a lot of weird stuff at boot
+that causes the MacRuby optimizer to do a lot of work. `rspec` alone
+can add nearly 10 seconds to boot time.
+
+In this case you can tell the optimizer to not try so hard; this will
+result in slower run time performance, but it is likely worth the
+trade off in the case of `rspec`.
+
+You can set the optimization level for MacRuby just as you would
+disable loading compiled code:
+
+    # set the level to a number between 0 and 3, 3 is the highest
+    VM_OPT_LEVEL=1 macruby my_script.rb
+
+### Large Code Bases
+
+Large code bases taking a long time to load is not really an avoidable
+situation---it happens with every project. Once again, JIT and
+optimizer passes take up a lot of the load time.
+
+In this case, it is best to compile your code (and test the compiled
+version) in order to speed up boot time. You can combine compiled code
+and still turn off optimization passes to get even better boot times,
+but I am not sure it is worth the trade off at that point.
+
+### Rubygems
+
+Rubygems suffers from a lot of technical debt. Many features were
+bolted on to the project over time and it has added a large overhead
+in allocations when activating gems at run time. As few as 25
+installed gems can add an extra 2 seconds to your boot time.
+
+The only fix for this is to cleanup and fix rubygems. Fortunately this
+has been underway since the rubygems 1.4; the downside is that MacRuby
+has customizations to rubygems that prevent users from upgrading
+themselves. We need to wait for new MacRuby releases to bundle new
+rubygems versions.
