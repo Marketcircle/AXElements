@@ -339,3 +339,22 @@ will all the code be loaded, but the extra step of mixing
 done for you. The only way to override this behaviour is to load the
 components of AXElements yourself, the details on how to do this are
 left as an exercise to interested parties.
+
+## A Note About Caching
+
+You need to be careful when you cache UI element objects. Every time
+that you trigger an action you are intrinsically changing the state of
+an application. State changes will often cause new UI elements to be
+created, recreated, or removed.
+
+For example consider pressing the close button for a window; in this
+case, an entire window and all of its children will disappear and
+become invalid objects. Another case might be pressing the `+` button
+for a table; in this case you have created a new row for the table and
+any cache of the existing rows for the table will not include the new
+element.
+
+The real problem with caching is with the invalid objects. An invalid
+object is poisonous to the MacRuby run time. If you try to access an
+attribute or trigger a search from an invalid then you will cause
+MacRuby to crash.

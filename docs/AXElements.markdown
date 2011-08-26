@@ -33,11 +33,3 @@ and how to use it.
 * {file:docs/Debugging.markdown Debugging Problems}
 * {file:docs/NewBehaviour.markdown Adding Behaviour}
 * {file:docs/RSpecMinitest.markdown RSpec and Minitest extensions}
-
-## A Note About Caching
-
-You need to be careful when you cache elements. When you trigger an
-action you are changing the state of an application, and are likely to
-invalidate some elements when they disappear (e.g. closing a
-window). Trying to use an elment object when the UI it links to no
-longer exists will crash MacRuby.
