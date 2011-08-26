@@ -16,7 +16,7 @@ the full experience. Go ahead and install the tools now if you haven't
 done that yet, I'll wait.
 
 Once, you have the developer tools, you should install MacRuby, the
-latest release should be sufficient, but nightly buids are usually
+latest release should be sufficient, but nightly builds are usually
 safe as well. If you are on Snow Leopard, you will also need to
 install the
 [Bridge Support Preview](http://www.macruby.org/blog/2010/10/08/bridgesupport-preview.html).
@@ -88,7 +88,7 @@ the high-level items that should get done in the next couple of releases.
 ### 0.7 (or maybe 1.0)
 
 - Pre-loading AX hierarchy and attribute cache from
-  /System/Library/Accessibility/AccessibilityDefinitions.plist
+  `/System/Library/Accessibility/AccessibilityDefinitions.plist`
   + DO NOT load_plist and then parse, use NSXMLParser to have less
   overhead, but it still might allocate too much to be done at boot
   time
