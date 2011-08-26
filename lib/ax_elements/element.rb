@@ -13,16 +13,16 @@ class AX::Element
   ##
   # Raised when a lookup fails
   class LookupFailure < ArgumentError
-    def initialize name
-      super "#{name} was not found"
+    def initialize element, name
+      super "#{name} was not found for #{element.inspect}"
     end
   end
 
   ##
   # Raised when trying to set an attribute that cannot be written
   class ReadOnlyAttribute < NoMethodError
-    def initialize name
-      super "#{name} is a read only attribute"
+    def initialize element, name
+      super "#{name} is a read only attribute for #{element.inspect}"
     end
   end
 
@@ -65,7 +65,7 @@ class AX::Element
   # @param [Symbol] attr
   def attribute attr
     real_attr = attribute_for attr
-    raise LookupFailure.new attr unless real_attr
+    raise LookupFailure.new(self, attr) unless real_attr
     self.class.attribute_for @ref, real_attr
   end
 
@@ -88,7 +88,7 @@ class AX::Element
   # @return [Number]
   def size_of attr
     real_attr = attribute_for attr
-    raise LookupFailure.new attr unless real_attr
+    raise LookupFailure.new(self, attr) unless real_attr
     AX.attr_count_of_element @ref, real_attr
   end
 
@@ -104,7 +104,7 @@ class AX::Element
   # @param [Symbol] attr
   def attribute_writable? attr
     real_attribute = attribute_for attr
-    raise LookupFailure.new attr unless real_attribute
+    raise LookupFailure.new(self, attr) unless real_attribute
     AX.attr_of_element_writable? @ref, real_attribute
   end
 
@@ -115,7 +115,7 @@ class AX::Element
   # @param [String] attr an attribute constant
   # @return the value that you set is returned
   def set_attribute attr, value
-    raise ReadOnlyAttribute.new attr unless attribute_writable? attr
+    raise ReadOnlyAttribute.new(self, attr) unless attribute_writable? attr
     real_attribute = attribute_for attr
     value = value.to_axvalue if value.kind_of? Boxed
     AX.set_attr_of_element @ref, real_attribute, value
@@ -132,7 +132,7 @@ class AX::Element
   # @param [Symbol] attr
   def param_attribute attr, param
     real_attr = param_attribute_for attr
-    raise LookupFailure.new attr unless real_attr
+    raise LookupFailure.new(self, attr) unless real_attr
     param = param.to_axvalue if param.kind_of? Boxed
     self.class.param_attribute_for @ref, real_attr, param
   end
@@ -154,7 +154,7 @@ class AX::Element
   # @return [Boolean] true if successful
   def perform_action name
     real_action = action_for name
-    raise LookupFailure.new name unless real_action
+    raise LookupFailure.new(self, name) unless real_action
     AX.action_of_element @ref, real_action
   end
 

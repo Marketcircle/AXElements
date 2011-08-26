@@ -51,13 +51,20 @@ end
 
 class TestElementLookupFailure < TestElements
 
+  def failure
+    @@failure ||= AX::Element::LookupFailure.new(APP, :blah)
+  end
+
   def test_kind_of_argument_error
-    assert_kind_of ArgumentError, AX::Element::LookupFailure.new(:blah)
+    assert_kind_of ArgumentError, failure
   end
 
   def test_correct_message
-    exception = AX::Element::LookupFailure.new(:test)
-    assert_match /was not found/, exception.message
+    assert_match /blah was not found for/, failure.message
+  end
+
+  def test_inspects_sender
+    assert_match /#{APP.inspect}/, failure.message
   end
 
 end
@@ -65,13 +72,20 @@ end
 
 class TestElementReadOnlyAttribute < TestElements
 
+  def read_only
+    @@read_only ||= AX::Element::ReadOnlyAttribute.new(APP, :blah)
+  end
+
   def test_kind_of_method_missing_error
-    assert_kind_of NoMethodError, AX::Element::ReadOnlyAttribute.new(:blah)
+    assert_kind_of NoMethodError, read_only
   end
 
   def test_correct_message
-    exception = AX::Element::ReadOnlyAttribute.new(:test)
-    assert_match /read only attribute/, exception.message
+    assert_match /read only attribute for/, read_only.message
+  end
+
+  def test_inspects_sender
+    assert_match /#{APP.inspect}/, read_only.message
   end
 
 end
