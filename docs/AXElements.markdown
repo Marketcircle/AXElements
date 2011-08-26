@@ -30,8 +30,9 @@ and how to use it.
 * {file:docs/KeyboardEvents.markdown Keyboard manipulation}
 * {file:docs/Searching.markdown Searching}
 * {file:docs/Notifications.markdown Notifications}
-* {file:docs/RSpecMinitest.markdown RSpec and Minitest extensions}
 * {file:docs/Debugging.markdown Debugging Problems}
+* {file:docs/NewBehaviour.markdown Adding Behaviour}
+* {file:docs/RSpecMinitest.markdown RSpec and Minitest extensions}
 
 ## A Note About Caching
 
