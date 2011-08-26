@@ -8,13 +8,12 @@
 lib/**/*.rb
 ext/**/*.m
 -
-docs/AXElements.markdown
 docs/Inspecting.markdown
 docs/Acting.markdown
+docs/Searching.markdown
 docs/Notifications.markdown
 docs/KeyboardEvents.markdown
-docs/Searching.markdown
-docs/NewBehaviour.markdown
 docs/Debugging.markdown
+docs/NewBehaviour.markdown
 docs/RSpecMinitest.markdown
 LICENSE.txt

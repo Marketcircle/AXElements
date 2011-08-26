@@ -1,8 +1,13 @@
 # AXElements
 
-AXElements is a DSL andabstraction and an OO interface on top of the
-Mac OS X Accessibility Framework that allows code to be written in a
+AXElements is a DSL abstraction built on top of the Mac OS X
+Accessibility and CGEvent APIs that allows code to be written in a
 very natural and declarative style that describes user interactions.
+
+The framework is optimized for writing tests that require automatic
+GUI manipulation, whether it be finding controls on the screen,
+typing, clicking, or other ways in which a user can interact with the
+computer.
 
 ## Getting Setup
 
@@ -25,14 +30,29 @@ development dependencies by running the `setup_dev` task like so:
 If you get an error about not having permissions then you will need to
 add `sudo` to the beginning of the command.
 
+Once you are setup, you can start looking through the tutorial
+documentation, probably starting with the
+{file:docs/Inspecting.markdown Inspecting tutorial}:
+
+* {file:docs/Inspecting.markdown Inspecting}
+* {file:docs/Acting.markdown Acting}
+* {file:docs/Searching.markdown Searching}
+* {file:docs/Notifications.markdown Notifications}
+* {file:docs/KeyboardEvents.markdown Keyboard manipulation}
+* {file:docs/Debugging.markdown Debugging Problems}
+* {file:docs/NewBehaviour.markdown Adding Behaviour}
+* {file:docs/RSpecMinitest.markdown RSpec and Minitest extensions}
+
 ## Documentation
 
 AXElements is documented using YARD, and includes a few small
-tutorials in the `docs` directory. The starting point is
-{file:docs/AXElements.markdown}. When you are on the Marketcircle
-internal network you should be able to access the [documentation
-website](http://docs.marketcircle.com:8808/) to save you the time of
-running the server yourself.
+tutorials in the `docs` directory. If you do not want to generate the
+documentation yourself, we are hosting the documentation on our
+internal network on [quartz](http://docs.marketcircle.com:8808/).
+
+Though it is not required, you should read Apple's
+[Accessibility Overview](http://developer.apple.com/library/mac/#documentation/Accessibility/Conceptual/AccessibilityMacOSX/OSXAXModel/OSXAXmodel.html)
+as a primer on some the technical underpinnings of AXElements.
 
 ## Test Suite
 
