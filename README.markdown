@@ -55,6 +55,10 @@ disabled by default. In order to enable them you need to set the
 
     BENCH=1 macrake test
 
+Benchmarks only exist for code that is known to be slow. I'm keeping
+tabs on slow code so that I be confident about getting depressed when
+it gets slower.
+
 ## Road Map
 
 There are still a bunch of things that could be done to improve
