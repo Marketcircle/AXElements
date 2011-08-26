@@ -16,7 +16,7 @@ class NSArray
   end
 
   ##
-  # Create a CGPoint from the first two elements in the array.
+  # Create a `CGPoint` from the first two elements in the array.
   #
   # @return [CGPoint]
   def to_point
@@ -24,7 +24,7 @@ class NSArray
   end
 
   ##
-  # Create a CGSize from the first two elements in the array.
+  # Create a `CGSize` from the first two elements in the array.
   #
   # @return [CGSize]
   def to_size
@@ -32,7 +32,7 @@ class NSArray
   end
 
   ##
-  # Create a CGRect from the first four elements in the array.
+  # Create a `CGRect` from the first four elements in the array.
   #
   # @return [CGRect]
   def to_rect
@@ -42,7 +42,8 @@ class NSArray
   ##
   # @method blank?
   #
-  # Borrowed from Active Support.
+  # Borrowed from Active Support. Too bad this docstring isn't being
+  # picked up by YARD.
   alias_method :blank?, :empty?
 
   alias_method :ax_array_method_missing, :method_missing
@@ -51,7 +52,7 @@ class NSArray
   #       semantics of the language. For instance, when we say something
   #       like "outline.rows.text_field" did we want the text field for
   #       each row or did we want a row that has a text field or did we
-  #       the first text field that is a child of one of the rows?
+  #       want the first text field that is a child of one of the rows?
   #
   # If the array contains {AX::Element} objects and the method name
   # belongs to an attribute then the method will be mapped
@@ -142,7 +143,7 @@ class CGPoint
 
   ##
   # Given the origin and size of a rectangle, find the center of
-  # the rectangle with co-ordinates relative to the screen origin.
+  # the rectangle.
   #
   # @param [CGSize] size
   # @return [CGPoint]
@@ -152,6 +153,10 @@ class CGPoint
     CGPoint.new(x, y)
   end
 
+  ##
+  # @note This method does not show up in the documentation with
+  #       YARD 0.7.x
+  #
   # @return [CGPoint]
   alias_method :to_point, :self
 
