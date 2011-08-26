@@ -69,7 +69,9 @@ the high-level items that should get done in the next couple of releases.
 
 - Pre-loading AX hierarchy and attribute cache from
   /System/Library/Accessibility/AccessibilityDefinitions.plist
-  + DO NOT load_plist and then parse, use NSXMLParser
+  + DO NOT load_plist and then parse, use NSXMLParser to have less
+  overhead, but it still might allocate too much to be done at boot
+  time
 - Make a decision about NSArray#method_missing
 - Merge notifications with actions as they are commonly combined
 - Rewrite core module to handle errors more gracefully
