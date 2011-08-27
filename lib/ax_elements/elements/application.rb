@@ -15,7 +15,7 @@ class AX::Application < AX::Element
   end
 
   ##
-  # Overridden to handle the {Kernel#set_focus} case.
+  # Overridden to handle the {Accessibility::Language#set_focus} case.
   def set_attribute attr, value
     if attr == :focused
       if value
@@ -59,7 +59,7 @@ class AX::Application < AX::Element
   #
   # @return [nil]
   def type_string string
-    AX.keyboard_action( @ref, string )
+    AX.keyboard_action(@ref, string)
   end
 
   ##

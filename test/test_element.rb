@@ -554,27 +554,31 @@ class TestElementSearch < TestElements
   end
 
   def bench_search_table
-  #  searching a table with a lot of rows
-  #    in this test, our variable is the number of rows
+    skip
+    #  searching a table with a lot of rows
+    #    in this test, our variable is the number of rows
   end
 
   def bench_search_tall_tree
-  #  search a tall tree
-  #    in this test, our variable is how tall the tree is
+    skip
+    #  search a tall tree
+    #    in this test, our variable is how tall the tree is
   end
 
   def bench_search_simple
-  #  search with no filters
-  #    this is a simple case that should be thrown in as a
-  #    control, it will help gauge how much search performance
-  #    depends on the core implementation of the AX module
+    skip
+    #  search with no filters
+    #    this is a simple case that should be thrown in as a
+    #    control, it will help gauge how much search performance
+    #    depends on the core implementation of the AX module
   end
 
   def bench_search_many_filters
-  #  search with a lot of filters
-  #    this test will become more important as the filtering
-  #    logic becomes more complex due to supporting different
-  #    ideas (e.g. the :title_ui_element hack that exists in v0.4)
+    skip
+    #  search with a lot of filters
+    #    this test will become more important as the filtering
+    #    logic becomes more complex due to supporting different
+    #    ideas (e.g. the :title_ui_element hack that exists in v0.4)
   end
 
 end
