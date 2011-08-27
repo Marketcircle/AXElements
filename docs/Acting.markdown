@@ -259,8 +259,8 @@ You could also look at {NSArray#to_point} and find out that it just
 returns a new CGPoint using the first two objects in the array, and
 `CGPoint#to_point` just returns itself (you can't see the
 documentation for the method because of how it is
-implemented). Similarly, {AXElement} implements
-{AXElement#to_point `#to_point`} which not only gets the position
+implemented). Similarly, {AX::Element} implements
+{AX::Element#to_point `#to_point`} which not only gets the position
 for the element, but also gets the size and then calculates the center
 point for the element. This is important because you probably never
 want the mouse cursor moving to the top left of the UI element, but
