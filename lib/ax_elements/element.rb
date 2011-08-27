@@ -458,7 +458,7 @@ class AX::Element
     end
 
     ##
-    # Like #const_get except that if the class does not exist yet then
+    # Like `#const_get` except that if the class does not exist yet then
     # it will assume the constant belongs to a class and creates the class
     # for you.
     #
@@ -497,7 +497,7 @@ class AX::Element
     end
 
     ##
-    # Extract the stuct contained in an AXValueRef.
+    # Extract the stuct contained in an `AXValueRef`.
     #
     # @param [AXValueRef] value
     # @return [Boxed]
@@ -509,11 +509,11 @@ class AX::Element
     end
 
     ##
-    # Map type encodings for wrapping when coming from an AXValueRef.
+    # Map of type encodings used for wrapping structs when coming from
+    # an `AXValueRef`.
     #
-    # The list is order sensitive, which is why (which is why we
-    # unshift nil), but should probably be more rigorously defined
-    # at runtime.
+    # The list is order sensitive, which is why we unshift nil, but
+    # should probably be more rigorously defined at runtime.
     #
     # @return [String,nil]
     BOX_TYPES = [CGPoint, CGSize, CGRect, CFRange].map! { |x| x.type }.unshift(nil)

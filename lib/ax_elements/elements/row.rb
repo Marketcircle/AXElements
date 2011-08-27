@@ -1,14 +1,12 @@
 ##
-# UI Element for the row in a table.
+# UI Element for the row in a table, outline, etc.
 class AX::Row < AX::Element
 
   ##
-  # @todo Make this more efficient, it needs to wrap the columns twice,
-  #       which is expensive if there are many columns. A possible
-  #       solution might be to add #index to Accessibility::Search so
-  #       that we do not need to worry about actual columns here and
-  #       can directly get the index at search time. The problem with
-  #       that solution is that it assumes a flat array.
+  # @todo Can this be more efficient? It wraps the columns twice,
+  #       which is expensive if there are many columns. Needs to be
+  #       done in such that we preserve search semantics for the
+  #       filters.
   #
   # Retrieve the child in a row that corresponds to a specific column.
   #
