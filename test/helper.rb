@@ -30,7 +30,13 @@ end
 
 gem     'minitest'
 require 'minitest/autorun'
-require ENV['BENCH'] ? 'minitest/benchmark' : 'minitest/pride'
+
+# preprocessor powers, assemble!
+if ENV['BENCH']
+  require 'minitest/benchmark'
+else
+  require'minitest/pride'
+end
 
 
 class MiniTest::Unit::TestCase
