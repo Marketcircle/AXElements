@@ -138,7 +138,7 @@ class << Accessibility
   #
   # @return [AX::Application]
   def application_with_pid pid
-    AX::Application.new AX.application_for_pid pid
+    AX::Element.process AX.application_for_pid pid
   end
 
   # @endgroup
