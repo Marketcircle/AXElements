@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 class TestAXApplication < TestAX
 
-  APP = AX::Application.new REF
+  APP = AX::Application.new REF, AX.attrs_of_element(REF)
 
   def test_is_a_direct_subclass_of_element
     assert_equal AX::Element, AX::Application.superclass

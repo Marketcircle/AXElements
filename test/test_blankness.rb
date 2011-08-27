@@ -14,7 +14,7 @@ class TestBlankPredicate < TestAX
   end
 
   def test_element_always_returns_false
-    app    = AX::Element.new REF
+    app    = AX::Element.new REF, AX.attrs_of_element(REF)
     window = app.attribute(:main_window)
     assert_equal false, window.blank?
     assert_equal false, app.blank?

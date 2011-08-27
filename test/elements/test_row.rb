@@ -2,7 +2,7 @@ class TestElementsRowChildInColumn < TestAX
 
   # these tests depend on Search already working
 
-  APP = AX::Application.new REF
+  APP = AX::Application.new REF, AX.attrs_of_element(REF)
 
   def table
     @@table ||= APP.main_window.table

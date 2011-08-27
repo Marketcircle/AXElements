@@ -19,6 +19,10 @@ module AX; end
 # @todo The current strategy dealing with errors is just to log them,
 #       but that may not always be the correct thing to do. The core
 #       has to be refactored around this issue to become more robust.
+# @todo I feel a bit weird having to instantiate a new pointer every
+#       time I want to fetch an attribute. Since allocations are costly
+#       it hurts performance a lot when it comes to searches. I wonder if
+#       it would pay off to have a pool of pointers...
 #
 # The singleton methods for the AX module represent the core layer of
 # abstraction for AXElements.
@@ -112,17 +116,15 @@ class << AX
   # subrole first if it exists.
   #
   # @param [AXUIElementRef]
+  # @param [Array<String>]
   # @return [Array<String>] subrole first, if it exists
-  def roles_for element
-    ptr  = Pointer.new :id
-    aptr = Pointer.new ARRAY_POINTER
+  def role_for element, attrs
+    ptr = Pointer.new :id
     AXUIElementCopyAttributeValue(element, ROLE, ptr)
     ret = [ptr[0]]
-    AXUIElementCopyAttributeNames(element, aptr)
-    if aptr[0].include? SUBROLE
+    if attrs.include? SUBROLE
       AXUIElementCopyAttributeValue(element, SUBROLE, ptr)
-      # Be careful, some things claim to have a subrole
-      # but return nil
+      # Be careful, some things claim to have a subrole but return nil
       ret.unshift ptr[0] if ptr[0]
     end
     ret

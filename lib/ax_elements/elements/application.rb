@@ -9,7 +9,7 @@ class AX::Application < AX::Element
   ##
   # Overridden so that we can also cache the NSRunningApplication
   # instance for this object.
-  def initialize ref
+  def initialize ref, attrs
     super
     @app = NSRunningApplication.runningApplicationWithProcessIdentifier pid
   end

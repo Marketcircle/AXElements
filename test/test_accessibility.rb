@@ -1,6 +1,6 @@
 class TestAccessibility < TestAX
 
-  APP = AX::Application.new REF
+  APP = AX::Application.new REF, AX.attrs_of_element(REF)
 
   def close_button
     @@button ||= APP.attribute(:main_window).attribute(:children).find do |item|

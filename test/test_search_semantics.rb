@@ -4,7 +4,7 @@
 class TestSearchSemantics < TestAX
 
   def app
-    @@app ||= AX::Application.new REF
+    @@app ||= AX::Application.new REF, AX.attrs_of_element(REF)
   end
 
   def window

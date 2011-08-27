@@ -30,7 +30,7 @@ class AX::Element
   # Raised when an implicit search fails
   class SearchFailure < NoMethodError
     def initialize searcher, searchee, filters
-      path       = Accessibility.path(searcher).map { |x| x.inspect }
+      path       = Accessibility.path(searcher).map! { |x| x.inspect }
       pp_filters = (filters || {}).map do |key, value|
         "#{key}: #{value.inspect}"
       end.join(', ')
@@ -42,16 +42,11 @@ class AX::Element
     end
   end
 
-  ##
-  # @todo take a second argument of the attributes array; the attributes
-  #       are already retrieved once to decide on the class type; if that
-  #       can be cached and used to initialize an element, we can save a
-  #       more expensive call to fetch the attributes
-  #
-  # @param [AXUIElementRef] element
-  def initialize element
-    @ref        = element
-    @attributes = AX.attrs_of_element element
+  # @param [AXUIElementRef]
+  # @param [Array<String>]
+  def initialize ref, attrs
+    @ref        = ref
+    @attributes = attrs
   end
 
   # @group Attributes
@@ -454,11 +449,12 @@ class AX::Element
     #
     # Takes an AXUIElementRef and gives you some kind of accessibility object.
     #
-    # @param [AXUIElementRef] element
+    # @param [AXUIElementRef]
     # @return [AX::Element]
-    def process_element element
-      roles = AX.roles_for(element).map! { |x| strip_prefix x }
-      determine_class_for(roles).new(element)
+    def process_element ref
+      attrs = AX.attrs_of_element ref
+      role  = AX.role_for(ref, attrs).map! { |x| strip_prefix x }
+      determine_class_for(role).new(ref, attrs)
     end
 
     ##

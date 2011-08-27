@@ -2,7 +2,7 @@
 
 class TestAccessibilityBFEnumerator < TestAX
 
-  APP = AX::Application.new REF
+  APP = AX::Application.new REF, AX.attrs_of_element(REF)
 
   def test_each_iterates_in_correct_order
     tab_group = APP.main_window.children.find { |x| x.class == AX::TabGroup }
@@ -45,7 +45,7 @@ end
 
 class TestAccessibilityDFEnumerator < TestAX
 
-  APP = AX::Application.new REF
+  APP = AX::Application.new REF, AX.attrs_of_element(REF)
 
   def test_each_iterates_in_correct_order
     tab_group = APP.main_window.children.find { |x| x.class == AX::TabGroup }

@@ -2,7 +2,7 @@
 
 class TestElements < TestAX
 
-  APP    = AX::Element.new REF
+  APP    = AX::Element.new REF, AX.attrs_of_element(REF)
   WINDOW = AX::Element.attribute_for REF, KAXMainWindowAttribute
 
   def window_children
@@ -321,7 +321,8 @@ class TestElementAttributeChoosesCorrectClasseForElements < TestElements
   # the role class being recursively created when trying to
   # create the subrole class
   def test_creates_role_for_subrole_if_it_does_not_exist_yet
-    dock     = AX::Element.new AXUIElementCreateApplication(pid_for 'com.apple.dock')
+    ref      = AXUIElementCreateApplication(pid_for 'com.apple.dock')
+    dock     = AX::Element.new ref, AX.attrs_of_element(ref)
     list     = dock.attribute(:children).first
     children = list.attribute(:children).map &:class
     assert_includes children, AX::ApplicationDockItem
@@ -840,15 +841,18 @@ end
 class TestElementEquivalence < TestElements
 
   def app
-    AX::Element.new AXUIElementCreateApplication(PID)
+    ref = AXUIElementCreateApplication(PID)
+    AX::Element.new ref, AX.attrs_of_element(ref)
   end
 
   def dock
-    AX::Element.new AXUIElementCreateApplication(pid_for 'com.apple.dock')
+    ref = AXUIElementCreateApplication(pid_for 'com.apple.dock')
+    AX::Element.new ref, AX.attrs_of_element(ref)
   end
 
   def window
-    AX::Element.new AX.attr_of_element(REF, KAXMainWindowAttribute)
+    ref = AX.attr_of_element(REF, KAXMainWindowAttribute)
+    AX::Element.new ref, AX.attrs_of_element(ref)
   end
 
   def list
