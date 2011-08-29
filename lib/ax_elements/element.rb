@@ -227,7 +227,7 @@ class AX::Element
     elsif attr = param_attribute_for(method)
       return self.class.param_attribute_for(@ref, attr, args.first)
 
-    elsif self.respond_to? :children
+    elsif attributes.include? KAXChildrenAttribute
       result = search method, *args
       return result unless result.blank?
       raise SearchFailure.new(self, method, args.first)
