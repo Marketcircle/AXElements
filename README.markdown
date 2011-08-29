@@ -91,13 +91,14 @@ the high-level items that should get done in the next couple of releases.
   `/System/Library/Accessibility/AccessibilityDefinitions.plist`
   + DO NOT load_plist and then parse, use NSXMLParser to have less
   overhead, but it still might allocate too much to be done at boot
-  time
+  time and be a waste of time to implement
 - Make a decision about NSArray#method_missing
 - Merge notifications with actions as they are commonly combined
+  + But how?
 - Rewrite core module to handle errors more gracefully
 - Cleanup properly in failure cases for notifications
 - Mouse module cleanup and regression testing
-- Test suite duplication cleanup and better isolation
+- Test suite deduplication cleanup and better isolation
 - Performance tweaks
 
 ### Future

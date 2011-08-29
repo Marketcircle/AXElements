@@ -233,6 +233,9 @@ class << AX
   # @group Notifications
 
   ##
+  ##
+  # @todo This method is too big, might be hard to understand...
+  #
   # {file:docs/Notifications.markdown Notifications} are a way to put
   # non-polling delays into your scripts.
   #

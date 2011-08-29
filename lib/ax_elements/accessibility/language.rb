@@ -177,9 +177,9 @@ module Accessibility::Language
   # @group Notifications
 
   ##
-  # @todo Change this to register_for_notification:from: when the syntax
-  #       is supported by YARD or someone complains, which ever comes
-  #       first.
+  # @todo Change this to `register_for_notification:from:` when the
+  #       syntax is supported by YARD (v0.8) or someone complains,
+  #       which ever comes first.
   #
   # @param [AX::Element]
   # @param [String]
