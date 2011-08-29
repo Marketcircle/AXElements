@@ -275,8 +275,8 @@ class AX::Element
   end
 
   ##
-  # Overriden to respond properly with regards to the dynamic
-  # attribute lookups, but will return false for potential implicit searches.
+  # Overriden to respond properly with regards to the dynamic attribute
+  # look ups, but will return false for potential implicit searches.
   def respond_to? name
     return true if attribute_for name
     return true if param_attribute_for name
@@ -285,7 +285,7 @@ class AX::Element
   end
 
   ##
-  # Get the position of the element, if it has one.
+  # Get the center point of the element, but only if it has a position.
   #
   # @return [CGPoint]
   def to_point

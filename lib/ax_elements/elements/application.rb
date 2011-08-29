@@ -30,7 +30,7 @@ class AX::Application < AX::Element
   end
 
   ##
-  # Overridden to hand the {Kernel#set_focus} case.
+  # Overridden to handle the {Accessibility::Language#set_focus} case.
   def attribute attr
     attr == :focused? || attr == :focused ? active? : super
   end

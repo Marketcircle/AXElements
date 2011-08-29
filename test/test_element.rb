@@ -655,7 +655,7 @@ class TestElementMethodMissing < TestElements
 end
 
 
-class TestElementOnNotification < TestElements
+class TestElementNotifications < TestElements
 
   def test_does_no_translation_for_custom_notifications
     class << AX; alias_method :old_register_for_notif, :register_for_notif; end
