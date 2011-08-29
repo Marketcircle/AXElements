@@ -57,6 +57,11 @@ task :clobber => :clobber_ext
 
 ## Testing
 
+desc 'Open the fixture app'
+task :run_fixture do
+  sh 'open test/fixture/Release/AXElementsTester.app'
+end
+
 desc 'Build the test fixture'
 task :fixture do
   sh 'cd test/AXElementsTester && xcodebuild'
