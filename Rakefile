@@ -58,7 +58,7 @@ task :clobber => :clobber_ext
 ## Testing
 
 desc 'Open the fixture app'
-task :run_fixture do
+task :run_fixture => :fixture do
   sh 'open test/fixture/Release/AXElementsTester.app'
 end
 
