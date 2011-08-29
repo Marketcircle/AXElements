@@ -83,7 +83,7 @@ a few examples to show off. The full list is in
 
 {AX::Application} has been extended in a couple of ways. First off, in
 order to provide an object oriented interface to sending keyboard
-events I added {AX::Application#type}.
+events I added {AX::Application#type_string}.
 
 The big change with {AX::Application} is the merging of functionality
 from `NSRunningApplication`. In order to provide methods to set focus
