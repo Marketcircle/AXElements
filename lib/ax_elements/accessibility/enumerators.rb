@@ -32,7 +32,7 @@ class Accessibility::BFEnumerator < Accessibility::AbstractEnumerator
     queue = [@root]
     until queue.empty?
       queue.shift.attribute(:children).each do |x|
-        queue << x if x.respond_to?(:children)
+        queue << x if x.attributes.include? KAXChildrenAttribute
         yield x
       end
     end
@@ -62,7 +62,7 @@ class Accessibility::DFEnumerator < Accessibility::AbstractEnumerator
     until stack.empty?
       current = stack.shift
       yield current
-      if current.respond_to? :children
+      if current.attributes.include? KAXChildrenAttribute
         # need to reverse it since child ordering seems to matter in practice
         stack.unshift *current.attribute(:children)
       end
@@ -94,7 +94,7 @@ class Accessibility::DFEnumerator < Accessibility::AbstractEnumerator
   # @param [#call]
   def recursive_each_with_height element, depth, block
     block.call element, depth
-    if element.respond_to? :children
+    if element.attributes.include? KAXChildrenAttribute
       element.attribute(:children).each do |x|
         recursive_each_with_height x, depth + 1, block
       end

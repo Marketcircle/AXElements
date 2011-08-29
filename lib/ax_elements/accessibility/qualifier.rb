@@ -60,7 +60,7 @@ class Accessibility::Qualifier
   def meets_criteria? element
     @criteria.all? do |filter, value|
       if value.kind_of? Hash
-        if element.respond_to? :children
+        if element.attributes.include? KAXChildrenAttribute
           !element.search(filter, value).blank?
         else
           false
