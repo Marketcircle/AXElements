@@ -176,8 +176,7 @@ class << AX
   # List of parameterized attributes for the given element.
   #
   # @param [AXUIElementRef] element low level accessibility object
-  # @return [Array<String>,nil] nil if the element has no
-  #   parameterized attributes
+  # @return [Array<String>]
   def param_attrs_of_element element
     array_ptr = Pointer.new ARRAY_POINTER
     code = AXUIElementCopyParameterizedAttributeNames(element, array_ptr)
@@ -352,6 +351,12 @@ class << AX
 
   require 'key_coder'
 
+  ##
+  # Parse a string into a list of keyboard events to be executed in
+  # the given order.
+  #
+  # @param [String]
+  # @return [Array<Array(Number,Boolean)>]
   def parse_kb_string string
     sequence = []
     string.each_char do |char|
@@ -367,6 +372,12 @@ class << AX
     sequence
   end
 
+  ##
+  # Post the list of given keyboard events to the given element.
+  #
+  # @param [AXUIElementRef] element must be an application or the
+  #   system-wide object
+  # @param [Array<Array(Number,Boolean)>]
   def post_kb_events element, events
     events.each do |event|
       code = AXUIElementPostKeyboardEvent(element, 0, *event)
@@ -375,7 +386,9 @@ class << AX
   end
 
   ##
-  # A mapping of the AXError constants to human readable strings, though
+  # @private
+  #
+  # A mapping of the `AXError` constants to human readable strings, though
   # this has to be actively maintained in case of changes to Apple's
   # documentation in the future.
   #
