@@ -326,11 +326,11 @@ class AX::Element
   # Try to turn an arbitrary symbol into notification constant, and
   # then get the value of the constant.
   #
-  # @param [Symbol]
+  # @param [Symbol,String]
   # @return [String]
   def notif_for name
     name  = name.to_s
-    const = "KAX#{name.camelize!}Notification"
+    const = "KAX#{name.dup.camelize!}Notification"
     Kernel.const_defined?(const) ? Kernel.const_get(const) : name
   end
 
