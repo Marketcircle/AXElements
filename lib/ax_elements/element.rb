@@ -341,17 +341,23 @@ class AX::Element
   # @param [Symbol]
   # @return [String,nil]
   def attribute_for sym
-    (@@array = attributes).find { |x| x == @@const_map[sym] }
+    @@array = attributes
+    val     = @@const_map[sym]
+    val if attributes.include? val
   end
 
   # (see #attribute_for)
   def action_for sym
-    (@@array = actions).find { |x| x == @@const_map[sym] }
+    @@array = actions
+    val     = @@const_map[sym]
+    val if actions.include? val
   end
 
   # (see #attribute_for)
   def param_attribute_for sym
-    (@@array = param_attributes).find { |x| x == @@const_map[sym] }
+    @@array = param_attributes
+    val     = @@const_map[sym]
+    val if param_attributes.include? val
   end
 
   ##
