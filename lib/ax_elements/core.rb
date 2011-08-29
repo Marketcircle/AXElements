@@ -34,37 +34,6 @@ module AX; end
 # uses a different pattern for that sort of thing).
 class << AX
 
-
-  ##
-  # Pointer type encoding for `CFArrayRef` objects
-  #
-  # @return [String]
-  ARRAY_POINTER = NSString.stringWithString '^{__CFArray}'
-
-  ##
-  # Pointer type encoding for `AXUIElementRef` objects
-  #
-  # @return [String]
-  AX_POINTER  = NSString.stringWithString '^{__AXUIElement}'
-
-  ##
-  # Pointer type encoding for `AXObserverRef` objects
-  #
-  # @return [String]
-  AX_OBSERVER = NSString.stringWithString '^{__AXObserver}'
-
-  ##
-  # Local copy of a Cocoa constant; this is a performance hack
-  #
-  # @return [String]
-  ROLE    = KAXRoleAttribute
-
-  ##
-  # Local copy of a Cocoa constant; this is a performance hack
-  #
-  # @return [String]
-  SUBROLE = KAXSubroleAttribute
-
   # @group Attributes
 
   ##
@@ -339,6 +308,47 @@ class << AX
 
 
   private
+
+  ##
+  # @private
+  #
+  # Pointer type encoding for `CFArrayRef` objects
+  #
+  # @return [String]
+  ARRAY_POINTER = NSString.stringWithString '^{__CFArray}'
+
+  ##
+  # @private
+  #
+  # Pointer type encoding for `AXUIElementRef` objects
+  #
+  # @return [String]
+  AX_POINTER  = NSString.stringWithString '^{__AXUIElement}'
+
+  ##
+  # @private
+  #
+  # Pointer type encoding for `AXObserverRef` objects
+  #
+  # @return [String]
+  AX_OBSERVER = NSString.stringWithString '^{__AXObserver}'
+
+  ##
+  # @private
+  #
+  # Local copy of a Cocoa constant; this is a performance hack
+  #
+  # @return [String]
+  ROLE    = KAXRoleAttribute
+
+  ##
+  # @private
+  #
+  # Local copy of a Cocoa constant; this is a performance hack
+  #
+  # @return [String]
+  SUBROLE = KAXSubroleAttribute
+
 
   require 'key_coder'
 
