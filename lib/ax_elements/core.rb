@@ -13,7 +13,9 @@ end
 ##
 # Container for all the accessibility objects as well as core abstraction
 # layer that that interact with OS X Accessibility APIs.
-module AX; end
+module AX
+  @notifs = {}
+end
 
 ##
 # @todo The current strategy dealing with errors is just to log them,
@@ -201,6 +203,13 @@ class << AX
   # @group Notifications
 
   ##
+  # @todo Should this be hidden?
+  #
+  # Cache of notifications that have been registered.
+  #
+  # @return [Hash{AXUIElementRef=>Array(AXObserverRef, String)}]
+  attr_reader :notifs
+
   ##
   # @todo This method is too big, might be hard to understand...
   #
@@ -220,10 +229,15 @@ class << AX
   # @yieldparam [AXUIElementRef] element the element that sent the notification
   # @yieldparam [String] notif the name of the notification
   # @yieldreturn [Boolean] determines if the script should continue or wait
-  # @return [Proc] the proc used as a callback when the notification is received
+  # @return [Array(AXUIElementRef, String)] the element and notification name
+  #   tuple
   def register_for_notif element, notif, &blk
     notif_proc = Proc.new do |obsrvr, elmnt, ntfctn, _|
       break unless blk ? blk.call(elmnt, ntfctn) : true
+
+      Accessibility.log.debug "Received notification: #{notifs[obsrvr][1]}"
+      raise 'Received notification was not in cache' unless notifs.delete obsrvr
+
       run_loop   = CFRunLoopGetCurrent()
       app_source = AXObserverGetRunLoopSource(obsrvr)
       CFRunLoopRemoveSource(run_loop, app_source, KCFRunLoopDefaultMode)
@@ -235,7 +249,8 @@ class << AX
     app_source = AXObserverGetRunLoopSource(observer)
     CFRunLoopAddSource(run_loop, app_source, KCFRunLoopDefaultMode)
     register_notif_callback observer, element, notif
-    notif_proc
+    # must keep [element, observer, notif] in order to do unregistration
+    notifs[observer] = [element, notif]
   end
 
   ##

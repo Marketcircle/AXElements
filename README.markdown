@@ -96,7 +96,6 @@ the high-level items that should get done in the next couple of releases.
 - Merge notifications with actions as they are commonly combined
   + But how?
 - Rewrite core module to handle errors more gracefully
-- Cleanup properly in failure cases for notifications
 - Mouse module cleanup and regression testing
 - Test suite deduplication cleanup and better isolation
 - Performance tweaks

@@ -353,13 +353,31 @@ class TestAXNotifications < TestCore
     assert got_callback
   end
 
-  # not the block you gave, it returns one it creates
-  # which is actually a wrapper for the block given
-  def test_returns_the_callback_proc
-    callback = AX.register_for_notif(yes_button, 'Cheezburger') do |_,_| end
-    assert_equal 4, callback.arity
+  def test_returns_the_observer_notif_tuple
+    tuple = AX.register_for_notif(yes_button, CHEEZBURGER) do |_,_| end
+    # can't really test for a specific observer...
+    assert_equal yes_button, tuple.first
+    assert_equal CHEEZBURGER, tuple[1]
   end
 
+  # there didn't seem to be a good way to unit test the cache...
+  # so this covers the regular workflow
+  def test_cache_is_updated_properly
+    notif    = [REF, KAXValueChangedNotification]
+    callback = false
+
+    AX.register_for_notif *notif do |_,_| callback = true end
+    assert AX.notifs.has_value? notif
+
+    set_attribute_for search_box, KAXValueAttribute, 'beef cake'
+
+    AX.wait_for_notif TIMEOUT
+    assert callback
+    refute AX.notifs.has_value? notif
+
+  ensure
+    set_attribute_for search_box, KAXValueAttribute, ''
+  end
   def test_can_unregister_all_notifs
     skip
   end
