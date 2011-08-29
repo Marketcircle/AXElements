@@ -276,11 +276,11 @@ class AX::Element
 
   ##
   # Overriden to respond properly with regards to the dynamic
-  # attribute lookups, but will return false on potential
-  # search names.
+  # attribute lookups, but will return false for potential implicit searches.
   def respond_to? name
     return true if attribute_for name
     return true if param_attribute_for name
+    return attributes.include? KAXDescriptionAttribute if name == :description
     return super
   end
 

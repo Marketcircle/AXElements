@@ -357,7 +357,8 @@ class TestElementDescription < TestElements
   end
 
   def test_responds_to # true when it exist, false otherwise
-    skip 'Leaving this as a known bug until it is a real problem'
+    assert_respond_to WINDOW, :description
+    refute_respond_to APP, :description
   end
 
 end
