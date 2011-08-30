@@ -44,6 +44,21 @@ want to have turned into a dot graph; you will get a string back that
 you will then need to give to Graphviz in order to generate the visual
 graph.
 
+### Text Tree Won't Print?
+
+AXElements isn't perfect and it is possible that an edge case slipped
+between the cracks. However, it's also possible that the problem is
+actually how accessibility information is being vended out.
+
+As an example, Radar #10040865 is a ticket that I filed with Apple
+where they broke accessibility with search fields. The effect to
+AXElements was that you could not search through the menu bar causing
+a text dump to fail in a very difficult to trace manner.
+
+In these cases you will need to use your deductive reasoning to figure
+out where the problem is coming from. Fortunately, I have provided
+some tools to help you along the way.
+
 ## All The Way Up
 
 Sometimes you don't need a whole tree to be printed out. Sometimes
