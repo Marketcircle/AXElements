@@ -182,7 +182,7 @@ The standard log levels are available, the full set is available
 [here](http://rdoc.info/stdlib/logger/1.9.2/Logger/Severity). `Logger::DEBUG`
 will turn on all logs.
 
-## MacRuby Is Slow
+## MacRuby Seems Slow
 
 There are a few things that can cause MacRuby to be slow. At boot time
 there are a number of factors, which I will cover, and at run time
@@ -195,7 +195,8 @@ will notice that the load time for your scripts is very
 long---possibly more than 10 seconds.
 
 There are many reasons why this happens, some of which we can fix
-ourselves and some of which you MacRuby developers will have to fix.
+ourselves and some of which you will have to wait for the MacRuby
+developers to fix.
 
 #### Huge Literal Collections
 

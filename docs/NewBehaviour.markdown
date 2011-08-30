@@ -129,3 +129,19 @@ the table. For this case, I have added the {AX::Row#child_in_column}
 method which provides something similar to a search but with the few
 extra steps that would be necessary to correlate the child to the
 column and then return the child that you wanted.
+
+## Tests
+
+If you are adding new features to AXElements then you should add tests
+for the new features and also make sure that you don't break existing
+features without realizing it.
+
+Running the test suite is covered in the {file:README.markdown}.
+
+Figuring out the test suite internals may not be easy, there is a bit
+of duplication, and something things need better organization. The
+test suite isn't well documented, on purpose, so you will have to read
+a bunch of the other code to understand how things should work before
+writing your own tests. Be careful not to introduce state dependencies
+between tests or else you will not have a fun time tracking down why a
+certain test seems fail occassionally.
