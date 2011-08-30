@@ -361,6 +361,8 @@ class AX::Element
   end
 
   ##
+  # @private
+  #
   # Memoized map for symbols to constants used for attribute/action
   # lookups.
   #
@@ -436,6 +438,8 @@ class AX::Element
     private
 
     ##
+    # @private
+    #
     # Map Core Foundation type ID numbers to methods. This is how
     # double dispatch is used to massage low level data into
     # something nice.
@@ -515,6 +519,8 @@ class AX::Element
     end
 
     ##
+    # @private
+    #
     # Map of type encodings used for wrapping structs when coming from
     # an `AXValueRef`.
     #
