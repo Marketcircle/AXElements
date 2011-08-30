@@ -254,10 +254,9 @@ class << AX
   end
 
   ##
-  # @todo Handle failure cases gracefully; instead of just returning false,
-  #       we need to unregister the notification so that it doesn't screw
-  #       up future things.
-  # @todo Prime candidate for robustness refactoring.
+  # @todo Is it safe to end the run loop when _any_ source is handled or
+  #       should we continue to kill the run loop when the callback is
+  #       received?
   #
   # Pause execution of the program until a notification is received or a
   # timeout occurs.
@@ -265,10 +264,20 @@ class << AX
   # @param [Float] timeout
   # @return [Boolean] true if the notification was received, otherwise false
   def wait_for_notif timeout
-    # We use RunInMode because it has timeout functionality; this method
-    # actually has 4 return values, but only two codes will occur under
-    # regular circumstances.
-    CFRunLoopRunInMode(KCFRunLoopDefaultMode, timeout, false) == 2
+    # We use RunInMode because it has timeout functionality, return values are
+    case CFRunLoopRunInMode(KCFRunLoopDefaultMode, timeout, false)
+    when KCFRunLoopRunStopped  # Stopped with CFRunLoopStop.
+      true
+    when KCFRunLoopRunTimedOut # Time interval seconds passed.
+      false
+    when KCFRunLoopFinished    # Mode has no sources or timers.
+      raise 'Something went wrong with setting up the run loop'
+    when KCFRunLoopRunHandledSource
+      # Only applies when returnAfterSourceHandled is true.
+      raise 'This should never happen'
+    else
+      raise 'You just found a an OS X bug (or a MacRuby bug)...'
+    end
   end
 
   # @group Element Entry Points
