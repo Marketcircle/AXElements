@@ -54,7 +54,7 @@ class TestAccessibility < TestAX
 
   def test_returns_element_under_the_mouse
     button = APP.main_window.close_button
-    Mouse.move_to button.position, 0.0
+    Mouse.move_to button.to_point, 0.0
     assert_equal button, Accessibility.element_under_mouse
   end
 
