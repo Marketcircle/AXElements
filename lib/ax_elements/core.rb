@@ -349,6 +349,14 @@ class << AX
   SUBROLE  = KAXSubroleAttribute
 
 
+  ##
+  # @public
+  #
+  # Map of characters to keycodes. The map is generated at boot
+  # time in order to support multiple keyboard layouts.
+  #
+  # @return [Hash]
+  KEYCODE_MAP = {}
   require 'key_coder'
 
   ##
