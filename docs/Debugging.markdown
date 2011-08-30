@@ -182,7 +182,13 @@ The standard log levels are available, the full set is available
 [here](http://rdoc.info/stdlib/logger/1.9.2/Logger/Severity). `Logger::DEBUG`
 will turn on all logs.
 
-## Long Load Times
+## MacRuby Is Slow
+
+There are a few things that can cause MacRuby to be slow. At boot time
+there are a number of factors, which I will cover, and at run time
+there is really only one culprit.
+
+### Long Load Times
 
 When using certain gems, or when you have many gems installed, you
 will notice that the load time for your scripts is very
@@ -191,7 +197,7 @@ long---possibly more than 10 seconds.
 There are many reasons why this happens, some of which we can fix
 ourselves and some of which you MacRuby developers will have to fix.
 
-### Huge Literal Collections
+#### Huge Literal Collections
 
 Some gems contain source code with almost
 [unbelievably large literal collection](https://github.com/sporkmonger/addressable/blob/master/lib/addressable/idna/pure.rb#L318),
@@ -222,7 +228,7 @@ you need to install the
 plug-in for rubygems. Follow the instructions from the plug-ins `README`
 to learn how to use it and to know which version to install.
 
-### Complex Metaprogramming
+#### Complex Metaprogramming
 
 Another problem that can cause long load times is complex
 metaprogramming. Gems such as `rspec` do a lot of weird stuff at boot
@@ -239,7 +245,7 @@ disable loading compiled code:
     # set the level to a number between 0 and 3, 3 is the highest
     VM_OPT_LEVEL=1 macruby my_script.rb
 
-### Large Code Bases
+#### Large Code Bases
 
 Large code bases taking a long time to load is not really an avoidable
 situation---it happens with every project. Once again, JIT and
@@ -250,7 +256,7 @@ version) in order to speed up boot time. You can combine compiled code
 and still turn off optimization passes to get even better boot times,
 but I am not sure it is worth the trade off at that point.
 
-### Rubygems
+#### Rubygems
 
 Rubygems suffers from a lot of technical debt. Many features were
 bolted on to the project over time and it has added a large overhead
@@ -262,6 +268,44 @@ has been underway since the rubygems 1.4; the downside is that MacRuby
 has customizations to rubygems that prevent users from upgrading
 themselves. We need to wait for new MacRuby releases to bundle new
 rubygems versions.
+
+### Slow Runtime Performance
+
+In my experience, slow runtime performance in MacRuby is almost always
+the result of many allocations. If your code is runinng abnormally
+slow then it is likely that you are allocating a lot of memory without
+realizing it, and you should compare performance to CRuby if it is
+important (and possible to run the code on CRuby).
+
+Remember that things like literal strings have to be copied every time
+the line of code they are on is run, whereas immutable things like
+symbols do not have to be copied. At the same time, if you pass a
+symbol to a method that will coerce the symbol to a string then you
+haven't saved an allocation.
+
+Try to use in-place mutations when it is safe. An example would be
+when you have to perform multiple changes to an object in a single
+method, you only have to create a new copy the first time and then use
+the same copy for all the other changes. Example code would look like this:
+
+    def transform string
+      new_string = string.gsub /pie/, 'cake'
+      new_string.gsub! /hate/, 'love'
+      new_string.upcase!
+      new_string
+    end
+
+Remember that built-in in-place methods tend to return `nil` if they
+don't make any changes, which means you need to explicitly return the
+new object at the end of the method.
+
+There are still many other easily avoidable cases where you could end
+up allocating a lot of memory which are not covered. If it is
+important you willl just have to analyze your code.
+
+Sometimes allocating a lot of memory is not avoidable; running RSpec
+would be an example of this. In these cases you just have to bite the
+bullet.
 
 ## Don't Be Afraid To Log Bugs
 
