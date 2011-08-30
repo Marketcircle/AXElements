@@ -141,7 +141,7 @@ to uncomment the freedom patches or copy them to your own script.
 
 ## Disabling Compiled Code
 
-Back traces can be lost for other reasons than bugs. When using
+Back traces can be lost for reasons other than a bug. When using
 compiled MacRuby code, you cannot get a Ruby level back trace in case
 of an error. This feature is on the road map for MacRuby, but I am not
 sure when it will be done.
@@ -160,6 +160,27 @@ for a single session like so:
 Other debugging options are also available from MacRuby itself. You
 should check out [Hacking.rdoc](https://github.com/MacRuby/MacRuby/blob/master/HACKING.rdoc)
 in the MacRuby source repository for more details.
+
+## Logging
+
+The core level of AXElements has logging in every case that an error
+code is returned. Though, it can show false positives because of
+hiccups in the accessibility API or implementation that an app
+provides; so it turned off by default.
+
+When weird bugs are occuring, possibly even crashing MacRuby, you
+should try turning on the logs and then trying the script again, since
+that might reveal that the problem was with somebody's understanding
+of the accessibility contract.
+
+You can turn on logging right after you load AXElements, like so:
+
+    require 'ax_elements'
+    Accessibility.log.level = Logger::DEBUG
+
+The standard log levels are available, the full set is available
+[here](http://rdoc.info/stdlib/logger/1.9.2/Logger/Severity). `Logger::DEBUG`
+will turn on all logs.
 
 ## Long Load Times
 
@@ -241,3 +262,23 @@ has been underway since the rubygems 1.4; the downside is that MacRuby
 has customizations to rubygems that prevent users from upgrading
 themselves. We need to wait for new MacRuby releases to bundle new
 rubygems versions.
+
+## Don't Be Afraid To Log Bugs
+
+Or look at the AXElements source code for that matter. The source is
+well documented and hopefully not too clever, so it shouldn't be too
+hard to figure things out. Logging bugs may be difficult since there
+is no bug tracker for AXElements and the original developer isn't
+around anymore.
+
+Though, sometimes the problem will be a MacRuby problem and the best
+way to get it fixed is to
+[log a bug](http://www.macruby.org/trac/). You will need to create an
+account with them to log bugs.
+
+I also recommend that you subscribe to the
+[MacRuby mailing list](http://lists.macosforge.org/mailman/listinfo.cgi/macruby-devel)
+to keep up to date on MacRuby developments. You can send in questions
+if you are unsure about a certain behaviour, even potential bugs. It
+is not a high traffic mailing list so it won't blow up your mailbox
+when you subscribe.
