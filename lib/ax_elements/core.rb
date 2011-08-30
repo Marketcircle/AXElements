@@ -42,7 +42,7 @@ class << AX
   # @param [AXUIElementRef] element low level accessibility object
   # @return [Array<String>]
   def attrs_of_element element
-    ptr = Pointer.new ARRAY_POINTER
+    ptr = Pointer.new ARRAY
     code = AXUIElementCopyAttributeNames(element, ptr)
     log_error element, code unless code.zero?
     ptr[0]
@@ -137,7 +137,7 @@ class << AX
   # @param [AXUIElementRef] element low level accessibility object
   # @return [Array<String>]
   def actions_of_element element
-    array_ptr = Pointer.new ARRAY_POINTER
+    array_ptr = Pointer.new ARRAY
     code = AXUIElementCopyActionNames(element, array_ptr)
     log_error element, code unless code.zero?
     array_ptr[0]
@@ -178,7 +178,7 @@ class << AX
   # @param [AXUIElementRef] element low level accessibility object
   # @return [Array<String>]
   def param_attrs_of_element element
-    array_ptr = Pointer.new ARRAY_POINTER
+    array_ptr = Pointer.new ARRAY
     code = AXUIElementCopyParameterizedAttributeNames(element, array_ptr)
     log_error element, code unless code.zero?
     array_ptr[0]
@@ -271,7 +271,7 @@ class << AX
   # @param [Float] y
   # @return [AXUIElementRef]
   def element_at_point x, y
-    ptr    = Pointer.new AX_POINTER
+    ptr    = Pointer.new ELEMENT
     system = AXUIElementCreateSystemWide()
     code   = AXUIElementCopyElementAtPosition(system, x, y, ptr)
     log_error system, code unless code.zero?
@@ -314,7 +314,7 @@ class << AX
   # Pointer type encoding for `CFArrayRef` objects
   #
   # @return [String]
-  ARRAY_POINTER = NSString.stringWithString '^{__CFArray}'
+  ARRAY    = '^{__CFArray}'
 
   ##
   # @private
@@ -322,7 +322,7 @@ class << AX
   # Pointer type encoding for `AXUIElementRef` objects
   #
   # @return [String]
-  AX_POINTER  = NSString.stringWithString '^{__AXUIElement}'
+  ELEMENT  = '^{__AXUIElement}'
 
   ##
   # @private
@@ -330,7 +330,7 @@ class << AX
   # Pointer type encoding for `AXObserverRef` objects
   #
   # @return [String]
-  AX_OBSERVER = NSString.stringWithString '^{__AXObserver}'
+  OBSERVER = '^{__AXObserver}'
 
   ##
   # @private
@@ -338,7 +338,7 @@ class << AX
   # Local copy of a Cocoa constant; this is a performance hack
   #
   # @return [String]
-  ROLE    = KAXRoleAttribute
+  ROLE     = KAXRoleAttribute
 
   ##
   # @private
@@ -346,7 +346,7 @@ class << AX
   # Local copy of a Cocoa constant; this is a performance hack
   #
   # @return [String]
-  SUBROLE = KAXSubroleAttribute
+  SUBROLE  = KAXSubroleAttribute
 
 
   require 'key_coder'
@@ -437,7 +437,7 @@ class << AX
   # @param [Method,Proc] callback
   # @return [AXObserverRef]
   def make_observer_for element, callback
-    ptr  = Pointer.new AX_OBSERVER
+    ptr  = Pointer.new OBSERVER
     code = AXObserverCreate(pid_of_element(element), callback, ptr)
     log_error element, code unless code.zero?
     ptr[0]
