@@ -378,6 +378,11 @@ class TestAXNotifications < TestCore
   ensure
     set_attribute_for search_box, KAXValueAttribute, ''
   end
+
+  def test_can_unregister_notifs_per_element
+    skip
+  end
+
   def test_can_unregister_all_notifs
     skip
   end

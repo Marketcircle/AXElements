@@ -695,6 +695,16 @@ class TestElementNotifications < TestElements
     assert_kind_of AX::Element, element
   end
 
+  def test_unregisters
+    skip
+    notif = [APP.ref, 'pie']
+    APP.on_notification 'pie'
+
+    assert AX.notifs.has_value? notif
+    APP.unregister_notifications
+    refute AX.notifs.has_value? notif
+  end
+
 end
 
 

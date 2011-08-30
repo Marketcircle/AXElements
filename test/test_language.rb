@@ -146,4 +146,12 @@ class TestAccessibilityLanguage < TestAX
     assert_includes TopLevel.ancestors, Accessibility::Language
   end
 
+  def test_callbacks_are_unregistered_when_a_timeout_occurs
+    skip
+    AX.register_for_notif
+    refute_empty AX.notifs.keys
+    AX.wait_for_notification short_timeout
+    assert_empty AX.notifs.keys
+  end
+
 end
