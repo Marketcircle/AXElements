@@ -99,6 +99,8 @@ the high-level items that should get done in the next couple of releases.
 - Mouse module cleanup and regression testing
 - Test suite deduplication cleanup and better isolation
 - Performance tweaks
+- The OO abstraction leaks in a few places, but I'm not sure that they
+  can all be cleaned up...
 
 ### Future
 
