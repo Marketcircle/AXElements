@@ -374,8 +374,6 @@ class << AX
 
 
   ##
-  # @public
-  #
   # Map of characters to keycodes. The map is generated at boot
   # time in order to support multiple keyboard layouts.
   #
