@@ -264,6 +264,12 @@ end
 
 class TestAXNotifications < TestCore
 
+  # custom notification name
+  CHEEZBURGER = 'Cheezburger'
+
+  SHORT_TIMEOUT = 0.1
+  TIMEOUT       = 1.0
+
   def radio_group
     @radio_group ||= child KAXRadioGroupRole
   end
@@ -280,12 +286,12 @@ class TestAXNotifications < TestCore
     end
   end
 
-  def short_timeout
-    0.1
-  end
-
-  def timeout
-    1.0
+  def menu_bar_menu
+    @@menu_bar_menu ||= children_for(children_for(REF).find do |item|
+      attribute_for(item, KAXRoleAttribute) == KAXMenuBarRole
+    end).find do |item|
+      attribute_for(item, KAXTitleAttribute) == 'File'
+    end
   end
 
   def teardown
@@ -299,11 +305,11 @@ class TestAXNotifications < TestCore
     start = Time.now
     action_for radio_gaga, KAXPressAction
 
-    AX.wait_for_notif(timeout)
-    assert_in_delta Time.now, start, timeout
+    AX.wait_for_notif(TIMEOUT)
+    assert_in_delta Time.now, start, TIMEOUT
   end
 
-  def test_follows_block_return_value_when_false
+  def test_decides_to_continue_based_on_block_return_value
     got_callback   = false
     AX.register_for_notif(radio_gaga, KAXValueChangedNotification) do |_,_|
       got_callback = true
@@ -312,18 +318,18 @@ class TestAXNotifications < TestCore
     action_for radio_gaga, KAXPressAction
 
     start = Time.now
-    AX.wait_for_notif(short_timeout)
-    refute_in_delta Time.now, start, short_timeout
+    AX.wait_for_notif(SHORT_TIMEOUT)
+    refute_in_delta Time.now, start, SHORT_TIMEOUT
   end
 
-  def test_waits_the_given_timeout
-    skip 'Test is order dependent since we do not unregister for notifications yet'
+  def test_pauses_at_most_timeout_seconds
+    skip 'Test is order dependent right now'
     start = Time.now
-    ret   = AX.wait_for_notif(short_timeout)
+    ret   = AX.wait_for_notif(SHORT_TIMEOUT)
     done  = Time.now
 
     refute ret, 'Failed to wait'
-    assert_in_delta (done - start), short_timeout, 0.05
+    assert_in_delta (done - start), SHORT_TIMEOUT, 0.01
   end
 
   def test_listening_to_app_catches_everything
@@ -332,18 +338,18 @@ class TestAXNotifications < TestCore
       got_callback = true
     end
     action_for radio_gaga, KAXPressAction
-    AX.wait_for_notif(timeout)
+    AX.wait_for_notif(TIMEOUT)
     assert got_callback
   end
 
   def test_works_with_custom_notifications
     got_callback = false
     button = yes_button
-    AX.register_for_notif(yes_button, 'Cheezburger') do |_,_|
+    AX.register_for_notif(yes_button, CHEEZBURGER) do |_,_|
       got_callback = true
     end
     action_for yes_button, KAXPressAction
-    AX.wait_for_notif(timeout)
+    AX.wait_for_notif(TIMEOUT)
     assert got_callback
   end
 
@@ -354,8 +360,8 @@ class TestAXNotifications < TestCore
     assert_equal 4, callback.arity
   end
 
-  def test_callbacks_are_unregistered_when_a_timeout_occurs
-    skip 'This feature is not implemented yet'
+  def test_can_unregister_all_notifs
+    skip
   end
 
 end
