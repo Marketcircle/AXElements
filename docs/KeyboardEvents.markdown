@@ -17,6 +17,11 @@ would look like this:
 type "hello, world!", app
 ```
 
+In order make sure that certain sequences of characters are properly
+transcribed to the screen you should be consistent about using double
+quotes, `"`,  for literal strings. An escape sequence should begin
+`\\`.
+
 First the keyword `type`, and then the string you want to type
 out. Finally, there is a second argument, which is optional, that
 should be the application that you wish to send the keyboard input
