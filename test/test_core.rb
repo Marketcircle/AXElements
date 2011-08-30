@@ -375,15 +375,15 @@ class TestElementAtPosition < TestCore
 end
 
 
-class TestApplicationForPID < TestCore
+class TestAXPIDThings < TestCore
 
-  def test_a_raw_element
+  def test_app_for_pid_returns_raw_element
     ret  = AX.application_for_pid PID
     role = attribute_for ret, KAXRoleAttribute
     assert_equal KAXApplicationRole, role
   end
 
-  def test_raises_if_pid_is_zero
+  def test_app_for_pid_raises_if_pid_is_zero
     assert_raises ArgumentError do
       AX.application_for_pid 0
     end
@@ -392,16 +392,11 @@ class TestApplicationForPID < TestCore
     end
   end
 
-end
-
-
-class TestPIDOfElement < TestCore
-
-  def test_pid_of_app
+  def test_pid_for_app
     assert_equal PID, AX.pid_of_element(REF)
   end
 
-  def test_pid_of_dock_app_is_docks_pid
+  def test_pid_for_dock_app_is_docks_pid
     assert_equal PID, AX.pid_of_element(WINDOW)
   end
 
