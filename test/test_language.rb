@@ -141,7 +141,9 @@ class TestAccessibilityLanguage < TestAX
 #   def test_preferences_window_for
 #   end
 
-#   def test_is_mixed_into_toplevel
-#   end
+  def test_language_is_available_everywhere
+    assert_includes Object.new.class.ancestors, Accessibility::Language
+    assert_includes TopLevel.ancestors, Accessibility::Language
+  end
 
 end
