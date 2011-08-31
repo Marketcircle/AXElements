@@ -286,14 +286,6 @@ class TestAXNotifications < TestCore
     end
   end
 
-  def menu_bar_menu
-    @@menu_bar_menu ||= children_for(children_for(REF).find do |item|
-      attribute_for(item, KAXRoleAttribute) == KAXMenuBarRole
-    end).find do |item|
-      attribute_for(item, KAXTitleAttribute) == 'File'
-    end
-  end
-
   def teardown
     if attribute_for(radio_gaga, KAXValueAttribute) == 1
       action_for radio_flyer, KAXPressAction
