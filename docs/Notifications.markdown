@@ -89,7 +89,7 @@ notification names that Apple provides?
 It turns out that there is no API for getting a list of notifications
 that an element can send---Apple dropped the ball in this case, but
 they did provide a
-[list of notifications](http://developer.apple.com/library/mac/#documentation/Accessibility/Reference/AccessibilityLowlevel/AXNotificationConstants_h/index.html).
+[list of notifications](http://developer.apple.com/library/mac/#documentation/UserExperience/Reference/Accessibility_RoleAttribute_Ref/Notifications.html#//apple_ref/doc/uid/TP40007870-Notifications-SW1).
 The list of notifications is __required__ reading if you want to use
 accessibility notifications.
 
