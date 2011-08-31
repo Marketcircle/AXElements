@@ -274,6 +274,17 @@ It is important to remember that these methods are already implemented
 for the built in features. When overriding, you should only implement
 the custom behaviour and call `super` to handle everything else.
 
+### Existing Definitions
+
+When implementing custom behaviour, you should try and use
+pseudoclasses that have already been defined by Apple, as well as
+attributes, parameterized attributes, and other features that have
+already been defined. Apple maintains the documentation for all their
+definitions on
+[here](http://developer.apple.com/library/mac/#documentation/UserExperience/Reference/Accessibility_RoleAttribute_Ref/Introduction.html#//apple_ref/doc/uid/TP40007870).
+The documentation is fairly detailed now (moreso than before), but
+still misses a few things.
+
 ## Next Steps
 
 You may want to play with what you have learnt so far. See if you can
