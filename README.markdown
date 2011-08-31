@@ -27,6 +27,10 @@ development dependencies by running the `setup_dev` task like so:
 
     macrake setup_dev
 
+Or if you are using rvm type:
+
+	rake setup_dev
+
 If you get an error about not having permissions then you will need to
 add `sudo` to the beginning of the command.
 
@@ -65,6 +69,10 @@ interfere with them then something could go wrong.
 To run the tests you simply need to run the `test` task:
 
     macrake test
+
+Or if you are using rvm:
+
+	rake test
 
 __NOTE__: some tests are dependent on Accessibility features that are
 new in OS X Lion and those tests will fail on OS X Snow Leopard.
