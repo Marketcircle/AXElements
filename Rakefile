@@ -90,16 +90,16 @@ task :install => :gem do
   Gem::Installer.new("pkg/#{spec.file_name}").install
 end
 
-desc 'Install dependencies for development'
-task :setup_dev do
-  (spec.runtime_dependencies + spec.development_dependencies).each do |dep|
+desc 'Install dependencies for a test node'
+task :setup_node do
+  spec.runtime_dependencies.each do |dep|
     Gem::DependencyInstaller.new.install(dep.name, dep.requirement)
   end
 end
 
-desc 'Install dependencies for a test node'
-task :setup_node do
-  (spec.runtime_dependencies).each do |dep|
+desc 'Install dependencies for development'
+task :setup_dev => :setup_node do
+  spec.development_dependencies.each do |dep|
     Gem::DependencyInstaller.new.install(dep.name, dep.requirement)
   end
 end
