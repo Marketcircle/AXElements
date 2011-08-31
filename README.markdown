@@ -21,29 +21,31 @@ safe as well. If you are on Snow Leopard, you will also need to
 install the
 [Bridge Support Preview](http://www.macruby.org/blog/2010/10/08/bridgesupport-preview.html).
 
-At this point you should be able to run `macrake`. Which by default
-will likely complain about things missing. You can easily install all
-development dependencies by running the `setup_dev` task like so:
+At this point you should install development dependencies. You can do
+so with `bundler` if you have it, but it will be faster to use the
+`setup_dev` task that has been provided. Simply type the following in
+terminal:
 
-    macrake setup_dev
+    rake setup_dev
 
-Or if you are using rvm type:
+However, if you are not using RVM, then you should use `macrake`
+instead of `rake` for this command and anywhere else that you see
+`rake` in the documentation. Remember that if you are not using RVM
+with MacRuby but still have RVM installed then you will need to
+disable RVM like so:
 
-	rake setup_dev
-
-If you get an error about not having permissions then you will need to
-add `sudo` to the beginning of the command.
+    rvm use system
 
 Once you are setup, you can start looking through the tutorial
-documentation, probably starting with the
-{file:docs/Inspecting.markdown Inspecting tutorial}:
+documentation to show you how to use AXElements. The first tutorial is
+the {file:docs/Inspecting.markdown Inspecting tutorial}:
 
 * {file:docs/Inspecting.markdown Inspecting}
 * {file:docs/Acting.markdown Acting}
 * {file:docs/Searching.markdown Searching}
 * {file:docs/Notifications.markdown Notifications}
-* {file:docs/KeyboardEvents.markdown Keyboard manipulation}
-* {file:docs/Debugging.markdown Debugging Problems}
+* {file:docs/KeyboardEvents.markdown Keyboard}
+* {file:docs/Debugging.markdown Debugging}
 * {file:docs/NewBehaviour.markdown Adding Behaviour}
 * {file:docs/RSpecMinitest.markdown RSpec and Minitest extensions}
 
@@ -68,20 +70,20 @@ interfere with them then something could go wrong.
 
 To run the tests you simply need to run the `test` task:
 
-    macrake test
-
-Or if you are using rvm:
-
-	rake test
+    rake test
 
 __NOTE__: some tests are dependent on Accessibility features that are
-new in OS X Lion and those tests will fail on OS X Snow Leopard.
+new in OS X Lion and those tests will fail on OS X Snow Leopard. If
+you have any issues then you should look at the output to find hints
+at what went wrong.
+
+### Benchmarks
 
 Benchmarks are also included as part of the test suite, but they are
 disabled by default. In order to enable them you need to set the
 `BENCH` environment variable:
 
-    BENCH=1 macrake test
+    BENCH=1 rake test
 
 Benchmarks only exist for code that is known to be slow. I'm keeping
 tabs on slow code so that I be confident about getting depressed when
@@ -91,7 +93,8 @@ it gets slower.
 
 There are still a bunch of things that could be done to improve
 AXElements. The README only contains an idealized outline of some of
-the high-level items that should get done in the next couple of releases.
+the high-level items that should get done in the next couple of
+releases. Smaller items are peppered through the code base.
 
 ### 0.7 (or maybe 1.0)
 
