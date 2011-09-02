@@ -1,5 +1,6 @@
 require 'rubygems'
-task :default => :test
+
+task :default => :gem
 
 def safe_require path, name
   require path
