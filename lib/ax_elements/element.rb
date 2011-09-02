@@ -57,6 +57,9 @@ class AX::Element
   # @return [Array<String>]
   attr_reader :attributes
 
+  ##
+  # Get the value of an attribute.
+  #
   # @param [Symbol] attr
   def attribute attr
     real_attr = attribute_for attr
@@ -96,6 +99,9 @@ class AX::Element
     @pid ||= AX.pid_of_element @ref
   end
 
+  ##
+  # Check whether or not an attribute is writable.
+  #
   # @param [Symbol] attr
   def attribute_writable? attr
     real_attribute = attribute_for attr
@@ -104,11 +110,13 @@ class AX::Element
   end
 
   ##
-  # We cannot make any assumptions about the state of the program after
-  # you have set a value; at least not in the general case.
+  # @note `Boxed` objects are taken care, you do not need to wrap
+  #       them first.
+  #
+  # Set a writable attribute on the element.
   #
   # @param [String] attr an attribute constant
-  # @return the value that you set is returned
+  # @return the value that you were setting is returned
   def set_attribute attr, value
     raise ReadOnlyAttribute.new(self, attr) unless attribute_writable? attr
     real_attribute = attribute_for attr
@@ -119,11 +127,17 @@ class AX::Element
 
   # @group Parameterized Attributes
 
-  # @return [Array<String>] available parameterized attributes
+  ##
+  # List of available parameterized attributes
+  #
+  # @return [Array<String>]
   def param_attributes
     @param_attributes ||= AX.param_attrs_of_element @ref
   end
 
+  ##
+  # Get the value for a parameterized attribute
+  #
   # @param [Symbol] attr
   def param_attribute attr, param
     real_attr = param_attribute_for attr
@@ -134,9 +148,12 @@ class AX::Element
 
   # @group Actions
 
-  # @return [Array<String>] cache of available actions
+  ##
+  # List of available actions.
+  #
+  # @return [Array<String>]
   def actions
-    AX.actions_of_element @ref # purposely not caching this array
+    @actions ||= AX.actions_of_element @ref
   end
 
   ##

@@ -187,6 +187,14 @@ module Accessibility::Language
     element.on_notification notif, &block
   end
 
+  ##
+  # Pause script execution until notification that has been registered
+  # for is received or the full timeout period has passed.
+  #
+  # If the script is unpaused because of a timeout, then it is assumed
+  # that the notification was never received and all notification
+  # registrations will be unregistered to avoid future complications.
+  #
   # @param [Float] timeout number of seconds to wait for a notification
   def wait_for_notification timeout = 10.0
     AX.wait_for_notif timeout
@@ -283,7 +291,9 @@ module Accessibility::Language
   # @group Macros
 
   ##
-  # A macro for showing the About window for an app.
+  # A macro for showing the "About" window for an app.
+  #
+  # @param [AX::Application]
   def show_about_window_for app
     set_focus app
     press app.menu_bar_item(title:(app.title))
@@ -291,7 +301,9 @@ module Accessibility::Language
   end
 
   ##
-  # A macro for showing the preferences for an app.
+  # A macro for opening the preferences for an app.
+  #
+  # @param [AX::Application]
   def show_preferences_window_for app
     set_focus app
     press app.menu_bar_item(title:(app.title))
