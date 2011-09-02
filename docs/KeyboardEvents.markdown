@@ -1,6 +1,6 @@
 # Keyboard Events
 
-@todo Still quite a bit to do in this doc
+@todo Still a little bit to do in this doc
 
 In some cases you cannot, or do not want to,  set the value of a field
 directly by assigning to the accessibility object's value
