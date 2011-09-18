@@ -1,7 +1,7 @@
 ##
 # Radio buttons are not the same as a generic button, radio buttons work
 # in mutually exclusive groups (you can only select one at a time). You
-# usually have radio buttons when dealing with tab groups.
+# often have radio buttons when dealing with tab groups.
 class AX::RadioButton < AX::Element
 
   ##

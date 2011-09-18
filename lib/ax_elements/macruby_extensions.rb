@@ -1,7 +1,7 @@
 require 'active_support/inflector'
 
 ##
-# Extensions to NSArray.
+# Extensions to `NSArray`.
 class NSArray
   ##
   # Equivalent to `#[1]`
@@ -42,7 +42,7 @@ class NSArray
   ##
   # @method blank?
   #
-  # Borrowed from Active Support. Too bad this docstring isn't being
+  # Borrowed from ActiveSupport. Too bad this docstring isn't being
   # picked up by YARD.
   alias_method :blank?, :empty?
 
@@ -108,7 +108,7 @@ end
 
 
 ##
-# Extensions to NSString
+# Extensions to `NSString`.
 class NSString
   ##
   # Used to test a symbol/string representing a method name.
@@ -130,7 +130,7 @@ end
 
 
 ##
-# Extensions to CGPoint
+# Extensions to `CGPoint`.
 class CGPoint
   ##
   # Get the center point in a rectangle.
@@ -142,8 +142,8 @@ class CGPoint
   end
 
   ##
-  # Given the origin and size of a rectangle, find the center of
-  # the rectangle.
+  # Find the center of a rectangle, treating `self` as the origin and
+  # the given `size` as the size of the rectangle.
   #
   # @param [CGSize] size
   # @return [CGPoint]
@@ -165,15 +165,19 @@ end
 
 
 ##
-# Extensions to Boxed objects.
+# Extensions to `Boxed` objects.
 class Boxed
   class << self
+    ##
+    # The `AXValue` constant for the struct type. Not all structs
+    # have a value.
+    #
     # @return [AXValueType]
     attr_reader :ax_value
   end
 
   ##
-  # Create an AXValue from the Boxed instance. This will only
+  # Create an `AXValue` from the `Boxed` instance. This will only
   # work if for a few boxed types, check the AXAPI documentation.
   #
   # @return [AXValueRef]
@@ -187,28 +191,28 @@ end
 
 
 ##
-# Extensions to CGSize.
+# Extensions to `CGSize`.
 class CGSize
   @ax_value = KAXValueCGSizeType
 end
 
 
 ##
-# Extensions to CGRect.
+# Extensions to `CGRect`.
 class CGRect
   @ax_value = KAXValueCGRectType
 end
 
 
 ##
-# Extensions to CFRange.
+# Extensions to `CFRange`.
 class CFRange
   @ax_value = KAXValueCFRangeType
 end
 
 
 ##
-# Extensions for searching.
+# Extensions to `NilClass`.
 class NilClass
   ##
   # Borrowed from Active Support.

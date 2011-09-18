@@ -1,7 +1,7 @@
 require 'singleton'
 
 ##
-# Represents the special SystemWide accessibility object.
+# Represents the special `SystemWide` accessibility object.
 class AX::SystemWide < AX::Element
   include Singleton
 
@@ -13,7 +13,7 @@ class AX::SystemWide < AX::Element
   end
 
   ##
-  # @note With the SystemWide class, using {#type_string} will send the
+  # @note With the `SystemWide` class, using {#type_string} will send the
   #       events to which ever app has focus.
   #
   # Generate keyboard events by simulating keyboard input.

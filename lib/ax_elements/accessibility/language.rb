@@ -3,12 +3,12 @@
 require 'mouse'
 
 ##
-# @todo Allow the animation duration to be overridden for Mouse stuff
+# @todo Allow the animation duration to be overridden for Mouse stuff?
 #
 # The idea here is to pull actions out from an object and put them
 # in front of object to give AXElements more of a DSL feel to make
 # communicating test steps more clear. See the
-# {file:docs/Acting.markdown Acting} tutorial for examples on how to use
+# {file:docs/Acting.markdown Acting tutorial} for examples on how to use
 # methods from this module.
 module Accessibility::Language
 
@@ -97,7 +97,7 @@ module Accessibility::Language
   ##
   # Try to perform the `cancel` action on the given element.
   #
-  # @param [AX::Element] element
+  # @param [AX::Element]
   # @return [Boolean]
   def cancel element
     element.perform_action :cancel
@@ -134,7 +134,7 @@ module Accessibility::Language
   #       positives where developers assumed an element would have to have
   #       focus before a user could change the value.
   #
-  # You would think that the #set method should belong to {AX::Element},
+  # You would think that the `#set` method should belong to {AX::Element},
   # but I think taking it out of the class and putting it in front helps
   # make the difference between performing actions and inspecting UI more
   # concrete.
@@ -162,11 +162,11 @@ module Accessibility::Language
   # dedicated documentation page on
   # {file:docs/KeyboardEvents.markdown Keyboard Events}.
   #
-  # @overload type 'Hello'
+  # @overload type string
   #   Send input to the currently focused application
   #   @param [#to_s]
   #
-  # @overload type 'Hello', app
+  # @overload type string, app
   #   Send input to a specific application
   #   @param [#to_s]
   #   @param [AX::Application]
@@ -291,7 +291,7 @@ module Accessibility::Language
   # @group Macros
 
   ##
-  # A macro for showing the "About" window for an app.
+  # Show the "About" window for an app.
   #
   # @param [AX::Application]
   def show_about_window_for app
@@ -301,7 +301,7 @@ module Accessibility::Language
   end
 
   ##
-  # A macro for opening the preferences for an app.
+  # Try to open the preferences for an app using the menu bar.
   #
   # @param [AX::Application]
   def show_preferences_window_for app

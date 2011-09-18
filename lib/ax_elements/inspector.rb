@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 ##
-# Convenience methods to use when building an #inspect method for
+# Convenience methods to use when building an `#inspect` method for
 # {AX::Element} and its descendants.
 #
 # The module only expects three methods in order to operate:
@@ -23,10 +23,10 @@ module Accessibility::PPInspector
 
   ##
   # @todo I feel a bit bad about having such a large method that has
-  #       a large number of inefficiencies.
+  #       some inefficiencies.
   #
-  # Create an identifier for {AX::Element#inspect} that should make it very
-  # easy to identify the element.
+  # Create an identifier for `self` using various attributes that should
+  # make it very easy to identify the element.
   #
   # @return [String]
   def pp_identifier
@@ -65,7 +65,8 @@ module Accessibility::PPInspector
   end
 
   ##
-  # Nicely encoded position of `self`.
+  # Create a string that succinctly encodes the screen coordinates
+  # of `self`.
   #
   # @return [String]
   def pp_position
@@ -74,7 +75,8 @@ module Accessibility::PPInspector
   end
 
   ##
-  # String with number of children that `self` has.
+  # Create a string that nicely presents the number of children
+  # that `self` has.
   #
   # @return [String]
   def pp_children
@@ -89,11 +91,11 @@ module Accessibility::PPInspector
   end
 
   ##
-  # Create a string where the argument is looked up as an attribute
-  # of `self` and the boolean value returned is represented by
-  # a checkbox.
+  # Create a string that looks like a labeled check box. The label
+  # is the given attribute, and the check box value will be
+  # determined by the value of the attribute.
   #
-  # @param [Symbol] value
+  # @param [Symbol]
   # @return [String]
   def pp_checkbox value
     " #{value}[#{attribute(value) ? '✔' : '✘'}]"

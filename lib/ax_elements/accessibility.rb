@@ -1,8 +1,7 @@
 require 'mouse'
 
 ##
-# The module that contains all the things that we need for working
-# with the accessibility APIs.
+# The module that contains helpers for working with the accessibility APIs.
 module Accessibility; end
 
 class << Accessibility
@@ -18,7 +17,7 @@ class << Accessibility
   #   element = AX::DOCK.list.application_dock_item
   #   Accessibility.path(element) # => [AX::ApplicationDockItem, AX::List, AX::Application]
   #
-  # @param [AX::Element] element
+  # @param [AX::Element]
   # @return [Array<AX::Element>] the path in ascending order
   def path *elements
     element = elements.last
@@ -119,7 +118,7 @@ class << Accessibility
 
   ##
   # @todo We don't launch apps if they are not running, but we could if
-  #       we used NSWorkspace#launchApplication, but it will be a headache
+  #       we used `NSWorkspace#launchApplication`, but it will be a headache
   #
   # Get the accessibility object for an application given its localized
   # name. This will not work if the application is not already running.

@@ -7,12 +7,13 @@ module Accessibility
   end
 
   @log       = Logger.new $stderr
-  @log.level = Logger::ERROR # @todo need to fix this
+  @log.level = Logger::ERROR # @todo lame
 end
 
 ##
-# Container for all the accessibility objects as well as core abstraction
-# layer that that interact with OS X Accessibility APIs.
+# Namespace for all the accessibility objects, as well as core
+# abstraction layer that that interact with OS X Accessibility
+# APIs.
 module AX
   @notifs = {}
 end
@@ -21,6 +22,8 @@ end
 # @todo The current strategy dealing with errors is just to log them,
 #       but that may not always be the correct thing to do. The core
 #       has to be refactored around this issue to become more robust.
+#       I've already started doing this for newer APIs but the old ones
+#       are important as well.
 # @todo I feel a bit weird having to instantiate a new pointer every
 #       time I want to fetch an attribute. Since allocations are costly
 #       it hurts performance a lot when it comes to searches. I wonder if
@@ -34,6 +37,8 @@ end
 # hide away the need to work with pointers and centralize when errors
 # are logged from the low level function calls (since CoreFoundation
 # uses a different pattern for that sort of thing).
+#
+# Ideally this API would be stateless, but I'm still working on that...
 class << AX
 
   # @group Attributes
@@ -54,7 +59,7 @@ class << AX
   # Number of elements that would be returned for the given element's
   # given attribute.
   #
-  # @param [AXUIElementRef] element
+  # @param [AXUIElementRef]
   # @param [String] attr an attribute constant
   # @return [Fixnum]
   def attr_count_of_element element, attr
@@ -70,7 +75,7 @@ class << AX
   # still be wrapped in a `AXValueRef`, and elements will be
   # `AXUIElementRef` objects.
   #
-  # @param [AXUIElementRef] element
+  # @param [AXUIElementRef]
   # @param [String] attr an attribute constant
   def attr_of_element element, attr
     ptr  = Pointer.new :id
@@ -88,7 +93,7 @@ class << AX
   #
   # @param [AXUIElementRef]
   # @param [Array<String>]
-  # @return [Array<String>] subrole first, if it exists
+  # @return [Array<String>]
   def role_for element, attrs
     ptr = Pointer.new :id
     AXUIElementCopyAttributeValue(element, ROLE, ptr)
@@ -98,15 +103,15 @@ class << AX
       # Be careful, some things claim to have a subrole but return nil
       ret.unshift ptr[0] if ptr[0]
     end
-    ret
     #raise "Found an element that has no role: #{CFShow(element)}"
+    ret
   end
 
   ##
-  # Whether or not the given attribute of a given element can be
+  # Ask whether or not the given attribute of a given element can be
   # changed using the accessibility APIs.
   #
-  # @param [AXUIElementRef] element
+  # @param [AXUIElementRef]
   # @param [String] attr an attribute constant
   def attr_of_element_writable? element, attr
     ptr  = Pointer.new :bool
@@ -291,8 +296,8 @@ class << AX
   # system (origin is in the top-left, increasing downward as if reading
   # a book in English).
   #
-  # @param [Float] x
-  # @param [Float] y
+  # @param [Float]
+  # @param [Float]
   # @return [AXUIElementRef]
   def element_at_point x, y
     ptr    = Pointer.new ELEMENT
@@ -335,31 +340,31 @@ class << AX
   ##
   # @private
   #
-  # Pointer type encoding for `CFArrayRef` objects
+  # Pointer type encoding for `CFArrayRef` objects.
   #
   # @return [String]
-  ARRAY    = '^{__CFArray}'
+  ARRAY    = '^{__CFArray}'.freeze
 
   ##
   # @private
   #
-  # Pointer type encoding for `AXUIElementRef` objects
+  # Pointer type encoding for `AXUIElementRef` objects.
   #
   # @return [String]
-  ELEMENT  = '^{__AXUIElement}'
+  ELEMENT  = '^{__AXUIElement}'.freeze
 
   ##
   # @private
   #
-  # Pointer type encoding for `AXObserverRef` objects
+  # Pointer type encoding for `AXObserverRef` objects.
   #
   # @return [String]
-  OBSERVER = '^{__AXObserver}'
+  OBSERVER = '^{__AXObserver}'.freeze
 
   ##
   # @private
   #
-  # Local copy of a Cocoa constant; this is a performance hack
+  # Local copy of a Cocoa constant; this is a performance hack.
   #
   # @return [String]
   ROLE     = KAXRoleAttribute
@@ -367,7 +372,7 @@ class << AX
   ##
   # @private
   #
-  # Local copy of a Cocoa constant; this is a performance hack
+  # Local copy of a Cocoa constant; this is a performance hack.
   #
   # @return [String]
   SUBROLE  = KAXSubroleAttribute
@@ -445,9 +450,8 @@ class << AX
   # Uses the call stack and error code to log a message that might be
   # helpful in debugging.
   #
-  # @param [AXUIElementRef] element
+  # @param [AXUIElementRef]
   # @param [Fixnum] code AXError value
-  # @return [Fixnum] returns the code that was passed
   def log_error element, code
     message = AXError[code] || 'UNKNOWN ERROR CODE'
     logger = Accessibility.log
@@ -476,14 +480,12 @@ class << AX
   ##
   # @todo Consider exposing the refcon argument. Probably not until
   #       someone actually wants to pass a context around.
-  # @todo Need to cache a list of callbacks so that they can be unregistered
-  #       in cases when an error occurs.
   #
-  # Setup a callback for an accessibility notification.
+  # Register an observer for a specific event.
   #
-  # @param [AXObserverRef] observer
-  # @param [AX::Element] element
-  # @param [String] notif
+  # @param [AXObserverRef]
+  # @param [AX::Element]
+  # @param [String]
   def register_notif_callback observer, element, notif
     code = AXObserverAddNotification(observer, element, notif, nil)
     log_error element, code unless code.zero?

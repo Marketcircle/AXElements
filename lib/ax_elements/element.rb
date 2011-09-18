@@ -60,7 +60,11 @@ class AX::Element
   ##
   # Get the value of an attribute.
   #
-  # @param [Symbol] attr
+  # @example
+  #
+  #   element.attribute :position # => "#<CGPoint x=123.0 y=456.0>"
+  #
+  # @param [Symbol]
   def attribute attr
     real_attr = attribute_for attr
     raise LookupFailure.new(self, attr) unless real_attr
@@ -75,14 +79,17 @@ class AX::Element
   end
 
   ##
-  # Return the size of an array attribute.
+  # You can use this method to find out the `#size` of an array that is
+  # an attribute of the element. This exists because it is _much_ more
+  # efficient to find out how many `children` exist using this API instead
+  # of getting the children array and asking for the size.
   #
   # @example
   #
   #   button.size_of :children # => 0
   #   window.size_of :children # => 16
   #
-  # @param [Symbol] attr
+  # @param [Symbol]
   # @return [Number]
   def size_of attr
     real_attr = attribute_for attr
@@ -110,10 +117,11 @@ class AX::Element
   end
 
   ##
-  # @note `Boxed` objects are taken care, you do not need to wrap
-  #       them first.
+  # @note Due to the way thot `Boxed` objects are taken care of, you
+  #       cannot pass tuples in place of the `Boxed` object. This may
+  #       change in the future.
   #
-  # Set a writable attribute on the element.
+  # Set a writable attribute on the element to the given value.
   #
   # @param [String] attr an attribute constant
   # @return the value that you were setting is returned
@@ -136,9 +144,13 @@ class AX::Element
   end
 
   ##
-  # Get the value for a parameterized attribute
+  # @note Due to the way thot `Boxed` objects are taken care of, you
+  #       cannot pass tuples in place of the `Boxed` object. This may
+  #       change in the future.
   #
-  # @param [Symbol] attr
+  # Get the value for a parameterized attribute.
+  #
+  # @param [Symbol]
   def param_attribute attr, param
     real_attr = param_attribute_for attr
     raise LookupFailure.new(self, attr) unless real_attr
@@ -157,10 +169,23 @@ class AX::Element
   end
 
   ##
-  # Ideally this method would return a reference to `self`, but since
-  # this method inherently causes state change, the reference to `self`
-  # may no longer be valid. An example of this would be pressing the
-  # close button on a window.
+  # @note Ideally this method would return a reference to `self`, but
+  #       since intrinsically  causes state change in the app being
+  #       manipulate, the reference to `self` may no longer be valid.
+  #       An example of this would be pressing the close button on a
+  #       window.
+  #
+  # Tell an object to trigger an action without actually performing
+  # the action.
+  #
+  # For instance, you can tell a button to call the same method that
+  # would be called when pressing a button, except that the mouse will
+  # not move over to the button to press it, nor will the keyboard be
+  # used.
+  #
+  # @example
+  #
+  #   element.perform_action :press # => true
   #
   # @param [String] name an action constant
   # @return [Boolean] true if successful
@@ -179,7 +204,7 @@ class AX::Element
   # See the {file:docs/Searching.markdown Searching} tutorial for the
   # details on searching.
   #
-  # @example Find the dock item for the Finder app
+  # @example Find the dock icon for the Finder app
   #
   #   AX::DOCK.search( :application_dock_item, title:'Finder' )
   #
@@ -199,7 +224,8 @@ class AX::Element
   ##
   # We use {#method_missing} to dynamically handle requests to lookup
   # attributes or search for elements in the view hierarchy. An attribute
-  # lookup is always tried first.
+  # lookup is always tried first, followed by a parameterized attribute
+  # lookup, and then finally a search.
   #
   # Failing both lookups, this method calls `super`.
   #
@@ -258,19 +284,19 @@ class AX::Element
   # @group Notifications
 
   ##
-  # Register to receive a notification from an object.
+  # Register to receive a notification from the object.
   #
   # You can optionally pass a block to this method that will be given
   # an element equivalent to `self` and the name of the notification;
-  # the block should return a truthy value that decides if the
+  # the block should return a boolean value that decides if the
   # notification received is the expected one.
   #
-  # @param [String,Symbol] notif
+  # @param [String,Symbol]
   # @param [Float] timeout
   # @yieldparam [AX::Element] element
   # @yieldparam [String] notif
   # @yieldreturn [Boolean]
-  # @return [Proc]
+  # @return [Array(self,String)] an (element, notification) pair
   def on_notification notif, &block
     AX.register_for_notif @ref, notif_for(notif) do |element, notif|
       element = self.class.process element
@@ -282,6 +308,8 @@ class AX::Element
 
   ##
   # Overriden to produce cleaner output.
+  #
+  # @return [String]
   def inspect
     msg  = "#<#{self.class}" << pp_identifier
     msg << pp_position if attributes.include? KAXPositionAttribute
@@ -292,8 +320,8 @@ class AX::Element
   end
 
   ##
-  # Overriden to respond properly with regards to the dynamic attribute
-  # look ups, but will return false for potential implicit searches.
+  # Overriden to respond properly with regards to the ydnamic attribute
+  # lookups, but will return false for potential implicit searches.
   def respond_to? name
     return true if attribute_for name
     return true if param_attribute_for name
@@ -302,7 +330,7 @@ class AX::Element
   end
 
   ##
-  # Get the center point of the element, but only if it has a position.
+  # Get the center point of the element.
   #
   # @return [CGPoint]
   def to_point
@@ -401,8 +429,8 @@ class AX::Element
     # Retrieve and process the value of the given attribute for the
     # given element reference.
     #
-    # @param [AXUIElementRef] ref
-    # @param [String] attr
+    # @param [AXUIElementRef]
+    # @param [String]
     def attribute_for ref, attr
       process AX.attr_of_element(ref, attr)
     end
@@ -411,8 +439,8 @@ class AX::Element
     # Retrieve and process the value of the given parameterized attribute
     # for the parameter and given element reference.
     #
-    # @param [AXUIElementRef] ref
-    # @param [String] attr
+    # @param [AXUIElementRef]
+    # @param [String]
     def param_attribute_for ref, attr, param
       param = param.to_axvalue if param.kind_of? Boxed
       process AX.param_attr_of_element(ref, attr, param)
@@ -422,8 +450,8 @@ class AX::Element
     # Meant for taking a return value from {AX.attr_of_element} and,
     # if required, converts the data to something more usable.
     #
-    # Generally, used to process an AXValue into a CGPoint or an
-    # AXUIElementRef into some kind of AX::Element object.
+    # Generally, used to process an `AXValue` into a `CGPoint` or an
+    # `AXUIElementRef` into some kind of {AX::Element} object.
     def process value
       return nil if value.nil?
       id = ATTR_MASSAGERS[CFGetTypeID(value)]
@@ -461,7 +489,8 @@ class AX::Element
     # double dispatch is used to massage low level data into
     # something nice.
     #
-    # Indexes are looked up and added to the array at runtime.
+    # Indexes are looked up and added to the array at runtime in
+    # case values change in the future.
     #
     # @return [Array<Symbol>]
     ATTR_MASSAGERS = []
@@ -515,7 +544,7 @@ class AX::Element
     ##
     # @todo Consider mapping in all cases to avoid returning a CFArray
     #
-    # We assume a homogeneous array.
+    # We assume a homogeneous array and only massage element arrays right now.
     #
     # @return [Array]
     def process_array vals

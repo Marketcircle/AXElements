@@ -9,8 +9,14 @@ class AX::Row < AX::Element
   #       filters.
   #
   # Retrieve the child in a row that corresponds to a specific column.
+  # You must pass filters here in the same way that you would for a
+  # search.
   #
-  # @param [Hash] filters
+  # @example
+  #
+  #   table.row[5].child_in_column(header: 'Price')
+  #
+  # @param [Hash]
   # @return [AX::Element]
   def child_in_column filters
     table   = self.parent

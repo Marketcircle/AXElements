@@ -3,15 +3,12 @@
 # expected criteria.
 class Accessibility::Qualifier
 
-  # @return [Hash]
-  #attr_reader :criteria
-
   ##
   # Initialize a qualifier with the kind of object that you want to
   # qualify and a dictionary of filter criteria.
   #
-  # @param [String,Symbol] klass
-  # @param [Hash] criteria
+  # @param [String,Symbol]
+  # @param [Hash]
   def initialize klass, criteria
     @sym      = klass
     @criteria = criteria
@@ -35,7 +32,7 @@ class Accessibility::Qualifier
   # Checks if a candidate object is of the correct class, respecting
   # that that the class being searched for may not be defined yet.
   #
-  # @param [AX::Element] element
+  # @param [AX::Element]
   def the_right_type? element
     unless @klass
       if AX.const_defined? @sym
@@ -51,7 +48,7 @@ class Accessibility::Qualifier
   # @todo How could we handle filters that use parameterized
   #       attributes?
   # @todo Optimize searching by compiling filters into an
-  #       optimized filter qualifier. eval is not an option.
+  #       optimized filter qualifier. `eval` is not an option.
   #
   # Determines if the element meets all the criteria of the filters,
   # spawning sub-searches if necessary.

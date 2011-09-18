@@ -25,7 +25,7 @@ class Accessibility::BFEnumerator < Accessibility::AbstractEnumerator
   #       for fat trees; what is impact on thin trees?
   # @todo See if we can implement method in a single loop
   #
-  # Lazily iterate through the tree.
+  # Semi-lazily iterate through the tree.
   #
   # @yieldparam [AX::Element] element a descendant of the root element
   def each
@@ -44,7 +44,7 @@ class Accessibility::BFEnumerator < Accessibility::AbstractEnumerator
   # is found it does not fully escape the method.
   #
   # Technically, we need to do this with other 'escape-early' iteraters,
-  # but they aren't being used...
+  # but they aren't being used...yet.
   def find
     each { |x| return x if yield x }
   end
@@ -56,7 +56,7 @@ end
 # depth first order.
 class Accessibility::DFEnumerator < Accessibility::AbstractEnumerator
 
-  # @yieldparam [AX::Element] elemnet a descendant of the root
+  # @yieldparam [AX::Element] element a descendant of the root
   def each
     stack = @root.attribute(:children)
     until stack.empty?
@@ -75,8 +75,8 @@ class Accessibility::DFEnumerator < Accessibility::AbstractEnumerator
   # Walk the UI element tree and yield both the element and the depth
   # in three relative to the root.
   #
-  # @yieldparam [AX::Element] element
-  # @yieldparam [Number] depth
+  # @yieldparam [AX::Element]
+  # @yieldparam [Number]
   def each_with_height &block
     @root.attribute(:children).each do |element|
       recursive_each_with_height element, 1, block

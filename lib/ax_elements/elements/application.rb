@@ -1,13 +1,14 @@
 # -*- coding: utf-8 -*-
+
 ##
 # Some additional constructors and conveniences for Application objects.
 #
 # As this class has evolved, it has gathered some functionality from
-# the NSRunningApplication class.
+# the `NSRunningApplication` class.
 class AX::Application < AX::Element
 
   ##
-  # Overridden so that we can also cache the NSRunningApplication
+  # Overridden so that we can also cache the `NSRunningApplication`
   # instance for this object.
   def initialize ref, attrs
     super
@@ -35,9 +36,6 @@ class AX::Application < AX::Element
     attr == :focused? || attr == :focused ? active? : super
   end
 
-  # @todo Do we need to override #respond_to? and #methods for
-  #       the :focused? case as well?
-
   ##
   # Ask the app whether or not it is the active app. This is equivalent
   # to the dynamic #focused? method, but might make more sense to use
@@ -59,8 +57,12 @@ class AX::Application < AX::Element
   #
   # @return [nil]
   def type_string string
-    AX.keyboard_action(@ref, string)
+    AX.keyboard_action @ref, string
   end
+
+
+  # @todo Do we need to override #respond_to? and #methods for
+  #       the :focused? case as well?
 
   ##
   # @note This object becomes poisonous after the app terminates. If you
