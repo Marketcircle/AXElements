@@ -94,6 +94,7 @@ end
 desc 'Install dependencies for a test node'
 task :setup_node do
   spec.runtime_dependencies.each do |dep|
+    puts "Installing #{dep.name}"
     Gem::DependencyInstaller.new.install(dep.name, dep.requirement)
   end
 end
@@ -101,6 +102,7 @@ end
 desc 'Install dependencies for development'
 task :setup_dev => :setup_node do
   spec.development_dependencies.each do |dep|
+    puts "Installing #{dep.name}"
     Gem::DependencyInstaller.new.install(dep.name, dep.requirement)
   end
 end
