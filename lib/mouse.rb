@@ -4,13 +4,15 @@
 # @todo Inertial scrolling
 # @todo Bezier paths
 # @todo More intelligent default duration
-# @todo Point arguments should accept a pair tuple
+# @todo Point arguments should accept a pair tuple...or should they?
+# @todo Refactor to try and reuse the same event for a single action
+#       instead of creating new events.
 module Mouse; end
 
 class << Mouse
 
   ##
-  # Number of animation steps per second
+  # Number of animation steps per second.
   #
   # @return [Number]
   FPS     = 120
@@ -19,13 +21,13 @@ class << Mouse
   # @note We keep the number as a rational to try and avoid rounding
   #       error introduced by the way MacRuby deals with floats.
   #
-  # Smallest unit of time allowed for an animation step
+  # Smallest unit of time allowed for an animation step.
   #
   # @return [Number]
   QUANTUM = Rational(1, FPS)
 
   ##
-  # Available unit constants when scrolling
+  # Available constants for the type of units to use when scrolling.
   #
   # @return [Hash{Symbol=>Fixnum}]
   UNIT = {
@@ -34,8 +36,8 @@ class << Mouse
   }
 
   ##
-  # Return the coordinates of the mouse using the flipped coordinate
-  # system.
+  # The coordinates of the mouse using the flipped coordinate system
+  # (origin in top left).
   #
   # @return [CGPoint]
   def current_position
@@ -45,16 +47,16 @@ class << Mouse
   ##
   # Move the mouse from the current position to the given point.
   #
-  # @param [CGPoint] point
+  # @param [CGPoint]
   # @param [Float] duration animation duration, in seconds
   def move_to point, duration = 0.2
     animate KCGEventMouseMoved, KCGMouseButtonLeft, current_position, point, duration
   end
 
   ##
-  # Click and drag from the current mouse position to the given point.
+  # Click and drag from the current position to the given point.
   #
-  # @param [CGPoint] point
+  # @param [CGPoint]
   # @param [Float] duration animation duration, in seconds
   def drag_to point, duration = 0.2
     event = CGEventCreateMouseEvent(nil, KCGEventLeftMouseDown, current_position, KCGMouseButtonLeft)
@@ -67,11 +69,13 @@ class << Mouse
   ##
   # @todo Need to double check to see if I introduce any inaccuracies.
   #
+  # Scroll at the current position the given amount of units.
+  #
   # Scrolling too much or too little in a period of time will cause the
   # animation to look weird, possibly causing the app to mess things up.
   #
-  # @param [Fixnum] amount number of pixels/lines to scroll; positive
-  #   to scroll up or negative to scroll down
+  # @param [Fixnum] amount number of units to scroll; positive to scroll
+  #   up or negative to scroll down
   # @param [Float] duration animation duration, in seconds
   # @param [Fixnum] units `:line` scrolls by line, `:pixel` scrolls by pixel
   def scroll amount, duration = 0.2, units = :line
@@ -93,7 +97,7 @@ class << Mouse
   ##
   # A standard click. Default position is the current position.
   #
-  # @param [CGPoint] point
+  # @param [CGPoint]
   def click point = current_position
     event = CGEventCreateMouseEvent(nil, KCGEventLeftMouseDown, point, KCGMouseButtonLeft)
     CGEventPost(KCGHIDEventTap, event)
@@ -104,20 +108,19 @@ class << Mouse
   ##
   # Standard secondary click. Default position is the current position.
   #
-  # @param [CGPoint] point
-  def right_click point = current_position
+  # @param [CGPoint]
+  def secondary_click point = current_position
     event = CGEventCreateMouseEvent(nil, KCGEventRightMouseDown, point, KCGMouseButtonRight)
     CGEventPost(KCGHIDEventTap, event)
     CGEventSetType(event, KCGEventRightMouseUp)
     CGEventPost(KCGHIDEventTap, event)
   end
-  alias_method :secondary_click, :right_click
+  alias_method :right_click, :secondary_click
 
   ##
-  # Perform a double left click at an arbitrary point. Defaults to clicking
-  # at the current position.
+  # A standard double click. Defaults to clicking at the current position.
   #
-  # @param [CGPoint] point
+  # @param [CGPoint]
   def double_click point = current_position
     event = CGEventCreateMouseEvent(nil, KCGEventLeftMouseDown, point, KCGMouseButtonLeft)
     CGEventPost(KCGHIDEventTap, event)
@@ -139,8 +142,9 @@ class << Mouse
   #  - KCGMouseButtonRight  = 1
   #  - KCGMouseButtonCenter = 2
   #
-  # And the rest are not documented! See the `CGMouseButton` enum in the
-  # reference documentation for the most up to date list.
+  # And the rest are not documented! Though they should be easy enough
+  # to figure out. See the `CGMouseButton` enum in the reference
+  # documentation for the most up to date list.
   #
   # @param [CGPoint]
   # @param [Number]
@@ -156,8 +160,6 @@ class << Mouse
   private
 
   ##
-  # @todo Refactor this method, it is a bit ugly...
-  #
   # Executes a mouse movement animation. It can be a simple cursor
   # move or a drag depending on what is passed to `type`.
   def animate type, button, from, to, duration
