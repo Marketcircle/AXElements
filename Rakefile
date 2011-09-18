@@ -1,6 +1,7 @@
 require 'rubygems'
 
 task :default => :gem
+task :clean   => :clobber
 
 def safe_require path, name
   require path
