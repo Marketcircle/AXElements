@@ -15,20 +15,7 @@ class AX::Application < AX::Element
     @app = NSRunningApplication.runningApplicationWithProcessIdentifier pid
   end
 
-  ##
-  # Overridden to handle the {Accessibility::Language#set_focus} case.
-  def set_attribute attr, value
-    if attr == :focused
-      if value
-        @app.unhide
-        @app.activateWithOptions NSApplicationActivateIgnoringOtherApps
-      else
-        @app.hide
-      end
-    else
-      super
-    end
-  end
+  # @group Attributes
 
   ##
   # Overridden to handle the {Accessibility::Language#set_focus} case.
@@ -46,9 +33,36 @@ class AX::Application < AX::Element
   end
 
   ##
-  # Override the base class to make sure the pid is included.
-  def inspect
-    (super).sub />$/, "#{pp_checkbox(:focused)} pid=#{self.pid}>"
+  # Overridden to handle the {Accessibility::Language#set_focus} case.
+  def set_attribute attr, value
+    if attr == :focused
+      if value
+        @app.unhide
+        @app.activateWithOptions NSApplicationActivateIgnoringOtherApps
+      else
+        @app.hide
+      end
+    else
+      super
+    end
+  end
+
+  # @group Actions
+
+  ##
+  # @note This object becomes poisonous after the app terminates. If you
+  #       try to use it again, you will crash MacRuby.
+  #
+  # Ask the application to terminate itself. Be careful how you use this.
+  #
+  # @return [Boolean]
+  def perform_action name
+    case name
+    when :terminate, :hide, :unhide
+      @app.send name
+    else
+      super
+    end
   end
 
   ##
@@ -60,19 +74,15 @@ class AX::Application < AX::Element
     AX.keyboard_action @ref, string
   end
 
+  # @endgroup
 
   # @todo Do we need to override #respond_to? and #methods for
   #       the :focused? case as well?
 
   ##
-  # @note This object becomes poisonous after the app terminates. If you
-  #       try to use it again, you will crash MacRuby.
-  #
-  # Ask the application to terminate itself. Be careful how you use this.
-  #
-  # @return [Boolean]
-  def terminate
-    @app.terminate
+  # Override the base class to make sure the pid is included.
+  def inspect
+    (super).sub />$/, "#{pp_checkbox(:focused)} pid=#{self.pid}>"
   end
 
 end

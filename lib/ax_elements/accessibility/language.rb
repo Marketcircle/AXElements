@@ -104,6 +104,34 @@ module Accessibility::Language
   end
 
   ##
+  # Tell an app to hide itself.
+  #
+  # @param [AX::Application]
+  # @return [Boolean]
+  def hide app
+    app.perform_action :hide
+  end
+
+  ##
+  # Tell an app to unhide itself, which does not guarantee it will be
+  # focused.
+  #
+  # @param [AX::Application]
+  # @return [Boolean]
+  def unhide app
+    app.perform_action :unhide
+  end
+
+  ##
+  # Tell an app to quit.
+  #
+  # @param [AX::Application]
+  # @return [Boolean]
+  def terminate app
+    app.perform_action :terminate
+  end
+
+  ##
   # @note This method overrides `Kernel#raise` so we have to check the
   #       class of the first argument to decide which code path to take.
   #
