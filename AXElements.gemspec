@@ -14,8 +14,8 @@ describes user interactions.
   EOS
   s.authors     = ['Mark Rada']
   s.email       = 'mrada@marketcircle.com'
-  s.homepage    = 'http://samurai.marketcircle.com:3000/docs/AXElements'
-  s.licenses    = ['Closed Source']
+  s.homepage    = 'http://github.com/Marketcircle/AXElements'
+  s.licenses    = ['BSD 3-clause']
   s.has_rdoc    = 'yard'
 
   s.require_paths << 'ext'

@@ -139,5 +139,9 @@ with `@todo` tags.
 
 ## Copyright
 
-Copyright (c) 2010-2011 Marketcircle Incorporated. See {file:LICENSE.txt LICENSE.txt} for further details.
+Copyright (c) 2010-2011 Marketcircle Incorporated. All rights
+reserved.
+
+AXElements is available under the standard 3-clause BSD license. See
+{file:LICENSE.txt LICENSE.txt} for further details.
 
