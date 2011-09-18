@@ -28,17 +28,18 @@ terminal:
 
     rake setup_dev
 
-However, if you are not using RVM, then you should use `macrake`
+__NOTE__: if you are not using RVM, then you should use `macrake`
 instead of `rake` for this command and anywhere else that you see
-`rake` in the documentation. Remember that if you are not using RVM
-with MacRuby but still have RVM installed then you will need to
+`rake` in the documentation. Also, remember that if you are not using
+RVM with MacRuby but still have RVM installed then you will need to
 disable RVM like so:
 
     rvm use system
 
 Once you are setup, you can start looking through the tutorial
 documentation to show you how to use AXElements. The first tutorial is
-the {file:docs/Inspecting.markdown Inspecting tutorial}:
+the {file:docs/Inspecting.markdown Inspecting tutorial}. The full list
+of topics include:
 
 * {file:docs/Inspecting.markdown Inspecting}
 * {file:docs/Acting.markdown Acting}
@@ -46,17 +47,18 @@ the {file:docs/Inspecting.markdown Inspecting tutorial}:
 * {file:docs/Notifications.markdown Notifications}
 * {file:docs/KeyboardEvents.markdown Keyboard}
 * {file:docs/Debugging.markdown Debugging}
-* {file:docs/NewBehaviour.markdown Adding Behaviour}
-* {file:docs/RSpecMinitest.markdown RSpec and Minitest extensions}
+* {file:docs/NewBehaviour.markdown Adding Behaviour To AXElements}
+* {file:docs/AccessibilityTips.markdown Making Your Apps More Accessibile}
+* {file:docs/TestingExtensions.markdown Test Suite Extensions for RSpec, Minitest, etc.}
 
 ## Documentation
 
-AXElements is documented using YARD, and includes a few small
-tutorials in the `docs` directory. If you do not want to generate the
-documentation yourself, we are hosting the documentation on our
-internal network on [quartz](http://docs.marketcircle.com:8808/).
+AXElements is documented using YARD, and includes a few tutorials in
+the `docs/` directory. If you do not want to generate the
+documentation yourself then you can go to
+[rdoc.info](http://rdoc.info/gems/AXElements/frames).
 
-Though it is not required, you should read Apple's
+Though it is not required, you may want to read Apple's
 [Accessibility Overview](http://developer.apple.com/library/mac/#documentation/Accessibility/Conceptual/AccessibilityMacOSX/OSXAXModel/OSXAXmodel.html)
 as a primer on some the technical underpinnings of AXElements.
 
@@ -72,10 +74,12 @@ To run the tests you simply need to run the `test` task:
 
     rake test
 
-__NOTE__: some tests are dependent on Accessibility features that are
-new in OS X Lion and those tests will fail on OS X Snow Leopard. If
-you have any issues then you should look at the output to find hints
-at what went wrong.
+__NOTE__: there may be some tests are dependent on Accessibility
+features that are new in OS X Lion which will cause test failures on
+OS X Snow Leopard. If you have any issues then you should look at the
+output to find hints at what went wrong and/or log a bug. I will still
+support Snow Leopard as long as MacRuby does, but I do not have easy
+access to a Snow Leopard machine to verify that things still work.
 
 ### Benchmarks
 
@@ -87,22 +91,23 @@ disabled by default. In order to enable them you need to set the
 
 Benchmarks only exist for code that is known to be slow. I'm keeping
 tabs on slow code so that I be confident about getting depressed when
-it gets slower.
+it gets slower. Though, there is still room for improved performance
+as well.
 
 ## Road Map
 
 There are still a bunch of things that could be done to improve
 AXElements. The README only contains an idealized outline of some of
 the high-level items that should get done in the next couple of
-releases. Smaller items are peppered through the code base.
+releases. Smaller items are peppered through the code base and marked
+with `@todo` tags.
 
 ### 0.7 (or maybe 1.0)
 
 - Pre-loading AX hierarchy and attribute cache from
   `/System/Library/Accessibility/AccessibilityDefinitions.plist`
-  + DO NOT load_plist and then parse, use NSXMLParser to have less
-  overhead, but it still might allocate too much to be done at boot
-  time and be a waste of time to implement
+  + Not available on Snow Leopard, so it will have to wait anyways
+  + Probably inccurs too much overhead at boot time right now
 - Make a decision about NSArray#method_missing
 - Merge notifications with actions as they are commonly combined
   + But how?
@@ -110,8 +115,11 @@ releases. Smaller items are peppered through the code base.
 - Mouse module cleanup and regression testing
 - Test suite deduplication cleanup and better isolation
 - Performance tweaks
-- The OO abstraction leaks in a few places, but I'm not sure that they
-  can all be cleaned up...
+- The OO abstraction leaks in a few places, code needs to be
+  refactored without hurting performance too much
+- Test framework helpers
+  + Minitest
+  + RSpec
 
 ### Future
 
