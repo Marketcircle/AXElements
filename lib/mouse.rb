@@ -7,6 +7,7 @@
 # @todo Point arguments should accept a pair tuple...or should they?
 # @todo Refactor to try and reuse the same event for a single action
 #       instead of creating new events.
+# @todo Pause between down/up clicks
 module Mouse; end
 
 class << Mouse
@@ -101,6 +102,8 @@ class << Mouse
   def click point = current_position
     event = CGEventCreateMouseEvent(nil, KCGEventLeftMouseDown, point, KCGMouseButtonLeft)
     CGEventPost(KCGHIDEventTap, event)
+    # @todo Should not set number of sleep frames statically.
+    12.times do sleep QUANTUM end
     CGEventSetType(event, KCGEventLeftMouseUp)
     CGEventPost(KCGHIDEventTap, event)
   end
