@@ -1,0 +1,34 @@
+digraph {
+        Application  [label = "Application: Mail", style=filled]
+        MainWindow   [label = "MainWindow: Inbox"]
+        Outline      [label = "Outline"]
+        Table        [label = "Table: Emails"]
+        TableRow1    [label = "TableRow: Spam"]
+        TableRow2    [label = "TableRow: Daily LOLcat"]
+        MenuBar      [label = "MenuBar", style=filled]
+        MenuBarItem1 [label = "MenuBarItem: File", style=filled]
+        MenuBarItem2 [label = "MenuBarItem: Edit"]
+        MenuBarItem3 [label = "MenuBarItem: Help"]
+        Menu1        [label = "Menu", style=filled]
+        MenuItem1    [label = "MenuItem: Preferences"]
+        MenuItem2    [label = "MenuItem: Services", style=filled]
+        MenuItem3    [label = "MenuItem: Quit"]
+        Menu2        [label = "Menu", style=filled]
+        MenuItem4    [label = "MenuItem: Services Preferences", style=filled]
+
+        Application  -> MainWindow
+        Application  -> MenuBar
+        MainWindow   -> Outline
+        MainWindow   -> Table
+        Table        -> TableRow1
+        Table        -> TableRow2
+        MenuBar      -> MenuBarItem1
+        MenuBar      -> MenuBarItem2
+        MenuBar      -> MenuBarItem3
+        MenuBarItem1 -> Menu1
+        Menu1        -> MenuItem1
+        Menu1        -> MenuItem2
+        Menu1        -> MenuItem3
+        MenuItem2    -> Menu2
+        Menu2        -> MenuItem4
+}

@@ -2,53 +2,79 @@
 
 When it comes to inspecting the user interface there are _many_ nooks
 and crannies that are interesting to talk about. This document covers
-the core concepts that you will need to first understand.
+the core concepts that you will need to understand before you can
+begin discovering them yourself.
 
 ## The UI Tree
 
 The first most important thing to understand is that accessibility
 exposes the user interface as a hierarchy of user interface
-objects. Each object knows who its parent is, and knows about any
-children that it may have, thus creating a tree structure.
+tokens. Each token references a GUI element on screen, either
+something literal like a button, or something more structural like a
+group of buttons. For simplicity, I will refer to tokens as if they were the
+objects themselves.
 
-For instance, an application has a menu bar and the menu bar has menu
-bar items, each menu bar item has a menu and each menu has menu
-items, and some menu items have a sub menu which leads to more menu
-items, and so on. Each menu item knows which menu is its parent, and
-each menu know which menu item or menu bar item is its parent, and the
-menu bar knows that which application is its parent.
+Each object knows who its parent object is, and knows about any
+children objects that it may have. thus creating a tree structure. At
+least this is the theory, but there are, on occasion, some hiccups
+since accessibility is a protocol to which multiple parties have to
+conform.
 
-But who is the parent of the application? The answer is that an
-application does not have a parent, it is the entry point for a UI
-hierarchy, and the place where a script will usually start.
+A sample hierarchy might start with the application, which has a menu
+bar as one of its children and the menu bar has menu bar items, each
+menu bar item has a menu and each menu has menu items; some menu items
+have another menu as its child which then leads to more menu items and
+so on. This hierarchy is much easier to understand once visualized:
+
+![Example GUI Hierarchy](images/ui_hierarchy.png)
+
+This example is meant to be instructive, the menu bar is one of the
+more complicated hierarchies to navigate and many other nodes in the
+hierarchy have been left out. The good news is that AXElements has
+techniques and patterns for simplifying navigation, so don't get
+scared off just yet. The point here is that each menu item knows which
+menu is its parent, and each menu knows which menu item or menu bar
+item is its parent, and the menu bar knows that which application is
+its parent. But who is the parent of the application? It turns out
+that that is a trick question, an application does not have a
+parent. An application is the entry point for the UI hierarchy, it
+will be the place where a script usually starts and application
+objects can be created using the {Accessibility} singleton
+methods. You can create the object for an application that is already
+running using {Accessibility.application_with_name} like so:
+
+    app = Accessibility.application_with_name = 'Finder'
 
 ### Accessibility Inspector
 
-To quickly navigate through the UI tree Apple has provided a tool, the
-Accessibility Inspector, as part of the Developer Tools. The inspector
-will come in handy when you are writing scripts using AXElements,
-though there are some potential pitfalls that will be discussed later.
+To quickly navigate through the UI tree, Apple has provided a tool,
+the Accessibility Inspector, as part of the Developer Tools. The
+inspector will come in handy when you are writing scripts using
+AXElements, though there are some potential pitfalls that will be
+discussed later.
 
 Once you install the Developer Tools, the inspector can be found in
-`/Developer/Applications/Utilities/Accessibility Tools/`, or just use
-the launchpad if you are on OS X Lion.
+`/Developer/Applications/Utilities/Accessibility Tools/`. It is worth
+playing around with the inspector to get a feel for what the
+accessibility APIs offer; but keep in mind that the inspector is a
+dumb interface to the accessibility APIs.
 
 ## Attributes
 
-Each item in the tree has attributes; buttons have a title, sliders
-have a value, etc.. Attributes often include pointers to the parent of
-the element and, if applicable, a pointer to an array of children;
-this is how you navigate through the UI tree.
-
-Programmatically, you can get a list of attributes that a UI element
-has by asking the element for its {AX::Element#attributes}.
+Each item in the GUI tree has attributes; buttons have a title,
+sliders have a value, etc.. Pointers to the parent and chilrden nodes
+are also attributes. Programmatically, you can get a list of
+attributes that an object has by asking nicely. AXElements exposes
+this API via {AX::Element#attributes}. {AX::Element} actually acts as
+the abstract base class for all objects, encapsulating everything that
+the accessibility APIs offer.
 
 ### Accessing Attributes
 
-Every attribute can be accessed as a method of the UI element
-object. The method name will always be the
-[snake_case](http://en.wikipedia.org/wiki/Letter_case) version of
-the attribute name without the prefix.
+Every attribute can be accessed as a method of the UI object. The
+method name will always be the
+[snake_case](http://en.wikipedia.org/wiki/Letter_case) version of the
+attribute name without the prefix.
 
 Some examples:
 
@@ -60,42 +86,44 @@ The last case is special because we consider "`Is`" to be part of the
 prefix and the method name has a "`?`" at the end. This is to follow
 Ruby conventions of putting "`?`" at the end of the method name if the
 method is a predicate. There will be more details about these rules in
-other tutorial documents.
+other tutorial documents, but this is really something that should be
+abstracted away. This detail is not hidden right now becaues the
+Accessibility Inspector does not hide the information and you still
+need to understand it in order to use the inspector with AXElements.
 
 #### Example
 
 We can demonstrate how this all comes together with a small
-example. In the terminal, navigate to the AXElements repository and
-start a console session with `macrake console`. Then you can try the
-following code, one line at a time:
+example. In the terminal, you can start up a console session of
+AXElements by loading `ax_elements` in `macirb` or by navigating to
+the AXElements repository and running the `console` task if you have a
+clone. Then you can try the following code, one line at a time:
 
     app    = Accessibility.application_with_name 'Terminal'
     window = app.main_window
     title  = window.title
-    puts "The window's title is #{title}"
+    puts "The window's title is '#{title}'"
 
-In the first line, we are creating the UI element object for the
-application. As mentioned earlier, you will usually start navigating
-the UI tree from the application object. Giving the name of the
-application is one of the few ways that AXElements supports creating
-an application object; other methods of creating applications are
-covered in other tutorial documents, but using the name is the
-easiest.
+In the first line, we are creating the object for the application. As
+mentioned earlier, you will usually start navigating the UI tree from
+the application object. Giving the name of the application is the
+easiest way to create an application object but requires the
+application to already be running.
 
 On the second line we use the application object and ask it for the
 value of the `main_window` attribute. This will return to us another
-UI element object, this time for the window. You will also notice that
-the console printed out some extra information about the window, such
-as the title of the window and its position (in flipped
+UI object, this time for the window. You will also notice that the
+console printed out some extra information about the window, such as
+the title of the window and its position (in flipped
 coordinates). Each UI element has implemented the `#inspect` method in
 such a way as to provide users with a succinct but useful way to
-identify the UI element on the screen, and `macirb` is designed to happily
-print that information out for each statement that you enter.
+identify the UI element on the screen, and `macirb` is designed to
+happily print that information out for each statement that you enter.
 
-On the third line, we ask the window for it's `#title`, and it gives
+On the third line, we ask the window for it's `title`, and it gives
 us back a string which we then print out on the fourth line. Notice
 that the title of the window was also printed by the console as part
-of the `#inspect` output that it prints out.
+of the `#inspect` output that `macirb` asks to print out.
 
 ### Inspect Output
 
@@ -109,54 +137,53 @@ so many details that it becomes a pain. A typical example of
 
 That output includes all the pieces that you will normally see from
 `#inspect`, but you may see less or more depending on the UI element
-that is being inspected. First you have the class name so that you can
-tell what kind of UI element it is; then you have some sort of
-identifying information bit, which is the title of the window in this
-case; then you have numbers in parentheses which are the screen
-coordinates for the UI element; then you have the number of children
-that the UI element has, but only because this element has children;
-and finally you have a check box for the `focused` attribute.
+that is being inspected. As is the norm in Ruby, you will always at
+least get the name of the class; then AXElements will try to include a
+piece of identifying information such as the `title`, then you have
+numbers in parentheses which are the screen coordinates for the
+object, then you have the number of children, and then check boxes for
+boolean attributes. Aside from the class name, the other pieces of
+information will only be included if they are relevant, and certain
+objects will also include other information.
 
-The values shown in `#inspect` are pieced together using helper
-methods from the {Accessibility::PPInspector} module and a generic
-implementation is written in {AX::Element#inspect} so that all UI
-elements have a useful `#inspect`. However, the generic `#inspect` may
-not always choose the best attributes to show.
-
-{AX::Application#inspect} overrides the generic `Object#inspect` so
+The values shown by `#inspect` are pieced together using helper
+methods from the {Accessibility::PPInspector} module. {AX::Element}
+implements a generic implementation with
+{AX::Element#inspect}. However, the generic `#inspect` may not always
+choose the best attributes to show. An example would be
+{AX::Application#inspect}, which overrides the generic `inspect` so
 that the process identifier for the application is also included. In
 other cases, the screen co-ordinates or whether the element is enabled
 may not be relevant, so you can override the method in the specific
 subclass to not include those attributes and/or include other
 attributes. The key idea is to make `#inspect` helpful when exploring
-a UI through the console or debugging a script.
+a UI through the console or when debugging a script.
 
 ## Accessing Children
 
 Following first principles shown in the example from above you might
 be led to believe that in order to navigate around the UI tree you
-will have to write code that looks something like
+will have to write code that looks something like this:
 
     app.main_window.children.find do |child|
-      child.role == AX::Button && child.title == 'Add'
+      child.class == AX::Button && child.title == 'Add'
     end
 
-in order to find a specific child element. However, AXElements
-provides a way to specify what you want that is much more convenient
-to use. Behold
+However, AXElements provides a way to specify what you want that is
+much more convenient to use. Behold:
 
     app.main_window.button(title: 'Add')
 
-which is quite the simplification! If we break it down, you see that
+This is quite the simplification! If we break it down, you see that
 the method name is the class of the object you want, and then if you
-need to be more specific you can pass a key-value pair where the key
+need to be more specific you can pass key-value pairs where the key
 is an attribute and the value is the expected value. The above example
 says "find a button with the title of 'Add'".
 
 You can use as many or as few key-value pairs as you need in order to
-find the UI element that you are looking for. If you do not specify
-any key-value pairs, then the first object with the correct class will
-be chosen. The {file:docs/Searching.markdown Searching Tutorial} goes
+find the element that you are looking for. If you do not specify any
+key-value pairs, then the first object with the correct class will be
+chosen. The {file:docs/Searching.markdown Searching Tutorial} goes
 into more depth on how key-value pairs are used to specify which
 object you want.
 
@@ -171,7 +198,7 @@ supply a parameter. An example of this would look like this:
 The method name suggests that you need to provide a range and in
 return you will be given part of the string that corresponds to the
 range. Of course, this example is quite contrived since string slicing
-is so trivial in ruby (but the parameterized attribute actually exists).
+is so trivial in Ruby (but this parameterized attribute actually exists).
 
 Parameterized attributes are different enough from regular attributes
 that Apple does not want them mixing together and producing
@@ -180,13 +207,12 @@ of parameterized attributes separate from attributes; you can get a
 list of parameterized attributes for an object with
 {AX::Element#param_attributes}. Similarly, you have probably already
 noticed that parameterized attributes have their own section in the
-Accessibility Inspector, but not all UI elements have parameterized
-attributes.
+Accessibility Inspector and that many objectss do not have any
+parameterized attributes.
 
-In my experience, parameterized attributes have not been that useful,
+In my experience, parameterized attributes have not been very useful,
 but I haven't looked hard enough and am still looking for a good
-example to put in this section of the tutorial. Parameterized
-attributes are not writable (though I should double check this fact).
+example to put in this section of the tutorial.
 
 ## Explicit Attribute Access
 
@@ -200,95 +226,29 @@ Similarly, for parameterized attributes, you need to call
 {AX::Element#param_attribute} and pass the attribute name and
 parameter as parameters to that method.
 
+    app.param_attribute(:string_for_range, CFRange.new(0,5))
+
+These methods are exposed so that other library classes can achieve
+better performance; but you should avoid using them regularly. These
+APIs may be hidden in the future in order to enforce the DSL usage.
+
 ## Adding Accessibility Attributes
 
-Adding new attributes to an object is very simple...usually. Most of
-the time it is as simple as overriding two methods:
+You can add custom attributes to objects, or even inject or hide
+objects from the UI hierarchy. It is simply a matter of
+overriding/implementing methods from the
+[NSAccessibility](http://developer.apple.com/library/mac/#documentation/Cocoa/Reference/ApplicationKit/Protocols/NSAccessibility_Protocol/Reference/Reference.html)
+protocol where needed.
 
-- `accessibilityAttributeNames`
-- `accessibilityAttributeValue:`
-
-`accessibilityAttributeNames` needs to return an array with the names
-of available attributes. You should call `super` to get the existing
-array first, and then append any custom attributes you want to
-provide.
-
-An attribute name must follow the convention of being a camel cased
-string with the "AX" prefix, such as `AXTitle`. You can optionally
-include an additional prefix before "AX", such as "MCAX" for
-Marketcircle custom attributes. If you do not follow these rules then
-attribute names will not be translated properly by AXElements.
-
-`accessibilityAttributeValue:` is how you actually provide the value
-for the attribute; the parameter for this method is the name of the
-attribute fetched from calling `accessibilityAttributeNames`. You
-should return the value without doing any extra work to the data; the
-Accessibility interface will do any wrapping or translating for
-you (e.g. CGPoint objects will have co-ordinates flipped). In the case
-of a C structs you should leave them wrapped in an NSValue object.
-
-Similarly, parameterized attributes are added using methods with
-`Parameter` in the name. The method for getting the value of a
-parameterized attribute will of course take an extra parameter for the
-parameterized attributes parameter.
-
-### Where To Implement The Methods
-
-The difficulty in adding attributes lies in finding out where you need
-to add the accessibility methods. Often, the class that implements
-accessibility is the class that draws the user interface element. For
-example, the accessibility information for a button is implemented on
-the button cell and not the button itself. Since Apple is under the
-delusion that you will never need to add any custom accessibility
-information, they really don't document these customizations enough,
-and so this document only includes caveats that have been discovered
-so far.
-
-It is often inconvenient to subclass the cell for an object just for
-accessibility. In these cases Apple has provided something similar to
-singleton methods, but less useful, with the
-`accessibilitySetOverrideValue:forAttribute:` method. You can use the
-method to override an attribute or even add a new one. The main issue
-with this method is that any attribute that is overridden, or added,
-will not be writable using the accessibility APIs. Another issue is
-that you have to calculate the value when you override instead of when
-the attribute value is queried by the client.
-
-### Writability
-
-In the case where it is convenient to be able to change an attribute's
-value through accessibility, like the size of a window, you will also
-need to implement two more methods for the attribute:
-
-- `accessibilityIsAttributeSettable:`
-- `accessibilitySetValue:forAttribute:`
-
-`accessibilityIsAttributeSettable:` simply responds with whether or
-not the attribute is writable, and
-`accessibilitySetValue:forAttribute:` will be called to actually write
-to the attribute.
-
-### Remember `super`
-
-It is important to remember that these methods are already implemented
-for the built in features. When overriding, you should only implement
-the custom behaviour and call `super` to handle everything else.
-
-### Existing Definitions
-
-When implementing custom behaviour, you should try and use
-pseudoclasses that have already been defined by Apple, as well as
-attributes, parameterized attributes, and other features that have
-already been defined. Apple maintains the documentation for all their
-definitions on
-[here](http://developer.apple.com/library/mac/#documentation/UserExperience/Reference/Accessibility_RoleAttribute_Ref/Introduction.html#//apple_ref/doc/uid/TP40007870).
-The documentation is fairly detailed now (moreso than before), but
-still misses a few things.
+You should peruse the {file:docs/AccessibilityTips.markdown Accessibility Tips}
+documentation before making nontrivial changes. There are a couple of
+guidelines you need to be aware of in order to make sure things remain
+compatible with AXElements.
 
 ## Next Steps
 
-You may want to play with what you have learnt so far. See if you can
-find bugs and then fix them, or perhaps a missing feature.
+You may want to play with what you have learnt so far, see if you can
+find bugs and then fix them, or perhaps add missing features. ;)
 
 From here the next logical step would be to figure out how to trigger
 some sort of action and then inspect the UI for changes; for that
