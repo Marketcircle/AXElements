@@ -60,6 +60,13 @@ static void mAX_initialize_keycode_map() {
 
 void Init_key_coder() {
 
+  // TODO: Make mapping keys lazy, expose a C function to map a single
+  //       character to a keycode, and define a hash in Ruby land that
+  //       will use the hash callback feature to get the mapping on demand.
+  //       POSSIBLE PROBLEM: How to handle alternative characters, like
+  //       symbols which require holding shift first? How would we know
+  //       about them?
+
   // Initialize the mapping and expose it as a constant in the AX module
   mAX_initialize_keycode_map();
   mAX = rb_define_module("AX");
