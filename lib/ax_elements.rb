@@ -17,7 +17,8 @@ require 'ax_elements/macruby_extensions'
 require 'ax_elements/version'
 require 'ax_elements/core'
 require 'ax_elements/element'
-require 'ax_elements/accessibility'
+
+require 'ax_elements/accessibility/language'
 
 # Mix the language methods in to the TopLevel
 include Accessibility::Language

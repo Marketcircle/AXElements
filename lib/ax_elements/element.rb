@@ -2,6 +2,7 @@
 
 require 'active_support/inflector'
 require 'ax_elements/inspector'
+require 'ax_elements/accessibility'
 
 ##
 # @abstract

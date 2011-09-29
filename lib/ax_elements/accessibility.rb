@@ -162,4 +162,3 @@ end
 
 require 'ax_elements/accessibility/enumerators'
 require 'ax_elements/accessibility/qualifier'
-require 'ax_elements/accessibility/language'
