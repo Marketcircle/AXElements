@@ -106,6 +106,12 @@ class NSMutableString
   end
 end
 
+# @private
+#
+# An empty string, performance hack.
+#
+# @return [String]
+EMPTY_STRING = ''.freeze
 
 ##
 # Extensions to `NSString`.

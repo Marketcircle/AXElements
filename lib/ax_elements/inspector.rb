@@ -61,7 +61,7 @@ module Accessibility::PPInspector
     end
 
     # @todo should we have other fallbacks?
-    return NSString.string
+    return ::EMPTY_STRING
   end
 
   ##
@@ -85,8 +85,8 @@ module Accessibility::PPInspector
       " #{child_count} children"
     elsif child_count == 1
       ' 1 child'
-    else
-      NSString.string
+    else # there are some odd edge cases
+      ::EMPTY_STRING
     end
   end
 
