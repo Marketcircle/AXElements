@@ -54,7 +54,8 @@ class TestAccessibility < TestAX
 
   def test_returns_element_under_the_mouse
     button = APP.main_window.close_button
-    Mouse.click button.to_point
+    Mouse.move_to button.to_point, 0
+    # sleep 0.05 # how often will this fail without waiting?
     assert_equal button, Accessibility.element_under_mouse
   end
 

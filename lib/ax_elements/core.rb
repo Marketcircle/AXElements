@@ -406,8 +406,8 @@ class << AX
   # @endgroup
 
   ##
-  # Map of characters to keycodes. The map is generated at boot
-  # time in order to support multiple keyboard layouts.
+  # Map of characters to keycodes. The map is generated at boot time in
+  # order to support multiple keyboard layouts.
   #
   # @return [Hash]
   KEYCODE_MAP = {}

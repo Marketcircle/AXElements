@@ -97,8 +97,8 @@ module Accessibility::PPInspector
   #
   # @param [Symbol]
   # @return [String]
-  def pp_checkbox value
-    " #{value}[#{attribute(value) ? '✔' : '✘'}]"
+  def pp_checkbox attr
+    " #{attr}[#{attribute(attr) ? '✔' : '✘'}]"
   end
 
 
