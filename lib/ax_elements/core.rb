@@ -15,7 +15,8 @@ end
 # abstraction layer that that interact with OS X Accessibility
 # APIs.
 module AX
-  @notifs = {}
+  @ignore_notifs = true
+  @notifs        = {}
 end
 
 ##
@@ -208,54 +209,51 @@ class << AX
   # @group Notifications
 
   ##
-  # @todo Should this be hidden?
-  #
-  # Cache of notifications that have been registered.
-  #
-  # @return [Hash{AXUIElementRef=>Array(AXObserverRef, String)}]
-  attr_reader :notifs
-
-  ##
-  # @todo This method is too big, might be hard to understand...
+  # @todo This method is too big, needs refactoring. It's own class?
   #
   # {file:docs/Notifications.markdown Notifications} are a way to put
   # non-polling delays into your scripts.
   #
-  # Register to be notified of a specified event in an application.
+  # Use this method to register to be notified of the specified event in
+  # an application. You must also pass a block to this method to validate
+  # the notification.
   #
-  # You can optionally pass a block to this method to validate the
-  # notification.
-  #
-  # @param [AXUIElementRef] element the element which will send the notification
-  # @param [String] notif the name of the notification
+  # @param [AXUIElementRef] ref the element which will send the notification
+  # @param [String] name the name of the notification
   # @yield Validate the notification; the block should return truthy if
   #        the notification received is the expected one and the script can stop
   #        waiting, otherwise should return falsy.
   # @yieldparam [AXUIElementRef] element the element that sent the notification
   # @yieldparam [String] notif the name of the notification
   # @yieldreturn [Boolean] determines if the script should continue or wait
-  # @return [Array(AXUIElementRef, String)] the element and notification name
-  #   tuple
-  def register_for_notif element, notif, &blk
-    notif_proc = Proc.new do |obsrvr, elmnt, ntfctn, _|
-      break unless blk ? blk.call(elmnt, ntfctn) : true
+  # @return [Array(Observer, AXUIElementRef, String)] the registration triple
+  def register_for_notif ref, name, &block
+    run_loop = CFRunLoopGetCurrent()
 
-      Accessibility.log.debug "Received notification: #{notifs[obsrvr][1]}"
-      raise 'Received notification was not in cache' unless notifs.delete obsrvr
+    # we are ignoring the context pointer since this is OO
+    callback = Proc.new do |observer, element, notif, _|
+      LOCK.synchronize do
+        Accessibility.log.debug "Received notif (#{notif}) for (#{element})"
+        break if     @ignore_notifs
+        break unless block.call(element, notif)
 
-      run_loop   = CFRunLoopGetCurrent()
-      app_source = AXObserverGetRunLoopSource(obsrvr)
-      CFRunLoopRemoveSource(run_loop, app_source, KCFRunLoopDefaultMode)
-      CFRunLoopStop(run_loop)
+        @ignore_notifs = true
+        source = AXObserverGetRunLoopSource(observer)
+        CFRunLoopRemoveSource(run_loop, source, KCFRunLoopDefaultMode)
+        unregister_notif_callback observer, element, notif
+        CFRunLoopStop(run_loop)
+      end
     end
 
-    observer   = make_observer_for element, notif_proc
-    run_loop   = CFRunLoopGetCurrent()
-    app_source = AXObserverGetRunLoopSource(observer)
-    CFRunLoopAddSource(run_loop, app_source, KCFRunLoopDefaultMode)
-    register_notif_callback observer, element, notif
+    dude   = make_observer_for ref, callback
+    source = AXObserverGetRunLoopSource(dude)
+    register_notif_callback dude, ref, name
+    CFRunLoopAddSource(run_loop, source, KCFRunLoopDefaultMode)
+    @ignore_notifs = false
+
     # must keep [element, observer, notif] in order to do unregistration
-    notifs[observer] = [element, notif]
+    @notifs[dude] = [ref, name]
+    [dude, ref, name]
   end
 
   ##
@@ -282,6 +280,24 @@ class << AX
       raise 'This should never happen'
     else
       raise 'You just found a an OS X bug (or a MacRuby bug)...'
+    end
+  end
+
+  ##
+  # @todo Flush any waiting notifs?
+  #
+  # Cancel _all_ notification registrations. Simple and clean, but a
+  # blunt tool at best. I didn't have time to figure out a better
+  # system :(
+  #
+  # @return [nil]
+  def unregister_notifs
+    LOCK.synchronize do
+      @ignore_notifs = true
+      @notifs.each_pair do |observer, pair|
+        unregister_notif_callback observer, *pair
+      end
+      @notifs = {}
     end
   end
 
@@ -377,6 +393,17 @@ class << AX
   # @return [String]
   SUBROLE  = KAXSubroleAttribute
 
+  # @group Notifications
+
+  ##
+  # @todo Would a Dispatch::Semaphore be better?
+  #
+  # Semaphore used to synchronize async notification stuff.
+  #
+  # @return [Mutex]
+  LOCK     = Mutex.new
+
+  # @endgroup
 
   ##
   # Map of characters to keycodes. The map is generated at boot
@@ -489,6 +516,26 @@ class << AX
   def register_notif_callback observer, element, notif
     code = AXObserverAddNotification(observer, element, notif, nil)
     log_error element, code unless code.zero?
+  end
+
+  ##
+  # @todo No need to capture error code when handling all error cases
+  #       properly. So I should get around to that soon.
+  #
+  # Unregister a notification that has been previously setup.
+  #
+  # @param [AXObserverRef]
+  # @param [AX::Element]
+  # @param [String]
+  def unregister_notif_callback observer, ref, notif
+    case code = AXObserverRemoveNotification(observer, ref, notif)
+    when KAXErrorNotificationNotRegistered
+      Accessibility.log.warn  "Notif no longer registered: (#{ref}:#{notif})"
+    when KAXErrorIllegalArgument
+      raise ArgumentError,    "Notif not unregistered (#{ref}:#{notif})"
+    else
+      log_error element, code unless code.zero?
+    end
   end
 
 end

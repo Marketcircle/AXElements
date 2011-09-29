@@ -292,6 +292,9 @@ class AX::Element
   # the block should return a boolean value that decides if the
   # notification received is the expected one.
   #
+  # Read the {file:docs/Notifications.markdown Notifications tutorial}
+  # for more information.
+  #
   # @param [String,Symbol]
   # @param [Float] timeout
   # @yieldparam [AX::Element] element
@@ -299,10 +302,12 @@ class AX::Element
   # @yieldreturn [Boolean]
   # @return [Array(self,String)] an (element, notification) pair
   def on_notification notif, &block
-    AX.register_for_notif @ref, notif_for(notif) do |element, notif|
+    name = notif_for notif
+    AX.register_for_notif(@ref, name) do |element, notification|
       element = self.class.process element
-      block ? block.call(element, notif) : true
+      block ? block.call(element, notification) : true
     end
+    [self, name]
   end
 
   # @endgroup

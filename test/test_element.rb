@@ -657,6 +657,10 @@ end
 
 class TestElementNotifications < TestElements
 
+  def teardown
+    AX.unregister_notifs
+  end
+
   def test_does_no_translation_for_custom_notifications
     class << AX; alias_method :old_register_for_notif, :register_for_notif; end
     def AX.register_for_notif ref, notif, &block
@@ -695,14 +699,9 @@ class TestElementNotifications < TestElements
     assert_kind_of AX::Element, element
   end
 
-  def test_unregisters
-    skip
-    notif = [APP.ref, 'pie']
-    APP.on_notification 'pie'
-
-    assert AX.notifs.has_value? notif
-    APP.unregister_notifications
-    refute AX.notifs.has_value? notif
+  def test_returns_wrapped_pair
+    expected = [radio_gaga, KAXValueChangedNotification]
+    assert_equal expected, radio_gaga.on_notification(:value_changed)
   end
 
 end

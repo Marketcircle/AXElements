@@ -225,7 +225,13 @@ module Accessibility::Language
   #
   # @param [Float] timeout number of seconds to wait for a notification
   def wait_for_notification timeout = 10.0
-    AX.wait_for_notif timeout
+    AX.wait_for_notif(timeout).tap { |_| unregister_notifications }
+  end
+
+  ##
+  # Undo _all_ notification registries.
+  def unregister_notifications
+    AX.unregister_notifs
   end
 
   # @group Mouse Input

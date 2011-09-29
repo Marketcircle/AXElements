@@ -262,6 +262,7 @@ class TestAXParamAttrOfElement < TestCore
 end
 
 
+# be very careful about cleaning up state after notification tests
 class TestAXNotifications < TestCore
 
   # custom notification name
@@ -290,93 +291,96 @@ class TestAXNotifications < TestCore
     if attribute_for(radio_gaga, KAXValueAttribute) == 1
       action_for radio_flyer, KAXPressAction
     end
+    AX.unregister_notifs
   end
 
-  def test_works_without_a_block
-    AX.register_for_notif(radio_gaga, KAXValueChangedNotification)
-    start = Time.now
+  def test_break_if_ignoring
+    AX.register_for_notif(radio_gaga, KAXValueChangedNotification) { |_,_| true }
+    AX.instance_variable_set :@ignore_notifs, true
+
     action_for radio_gaga, KAXPressAction
 
-    AX.wait_for_notif(TIMEOUT)
-    assert_in_delta Time.now, start, TIMEOUT
+    start = Time.now
+    refute AX.wait_for_notif(SHORT_TIMEOUT)
+    done  = Time.now
+
+    refute_in_delta done, start, SHORT_TIMEOUT
   end
 
-  def test_decides_to_continue_based_on_block_return_value
-    got_callback   = false
-    AX.register_for_notif(radio_gaga, KAXValueChangedNotification) do |_,_|
-      got_callback = true
-      false
-    end
+  def test_break_if_block_returns_falsey
+    AX.register_for_notif(radio_gaga, KAXValueChangedNotification) { |_,_| false }
+    action_for radio_gaga, KAXPressAction
+
+    start = Time.now
+    refute AX.wait_for_notif(SHORT_TIMEOUT)
+    done  = Time.now
+
+    refute_in_delta done, start, SHORT_TIMEOUT
+  end
+
+  def test_stops_if_block_returns_truthy
+    AX.register_for_notif(radio_gaga, KAXValueChangedNotification) { |_,_| true }
+    action_for radio_gaga, KAXPressAction
+    assert AX.wait_for_notif(SHORT_TIMEOUT)
+  end
+
+  def test_returns_triple
+    ret = AX.register_for_notif(radio_gaga, KAXValueChangedNotification) { |_,_| true }
+    assert_equal AXObserverGetTypeID(), CFGetTypeID(ret[0])
+    assert_equal radio_gaga, ret[1]
+    assert_equal KAXValueChangedNotification, ret[2]
+  end
+
+  def test_wait_stops_waiting_when_notif_received
+    AX.register_for_notif(radio_gaga, KAXValueChangedNotification) { |_,_| true }
     action_for radio_gaga, KAXPressAction
 
     start = Time.now
     AX.wait_for_notif(SHORT_TIMEOUT)
-    refute_in_delta Time.now, start, SHORT_TIMEOUT
-  end
-
-  def test_pauses_at_most_timeout_seconds
-    skip 'Test is order dependent right now'
-    start = Time.now
-    ret   = AX.wait_for_notif(SHORT_TIMEOUT)
     done  = Time.now
 
-    refute ret, 'Failed to wait'
-    assert_in_delta (done - start), SHORT_TIMEOUT, 0.01
+    msg = 'Might fail if your machine is under heavy load'
+    assert_in_delta done, start, 0.02, msg
+  end
+
+  def test_works_with_custom_notifs
+    got_callback = false
+    AX.register_for_notif(yes_button, CHEEZBURGER) do |_,_|
+      got_callback = true
+    end
+    action_for yes_button, KAXPressAction
+    AX.wait_for_notif(SHORT_TIMEOUT)
+    assert got_callback, 'did not get callback'
+  end
+
+  def test_unregistering_clears_notif
+    AX.register_for_notif(yes_button, CHEEZBURGER) { |_,_| true }
+    action_for yes_button, KAXPressAction
+  end
+
+  def test_unregistering_noops_if_not_registered
+    assert_block do
+      AX.unregister_notifs
+      AX.unregister_notifs
+      AX.unregister_notifs
+    end
+  end
+
+  def test_unregistering_sets_ignore_to_true
+    AX.register_for_notif(yes_button, CHEEZBURGER) { |_,_| true }
+    refute AX.instance_variable_get(:@ignore_notifs)
+    AX.unregister_notifs
+    assert AX.instance_variable_get(:@ignore_notifs)
   end
 
   def test_listening_to_app_catches_everything
     got_callback   = false
-    AX.register_for_notif(REF, KAXValueChangedNotification) do |el, notif|
+    AX.register_for_notif(REF, KAXValueChangedNotification) do |_,_|
       got_callback = true
     end
     action_for radio_gaga, KAXPressAction
     AX.wait_for_notif(TIMEOUT)
     assert got_callback
-  end
-
-  def test_works_with_custom_notifications
-    got_callback = false
-    button = yes_button
-    AX.register_for_notif(yes_button, CHEEZBURGER) do |_,_|
-      got_callback = true
-    end
-    action_for yes_button, KAXPressAction
-    AX.wait_for_notif(TIMEOUT)
-    assert got_callback
-  end
-
-  def test_returns_the_observer_notif_tuple
-    tuple = AX.register_for_notif(yes_button, CHEEZBURGER) do |_,_| end
-    # can't really test for a specific observer...
-    assert_equal yes_button, tuple.first
-    assert_equal CHEEZBURGER, tuple[1]
-  end
-
-  # there didn't seem to be a good way to unit test the cache...
-  # so this covers the regular workflow
-  def test_cache_is_updated_properly
-    notif    = [REF, KAXValueChangedNotification]
-    callback = false
-
-    AX.register_for_notif *notif do |_,_| callback = true end
-    assert AX.notifs.has_value? notif
-
-    set_attribute_for search_box, KAXValueAttribute, 'beef cake'
-
-    AX.wait_for_notif TIMEOUT
-    assert callback
-    refute AX.notifs.has_value? notif
-
-  ensure
-    set_attribute_for search_box, KAXValueAttribute, ''
-  end
-
-  def test_can_unregister_notifs_per_element
-    skip
-  end
-
-  def test_can_unregister_all_notifs
-    skip
   end
 
 end
