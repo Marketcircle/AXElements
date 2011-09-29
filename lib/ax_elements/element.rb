@@ -213,7 +213,7 @@ class AX::Element
   # @param [Hash{Symbol=>Object}] filters
   # @return [AX::Element,nil,Array<AX::Element>,Array<>]
   def search kind, filters = {}
-    kind      = kind.to_s.camelize!
+    kind      = kind.camelize
     klass     = kind.singularize
     search    = klass == kind ? :find : :find_all
     qualifier = Accessibility::Qualifier.new(klass, filters)
@@ -376,7 +376,7 @@ class AX::Element
   # @return [String]
   def notif_for name
     name  = name.to_s
-    const = "KAX#{name.dup.camelize!}Notification"
+    const = "KAX#{name.camelize}Notification"
     Kernel.const_defined?(const) ? Kernel.const_get(const) : name
   end
 
