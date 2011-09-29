@@ -11,9 +11,9 @@ computer.
 
 ## Getting Setup
 
-You need to have the OS X developer tools installed in order to get
-the full experience. Go ahead and install the tools now if you haven't
-done that yet, I'll wait.
+You need to have the OS X developer tools installed in build and
+install AXElements (sorry). Go ahead and install the tools now if you
+haven't done that yet, I'll wait.
 
 Once, you have the developer tools, you should install MacRuby, the
 latest release should be sufficient, but nightly builds are usually
