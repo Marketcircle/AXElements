@@ -1,10 +1,16 @@
 # Debugging
 
-Some times you need to see the big picture, the whole UI tree at
+This document includes instructions on using AXElements' built in
+tools to help you debug issues with your scripts, or in cases where
+you might find a bug in AXElements itself or MacRuby.
+
+## Trees
+
+Sometimes you need to see the big picture, the whole UI tree at
 once or at least be able to see the root of the hierarchy from where
 you are. For these troubling cases AXElements provides a few tools.
 
-## Text Tree
+### Text Tree
 
 Printing a text tree is similar to how a UI dump works with
 accessibility on iOS. AXElements does improve a bit on its iOS
@@ -35,7 +41,7 @@ but the text tree dump method uses {Accessibility::DFEnumerator}.
 
 ### Dot Graph
 
-__NOTE__: This feature isn't actually done yet.
+__NOTE__: This feature isn't actually done yet. Coming soon, I promise.
 
 For super fancy text trees, AXElements can generate dot graphs for
 consumption by [Graphviz](http://www.graphviz.org/). In this case, you
@@ -107,9 +113,10 @@ writable. Again, this was originally designed to more easily identify the
 point of failure when you try to write to an attribute that you should
 not write to.
 
-Specifically, `#set_focus` is called by methods internally by
+Specifically, `set_focus` is called by methods internally by
 AXElements and at one time it was causing some problems when elements
-were unexpectedly not allowing their `focused` attribute to be written.
+were unexpectedly not allowing their `focused` attribute to be
+written.
 
 ### Attribute Not Found
 
@@ -128,9 +135,7 @@ it might also be because of
 [MacRuby Ticket #1320](http://www.macruby.org/trac/ticket/1320) or
 some other freedom patch
 that AXElements or ActiveSupport adds to the run time. I have not been
-able to create a reduction of the problem so that Eloy can look at the
-problem, and since AXElements is not open source I cannot just ask
-someone else to look at the problem.
+able to create a reduction of the problem yet.
 
 The real problem is that loss of back trace happens for multiple
 exception classes. The [work around](https://gist.github.com/1107314)
@@ -149,11 +154,9 @@ sure when it will be done.
 In the mean time, if you suspect that the portion of a back trace that
 would come from a compiled file is the problem, then you can disable
 loading compiled files which will force MacRuby to load source ruby
-files instead.
-
-You can disable loading compiled files by setting the `VM_DISABLE_RBO`
-environment variable before running a script. You can disable loading
-for a single session like so:
+files instead. You can disable loading compiled files by setting the
+`VM_DISABLE_RBO` environment variable before running a script. You can
+disable loading for a single session like so:
 
     VM_DISABLE_RBO=1 macruby my_script.rb
 
@@ -166,14 +169,13 @@ in the MacRuby source repository for more details.
 The core level of AXElements has logging in every case that an error
 code is returned. Though, it can show false positives because of
 hiccups in the accessibility API or implementation that an app
-provides; so it turned off by default.
+provides; so it turned off by default. This feature is also going away
+in favour of more intelligent error handling in the core wrapper.
 
 When weird bugs are occuring, possibly even crashing MacRuby, you
-should try turning on the logs and then trying the script again, since
-that might reveal that the problem was with somebody's understanding
-of the accessibility contract.
-
-You can turn on logging right after you load AXElements, like so:
+should try turning on the logs and then trying the script again. You
+might see some tell tale logs printed out right before the crash. You
+can turn on logging right after you load AXElements, like so:
 
     require 'ax_elements'
     Accessibility.log.level = Logger::DEBUG
@@ -192,16 +194,14 @@ there is really only one culprit.
 
 When using certain gems, or when you have many gems installed, you
 will notice that the load time for your scripts is very
-long---possibly more than 10 seconds.
-
-There are many reasons why this happens, some of which we can fix
-ourselves and some of which you will have to wait for the MacRuby
-developers to fix.
+long---possibly more than 10 seconds. There are many reasons why this
+happens, some of which we can fix ourselves and some of which you will
+have to wait for the MacRuby developers to fix.
 
 #### Huge Literal Collections
 
-Some gems contain source code with almost
-[unbelievably large literal collection](https://github.com/sporkmonger/addressable/blob/master/lib/addressable/idna/pure.rb#L318),
+Some gems contain source code with
+[unbelievably large literal collections](https://github.com/sporkmonger/addressable/blob/master/lib/addressable/idna/pure.rb#L318),
 such as the `addressable` gem. This is a problem for MacRuby for two
 reasons.
 
@@ -218,13 +218,12 @@ for MacRuby and the LLVM to work through the code
 
 As it turns out, JIT isn't that great for short lived processes that
 need to start up over and over again. In fact, JIT mode for MacRuby
-was meant more for debugging, but complications in development have
-made it the norm for the time being.
+was meant more for debugging.
 
 The work around to this situation will have to come from upstream gem
 developers and MacRuby itself. In the mean time, compiling these gems
 will usually make them load _significantly_ faster. To compile gems,
-you need to install the
+you can install the
 [`rubygems-compile`](https://github.com/ferrous26/rubygems-compile)
 plug-in for rubygems. Follow the instructions from the plug-ins `README`
 to learn how to use it and to know which version to install.
@@ -234,11 +233,10 @@ to learn how to use it and to know which version to install.
 Another problem that can cause long load times is complex
 metaprogramming. Gems such as `rspec` do a lot of weird stuff at boot
 that causes the MacRuby optimizer to do a lot of work. `rspec` alone
-can add nearly 10 seconds to boot time.
-
-In this case you can tell the optimizer to not try so hard; this will
-result in slower run time performance, but it is likely worth the
-trade off in the case of `rspec`.
+can add nearly 10 seconds to boot time. In this case you can tell the
+optimizer to not try so hard; this will result in slower run time
+performance, but it is likely worth the trade off in the case of
+`rspec` (unless you compile).
 
 You can set the optimization level for MacRuby just as you would
 disable loading compiled code:
@@ -259,16 +257,17 @@ but I am not sure it is worth the trade off at that point.
 
 #### Rubygems
 
-Rubygems suffers from a lot of technical debt. Many features were
-bolted on to the project over time and it has added a large overhead
-in allocations when activating gems at run time. As few as 25
-installed gems can add an extra 2 seconds to your boot time.
+Rubygems suffers from a lot of technical debt. The process of
+activating a gem incurs so many allocations that with as few as 25
+installed gems can add an extra 2 seconds to your boot time. What is
+worse, the performance degrades exponentially as you install more
+gems.
 
 The only fix for this is to cleanup and fix rubygems. Fortunately this
 has been underway since the rubygems 1.4; the downside is that MacRuby
 has customizations to rubygems that prevent users from upgrading
 themselves. We need to wait for new MacRuby releases to bundle new
-rubygems versions.
+rubygems versions in order to fix this issue.
 
 ### Slow Runtime Performance
 
@@ -276,7 +275,7 @@ In my experience, slow runtime performance in MacRuby is almost always
 the result of many allocations. If your code is runinng abnormally
 slow then it is likely that you are allocating a lot of memory without
 realizing it, and you should compare performance to CRuby if it is
-important (and possible to run the code on CRuby).
+important (and if it is possible to run the code on CRuby).
 
 Remember that things like literal strings have to be copied every time
 the line of code they are on is run, whereas immutable things like
@@ -298,11 +297,10 @@ the same copy for all the other changes. Example code would look like this:
 
 Remember that built-in in-place methods tend to return `nil` if they
 don't make any changes, which means you need to explicitly return the
-new object at the end of the method.
-
-There are still many other easily avoidable cases where you could end
-up allocating a lot of memory which are not covered. If it is
-important you willl just have to analyze your code.
+new object at the end of the method. There are still many other easily
+avoidable cases where you could end up allocating a lot of memory
+which are not covered. If it is important you willl just have to
+analyze your code.
 
 Sometimes allocating a lot of memory is not avoidable; running RSpec
 would be an example of this. In these cases you just have to bite the
@@ -312,9 +310,8 @@ bullet.
 
 Or look at the AXElements source code for that matter. The source is
 well documented and hopefully not too clever, so it shouldn't be too
-hard to figure things out. Logging bugs may be difficult since there
-is no bug tracker for AXElements and the original developer isn't
-around anymore.
+hard to figure things out. You can log AXElements bugs on Github where
+the source is being hosted.
 
 Though, sometimes the problem will be a MacRuby problem and the best
 way to get it fixed is to
