@@ -48,12 +48,12 @@ module Accessibility::PPInspector
 
     if attributes.include? KAXTitleUIElementAttribute
       val = attribute :title_ui_element
-      return ' ' + val.inspect if val
+      return BUFFER + val.inspect if val
     end
 
     if attributes.include? KAXDescriptionAttribute
       val = attribute(:description).to_s
-      return ' ' + val unless val.empty?
+      return BUFFER + val unless val.empty?
     end
 
     if attributes.include? KAXIdentifierAttribute
@@ -100,5 +100,17 @@ module Accessibility::PPInspector
   def pp_checkbox value
     " #{value}[#{attribute(value) ? '✔' : '✘'}]"
   end
+
+
+  private
+
+  ##
+  # @private
+  #
+  # A string with a single space, used as a buffer. This is a
+  # performance hack.
+  #
+  # @return [String]
+  BUFFER = ' '.freeze
 
 end
