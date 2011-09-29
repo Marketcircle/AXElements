@@ -120,6 +120,9 @@ with `@todo` tags.
 - Test framework helpers
   + Minitest
   + RSpec
+- Thread Saftey
+  + Only if it becomes an issue, otherwise it might be better to
+  forget thread safey to simplify and optimize existing code
 
 ### Future
 
