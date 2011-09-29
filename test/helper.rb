@@ -7,24 +7,22 @@ require 'stringio'
 
 # We want to launch the test app and make sure it responds to
 # accessibility queries, but that is difficult, so we just sleep
-APP_BUNDLE_IDENTIFIER = 'com.marketcircle.AXElementsTester'
+APP_BUNDLE_URL = NSURL.URLWithString File.expand_path './test/fixture/Release/AXElementsTester.app'
 
-if NSWorkspace.sharedWorkspace.launchAppWithBundleIdentifier  APP_BUNDLE_IDENTIFIER,
+error = Pointer.new :id
+TEST_APP = NSWorkspace.sharedWorkspace.launchApplicationAtURL APP_BUNDLE_URL,
                                                      options: NSWorkspaceLaunchAsync,
-                              additionalEventParamDescriptor: nil,
-                                            launchIdentifier: nil
-  sleep 3 # we have no good way of knowing exactly when the app is ready
-else
-  $stderr.puts 'You need to build the fixture app before running tests'
+                                               configuration: {},
+                                                       error: error
+if error[0]
+  $stderr.puts 'You need to build AND run the fixture app before running tests'
   $stderr.puts 'Run `rake fixture`'
   exit 3
-end
-
-# Make sure the test app is closed when testing finishes
-at_exit do
-  NSWorkspace.sharedWorkspace.runningApplications.find do |app|
-    app.bundleIdentifier == APP_BUNDLE_IDENTIFIER
-  end.terminate
+else
+  sleep 3 # I haven't yet figured out a good way of knowing exactly
+          # when the app is ready
+  # Make sure the test app is closed when testing finishes
+  at_exit do TEST_APP.terminate end
 end
 
 
@@ -101,6 +99,7 @@ class TestAX < MiniTest::Unit::TestCase
   include AXHelpers
   extend AXHelpers
 
+  APP_BUNDLE_IDENTIFIER = 'com.marketcircle.AXElementsTester'
   PID = pid_for APP_BUNDLE_IDENTIFIER
   REF = AXUIElementCreateApplication(PID)
 
