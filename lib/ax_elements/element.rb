@@ -351,7 +351,7 @@ class AX::Element
   # Like {#respond_to?}, this is overriden to include attribute methods.
   def methods include_super = true, include_objc_super = false
     names = attributes.map { |x| self.class.strip_prefix(x).underscore.to_sym }
-    names + super
+    names << super
   end
 
   ##
