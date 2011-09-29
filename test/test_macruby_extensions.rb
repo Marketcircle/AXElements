@@ -72,22 +72,18 @@ class TestNSArrayToRect < MiniTest::Unit::TestCase
 end
 
 
-class TestNSMutableStringCamelizeBang < MiniTest::Unit::TestCase
+class TestNSStringCamelize < MiniTest::Unit::TestCase
 
   def test_takes_snake_case_string_and_makes_it_camel_case
-    assert_equal 'AMethodName', 'a_method_name'.camelize!
-    assert_equal 'MethodName',  'method_name'.camelize!
-    assert_equal 'Name',        'name'.camelize!
+    assert_equal 'AMethodName', 'a_method_name'.camelize
+    assert_equal 'MethodName',  'method_name'.camelize
+    assert_equal 'Name',        'name'.camelize
   end
 
   def test_takes_camel_case_and_does_nothing
-    assert_equal 'AMethodName', 'AMethodName'.camelize!
-    assert_equal 'MethodName',  'MethodName'.camelize!
-    assert_equal 'Name',        'Name'.camelize!
-  end
-
-  def test_nil_if_empty_string
-    assert_nil ''.camelize!
+    assert_equal 'AMethodName', 'AMethodName'.camelize
+    assert_equal 'MethodName',  'MethodName'.camelize
+    assert_equal 'Name',        'Name'.camelize
   end
 
 end
