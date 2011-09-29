@@ -19,7 +19,7 @@ module Accessibility::PPInspector
   # Added for backwards compatability with Snow Leopard.
   #
   # @return [String]
-  KAXIdentifierAttribute = 'AXIdentifier'
+  KAXIdentifierAttribute = 'AXIdentifier'.freeze
 
   ##
   # @todo I feel a bit bad about having such a large method that has
