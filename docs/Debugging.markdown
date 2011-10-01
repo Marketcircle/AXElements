@@ -4,6 +4,27 @@ This document includes instructions on using AXElements' built in
 tools to help you debug issues with your scripts, or in cases where
 you might find a bug in AXElements itself or MacRuby.
 
+## Visibility
+
+Sometimes an object that should be visible to accessibility does not
+show up. Sometimes it will be invisible to the Accessibility Inspector
+and sometimes it will be invisible to AXElements. This is because the
+inspector uses hit testing to find objects and AXElements uses the
+`children` and `parent` attributes (usually). Depending on which part
+of the accessibility protocol is not being implemented correctly, one
+or both tools might fail to work.
+
+Fortunately, failures in the accessibility API are few and far
+between. The one big,
+[known issue](http://openradar.appspot.com/6832098) is with menu bar
+items; you cannot work around this issue without hacking into private
+Apple APIs. Specifically, you would need to override built in
+accessibility methods in the class that implement the user interface
+for NSStatusItem, which is a private class; or you could build your
+status bar item as an NSMenuExtra, which is another private class. You
+can find more tips on augmenting accessibility for apps in the
+{file:docs/AccessibilityTips.markdown Accessibility Tips} document.
+
 ## Trees
 
 Sometimes you need to see the big picture, the whole UI tree at
