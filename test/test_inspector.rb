@@ -73,6 +73,12 @@ class TestPPInspector < MiniTest::Unit::TestCase
     assert_match /\(3\.14, -5\.0\)/, pp_position
   end
 
+  # this sometimes happens, even though it shouldn't
+  def test_position_is_nil
+    @attribute = nil
+    assert_equal ::EMPTY_STRING, pp_position
+  end
+
   def test_children_pluralizes_properly
     @size_of = 2
     assert_match /2 children/, pp_children

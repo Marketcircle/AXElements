@@ -71,7 +71,11 @@ module Accessibility::PPInspector
   # @return [String]
   def pp_position
     position = attribute :position
-    " (#{position.x}, #{position.y})"
+    if position
+      " (#{position.x}, #{position.y})"
+    else
+      ::EMPTY_STRING
+    end
   end
 
   ##
