@@ -37,7 +37,8 @@ module Accessibility::PPInspector
       if val.kind_of? NSString
         return " #{val.inspect}" unless val.empty?
       else
-        return " value=#{val.inspect}"
+        # we assume that nil is not a legitimate value
+        return " value=#{val.inspect}" unless val.nil?
       end
     end
 

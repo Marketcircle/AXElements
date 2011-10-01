@@ -24,7 +24,10 @@ class TestPPInspector < MiniTest::Unit::TestCase
     assert_match /value=3.14/, pp_identifier
 
     @attribute  = ''
-    assert_match NSString.string, pp_identifier
+    assert_match ::EMPTY_STRING, pp_identifier
+
+    @attribute  = nil
+    assert_match ::EMPTY_STRING, pp_identifier
   end
 
   def test_identifier_using_title
