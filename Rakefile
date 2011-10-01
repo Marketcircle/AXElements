@@ -70,7 +70,7 @@ task :fixture do
 end
 
 require 'rake/testtask'
-Rake::TestTask.new(:test) do |t|
+Rake::TestTask.new do |t|
   t.libs     << 'test' << 'ext/key_coder'
   t.pattern   = 'test/**/test_*.rb'
   t.ruby_opts = ['-rhelper']
