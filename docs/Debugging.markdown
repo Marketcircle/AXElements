@@ -62,14 +62,19 @@ but the text tree dump method uses {Accessibility::DFEnumerator}.
 
 ### Dot Graph
 
-__NOTE__: This feature isn't actually done yet. Coming soon, I promise.
-
 For super fancy text trees, AXElements can generate dot graphs for
 consumption by [Graphviz](http://www.graphviz.org/). In this case, you
 want to call {Accessibility.graph} and pass the root of the tree you
 want to have turned into a dot graph; you will get a string back that
 you will then need to give to Graphviz in order to generate the visual
 graph.
+
+    File.open('graph.dot', 'w') do |file|
+      app = Accessibility.application_with_name 'Terminal'
+      file.write Accessibility.graph(app.window)
+    end
+    `dot graph.dot -Tpng > graph.png`
+    `open graph.png`
 
 ### Text Tree Won't Print?
 

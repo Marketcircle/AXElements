@@ -31,7 +31,9 @@ class << Accessibility
   #
   # @return [String]
   def graph root
-    raise NotImplementedError, 'Please implement me, :('
+    dot = Accessibility::Graph.new(root)
+    dot.build!
+    dot.to_s
   end
 
   ##
@@ -162,3 +164,4 @@ end
 
 require 'ax_elements/accessibility/enumerators'
 require 'ax_elements/accessibility/qualifier'
+require 'ax_elements/accessibility/graph'
