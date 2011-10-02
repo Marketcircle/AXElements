@@ -21,18 +21,18 @@ safe as well. If you are on Snow Leopard, you will also need to
 install the
 [Bridge Support Preview](http://www.macruby.org/blog/2010/10/08/bridgesupport-preview.html).
 
-At this point you should install development dependencies. You can do
-so with `bundler` if you have it, but it will be faster to use the
-`setup_dev` task that has been provided. Simply type the following in
-terminal:
+At this point you should install the gems that AXElements depends
+on. You can do so with `bundler` if you have it, but it will be faster
+to use the `setup_dev` task that has been provided. Simply type the
+following in Terminal:
 
     rake setup_dev
 
 __NOTE__: if you are not using RVM, then you should use `macrake`
-instead of `rake` for this command and anywhere else that you see
-`rake` in the documentation. Also, remember that if you are not using
-RVM with MacRuby but still have RVM installed then you will need to
-disable RVM like so:
+instead of `rake`, and do so for any other references to `rake` in the
+documentation. Also, remember that if you are not using RVM with
+MacRuby but still have RVM installed then you will need to disable RVM
+like so:
 
     rvm use system
 
@@ -56,7 +56,7 @@ of topics include:
 AXElements is documented using YARD, and includes a few tutorials in
 the `docs/` directory. If you do not want to generate the
 documentation yourself then you can go to
-[rdoc.info](http://rdoc.info/gems/AXElements/frames).
+[rdoc.info](http://rdoc.info/github/Marketcircle/AXElements/master/frames).
 
 Though it is not required, you may want to read Apple's
 [Accessibility Overview](http://developer.apple.com/library/mac/#documentation/Accessibility/Conceptual/AccessibilityMacOSX/OSXAXModel/OSXAXmodel.html)
@@ -68,18 +68,18 @@ Before starting development on your machine, you should run the test
 suite and make sure things are kosher. The nature of this library
 requires that the tests take over your computer while they run. The
 tests aren't programmed to do anything destructive, but if you
-interfere with them then something could go wrong.
-
-To run the tests you simply need to run the `test` task:
+interfere with them then something could go wrong. To run the tests
+you simply need to run the `test` task:
 
     rake test
 
-__NOTE__: there may be some tests are dependent on Accessibility
+__NOTE__: There may be some tests are dependent on Accessibility
 features that are new in OS X Lion which will cause test failures on
 OS X Snow Leopard. If you have any issues then you should look at the
-output to find hints at what went wrong and/or log a bug. I will still
-support Snow Leopard as long as MacRuby does, but I do not have easy
-access to a Snow Leopard machine to verify that things still work.
+output to find hints at what went wrong and/or log a bug. AXElements
+will support Snow Leopard for as long as MacRuby does, but I do not
+have easy access to a Snow Leopard machine to verify that things still
+work.
 
 ### Benchmarks
 
@@ -91,7 +91,7 @@ disabled by default. In order to enable them you need to set the
 
 Benchmarks only exist for code that is known to be slow. I'm keeping
 tabs on slow code so that I be confident about getting depressed when
-it gets slower. Though, there is still room for improved performance
+it gets slower. Though, there is still room for improving performance
 as well.
 
 ## Road Map
