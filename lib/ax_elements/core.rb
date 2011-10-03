@@ -441,10 +441,15 @@ class << AX
   #   system-wide object
   # @param [Array<Array(Number,Boolean)>]
   def post_kb_events element, events
+		# This is just a magic number from trial and error. I tried both the repeat interval (NXKeyRepeatInterval) and threshold (NXKeyRepeatThreshold) but both were way too big.
+		key_rate = 0.009
+		
     events.each do |event|
       code = AXUIElementPostKeyboardEvent(element, 0, *event)
       log_error element, code unless code.zero?
     end
+		
+		sleep events.count * key_rate
   end
 
   ##
