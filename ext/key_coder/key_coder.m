@@ -44,7 +44,7 @@ static void mAX_initialize_keycode_map() {
                     keyCode,
                     kUCKeyActionDown,
                     0,
-                    0, // kb type
+                    LMGetKbdType(), // kb type
                     0, // OptionBits keyTranslateOptions,
                     &deadKeyState,
                     255,
@@ -53,7 +53,7 @@ static void mAX_initialize_keycode_map() {
                     );
 
     [mAX_keycode_map setObject:[NSNumber numberWithInt:keyCode]
-                        forKey:[NSString stringWithFormat:@"%C", string[0]]];
+												forKey:[NSString stringWithCharacters:string length:actualStringLength]];
   }
 
 }

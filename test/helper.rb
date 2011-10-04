@@ -7,14 +7,14 @@ require 'stringio'
 
 # We want to launch the test app and make sure it responds to
 # accessibility queries, but that is difficult, so we just sleep
-APP_BUNDLE_URL = NSURL.URLWithString File.expand_path './test/fixture/Release/AXElementsTester.app'
+APP_BUNDLE_URL = NSURL.fileURLWithPath File.expand_path './test/fixture/Release/AXElementsTester.app'
 
 error = Pointer.new :id
 TEST_APP = NSWorkspace.sharedWorkspace.launchApplicationAtURL APP_BUNDLE_URL,
                                                      options: NSWorkspaceLaunchAsync,
                                                configuration: {},
                                                        error: error
-if error[0]
+if TEST_APP.nil?
   $stderr.puts 'You need to build AND run the fixture app before running tests'
   $stderr.puts 'Run `rake fixture`'
   exit 3
