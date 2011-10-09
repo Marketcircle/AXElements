@@ -15,6 +15,7 @@ Perhaps you want to do something with the finder. This example opens a
 new Finder window, goes to the Applications directory, quick looks the
 first app and then opens the application:
 
+```ruby
     require 'rubygems'
     require 'ax_elements'
 
@@ -32,10 +33,12 @@ first app and then opens the application:
     sleep 1
 
     press finder.quick_look.button(identifier: 'QLControlOpen')
+```
 
 A simpler example would be changing the system volume by moving the
 slider in the menu bar:
 
+```ruby
     require 'rubygems'
     require 'AXElements'
 
@@ -45,26 +48,31 @@ slider in the menu bar:
     click volume
     15.times { decrement volume.slider }
     15.times { increment  volume.slider }
+```
 
 ## Getting Started
 
-The documentation is the best place to get started, it will help you
+The
+[documentation](http://rdoc.info/github/Marketcircle/AXElements/master/frames)
+is the best place to get started, it will help you
 get steup and includes a few tutorials with examples. Documentation is
 hosted by rdoc.info, but you can also generate it yourself using YARD.
 
 Documentation is stored in the `docs/` directory, but the
 documentation includes a number of cross references and even some
 pictures so you will lose a lot of the quality if you view them as
-plain text. You can view the generated documentation at rdoc.info
+plain text. You can view the generated documentation at
 [rdoc.info](http://rdoc.info/github/Marketcircle/AXElements/master/frames).
 
 If you want to jump ahead, you can install AXElements from rubygems:
 
+```bash
     # If you use MacRuby with RVM
     gem install AXElements
 
     # If you don't use MacRuby with RVM
     sudo macgem install AXElements
+```
 
 ## Contributing to AXElements
 
