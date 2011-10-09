@@ -74,7 +74,8 @@ Documentation can be found at
 
 Though it is not required, you may want to read Apple's
 [Accessibility Overview](http://developer.apple.com/library/mac/#documentation/Accessibility/Conceptual/AccessibilityMacOSX/OSXAXModel/OSXAXmodel.html)
-as a primer on some the technical underpinnings of AXElements.
+as a primer on some the rationale for the accessibility APIs as well
+as the technical underpinnings of AXElements.
 
 ## Test Suite
 
