@@ -420,7 +420,7 @@ class AX::Element
   #
   # @return [Hash{Symbol=>String}]
   @@const_map = Hash.new do |hash,key|
-    @@array.map { |x| hash[strip_prefix(x).underscore.to_sym] = x }
+    @@array.each { |x| hash[strip_prefix(x).underscore.to_sym] = x }
     if hash.has_key? key
       hash[key]
     else # try other cases of transformations
