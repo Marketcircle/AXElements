@@ -7,7 +7,8 @@ require 'ax_elements/accessibility'
 ##
 # @abstract
 #
-# The abstract base class for all accessibility objects.
+# The abstract base class for all accessibility objects. This class
+# provides generic functionality that all accessibility objects require.
 class AX::Element
   include Accessibility::PPInspector
 
@@ -74,7 +75,7 @@ class AX::Element
 
   ##
   # Needed to override inherited `NSObject#description`. If you want a
-  # description of the object use {#inspect} instead.
+  # description of the object then you should use {#inspect} instead.
   def description
     attribute :description
   end
