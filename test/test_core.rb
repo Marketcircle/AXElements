@@ -223,6 +223,10 @@ class TestKeyboardAction < TestCore
     post "\s"
   end
 
+  def test_hyphen
+    post '---'
+  end
+
 end
 
 
