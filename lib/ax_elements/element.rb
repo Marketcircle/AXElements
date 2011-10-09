@@ -482,7 +482,7 @@ class AX::Element
     # @param [String] const
     # @return [String]
     def strip_prefix const
-      const.sub /^[A-Z]*?AX(?:Is)?/, ::EMPTY_STRING
+      const.sub /^[A-Z]*?AX(?:Is)?|\s+/, ::EMPTY_STRING
     end
 
 

@@ -936,4 +936,8 @@ class TestStripPrefix < MiniTest::Unit::TestCase
     prefix_test 'AXAX', 'AX'
   end
 
+  def test_strips_spaces
+    prefix_test 'Quick Look', 'QuickLook'
+  end
+
 end
