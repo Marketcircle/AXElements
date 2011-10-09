@@ -4,7 +4,7 @@
 --markup markdown
 --markup-provider redcarpet
 --asset docs/images:images
---readme README.markdown
+--readme README.yard
 lib/**/*.rb
 ext/**/*.m
 -

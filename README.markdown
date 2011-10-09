@@ -9,126 +9,62 @@ GUI manipulation, whether it be finding controls on the screen,
 typing, clicking, or other ways in which a user can interact with the
 computer.
 
-## Getting Setup
+## Examples
 
-You need to have the OS X developer tools installed in build and
-install AXElements (sorry). Go ahead and install the tools now if you
-haven't done that yet, I'll wait.
+Perhaps you want to do something with the finder. This example opens a
+new Finder window, goes to the Applications directory, quick looks the
+first app and then opens the application:
 
-Once, you have the developer tools, you should install MacRuby, the
-latest release should be sufficient, but nightly builds are usually
-safe as well. If you are on Snow Leopard, you will also need to
-install the
-[Bridge Support Preview](http://www.macruby.org/blog/2010/10/08/bridgesupport-preview.html).
+    require 'rubygems'
+    require 'ax_elements'
 
-At this point you should install the gems that AXElements depends
-on. You can do so with `bundler` if you have it, but it will be faster
-to use the `setup_dev` task that has been provided. Simply type the
-following in Terminal:
+    finder = Accessibility.application_with_bundle_identifier 'com.apple.finder'
+    set_focus finder
 
-    rake setup_dev
+    menu = finder.menu_bar_item(title: 'File')
+    press menu
+    press menu.menu_item(title: 'New Finder Window')
+    sleep 1 # otherwise everything happens as fast as possible
 
-__NOTE__: if you are not using RVM, then you should use `macrake`
-instead of `rake`, and do so for any other references to `rake` in the
-documentation. Also, remember that if you are not using RVM with
-MacRuby but still have RVM installed then you will need to disable RVM
-like so:
+    window = finder.main_window
+    click window.outline.row(static_text: { value: 'Applications' })
+    press window.toolbar.button(description: 'Quick Look')
+    sleep 1
 
-    rvm use system
+    press finder.quick_look.button(identifier: 'QLControlOpen')
 
-Once you are setup, you can start looking through the tutorial
-documentation to show you how to use AXElements. The first tutorial is
-the {file:docs/Inspecting.markdown Inspecting tutorial}. The full list
-of topics include:
+A simpler example would be changing the system volume by moving the
+slider in the menu bar:
 
-* {file:docs/Inspecting.markdown Inspecting}
-* {file:docs/Acting.markdown Acting}
-* {file:docs/Searching.markdown Searching}
-* {file:docs/Notifications.markdown Notifications}
-* {file:docs/KeyboardEvents.markdown Keyboard}
-* {file:docs/Debugging.markdown Debugging}
-* {file:docs/NewBehaviour.markdown Adding Behaviour To AXElements}
-* {file:docs/AccessibilityTips.markdown Making Your Apps More Accessibile}
-* {file:docs/TestingExtensions.markdown Test Suite Extensions for RSpec, Minitest, etc.}
+    require 'rubygems'
+    require 'AXElements'
 
-## Documentation
+    ui = Accessibility.application_with_bundle_identifier 'com.apple.systemuiserver'
+    volume = ui.menu_extra(description: 'system sound volume')
 
-AXElements is documented using YARD, and includes a few tutorials in
-the `docs/` directory. If you do not want to generate the
-documentation yourself then you can go to
+    click volume
+    15.times { decrement volume.slider }
+    15.times { increment  volume.slider }
+
+## Getting Started
+
+The documentation is the best place to get started, it will help you
+get steup and includes a few tutorials with examples. Documentation is
+hosted by rdoc.info, but you can also generate it yourself using YARD.
+
+Documentation is stored in the `docs/` directory, but the
+documentation includes a number of cross references and even some
+pictures so you will lose a lot of the quality if you view them as
+plain text. You can view the generated documentation at rdoc.info
 [rdoc.info](http://rdoc.info/github/Marketcircle/AXElements/master/frames).
 
-Though it is not required, you may want to read Apple's
-[Accessibility Overview](http://developer.apple.com/library/mac/#documentation/Accessibility/Conceptual/AccessibilityMacOSX/OSXAXModel/OSXAXmodel.html)
-as a primer on some the technical underpinnings of AXElements.
+If you want to jump ahead, you can install AXElements from rubygems:
 
-## Test Suite
+    # If you use MacRuby with RVM
+    gem install AXElements
 
-Before starting development on your machine, you should run the test
-suite and make sure things are kosher. The nature of this library
-requires that the tests take over your computer while they run. The
-tests aren't programmed to do anything destructive, but if you
-interfere with them then something could go wrong. To run the tests
-you simply need to run the `test` task:
-
-    rake test
-
-__NOTE__: There may be some tests are dependent on Accessibility
-features that are new in OS X Lion which will cause test failures on
-OS X Snow Leopard. If you have any issues then you should look at the
-output to find hints at what went wrong and/or log a bug. AXElements
-will support Snow Leopard for as long as MacRuby does, but I do not
-have easy access to a Snow Leopard machine to verify that things still
-work.
-
-### Benchmarks
-
-Benchmarks are also included as part of the test suite, but they are
-disabled by default. In order to enable them you need to set the
-`BENCH` environment variable:
-
-    BENCH=1 rake test
-
-Benchmarks only exist for code that is known to be slow. I'm keeping
-tabs on slow code so that I be confident about getting depressed when
-it gets slower. Though, there is still room for improving performance
-as well.
-
-## Road Map
-
-There are still a bunch of things that could be done to improve
-AXElements. The README only contains an idealized outline of some of
-the high-level items that should get done in the next couple of
-releases. Smaller items are peppered through the code base and marked
-with `@todo` tags.
-
-### 0.7 (or maybe 1.0)
-
-- Pre-loading AX hierarchy and attribute cache from
-  `/System/Library/Accessibility/AccessibilityDefinitions.plist`
-  + Not available on Snow Leopard, so it will have to wait anyways
-  + Probably inccurs too much overhead at boot time right now
-- Make a decision about NSArray#method_missing
-- Merge notifications with actions as they are commonly combined
-  + But how?
-- Rewrite core module to handle errors more gracefully
-- Mouse module cleanup and regression testing
-- Test suite deduplication cleanup and better isolation
-- Performance tweaks
-- The OO abstraction leaks in a few places, code needs to be
-  refactored without hurting performance too much
-- Test framework helpers
-  + Minitest
-  + RSpec
-- Thread Safety
-  + Only if it becomes an issue, otherwise it might be better to
-  forget thread safey to simplify and optimize existing code
-
-### Future
-
-- Screenshot taking and diff'ing abilities for those rare cases when
-  you need it
-- Address Book helpers, and other friends
+    # If you don't use MacRuby with RVM
+    sudo macgem install AXElements
 
 ## Contributing to AXElements
 
@@ -146,5 +82,4 @@ Copyright (c) 2010-2011 Marketcircle Incorporated. All rights
 reserved.
 
 AXElements is available under the standard 3-clause BSD license. See
-{file:LICENSE.txt LICENSE.txt} for further details.
-
+LICENSE.txt for further details.
