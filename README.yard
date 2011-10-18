@@ -135,6 +135,8 @@ with `@todo` tags.
   + Only if it becomes an issue, otherwise it might be better to
   forget thread safey to simplify and optimize existing code
 
+![The Moon](images/next_version.png)
+
 ### Future
 
 - Screenshot taking and diff'ing abilities for those rare cases when
