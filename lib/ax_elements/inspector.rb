@@ -12,6 +12,9 @@
 #
 module Accessibility::PPInspector
 
+
+  protected
+
   ##
   # Added for backwards compatability with Snow Leopard.
   #
