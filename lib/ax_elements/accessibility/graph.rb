@@ -57,6 +57,11 @@ class Accessibility::Graph
       @shape  = nil # based on size? or based on type (literal, structural)?
       @colour = nil # rotate a la minitest?
     end
+
+    # @return [String]
+    def to_s
+      "#{id} [label=\"#{label}\"]"
+    end
   end
 
   ##
@@ -76,7 +81,7 @@ class Accessibility::Graph
   ##
   # Construct the list of nodes and edges for the graph...
   def build!
-    Accessibility::BFEnumerator.new(nodes.first.ref).each do |element|
+    Accessibility::BFEnumerator.new(nodes.last.ref).each do |element|
       add_node element
     end
   end
@@ -104,30 +109,10 @@ class Accessibility::Graph
   # @return [String]
   def to_s
     graph  = "digraph {\n"
-    graph << nodes_list
-    graph << edges_list
-    graph << "}\n"
-  end
-
-  ##
-  # Generate the string for the list of nodes.
-  #
-  # @return [String]
-  def nodes_list
-    nodes.reduce('') do |string, node|
-      string << "#{node.id} [label=\"#{node.label}\"]\n"
-    end
-  end
-
-  ##
-  # Generate the string for the list of edges.
-  #
-  # @return [String]
-  def edges_list
+    graph << nodes.map { |node| "#{node.to_s}\n" }.join
     edges.delete_if { |_,v| v == :root } # remove hack
-    edges.reduce('') do |string, pair|
-      string << "#{pair.second.id} -> #{pair.first.id}\n"
-    end
+    graph << edges.map { |edge| "#{edge.second.id} -> #{edge.first.id}\n" }.join
+    graph << "}\n"
   end
 
 end
