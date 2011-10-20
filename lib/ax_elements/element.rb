@@ -356,7 +356,7 @@ class AX::Element
   #
   # Like {#respond_to?}, this is overriden to include attribute methods.
   def methods include_super = true, include_objc_super = false
-    names = attributes.map { |x| self.class.strip_prefix(x).underscore.to_sym }
+    names = attributes.map { |x| @@unprefix[x].underscore.to_sym }
     names.concat super
   end
 
@@ -420,7 +420,7 @@ class AX::Element
   #
   # @return [Hash{Symbol=>String}]
   @@const_map = Hash.new do |hash,key|
-    @@array.each { |x| hash[strip_prefix(x).underscore.to_sym] = x }
+    @@array.each { |x| hash[@@unprefix[x].underscore.to_sym] = x }
     if hash.has_key? key
       hash[key]
     else # try other cases of transformations
@@ -474,16 +474,16 @@ class AX::Element
     #
     # @example
     #
-    #   AX.strip_prefix 'AXTitle'                    # => 'Title'
-    #   AX.strip_prefix 'AXIsApplicationEnabled'     # => 'ApplicationEnabled'
-    #   AX.strip_prefix 'MCAXEnabled'                # => 'Enabled'
-    #   AX.strip_prefix KAXWindowCreatedNotification # => 'WindowCreated'
-    #   AX.strip_prefix NSAccessibilityButtonRole    # => 'Button'
+    #   unprefix 'AXTitle'                    # => 'Title'
+    #   unprefix 'AXIsApplicationEnabled'     # => 'ApplicationEnabled'
+    #   unprefix 'MCAXEnabled'                # => 'Enabled'
+    #   unprefix KAXWindowCreatedNotification # => 'WindowCreated'
+    #   unprefix NSAccessibilityButtonRole    # => 'Button'
     #
     # @param [String] const
     # @return [String]
-    def strip_prefix const
-      const.sub /^[A-Z]*?AX(?:Is)?|\s+/, ::EMPTY_STRING
+    @@unprefix = Hash.new do |hash, key|
+      hash[key] = key.sub /^[A-Z]*?AX(?:Is)?|\s+/, ::EMPTY_STRING
     end
 
 
@@ -516,7 +516,7 @@ class AX::Element
     # @return [AX::Element]
     def process_element ref
       attrs = AX.attrs_of_element ref
-      role  = AX.role_for(ref, attrs).map! { |x| strip_prefix x }
+      role  = AX.role_for(ref, attrs).map! { |x| @@unprefix[x] }
       determine_class_for(role).new(ref, attrs)
     end
 

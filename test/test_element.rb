@@ -909,7 +909,7 @@ end
 class TestStripPrefix < MiniTest::Unit::TestCase
 
   def prefix_test before, after
-    assert_equal after, AX::Element.strip_prefix(before)
+    assert_equal after, AX::Element.class_variable_get(:@@unprefix)[before]
   end
 
   def test_removes_ax_prefix
