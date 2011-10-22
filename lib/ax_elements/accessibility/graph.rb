@@ -4,12 +4,34 @@
 class Accessibility::Graph
 
   ##
-  # Exploit the ordering of a breadth-first enumeration to simplify the
-  # creation of edges for the graph. This only works because the UI
-  # hiearchy is a simple tree.
-  #
-  # @return [Array<Accessibility::Graph::Node>]
-  attr_reader :edge_queue
+  # A node in the UI hierarchy. Used by {Accessibility::Graph} in order
+  # to build Graphviz dot graphs.
+  class Node
+
+    ##
+    # Unique identifier for the node.
+    #
+    # @return [String]
+    attr_reader :id
+
+    # @return [AX::Element]
+    attr_reader :ref
+
+    # @param [AX::Element]
+    def initialize element
+      @ref = element
+      @id  = "element_#{element.object_id}"
+    end
+
+    # @return [String]
+    def to_s
+      label   = "[label=\"#{ref.class}\"]"
+      enabled = (ref.respond_to?(:enabled) && ref.enabled) ? ::EMPTY_STRING   : '[color=grey]'
+      focus   = (ref.respond_to?(:focused) && ref.focused) ? '[style="bold"]' : ::EMPTY_STRING
+      "#{id} #{label} #{enabled} #{focus}"
+    end
+
+  end
 
   ##
   # List of nodes in the UI hierarchy.
@@ -18,57 +40,18 @@ class Accessibility::Graph
   attr_reader :nodes
 
   ##
-  # A node in the UI hierarchy. Used by {Accessibility::Graph} in order
-  # to build Graphviz dot graphs.
-  class Node
-
-    # @return [AX::Element]
-    attr_reader :ref
-
-    ##
-    # Unique identifier for the node.
-    #
-    # @return [String]
-    attr_reader :id
-
-    ##
-    # Label to use for displaying the node.
-    #
-    # @return [String]
-    attr_reader :label
-
-    ##
-    # Shape to draw the node as.
-    #
-    # @return [String]
-    attr_reader :shape
-
-    ##
-    # Colour to fill the node with.
-    #
-    # @return [String]
-    attr_reader :colour
-
-    # @param [AX::Element]
-    def initialize element
-      @ref    = element
-      @id     = "element_#{element.object_id}"
-      @label  = element.class.to_s
-      @shape  = nil # based on size? or based on type (literal, structural)?
-      @colour = nil # rotate a la minitest?
-    end
-
-    # @return [String]
-    def to_s
-      "#{id} [label=\"#{label}\"]"
-    end
-  end
-
-  ##
   # List of edges in the graph.
   #
   # @return [Hash{Accessibility::Graph::Node=>Accessibility::Graph::Node}]
   attr_reader :edges
+
+  ##
+  # Exploit the ordering of a breadth-first enumeration to simplify the
+  # creation of edges for the graph. This only works because the UI
+  # hiearchy is a simple tree.
+  #
+  # @return [Array<Accessibility::Graph::Node>]
+  attr_reader :edge_queue
 
   # @param [AX::Element]
   def initialize root
