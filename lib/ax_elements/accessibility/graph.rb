@@ -26,8 +26,21 @@ class Accessibility::Graph
     # @return [String]
     def to_s
       label   = "[label=\"#{ref.class}\"]"
-      enabled = (ref.respond_to?(:enabled) && ref.enabled) ? ::EMPTY_STRING   : '[color=grey]'
-      focus   = (ref.respond_to?(:focused) && ref.focused) ? '[style="bold"]' : ::EMPTY_STRING
+
+      enabled = if ref.respond_to?(:enabled) && !ref.enabled?
+                  '[style = filled] [color = "grey"]'
+                else
+                  ::EMPTY_STRING
+                end
+
+      focus   = if ref.respond_to?(:focused)
+                  if ref.focused?
+                    '[style = bold]'
+                  end
+                else
+                  ::EMPTY_STRING
+                end
+
       "#{id} #{label} #{enabled} #{focus}"
     end
 
