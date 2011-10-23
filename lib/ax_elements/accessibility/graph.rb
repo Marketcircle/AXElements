@@ -1,11 +1,21 @@
 ##
-# They see me graphing, they hating, patrolling they can't catch me
-# graphing dirty.
+# DOT graph generator for AXElements. It can generate the digraph code
+# for a UI subtree. That code can then be given to GraphViz to generate
+# an image for the graph.
 class Accessibility::Graph
 
   ##
+  # @todo Graphs could be a lot nicer looking. That is, nodes could be much
+  #       more easily identifiable, by allowing different classes to tell
+  #       the node more about itself. A mixin module/protocol should
+  #       probably be created, just as with the inspector mixin, and added
+  #       to abstract base and overridden as needed in subclasses. In this
+  #       way, an object can be more specific about what shape it is, how
+  #       it is coloured, etc.
+  #       Reference: http://www.graphviz.org/doc/info/attrs.html
+  #
   # A node in the UI hierarchy. Used by {Accessibility::Graph} in order
-  # to build Graphviz dot graphs.
+  # to build Graphviz DOT graphs.
   class Node
 
     ##
@@ -25,7 +35,7 @@ class Accessibility::Graph
 
     # @return [String]
     def to_s
-      label   = "[label=\"#{ref.class}\"]"
+      label   = "[label = \"#{ref.class}\"]"
 
       enabled = if ref.respond_to?(:enabled) && !ref.enabled?
                   '[style = filled] [color = "grey"]'
@@ -33,18 +43,45 @@ class Accessibility::Graph
                   ::EMPTY_STRING
                 end
 
-      focus   = if ref.respond_to?(:focused)
-                  if ref.focused?
-                    '[style = bold]'
-                  end
+      focus   = if ref.respond_to? :focused
+                  ref.focused? ? '[style = bold]' : ::EMPTY_STRING
                 else
                   ::EMPTY_STRING
                 end
 
-      "#{id} #{label} #{enabled} #{focus}"
+      shape   = ref.actions.empty? ? '[shape = oval]' : '[shape = box]'
+
+      "#{id} #{label} #{enabled} #{focus} #{shape}"
     end
 
   end
+
+  ##
+  # An edge in the UI hierarchy. Used by {Accessibility::Graph} in order
+  # to build Graphviz DOT graphs.
+  class Edge
+
+    ##
+    # The style of arrowhead to use
+    #
+    # @return [String]
+    attr_accessor :style
+
+    # @param [Accessibility::Graph::Node]
+    # @param [Accessibility::Graph::Node]
+    def initialize head, tail
+      @head = head
+      @tail = tail
+    end
+
+    # @return [String]
+    def to_s
+      arrow = style ? style : 'none'
+      "#{@head.id} -> #{@tail.id} [arrowhead = #{arrow}]"
+    end
+
+  end
+
 
   ##
   # List of nodes in the UI hierarchy.
@@ -55,7 +92,7 @@ class Accessibility::Graph
   ##
   # List of edges in the graph.
   #
-  # @return [Hash{Accessibility::Graph::Node=>Accessibility::Graph::Node}]
+  # @return [Array<Accessibility::Graph::Edge>]
   attr_reader :edges
 
   ##
@@ -68,30 +105,28 @@ class Accessibility::Graph
 
   # @param [AX::Element]
   def initialize root
-    @nodes      = []
-    @edges      = {}
-    @edge_queue = [:root] # hack
-    add_node      root
-  end
-
-  ##
-  # Construct the list of nodes and edges for the graph...
-  def build!
-    Accessibility::BFEnumerator.new(nodes.last.ref).each do |element|
-      add_node element
+    root_node   = Node.new(root)
+    @nodes      = [root_node]
+    @edges      = []
+    @edge_queue = []
+    root.size_of(:children).times do
+      @edge_queue << root_node
     end
   end
 
   ##
-  # Add a node to the graph, links edges for which it is a tail, and
-  # and prepare edges where the node will be the head.
+  # Construct the list of nodes and edges for the graph.
   #
-  # @param [AX::Element]
-  def add_node element
-    node   = Node.new(element)
-    nodes << node
-    edges[node] = edge_queue.shift
-    if element.respond_to? :children
+  # The secret sauce is that we create an edge queue to exploit the
+  # breadth first ordering of the enumerator, which makes building the
+  # edges very easy.
+  def build!
+    Accessibility::BFEnumerator.new(nodes.last.ref).each do |element|
+      node   = Node.new(element)
+      nodes << node
+      edges << Edge.new(node, edge_queue.shift)
+
+      next unless element.respond_to? :children
       element.size_of(:children).times do
         edge_queue << node
       end
@@ -106,8 +141,7 @@ class Accessibility::Graph
   def to_s
     graph  = "digraph {\n"
     graph << nodes.map { |node| "#{node.to_s}\n" }.join
-    edges.delete_if { |_,v| v == :root } # remove hack
-    graph << edges.map { |edge| "#{edge.second.id} -> #{edge.first.id}\n" }.join
+    graph << edges.map { |edge| "#{edge.to_s}\n" }.join
     graph << "}\n"
   end
 
