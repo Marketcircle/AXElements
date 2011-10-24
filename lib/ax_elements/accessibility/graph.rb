@@ -2,6 +2,9 @@
 # DOT graph generator for AXElements. It can generate the digraph code
 # for a UI subtree. That code can then be given to GraphViz to generate
 # an image for the graph.
+#
+# You can learn more about generating graphs in the
+# {file:docs/Debugging.markdown Debugging} tutorial.
 class Accessibility::Graph
 
   ##
