@@ -834,6 +834,10 @@ class TestElementMethods < TestElements
     assert_includes WINDOW.methods, :nyan
   end
 
+  def test_includes_objects_param_attributes
+    assert_includes static_text.methods, :string_for_range
+  end
+
   def test_does_not_break_interface_and_calls_super
     list = APP.methods
     [:send, :freeze, :nil?].each do |name|
