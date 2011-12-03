@@ -910,6 +910,19 @@ class TestElementEquivalence < TestElements
 end
 
 
+class TestElementConstMap < MiniTest::Unit::TestCase
+
+  def map
+    AX::Element.class_variable_get(:@@const_map)
+  end
+
+  def test_id_is_mapped_to_identifier
+    assert_equal KAXIdentifierAttribute, map[:id]
+  end
+
+end
+
+
 class TestStripPrefix < MiniTest::Unit::TestCase
 
   def prefix_test before, after

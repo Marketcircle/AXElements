@@ -430,6 +430,9 @@ class AX::Element
     end
   end
 
+  # preload the table
+  @@const_map[:id] = KAXIdentifierAttribute
+
 
   class << self
 
