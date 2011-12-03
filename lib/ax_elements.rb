@@ -13,6 +13,16 @@ You need to install the latest BridgeSupport preview for AXElements to work.
   EOS
 end
 
+
+unless Object.const_defined? :KAXIdentifierAttribute
+  ##
+  # Added for backwards compatability with Snow Leopard.
+  #
+  # @return [String]
+  KAXIdentifierAttribute = 'AXIdentifier'.freeze
+end
+
+
 require 'ax_elements/macruby_extensions'
 require 'ax_elements/version'
 require 'ax_elements/core'
