@@ -179,7 +179,12 @@ module Accessibility::Language
   #
   # @return [nil] do not rely on a return value
   def set element, change
-    set_focus element if element.attribute_writable? :focused
+    if element.respond_to? :focused
+      if element.attribute_writable? :focused
+        set_focus element
+      end
+    end
+
     key, value = change.is_a?(Hash) ? change.first : [:value, change]
     element.set_attribute key, value
   end
