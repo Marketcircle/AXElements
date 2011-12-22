@@ -105,11 +105,11 @@ end
 
 
 class TestAttrOfElementErrors < TestCore
-  include LoggingCapture
 
-  def test_logs_message_for_non_existant_attributes
-    with_logging do AX.attr_of_element REF, 'MADEUPATTRIBUTE' end
-    assert_match /#{KAXErrorAttributeUnsupported}/, @log_output.string
+  def test_raises_error_for_non_existant_attributes
+    assert_raises RuntimeError do
+      AX.attr_of_element REF, 'MADEUPATTRIBUTE'
+    end
   end
 
 end
@@ -125,8 +125,10 @@ class TestAttrOfElementWritable < TestCore
     refute AX.attr_of_element_writable?(REF, KAXTitleAttribute)
   end
 
-  def test_false_for_non_existante_attribute
-    refute AX.attr_of_element_writable?(REF, 'FAKE')
+  def test_false_for_non_existant_attribute
+    assert_raises RuntimeError do
+      AX.attr_of_element_writable?(REF, 'FAKE')
+    end
   end
 
 end
