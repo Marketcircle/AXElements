@@ -80,9 +80,24 @@ class << AX
   # @return [Fixnum]
   def attr_count_of_element element, attr
     ptr  = Pointer.new :long_long
-    code = AXUIElementGetAttributeValueCount(element, attr, ptr)
-    log_error element, attr unless code.zero?
-    ptr[0]
+    case AXUIElementGetAttributeValueCount(element, attr, ptr)
+    when KAXErrorSuccess
+      ptr[0]
+    when KAXErrorIllegalArgument
+      show2 element, attr,
+        "The element '#{element}' or the attr '#{attr}' is not a legal argument"
+    when KAXErrorAttributeUnsupported
+      show2 element, attr,
+        "'#{element.inspect}' does not support #{attr.inspect}"
+    when KAXErrorInvalidUIElement
+      show element, "The AXUIElementRef '#{element.inspect}' is no longer valid"
+    when KAXErrorCannotComplete
+      raise 'Some unspecified problem occurred with the AXAPI. Sorry. :('
+    when KAXErrorNotImplemented
+      show element, 'The program does not work with AXAPI properly'
+    else
+      raise 'You should never reach this line!'
+    end
   end
 
   ##
