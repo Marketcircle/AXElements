@@ -156,9 +156,26 @@ class << AX
   # @param [String] attr an attribute constant
   def attr_of_element_writable? element, attr
     ptr  = Pointer.new :bool
-    code = AXUIElementIsAttributeSettable(element, attr, ptr)
-    log_error element, code unless code.zero?
-    ptr[0]
+    case AXUIElementIsAttributeSettable(element, attr, ptr)
+    when KAXErrorSuccess
+      ptr[0]
+    when KAXErrorCannotComplete
+      raise 'Some unspecified problem occurred with the AXAPI. Sorry. :('
+    when KAXErrorIllegalArgument
+      show2 element, attr,
+        "The element '#{element}' or the attr '#{attr}' is not a legal argument"
+    when KAXErrorAttributeUnsupported
+      show2 element, attr,
+        "'#{element.inspect}' does not support #{attr.inspect}"
+    when KAXErrorNoValue
+      false
+    when KAXErrorInvalidUIElement
+      show element, "The AXUIElementRef '#{element.inspect}' is no longer valid"
+    when KAXErrorNotImplemented
+      show element, 'The program does not work with AXAPI properly'
+    else
+      raise 'You should never reach this line!'
+    end
   end
 
   ##
@@ -172,9 +189,24 @@ class << AX
   # @param [Object] value the new value to set on the attribute
   # @return [Object] returns the value that was set
   def set_attr_of_element element, attr, value
-    code = AXUIElementSetAttributeValue(element, attr, value)
-    log_error element, code unless code.zero?
-    value
+    case AXUIElementSetAttributeValue(element, attr, value)
+    when KAXErrorSuccess
+      value
+    when KAXErrorIllegalArgument
+      show3 element, attr, value
+        "You can't set '#{attr}' to '#{value}' for '#{element}'"
+    when KAXErrorAttributeUnsupported
+      show2 element, attr,
+        "'#{element.inspect}' does not support #{attr.inspect}"
+    when KAXErrorInvalidUIElement
+      show element, "The AXUIElementRef '#{element.inspect}' is no longer valid"
+    when KAXErrorCannotComplete
+      raise 'Some unspecified problem occurred with the AXAPI. Sorry. :('
+    when KAXErrorNotImplemented
+      show element, 'The program does not work with AXAPI properly'
+    else
+      raise 'You should never reach this line!'
+    end
   end
 
   # @group Actions
@@ -185,10 +217,23 @@ class << AX
   # @param [AXUIElementRef] element low level accessibility object
   # @return [Array<String>]
   def actions_of_element element
-    array_ptr = Pointer.new ARRAY
-    code = AXUIElementCopyActionNames(element, array_ptr)
-    log_error element, code unless code.zero?
-    array_ptr[0]
+    ptr  = Pointer.new ARRAY
+    case AXUIElementCopyActionNames(element, ptr)
+    when KAXErrorSuccess
+      ptr[0]
+    when KAXErrorIllegalArgument
+      show element, "'#{element.inspect}' is not an AXUIElementRef"
+    when KAXErrorInvalidUIElement
+      show element, "The AXUIElementRef '#{element.inspect}' is no longer valid"
+    when KAXErrorFailure
+      raise 'Some kind of system failure occurred, stopping to be safe'
+    when KAXErrorCannotComplete
+      raise 'Some unspecified problem occurred with the AXAPI. Sorry. :('
+    when KAXErrorNotImplemented
+      show element, 'The program does not work with AXAPI properly'
+    else
+      raise 'You should never reach this line!'
+    end
   end
 
   ##
@@ -198,8 +243,24 @@ class << AX
   # @param [String] action an action constant
   # @return [Boolean] true if successful
   def action_of_element element, action
-    code = AXUIElementPerformAction(element, action)
-    code.zero? ? true : (log_error(element, code); false)
+    case AXUIElementPerformAction(element, action)
+    when KAXErrorSuccess
+      true
+    when KAXErrorActionUnsupported
+      show2 element, action,
+        "The action '#{action}' cannot be performed by '#{action}'"
+    when KAXErrorIllegalArgument
+      show2 element, action,
+        "The element '#{element}' or the action '#{attr}' is not a legal argument"
+    when KAXErrorInvalidUIElement
+      show element, "The AXUIElementRef '#{element.inspect}' is no longer valid"
+    when KAXErrorCannotComplete
+      raise 'Some unspecified problem occurred with the AXAPI. Sorry. :('
+    when KAXErrorNotImplemented
+      show element, 'The program does not work with AXAPI properly'
+    else
+      raise 'You should never reach this line!'
+    end
   end
 
   ##
