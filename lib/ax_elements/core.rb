@@ -117,9 +117,7 @@ class << AX
       show2 element, attr,
         "The element '#{element}' or the attr '#{attr}' is not a legal argument"
     when KAXErrorNoValue
-      # @todo Should this be an error or should we just return nil?
-      show2 element, attr,
-        "The element '#{element}' has no value for attr '#{attr}'"
+      nil
     when KAXErrorInvalidUIElement
       show element, "The AXUIElementRef '#{element.inspect}' is no longer valid"
     when KAXErrorCannotComplete
