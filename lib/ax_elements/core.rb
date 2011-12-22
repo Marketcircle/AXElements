@@ -6,8 +6,7 @@ module Accessibility
     attr_accessor :log
   end
 
-  @log       = Logger.new $stderr
-  @log.level = Logger::ERROR # @todo lame
+  @log = Logger.new $stderr
 end
 
 ##
