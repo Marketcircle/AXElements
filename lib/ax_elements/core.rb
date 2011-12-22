@@ -110,9 +110,25 @@ class << AX
   # @param [String] attr an attribute constant
   def attr_of_element element, attr
     ptr  = Pointer.new :id
-    code = AXUIElementCopyAttributeValue(element, attr, ptr)
-    log_error element, code unless code.zero?
-    ptr[0]
+    case AXUIElementCopyAttributeValue(element, attr, ptr)
+    when KAXErrorSuccess
+      ptr[0]
+    when KAXErrorIllegalArgument
+      show2 element, attr,
+        "The element '#{element}' or the attr '#{attr}' is not a legal argument"
+    when KAXErrorNoValue
+      # @todo Should this be an error or should we just return nil?
+      show2 element, attr,
+        "The element '#{element}' has no value for attr '#{attr}'"
+    when KAXErrorInvalidUIElement
+      show element, "The AXUIElementRef '#{element.inspect}' is no longer valid"
+    when KAXErrorCannotComplete
+      raise 'Some unspecified problem occurred with the AXAPI. Sorry. :('
+    when KAXErrorNotImplemented
+      show element, 'The program does not work with AXAPI properly'
+    else
+      raise 'You should never reach this line!'
+    end
   end
 
   ##
