@@ -51,9 +51,24 @@ class << AX
   # @return [Array<String>]
   def attrs_of_element element
     ptr = Pointer.new ARRAY
-    code = AXUIElementCopyAttributeNames(element, ptr)
-    log_error element, code unless code.zero?
-    ptr[0]
+    case AXUIElementCopyAttributeNames(element, ptr)
+    when KAXErrorSuccess
+      ptr[0]
+    when KAXErrorAttributeUnsupported
+      show element, "Apparently #{element.inspect} doesn't have attributes"
+    when KAXErrorIllegalArgument
+      show element, "'#{element.inspect}' is not an AXUIElementRef"
+    when KAXErrorInvalidUIElement
+      show element, "The AXUIElementRef '#{element.inspect}' is no longer valid"
+    when KAXErrorFailure
+      raise 'Some kind of system failure occurred, stopping to be safe'
+    when KAXErrorCannotComplete
+      raise 'Some unspecified problem occurred with the AXAPI. Sorry. :('
+    when KAXErrorNotImplemented
+      show element, 'The program does not work with AXAPI properly'
+    else
+      raise 'You should never reach this line!'
+    end
   end
 
   ##
@@ -493,6 +508,30 @@ class << AX
     # @todo logger.info available parameterized attributes
     logger.debug "Backtrace: #{caller.description}"
     # @todo logger.debug pp hierarchy element or pp element
+  end
+
+  ##
+  # Simple macro for using CoreFoundation's version of `#inspect` on an
+  # element before raising the given message as an error.
+  #
+  # @param [AXUIElementRef]
+  # @param [String]
+  def show element, msg
+    CFShow(element)
+    raise msg
+  end
+
+  ##
+  # Macro for using CoreFoundation's version of `#inspect` on an
+  # element and argumnet before raising the given message as an error.
+  #
+  # @param [AXUIElementRef]
+  # @param [Object]
+  # @param [String]
+  def show2 element, arg, msg
+    CFShow(element)
+    CFShow(arg)
+    raise msg
   end
 
   ##
