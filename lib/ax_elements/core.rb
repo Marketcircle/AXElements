@@ -19,11 +19,8 @@ module AX
 end
 
 ##
-# @todo The current strategy dealing with errors is just to log them,
-#       but that may not always be the correct thing to do. The core
-#       has to be refactored around this issue to become more robust.
-#       I've already started doing this for newer APIs but the old ones
-#       are important as well.
+# @todo There is a lot of duplication related to error handling, and a
+#       bunch of it can be easily removed.
 # @todo I feel a bit weird having to instantiate a new pointer every
 #       time I want to fetch an attribute. Since allocations are costly
 #       it hurts performance a lot when it comes to searches. I wonder if
