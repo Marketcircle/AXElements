@@ -55,7 +55,7 @@ slider in the menu bar:
 The
 [documentation](http://rdoc.info/github/Marketcircle/AXElements/master/frames)
 is the best place to get started, it will help you
-get steup and includes a few tutorials with examples. Documentation is
+get setup and includes a few tutorials with examples. Documentation is
 hosted by rdoc.info, but you can also generate it yourself using YARD.
 
 Documentation is stored in the `docs/` directory, but the
@@ -64,14 +64,40 @@ pictures so you will lose a lot of the quality if you view them as
 plain text. You can view the generated documentation at
 [rdoc.info](http://rdoc.info/github/Marketcircle/AXElements/master/frames).
 
-If you want to jump ahead, you can install AXElements from rubygems:
+At the moment, it is best to install AXElements from source:
+
+```bash
+    git clone https://github.com/Marketcircle/AXElements.git
+    cd AXElements
+
+    # if you use MacRuby with RVM
+    rake setup_dev
+    rake install
+
+    # if you don't use MacRuby with RVM
+    sudo rake setup_dev
+    sudo rake install
+```
+
+## Development
+
+A stable release of AXElements is under way! The main focus is an
+overall refactoring to create a more robust core, end user features
+will become more consistent, and performance will
+increase. Documentation will be overhauled and more examples will be
+added. It will be magical, so we're code naming the next version
+"Clefairy".
+
+![The Moon](images/next_version.png)
+
+Proper releases to rubygems will be made as milestones are reached.
 
 ```bash
     # If you use MacRuby with RVM
-    gem install AXElements
+    gem install AXElements --pre
 
     # If you don't use MacRuby with RVM
-    sudo macgem install AXElements
+    sudo macgem install AXElements --pre
 ```
 
 ## Contributing to AXElements
