@@ -122,7 +122,6 @@ with `@todo` tags.
 - Make a decision about NSArray#method_missing
 - Merge notifications with actions as they are commonly combined
   + But how?
-- Rewrite core module to handle errors more gracefully
 - Mouse module cleanup and regression testing
 - Test suite deduplication cleanup and better isolation
 - Performance tweaks
