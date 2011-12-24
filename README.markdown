@@ -88,7 +88,7 @@ increase. Documentation will be overhauled and more examples will be
 added. It will be magical, so we're code naming the next version
 "Clefairy".
 
-![The Moon](images/next_version.png)
+![The Moon](https://github.com/Marketcircle/AXElements/raw/master/docs/images/next_version.png)
 
 Proper releases to rubygems will be made as milestones are reached.
 
