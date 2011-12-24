@@ -457,7 +457,7 @@ class << AX
   ##
   # @private
   #
-  # Pointer type encoding for `CFArrayRef` objects.
+  # `Pointer` type encoding for `CFArrayRef` objects.
   #
   # @return [String]
   ARRAY    = '^{__CFArray}'.freeze
@@ -465,7 +465,7 @@ class << AX
   ##
   # @private
   #
-  # Pointer type encoding for `AXUIElementRef` objects.
+  # `Pointer` type encoding for `AXUIElementRef` objects.
   #
   # @return [String]
   ELEMENT  = '^{__AXUIElement}'.freeze
@@ -473,7 +473,7 @@ class << AX
   ##
   # @private
   #
-  # Pointer type encoding for `AXObserverRef` objects.
+  # `Pointer` type encoding for `AXObserverRef` objects.
   #
   # @return [String]
   OBSERVER = '^{__AXObserver}'.freeze
