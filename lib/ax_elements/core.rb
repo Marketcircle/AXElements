@@ -287,10 +287,27 @@ class << AX
   # @param [AXUIElementRef] element low level accessibility object
   # @return [Array<String>]
   def param_attrs_of_element element
-    array_ptr = Pointer.new ARRAY
-    code = AXUIElementCopyParameterizedAttributeNames(element, array_ptr)
-    log_error element, code unless code.zero?
-    array_ptr[0]
+    ptr = Pointer.new ARRAY
+    case AXUIElementCopyParameterizedAttributeNames(element, ptr)
+    when KAXErrorSuccess
+      ptr[0]
+    when KAXErrorAttributeUnsupported, KAXErrorParameterizedAttributeUnsupported
+      show element,
+        "It seems as though '#{element}' does not have parameterized attributes"
+    when KAXErrorIllegalArgument
+      show element,
+        "The element '#{element}' is not a legal argument"
+    when KAXErrorInvalidUIElement
+      show element, "The AXUIElementRef '#{element.inspect}' is no longer valid"
+    when KAXErrorFailure
+      raise 'Some kind of system failure occurred, stopping to be safe'
+    when KAXErrorCannotComplete
+      raise 'Some unspecified problem occurred with the AXAPI. Sorry. :('
+    when KAXErrorNotImplemented
+      show element, 'The program does not work with AXAPI properly'
+    else
+      raise 'You should never reach this line!'
+    end
   end
 
   ##
@@ -302,9 +319,26 @@ class << AX
   # @param [String] attr an attribute constant
   def param_attr_of_element element, attr, param
     ptr  = Pointer.new :id
-    code = AXUIElementCopyParameterizedAttributeValue(element, attr, param, ptr)
-    log_error element, code unless code.zero?
-    ptr[0]
+    case AXUIElementCopyParameterizedAttributeValue(element, attr, param, ptr)
+    when KAXErrorSuccess
+      ptr[0]
+    when KAXErrorAttributeUnsupported, KAXErrorParameterizedAttributeUnsupported
+      show element,
+        "It seems as though '#{element}' does not have parameterized attributes"
+    when KAXErrorNoValue
+      nil
+    when KAXErrorIllegalArgument
+      show3 element, attr, value
+        "You can't set '#{attr}' to '#{value}' for '#{element}'"
+    when KAXErrorInvalidUIElement
+      show element, "The AXUIElementRef '#{element.inspect}' is no longer valid"
+    when KAXErrorCannotComplete
+      raise 'Some unspecified problem occurred with the AXAPI. Sorry. :('
+    when KAXErrorNotImplemented
+      show element, 'The program does not work with AXAPI properly'
+    else
+      raise 'You should never reach this line!'
+    end
   end
 
   # @group Notifications
@@ -419,9 +453,23 @@ class << AX
   def element_at_point x, y
     ptr    = Pointer.new ELEMENT
     system = AXUIElementCreateSystemWide()
-    code   = AXUIElementCopyElementAtPosition(system, x, y, ptr)
-    log_error system, code unless code.zero?
-    ptr[0]
+    case AXUIElementCopyElementAtPosition(system, x, y, ptr)
+    when KAXErrorSuccess
+      ptr[0]
+    when KAXErrorNoValue
+      nil
+    when KAXErrorIllegalArgument
+      show2 x, y,
+        "The point [#{x}, #{y}] is not a valid point."
+    when KAXErrorInvalidUIElement
+      raise 'An internal error has occured. Not your fault...'
+    when KAXErrorCannotComplete
+      raise 'Some unspecified problem occurred with the AXAPI. Sorry. :('
+    when KAXErrorNotImplemented
+      raise 'The program does not work with AXAPI properly'
+    else
+      raise 'You should never reach this line!'
+    end
   end
 
   ##
@@ -444,9 +492,16 @@ class << AX
   # @return [Fixnum]
   def pid_of_element element
     ptr  = Pointer.new :int
-    code = AXUIElementGetPid(element, ptr)
-    log_error element, code unless code.zero?
-    ptr[0]
+    case AXUIElementGetPid(element, ptr)
+    when KAXErrorSuccess
+      ptr[0]
+    when KAXErrorIllegalArgument
+      show element, "Apparently '#{element}' is not a AXUIElementRef"
+    when KAXErrorInvalidUIElement
+      show element, "The AXUIElementRef '#{element.inspect}' is no longer valid"
+    else
+      raise 'You should never reach this line!'
+    end
   end
 
   # @endgroup
@@ -629,9 +684,17 @@ class << AX
   # @return [AXObserverRef]
   def make_observer_for element, callback
     ptr  = Pointer.new OBSERVER
-    code = AXObserverCreate(pid_of_element(element), callback, ptr)
-    log_error element, code unless code.zero?
-    ptr[0]
+    case AXObserverCreate(pid_of_element(element), callback, ptr)
+    when KAXErrorSuccess
+      ptr[0]
+    when KAXErrorIllegalArgument
+      show2 element, callback,
+        "Either '#{element}' or '#{callback.inspect}' is not a valid argument"
+    when KAXErrorFailure
+      raise 'Some kind of system failure occurred, stopping to be safe'
+    else
+      raise 'You should never reach this line!'
+    end
   end
 
   ##
@@ -644,27 +707,55 @@ class << AX
   # @param [AX::Element]
   # @param [String]
   def register_notif_callback observer, element, notif
-    code = AXObserverAddNotification(observer, element, notif, nil)
-    log_error element, code unless code.zero?
+    case AXObserverAddNotification(observer, element, notif, nil)
+    when KAXErrorSuccess
+    when KAXErrorInvalidUIElementObserver
+      show observer, "'#{observer}' is no longer valid or was never valid"
+    when KAXErrorIllegalArgument
+      show3 observer, element, notif
+        "Either '#{observer}', '#{element}', or '#{notif}' is not valid"
+    when KAXErrorNotificationUnsupported
+      show element, "Apparently '#{element}' does not support notifications"
+    when KAXErrorNotificationAlreadyRegistered
+      CFShow(element)
+      warn "You have already registered to hear about '#{notif}' from '#{element}'"
+    when KAXErrorCannotComplete
+      raise 'Some unspecified problem occurred with the AXAPI. Sorry. :('
+    when KAXErrorFailure
+      raise 'Some kind of system failure occurred, stopping to be safe'
+    else
+      raise 'You should never reach this line'
+    end
   end
 
   ##
-  # @todo No need to capture error code when handling all error cases
-  #       properly. So I should get around to that soon.
-  #
   # Unregister a notification that has been previously setup.
   #
   # @param [AXObserverRef]
   # @param [AX::Element]
   # @param [String]
   def unregister_notif_callback observer, ref, notif
-    case code = AXObserverRemoveNotification(observer, ref, notif)
+    case AXObserverRemoveNotification(observer, ref, notif)
     when KAXErrorNotificationNotRegistered
       Accessibility.log.warn  "Notif no longer registered: (#{ref}:#{notif})"
     when KAXErrorIllegalArgument
       raise ArgumentError,    "Notif not unregistered (#{ref}:#{notif})"
+    when KAXErrorInvalidUIElementObserver
+      show observer, "'#{observer}' is no longer valid or was never valid"
+    when KAXErrorIllegalArgument
+      show3 observer, element, notif
+        "Either '#{observer}', '#{element}', or '#{notif}' is not valid"
+    when KAXErrorNotificationUnsupported
+      show element, "Apparently '#{element}' does not support notifications"
+    when KAXErrorNotificationNotRegistered
+      CFShow(element)
+      raise "You have not yet registered to heard about '#{notif}' from '#{element}'"
+    when KAXErrorCannotComplete
+      raise 'Some unspecified problem occurred with the AXAPI. Sorry. :('
+    when KAXErrorFailure
+      raise 'Some kind of system failure occurred, stopping to be safe'
     else
-      log_error element, code unless code.zero?
+      raise 'You should never reach this line!'
     end
   end
 
