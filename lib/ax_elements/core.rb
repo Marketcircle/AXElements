@@ -635,23 +635,6 @@ class << AX
   }
 
   ##
-  # Uses the call stack and error code to log a message that might be
-  # helpful in debugging.
-  #
-  # @param [AXUIElementRef]
-  # @param [Fixnum] code AXError value
-  def log_error element, code
-    message = AXError[code] || 'UNKNOWN ERROR CODE'
-    logger = Accessibility.log
-    logger.warn "[#{message} (#{code})] while trying #{caller[0]}"
-    logger.info "Available attributes were:\n#{attrs_of_element(element)}"
-    logger.info "Available actions were:\n#{actions_of_element(element)}"
-    # @todo logger.info available parameterized attributes
-    logger.debug "Backtrace: #{caller.description}"
-    # @todo logger.debug pp hierarchy element or pp element
-  end
-
-  ##
   # Simple macro for using CoreFoundation's version of `#inspect` on an
   # element before raising the given message as an error.
   #

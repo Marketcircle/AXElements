@@ -432,23 +432,3 @@ class TestAXPIDThings < TestCore
   end
 
 end
-
-
-# I'd prefer to not to be directly calling the log method bypassing
-# the fact that it is a private method
-class TestLogAXCall < TestCore
-  include LoggingCapture
-
-  def test_looks_up_code_properly
-    with_logging { AX.send(:log_error, REF, KAXErrorAPIDisabled) }
-    assert_match /API Disabled/, @log_output.string
-    with_logging { AX.send(:log_error, REF, KAXErrorNotImplemented) }
-    assert_match /Not Implemented/, @log_output.string
-  end
-
-  def test_handles_unknown_error_codes
-    with_logging { AX.send(:log_error, REF, 1234567) }
-    assert_match /UNKNOWN ERROR CODE/, @log_output.string
-  end
-
-end
