@@ -719,6 +719,7 @@ class << AX
   # @param [String]
   def unregister_notif_callback observer, ref, notif
     case AXObserverRemoveNotification(observer, ref, notif)
+    when KAXErrorSuccess
     when KAXErrorNotificationNotRegistered
       Accessibility.log.warn  "Notif no longer registered: (#{ref}:#{notif})"
     when KAXErrorIllegalArgument
