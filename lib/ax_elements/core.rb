@@ -11,29 +11,28 @@ end
 
 ##
 # Namespace for all the accessibility objects, as well as core
-# abstraction layer that that interact with OS X Accessibility
-# APIs.
+# abstraction layer that that interacts with OS X Accessibility
+# APIs (AXAPI).
 module AX
   @ignore_notifs = true
   @notifs        = {}
 end
 
 ##
-# @todo There is a lot of duplication related to error handling, and a
-#       bunch of it can be easily removed.
 # @todo I feel a bit weird having to instantiate a new pointer every
-#       time I want to fetch an attribute. Since allocations are costly
+#       time I want to fetch an attribute. Since allocations are costly,
 #       it hurts performance a lot when it comes to searches. I wonder if
 #       it would pay off to have a pool of pointers...
 #
-# The singleton methods for the AX module represent the core layer of
-# abstraction for AXElements.
+# The singleton methods for the AX module wrap all AXAPI methods that are
+# used by AXElements. This forms the core layer of abstraction for
+# AXElements.
 #
 # The methods provide a clean Ruby-ish interface to the low level
-# CoreFoundation functions that compose the AXAPI. Doing this we can
-# hide away the need to work with pointers and centralize when errors
-# are logged from the low level function calls (since CoreFoundation
-# uses a different pattern for that sort of thing).
+# CoreFoundation functions that compose AXAPI. In doing this, we can hide
+# away the need to work with pointers and centralize how AXAPI related
+# errors are handled (since CoreFoundation uses a different pattern for
+# that sort of thing).
 #
 # Ideally this API would be stateless, but I'm still working on that...
 class << AX
@@ -41,9 +40,18 @@ class << AX
   # @group Attributes
 
   ##
-  # List of attributes for the given element.
+  # @note Passing invalid values for the argument does not always raise
+  #       an error. This is a "feature" of AXAPI that AXElements does not
+  #       check for at the moment.
   #
-  # @param [AXUIElementRef] element low level accessibility object
+  # Get the list of attributes for a given element.
+  #
+  # @example
+  #
+  #   AX.attrs_of_element(AXUIElementCreateSystemWide())
+  #     # => ["AXRole", "AXRoleDescription", "AXFocusedUIElement", "AXFocusedApplication"]
+  #
+  # @param [AXUIElementRef]
   # @return [Array<String>]
   def attrs_of_element element
     ptr = Pointer.new ARRAY
@@ -68,8 +76,14 @@ class << AX
   end
 
   ##
-  # Number of elements that would be returned for the given element's
-  # given attribute.
+  # Get the size of the array for attributes that would return an array.
+  # This is useful when you only want to know how large the array is and
+  # performance matters.
+  #
+  # @example
+  #
+  #   AX.attr_count_of_element(window, KAXChildrenAttribute) # => 19
+  #   AX.attr_conut_of_element(button, KAXChildrenAttribute) # => 0
   #
   # @param [AXUIElementRef]
   # @param [String] attr an attribute constant
@@ -97,10 +111,16 @@ class << AX
   end
 
   ##
-  # Fetch the given attribute's value from the given element. You will
-  # be given raw data from this method; that is, {Boxed} objects will
+  # Fetch the value for a given attribute of a given element. You will
+  # be given raw data from this method; that is, `Boxed` objects will
   # still be wrapped in a `AXValueRef`, and elements will be
-  # `AXUIElementRef` objects.
+  # `AXUIElementRef` objects instead of wrapped {AX::Element} objects.
+  #
+  # @example
+  #   AX.attr_of_element window, KAXTitleAttribute   # => "HotCocoa Demo"
+  #   AX.attr_of_element window, KAXSizeAttribute    # => #<AXValueRefx00000000>
+  #   AX.attr_of_element window, KAXParentAttribute  # => #<AXUIElementRefx00000000>
+  #   AX.attr_of_element window, KAXNoValueAttribute # => nil
   #
   # @param [AXUIElementRef]
   # @param [String] attr an attribute constant
