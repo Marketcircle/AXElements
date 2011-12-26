@@ -131,26 +131,47 @@ class << AX
   end
 
   ##
+  # @todo Determine if the performance gain is worth it.
   # @todo Should we handle cases where a subrole has a value of
   #       'Unknown'? What is the performance impact?
   #
-  # Fetch subrole and role of an object, pass back an array with the
-  # subrole first if it exists.
+  # @note You might get `nil` back as the subrole, so you need to check.
+  #
+  # Quick macro for getting the subrole/role pair for a given
+  # element. This is equivalent to calling {AX.attr_of_element}
+  # twice; once to get the role, and a second time to get the subrole.
+  # The pair is ordered with the subrole first.
+  #
+  # @example
+  #   AX.role_pair_for(window_ref)   # => ["AXDialog", "AXWindow" ]
+  #   AX.role_pair_for(web_area_ref) # => [nil,        "AXWebArea"]
   #
   # @param [AXUIElementRef]
-  # @param [Array<String>]
-  # @return [Array<String>]
-  def role_for element, attrs
+  # @return [Array(String,String), Array(nil,String)]
+  def role_pair_for element
+    role = role_for element
+    ptr  = Pointer.new :id
+    # @todo Handle error codes?
+    AXUIElementCopyAttributeValue(element, SUBROLE, ptr)
+    [ptr[0], role]
+  end
+
+  ##
+  # @todo Determine if the performance gain is worth it.
+  #
+  # @note Currently making an assumption about roles always being valid
+  #       since it is the one requirement of all accessibility objects.
+  #
+  # Quick macro for getting the `KAXRoleAttribute` value for a given
+  # element. This is equivalent to calling
+  # `AX.attr_of_element(element, KAXRoleAttribute)` except that it
+  # should be slightly faster.
+  #
+  # @param [AXUIElementRef]
+  def role_for element
     ptr = Pointer.new :id
     AXUIElementCopyAttributeValue(element, ROLE, ptr)
-    ret = [ptr[0]]
-    if attrs.include? SUBROLE
-      AXUIElementCopyAttributeValue(element, SUBROLE, ptr)
-      # Be careful, some things claim to have a subrole but return nil
-      ret.unshift ptr[0] if ptr[0]
-    end
-    #raise "Found an element that has no role: #{CFShow(element)}"
-    ret
+    ptr[0]
   end
 
   ##

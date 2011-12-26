@@ -489,8 +489,32 @@ class AX::Element
     # @return [AX::Element]
     def process_element ref
       attrs = AX.attrs_of_element ref
-      role  = AX.role_for(ref, attrs).map! { |x| @@unprefix[x] }
-      determine_class_for(role).new(ref, attrs)
+      klass = if attrs.include? SUBROLE
+                subrole, role = AX.role_pair_for ref
+                # Some objects claim to have a subrole but return nil
+                if subrole
+                  class_for @@unprefix[subrole], and: @@unprefix[role]
+                else
+                  class_for @@unprefix[role]
+                end
+              else
+                class_for @@unprefix[AX.role_for(ref)]
+              end
+      klass.new(ref, attrs)
+    end
+
+    ##
+    # @private
+    #
+    # Local copy of Cocoa constant. Performance hack for lookups.
+    SUBROLE = KAXSubroleAttribute
+
+    def class_for role
+      if AX.const_defined? role, false
+        AX.const_get role
+      else
+        create_class role
+      end
     end
 
     ##
@@ -500,13 +524,19 @@ class AX::Element
     #
     # @param [Array<String>] const the value you want as a constant
     # @return [Class] a reference to the class being looked up
-    def determine_class_for names
-      klass = names.first
-      if AX.const_defined? klass, false
-        AX.const_get klass
+    def class_for subrole, and: role
+      if AX.const_defined? subrole, false
+        AX.const_get subrole
       else
-        create_class *names
+        create_class_with_superclass subrole, role
       end
+    end
+
+    ##
+    #
+    def create_class name
+      klass = Class.new AX::Element
+      AX.const_set name, klass
     end
 
     ##
@@ -515,9 +545,11 @@ class AX::Element
     # @param [String,Symbol] name
     # @param [String,Symbol] superklass
     # @return [Class]
-    def create_class name, superklass = :Element
-      real_superklass = determine_class_for [superklass]
-      klass = Class.new real_superklass
+    def create_class_with_superclass name, superklass
+      unless AX.const_defined? superklass, false
+        create_class superklass
+      end
+      klass = Class.new AX.const_get(superklass)
       AX.const_set name, klass
     end
 

@@ -1,9 +1,11 @@
 class TestCore < TestAX
 
-  WINDOW = attribute_for REF, KAXMainWindowAttribute
+  def window
+    @@window ||= attribute_for REF, KAXMainWindowAttribute
+  end
 
   def child name
-    children_for(WINDOW).find do |item|
+    children_for(window).find do |item|
       attribute_for(item, KAXRoleAttribute) == name
     end
   end
@@ -29,10 +31,18 @@ class TestCore < TestAX
   end
 
   def yes_button
-    @@yes_button ||= children_for(WINDOW).find do |item|
+    @@yes_button ||= children_for(window).find do |item|
       if attribute_for(item, KAXRoleAttribute) == KAXButtonRole
         attribute_for(item, KAXTitleAttribute) == 'Yes'
       end
+    end
+  end
+
+  def web_area
+    @@web_area ||= children_for(children_for(window).find do |item|
+      if attribute_for(item, KAXRoleAttribute) == KAXScrollAreaRole
+        attribute_for(item, KAXDescriptionAttribute) == 'Test Web Area'
+      end).first
     end
   end
 
@@ -65,6 +75,7 @@ class TestCore < TestAX
   end
 
 
+
   def test_attr_count_is_a_number
     x = children_for(REF).size
     assert_equal x, AX.attr_count_of_element(REF,    KAXChildrenAttribute)
@@ -84,38 +95,38 @@ class TestCore < TestAX
   end
 
 
+
   # At this layer, we only need to test a few things...
 
-  def test_title_is_title
+  def test_attr_value_is_correct
     assert_equal 'AXElementsTester', AX.attr_of_element(REF, KAXTitleAttribute)
+    assert_equal false,              AX.attr_of_element(REF, KAXHiddenAttribute)
+    assert_equal AXValueGetTypeID(), CFGetTypeID(AX.attr_of_element(window, KAXSizeAttribute))
   end
 
-  # @note the app gives CGRectZero in screen coordinates, and then they are
-  #       flipped for us to, so we need to flip them again
-  def test_custom_lol_is_rect
-    point         = CGPointZero.dup
-    point.y       = NSScreen.mainScreen.frame.size.height
-    expected_rect = CGRect.new point, CGSizeZero
-    ret           = AX.attr_of_element WINDOW, 'AXLol'
-    ptr           = Pointer.new CGRect.type
-    AXValueGetValue(ret, 3, ptr)
-    assert_equal expected_rect, ptr[0]
+  def test_attr_value_is_nil_when_no_value_error_occurs
+    assert_nil AX.attr_of_element(window, KAXGrowAreaAttribute)
   end
-
-  def test_hidden_is_hidden_value
-    assert_equal false, AX.attr_of_element(REF, KAXHiddenAttribute)
-  end
-
-end
-
-
-class TestAttrOfElementErrors < TestCore
 
   def test_attr_value_handles_errors
     assert_raises RuntimeError do
       AX.attr_of_element REF, 'MADEUPATTRIBUTE'
     end
   end
+
+
+
+  def test_role_pair_macro
+    assert_equal [KAXStandardWindowSubrole, KAXWindowRole], AX.role_pair_for(window)
+    assert_equal [nil, KAXWebAreaRole],                     AX.role_pair_for(web_area)
+  end
+
+  def test_role_macro
+    assert_equal KAXApplicationRole, AX.role_for(REF)
+    assert_equal KAXWindowRole,      AX.role_for(window)
+  end
+
+
 
 end
 
