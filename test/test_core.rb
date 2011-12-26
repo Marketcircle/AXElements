@@ -36,50 +36,55 @@ class TestCore < TestAX
     end
   end
 
-end
 
+  ##
+  # AFAICT every accessibility object **MUST** have attributes, so
+  # there are no tests to check what happens when they do not exist;
+  # though I am quite sure that AXElements will explode.
 
-##
-# AFAICT every accessibility object **MUST** have attributes, so
-# there are no tests to check what happens when they do not exist;
-# though I am quite sure that AXElements will explode.
-class TestAttrsOfElement < TestCore
+  def test_attrs_is_array_of_strings
+    attrs = AX.attrs_of_element REF
 
-  def attrs
-    @@attrs ||= AX.attrs_of_element REF
-  end
+    refute_empty attrs
 
-  def test_returns_array_of_strings
-    assert_instance_of String, attrs.first
-  end
-
-  def test_make_sure_certain_attributes_are_provided
     assert_includes attrs, KAXRoleAttribute
     assert_includes attrs, KAXRoleDescriptionAttribute
-  end
 
-  def test_other_attributes_that_the_app_should_have
     assert_includes attrs, KAXChildrenAttribute
     assert_includes attrs, KAXTitleAttribute
     assert_includes attrs, KAXMenuBarAttribute
   end
 
-end
+  def test_attrs_handles_errors
+    assert_raises ArgumentError do
+      AX.attrs_of_element nil
+    end
+
+    # I'm having a hard time trying to figure out how to test the other
+    # failure cases...
+  end
 
 
-class TestAttrCountOfElement < TestCore
-
-  def test_returns_number_of_children
-    assert_equal children_for(REF).size, AX.attr_count_of_element(REF, KAXChildrenAttribute)
+  def test_attr_count_is_a_number
+    x = children_for(REF).size
+    assert_equal x, AX.attr_count_of_element(REF,    KAXChildrenAttribute)
     assert_equal 0, AX.attr_count_of_element(button, KAXChildrenAttribute)
   end
 
-  # @todo there are things we care about?
+  def test_attr_count_handles_errors
+    assert_raises ArgumentError do
+      AX.attr_count_of_element REF, 'pie'
+    end
 
-end
+    assert_raises ArgumentError do
+      AX.attr_count_of_element nil, KAXChildrenAttribute
+    end
+
+    # Not sure how to trigger other failure cases reliably...
+  end
 
 
-class TestAttrOfElementGetsCorrectAttribute < TestCore
+  # At this layer, we only need to test a few things...
 
   def test_title_is_title
     assert_equal 'AXElementsTester', AX.attr_of_element(REF, KAXTitleAttribute)
@@ -106,7 +111,7 @@ end
 
 class TestAttrOfElementErrors < TestCore
 
-  def test_raises_error_for_non_existant_attributes
+  def test_attr_value_handles_errors
     assert_raises RuntimeError do
       AX.attr_of_element REF, 'MADEUPATTRIBUTE'
     end

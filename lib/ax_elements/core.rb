@@ -56,20 +56,13 @@ class << AX
   def attrs_of_element element
     ptr = Pointer.new ARRAY
     case AXUIElementCopyAttributeNames(element, ptr)
-    when KAXErrorSuccess
-      ptr[0]
-    when KAXErrorAttributeUnsupported
-      show element, "Apparently #{element.inspect} doesn't have attributes"
-    when KAXErrorIllegalArgument
-      show element, "'#{element.inspect}' is not an AXUIElementRef"
-    when KAXErrorInvalidUIElement
-      show element, "The AXUIElementRef '#{element.inspect}' is no longer valid"
-    when KAXErrorFailure
-      raise 'Some kind of system failure occurred, stopping to be safe'
-    when KAXErrorCannotComplete
-      raise 'Some unspecified problem occurred with the AXAPI. Sorry. :('
-    when KAXErrorNotImplemented
-      show element, 'The program does not work with AXAPI properly'
+    when 0                        then ptr[0] # KAXErrorSuccess, perf hack
+    when KAXErrorIllegalArgument  then
+      raise ArgumentError, "'#{element.inspect}' is not an AXUIElementRef"
+    when KAXErrorInvalidUIElement then invalid_element_message(element)
+    when KAXErrorFailure          then failure_message
+    when KAXErrorCannotComplete   then cannot_complete_message
+    when KAXErrorNotImplemented   then not_implemented_message(element)
     else
       raise 'You should never reach this line!'
     end
@@ -91,20 +84,17 @@ class << AX
   def attr_count_of_element element, attr
     ptr  = Pointer.new :long_long
     case AXUIElementGetAttributeValueCount(element, attr, ptr)
-    when KAXErrorSuccess
-      ptr[0]
-    when KAXErrorIllegalArgument
-      show2 element, attr,
-        "The element '#{element}' or the attr '#{attr}' is not a legal argument"
-    when KAXErrorAttributeUnsupported
-      show2 element, attr,
-        "'#{element.inspect}' does not support #{attr.inspect}"
-    when KAXErrorInvalidUIElement
-      show element, "The AXUIElementRef '#{element.inspect}' is no longer valid"
-    when KAXErrorCannotComplete
-      raise 'Some unspecified problem occurred with the AXAPI. Sorry. :('
-    when KAXErrorNotImplemented
-      show element, 'The program does not work with AXAPI properly'
+    when 0                            then ptr[0] # KAXErrorSuccess
+    when KAXErrorIllegalArgument      then
+      CFShow(element)
+      message  = "Either the element '#{element.inspect}' "
+      message << "or the attr '#{attr.inspect}' "
+      message << 'is not a legal argument'
+      raise ArgumentError, message
+    when KAXErrorAttributeUnsupported then unsupported_message(element, attr)
+    when KAXErrorInvalidUIElement     then invalid_element_message(element)
+    when KAXErrorCannotComplete       then cannot_complete_message
+    when KAXErrorNotImplemented       then not_implemented_message(element)
     else
       raise 'You should never reach this line!'
     end
@@ -127,19 +117,14 @@ class << AX
   def attr_of_element element, attr
     ptr  = Pointer.new :id
     case AXUIElementCopyAttributeValue(element, attr, ptr)
-    when KAXErrorSuccess
-      ptr[0]
-    when KAXErrorIllegalArgument
-      show2 element, attr,
-        "The element '#{element}' or the attr '#{attr}' is not a legal argument"
-    when KAXErrorNoValue
-      nil
-    when KAXErrorInvalidUIElement
-      show element, "The AXUIElementRef '#{element.inspect}' is no longer valid"
-    when KAXErrorCannotComplete
-      raise 'Some unspecified problem occurred with the AXAPI. Sorry. :('
-    when KAXErrorNotImplemented
-      show element, 'The program does not work with AXAPI properly'
+    when 0                        then ptr[0] # KAXErrorSuccess, perf hack
+    when KAXErrorNoValue          then nil
+    when KAXErrorIllegalArgument  then
+      CFShow(element)
+      raise "The element '#{element}' or the attr '#{attr}' is not a legal argument"
+    when KAXErrorInvalidUIElement then invalid_element_message(element)
+    when KAXErrorCannotComplete   then cannot_complete_message
+    when KAXErrorNotImplemented   then not_implemented_message(element)
     else
       raise 'You should never reach this line!'
     end
@@ -654,28 +639,28 @@ class << AX
     KAXErrorNotEnoughPrecision                => 'Not Enough Precision'
   }
 
-  ##
-  # Simple macro for using CoreFoundation's version of `#inspect` on an
-  # element before raising the given message as an error.
-  #
-  # @param [AXUIElementRef]
-  # @param [String]
-  def show element, msg
+  def unsupported_message element, attr
     CFShow(element)
-    raise msg
+    CFShow(attr)
+    raise ArgumentError, "'#{element}' doesn't have '#{attr.inspect}'"
   end
 
-  ##
-  # Macro for using CoreFoundation's version of `#inspect` on an
-  # element and argumnet before raising the given message as an error.
-  #
-  # @param [AXUIElementRef]
-  # @param [Object]
-  # @param [String]
-  def show2 element, arg, msg
+  def invalid_element_message element
     CFShow(element)
-    CFShow(arg)
-    raise msg
+    raise RuntimeError, "'#{element.inspect}' is no longer a valid token"
+  end
+
+  def cannot_complete_message
+    raise RuntimeError, 'Some unspecified error occurred with AXAPI. Sorry. :('
+  end
+
+  def failure_message
+    raise 'Some kind of system failure occurred, stopping to be safe'
+  end
+
+  def not_implemented element
+    CFShow(element)
+    raise NotImplementedError, "'#{element.inspect}' "'The program does not work with AXAPI properly'
   end
 
   ##
