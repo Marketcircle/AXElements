@@ -168,6 +168,7 @@ class << AX
   # should be slightly faster.
   #
   # @param [AXUIElementRef]
+  # @return [String]
   def role_for element
     ptr = Pointer.new :id
     AXUIElementCopyAttributeValue(element, ROLE, ptr)
@@ -679,7 +680,7 @@ class << AX
     raise 'Some kind of system failure occurred, stopping to be safe'
   end
 
-  def not_implemented element
+  def not_implemented_message element
     CFShow(element)
     raise NotImplementedError, "'#{element.inspect}' "'The program does not work with AXAPI properly'
   end

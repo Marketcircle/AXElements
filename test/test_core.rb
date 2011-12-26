@@ -40,10 +40,10 @@ class TestCore < TestAX
 
   def web_area
     @@web_area ||= children_for(children_for(window).find do |item|
-      if attribute_for(item, KAXRoleAttribute) == KAXScrollAreaRole
+      if attribute_for(item, KAXRoleAttribute) == 'AXScrollArea'
         attribute_for(item, KAXDescriptionAttribute) == 'Test Web Area'
-      end).first
-    end
+      end
+    end).first
   end
 
 
@@ -118,7 +118,7 @@ class TestCore < TestAX
 
   def test_role_pair_macro
     assert_equal [KAXStandardWindowSubrole, KAXWindowRole], AX.role_pair_for(window)
-    assert_equal [nil, KAXWebAreaRole],                     AX.role_pair_for(web_area)
+    assert_equal [nil, 'AXWebArea'],                        AX.role_pair_for(web_area)
   end
 
   def test_role_macro
@@ -444,7 +444,7 @@ class TestAXPIDThings < TestCore
   end
 
   def test_pid_for_dock_app_is_docks_pid
-    assert_equal PID, AX.pid_of_element(WINDOW)
+    assert_equal PID, AX.pid_of_element(window)
   end
 
 end
