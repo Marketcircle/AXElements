@@ -176,30 +176,29 @@ class << AX
   end
 
   ##
-  # Ask whether or not the given attribute of a given element can be
-  # changed using the accessibility APIs.
+  # Returns whether or not an attribute is writable for a specific element.
+  #
+  # @example
+  #   AX.attr_of_element_writable?(window_ref, KAXSizeAttribute)  # => true
+  #   AX.attr_of_element_writable?(window_ref, KAXTitleAttribute) # => false
   #
   # @param [AXUIElementRef]
   # @param [String] attr an attribute constant
   def attr_of_element_writable? element, attr
     ptr  = Pointer.new :bool
     case AXUIElementIsAttributeSettable(element, attr, ptr)
-    when KAXErrorSuccess
-      ptr[0]
-    when KAXErrorCannotComplete
-      raise 'Some unspecified problem occurred with the AXAPI. Sorry. :('
-    when KAXErrorIllegalArgument
-      show2 element, attr,
-        "The element '#{element}' or the attr '#{attr}' is not a legal argument"
-    when KAXErrorAttributeUnsupported
-      show2 element, attr,
-        "'#{element.inspect}' does not support #{attr.inspect}"
-    when KAXErrorNoValue
-      false
-    when KAXErrorInvalidUIElement
-      show element, "The AXUIElementRef '#{element.inspect}' is no longer valid"
-    when KAXErrorNotImplemented
-      show element, 'The program does not work with AXAPI properly'
+    when 0                            then ptr[0] # KAXErrorSuccess, perf hack
+    when KAXErrorNoValue              then false
+    when KAXErrorCannotComplete       then cannot_complete_message
+    when KAXErrorIllegalArgument      then
+      CFShow(element)
+      message  = "Either the element '#{element.inspect}' "
+      message << "or the attr '#{attr.inspect}' "
+      message << 'is not a legal argument'
+      raise ArgumentError, message
+    when KAXErrorAttributeUnsupported then unsupported_message(element, attr)
+    when KAXErrorInvalidUIElement     then invalid_element_message(element)
+    when KAXErrorNotImplemented       then not_implemented_message(element)
     else
       raise 'You should never reach this line!'
     end
@@ -211,26 +210,27 @@ class << AX
   #
   # Set the given value to the given attribute of the given element.
   #
-  # @param [AXUIElementRef] element
+  # @example
+  #   AX.set_attr_of_element(slider,     KAXValueAttribute, 25)   # => 25
+  #   AX.set_attr_of_element(text_field, KAXValueAttribute, 'hi') # => "hi"
+  #
+  # @param [AXUIElementRef]
   # @param [String] attr an attribute constant
   # @param [Object] value the new value to set on the attribute
   # @return [Object] returns the value that was set
   def set_attr_of_element element, attr, value
     case AXUIElementSetAttributeValue(element, attr, value)
-    when KAXErrorSuccess
-      value
-    when KAXErrorIllegalArgument
-      show3 element, attr, value
-        "You can't set '#{attr}' to '#{value}' for '#{element}'"
-    when KAXErrorAttributeUnsupported
-      show2 element, attr,
-        "'#{element.inspect}' does not support #{attr.inspect}"
-    when KAXErrorInvalidUIElement
-      show element, "The AXUIElementRef '#{element.inspect}' is no longer valid"
-    when KAXErrorCannotComplete
-      raise 'Some unspecified problem occurred with the AXAPI. Sorry. :('
-    when KAXErrorNotImplemented
-      show element, 'The program does not work with AXAPI properly'
+    when 0                            then value # KAXErrorSuccess, perf hack
+    when KAXErrorIllegalArgument      then
+      CFShow(element)
+      CFShow(value)
+      message  = "You can't set '#{attr.inspect}' "
+      message << "to '#{value.inspect}' for '#{element.inspect}'"
+      raise ArgumentError, message
+    when KAXErrorAttributeUnsupported then unsupported_message(element, attr)
+    when KAXErrorInvalidUIElement     then invalid_element_message(element)
+    when KAXErrorCannotComplete       then cannot_complete_message
+    when KAXErrorNotImplemented       then not_implemented_message(element)
     else
       raise 'You should never reach this line!'
     end

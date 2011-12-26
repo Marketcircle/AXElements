@@ -128,42 +128,46 @@ class TestCore < TestAX
 
 
 
-end
-
-
-class TestAttrOfElementWritable < TestCore
-
-  def test_true_for_writable_attribute
-    assert AX.attr_of_element_writable?(WINDOW, KAXMainAttribute)
+  def test_attr_writable_correct_values
+    assert AX.attr_of_element_writable?(window, KAXMainAttribute)
+    refute AX.attr_of_element_writable?(REF,    KAXTitleAttribute)
   end
 
-  def test_false_for_non_writable_attribute
-    refute AX.attr_of_element_writable?(REF, KAXTitleAttribute)
+  def test_attr_writable_false_for_no_value_cases
+    skip 'I am not aware of how to create such a case...'
+    # refute AX.attr_of_element_writable?(REF, KAXChildrenAttribute)
   end
 
-  def test_false_for_non_existant_attribute
-    assert_raises RuntimeError do
-      AX.attr_of_element_writable?(REF, 'FAKE')
+  def test_attr_writable_handles_errors
+    assert_raises ArgumentError do
+      AX.attr_of_element_writable? REF, 'FAKE'
     end
+
+    # Not sure how to test other cases...
   end
 
-end
 
 
-class TestSetAttrOfElement < TestCore
-
-  def test_set_a_slider
+  def test_set_attr_on_slider
     [25, 75, 50].each do |value|
       AX.set_attr_of_element slider, KAXValueAttribute, value
       assert_equal value, value_for(slider)
     end
   end
 
-  def test_set_a_text_field
+  def test_set_attr_on_text_field
     [Time.now.to_s, ''].each do |value|
       AX.set_attr_of_element(search_box, KAXValueAttribute, value)
       assert_equal value, value_for(search_box)
     end
+  end
+
+  def test_set_attr_handles_errors
+    assert_raises ArgumentError do
+      AX.set_attr_of_element REF, 'FAKE', true
+    end
+
+    # Not sure how to test other failure cases...
   end
 
 end
