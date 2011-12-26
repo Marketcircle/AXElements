@@ -637,32 +637,6 @@ class << AX
     sleep events.count * key_rate
   end
 
-  ##
-  # @private
-  #
-  # A mapping of the `AXError` constants to human readable strings, though
-  # this has to be actively maintained in case of changes to Apple's
-  # documentation in the future.
-  #
-  # @return [Hash{Fixnum=>String}]
-  AXError = {
-    KAXErrorFailure                           => 'Generic Failure',
-    KAXErrorIllegalArgument                   => 'Illegal Argument',
-    KAXErrorInvalidUIElement                  => 'Invalid UI Element',
-    KAXErrorInvalidUIElementObserver          => 'Invalid UI Element Observer',
-    KAXErrorCannotComplete                    => 'Cannot Complete',
-    KAXErrorAttributeUnsupported              => 'Attribute Unsupported',
-    KAXErrorActionUnsupported                 => 'Action Unsupported',
-    KAXErrorNotificationUnsupported           => 'Notification Unsupported',
-    KAXErrorNotImplemented                    => 'Not Implemented',
-    KAXErrorNotificationAlreadyRegistered     => 'Notification Already Registered',
-    KAXErrorNotificationNotRegistered         => 'Notification Not Registered',
-    KAXErrorAPIDisabled                       => 'API Disabled',
-    KAXErrorNoValue                           => 'No Value',
-    KAXErrorParameterizedAttributeUnsupported => 'Parameterized Attribute Unsupported',
-    KAXErrorNotEnoughPrecision                => 'Not Enough Precision'
-  }
-
   def unsupported_message element, attr
     CFShow(element)
     CFShow(attr)
