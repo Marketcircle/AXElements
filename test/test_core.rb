@@ -170,23 +170,20 @@ class TestCore < TestAX
     # Not sure how to test other failure cases...
   end
 
-end
 
 
-class TestActionsOfElement < TestCore
-
-  def test_works_when_there_are_no_actions
-    assert_empty AX.actions_of_element REF
+  def test_actions_is_an_array
+    assert_empty                                           AX.actions_of_element(REF)
+    assert_equal [KAXPressAction],                         AX.actions_of_element(yes_button)
+    assert_equal [KAXIncrementAction, KAXDecrementAction], AX.actions_of_element(slider)
   end
 
-  def test_returns_array_of_strings
-    assert_instance_of String, AX.actions_of_element(yes_button).first
-  end
+  def test_actions_handles_errors
+    assert_raises ArgumentError do
+      AX.actions_of_element nil
+    end
 
-  def test_make_sure_certain_actions_are_present
-    actions = AX.actions_of_element slider
-    assert_includes actions, KAXIncrementAction
-    assert_includes actions, KAXDecrementAction
+    # Not sure how to test other failure cases...
   end
 
 end

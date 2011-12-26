@@ -37,6 +37,7 @@ end
 # Ideally this API would be stateless, but I'm still working on that...
 class << AX
 
+
   # @group Attributes
 
   ##
@@ -236,28 +237,29 @@ class << AX
     end
   end
 
+
   # @group Actions
 
   ##
-  # List of actions that the given element can perform.
+  # Get the list of actions that the given element can perform.
   #
-  # @param [AXUIElementRef] element low level accessibility object
+  # @example
+  #
+  #   AX.actions_of_element(button) # => ["AXPress"]
+  #
+  # @param [AXUIElementRef]
   # @return [Array<String>]
   def actions_of_element element
     ptr  = Pointer.new ARRAY
     case AXUIElementCopyActionNames(element, ptr)
-    when KAXErrorSuccess
-      ptr[0]
-    when KAXErrorIllegalArgument
-      show element, "'#{element.inspect}' is not an AXUIElementRef"
-    when KAXErrorInvalidUIElement
-      show element, "The AXUIElementRef '#{element.inspect}' is no longer valid"
-    when KAXErrorFailure
-      raise 'Some kind of system failure occurred, stopping to be safe'
-    when KAXErrorCannotComplete
-      raise 'Some unspecified problem occurred with the AXAPI. Sorry. :('
-    when KAXErrorNotImplemented
-      show element, 'The program does not work with AXAPI properly'
+    when 0                        then ptr[0] # KAXErrorSuccess, perf hack
+    when KAXErrorIllegalArgument  then
+      CFShow(element)
+      raise ArgumentError, "'#{element.inspect}' is not an AXUIElementRef"
+    when KAXErrorInvalidUIElement then invalid_element_message(element)
+    when KAXErrorFailure          then failure_message
+    when KAXErrorCannotComplete   then cannot_complete_message
+    when KAXErrorNotImplemented   then not_implemented_message(element)
     else
       raise 'You should never reach this line!'
     end
