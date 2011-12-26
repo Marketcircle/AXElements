@@ -653,7 +653,7 @@ class << AX
   end
 
   def failure_message
-    raise 'Some kind of system failure occurred, stopping to be safe'
+    raise RuntimeError, 'Some kind of system failure occurred, stopping to be safe'
   end
 
   def not_implemented_message element
