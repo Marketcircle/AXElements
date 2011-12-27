@@ -186,12 +186,9 @@ class TestCore < TestAX
     # Not sure how to test other failure cases...
   end
 
-end
 
 
-class TestActionOfElement < TestCore
-
-  def test_check_a_check_box
+  def test_action_triggers_checking_a_check_box
     2.times do # twice so it should be back where it started
       value = value_for check_box
       AX.action_of_element check_box, KAXPressAction
@@ -199,7 +196,7 @@ class TestActionOfElement < TestCore
     end
   end
 
-  def test_sliding_the_slider
+  def test_action_triggers_sliding_the_slider
     value = attribute_for slider, KAXValueAttribute
     AX.action_of_element slider, KAXIncrementAction
     assert attribute_for(slider, KAXValueAttribute) > value

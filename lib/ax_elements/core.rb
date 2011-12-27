@@ -252,27 +252,28 @@ class << AX
   end
 
   ##
-  # Trigger the given action for the given element.
+  # Tell an element to perform the given action. This method will always
+  # return true or raise an exception. Actions should never fail.
   #
-  # @param [AXUIElementRef] element
+  # @example
+  #
+  #   AX.action_of_element(button_ref, KAXPressAction) # => true
+  #   AX.action_of_element(menu_ref,   KAXOpenAction)  # => true
+  #
+  # @param [AXUIElementRef]
   # @param [String] action an action constant
-  # @return [Boolean] true if successful
+  # @return [Boolean]
   def action_of_element element, action
     case AXUIElementPerformAction(element, action)
-    when KAXErrorSuccess
-      true
-    when KAXErrorActionUnsupported
-      show2 element, action,
-        "The action '#{action}' cannot be performed by '#{action}'"
+    when 0                         then true # KAXErrorSuccess, perf hack
+    when KAXErrorActionUnsupported then unsupported_message(element, action)
     when KAXErrorIllegalArgument
-      show2 element, action,
-        "The element '#{element}' or the action '#{attr}' is not a legal argument"
-    when KAXErrorInvalidUIElement
-      show element, "The AXUIElementRef '#{element.inspect}' is no longer valid"
-    when KAXErrorCannotComplete
-      raise 'Some unspecified problem occurred with the AXAPI. Sorry. :('
-    when KAXErrorNotImplemented
-      show element, 'The program does not work with AXAPI properly'
+      msg  = "The element '#{CFCopyDescription(element)}' "
+      msg << "or the action '#{attr}' is not a legal argument"
+      raise ArgumentError, msg
+    when KAXErrorInvalidUIElement  then invalid_element_message(element)
+    when KAXErrorCannotComplete    then cannot_complete_message
+    when KAXErrorNotImplemented    then not_implemented_message(element)
     else
       raise 'You should never reach this line!'
     end
