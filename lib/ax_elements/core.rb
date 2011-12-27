@@ -1,14 +1,3 @@
-require 'logger'
-
-module Accessibility
-  class << self
-    # @return [Logger]
-    attr_accessor :log
-  end
-
-  @log = Logger.new $stderr
-end
-
 ##
 # Namespace for all the accessibility objects, as well as core
 # abstraction layer that that interacts with OS X Accessibility
@@ -394,7 +383,7 @@ class << AX
     # we are ignoring the context pointer since this is OO
     callback = Proc.new do |observer, element, notif, _|
       LOCK.synchronize do
-        Accessibility.log.debug "Received notif (#{notif}) for (#{element})"
+        # puts "Received notif (#{notif}) for (#{element})"
         break if     @ignore_notifs
         break unless block.call(element, notif)
 
@@ -627,8 +616,11 @@ class << AX
     key_rate = 0.009
 
     events.each do |event|
-      code = AXUIElementPostKeyboardEvent(element, 0, *event)
-      log_error element, code unless code.zero?
+      case AXUIElementPostKeyboardEvent(element, 0, *event)
+      when 0 # KAXErrorSuccess, perf hack
+      else
+        raise 'You should never reach this line!'
+      end
     end
 
     sleep events.count * key_rate

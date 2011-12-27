@@ -102,14 +102,6 @@ class TestAX < MiniTest::Unit::TestCase
   APP_BUNDLE_IDENTIFIER = 'com.marketcircle.AXElementsTester'
   PID = pid_for APP_BUNDLE_IDENTIFIER
   REF = AXUIElementCreateApplication(PID)
-
-  # execute the block with full logging turned on
-  def with_logging level = Logger::DEBUG
-    original_level = Accessibility.log.level
-    Accessibility.log.level = level
-    yield
-    Accessibility.log.level = original_level
-  end
 end
 
 ##
