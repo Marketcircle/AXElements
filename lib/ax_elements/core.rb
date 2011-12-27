@@ -241,7 +241,8 @@ class << AX
   #
   # @example
   #
-  #   AX.actions_of_element(button) # => ["AXPress"]
+  #   AX.actions_of_element(button_ref) # => ["AXPress"]
+  #   AX.actions_of_element(menu_ref)   # => ["AXOpen", "AXCancel"]
   #
   # @param [AXUIElementRef]
   # @return [Array<String>]
