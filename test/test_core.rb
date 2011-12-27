@@ -206,41 +206,40 @@ class TestCore < TestAX
     assert attribute_for(slider, KAXValueAttribute) < value
   end
 
-end
+  def test_action_handles_errors
+    assert_raises ArgumentError do
+      AX.action_of_element nil, KAXPressAction
+    end
 
-
-class TestKeyboardAction < TestCore
-
-  SYSTEM = AXUIElementCreateSystemWide()
-
-  def post string
-    set_attribute_for search_box, KAXFocusedAttribute, true
-    AX.keyboard_action REF, string
-    # sleep 0.01
-    assert_equal string, attribute_for(search_box, KAXValueAttribute)
-  ensure
-    button = children_for(search_box).find { |x| x.class == AX::Button }
-    action_for button, KAXPressAction
+    assert_raises ArgumentError do
+      AX.action_of_element REF, nil
+    end
   end
 
-  def test_uppercase_letters
-    post 'HELLO, WORLD'
+
+
+  ##
+  # The keyboard simulation stuff is a bit weird...
+
+  def test_simple_keyboard_events
+    def post_kb_events string
+      set_attribute_for search_box, KAXFocusedAttribute, true
+      AX.keyboard_action REF, string
+      assert_equal string, attribute_for(search_box, KAXValueAttribute)
+    ensure # reset for next test
+      button = children_for(search_box).find { |x| x.class == AX::Button }
+      action_for button, KAXPressAction
+    end
+
+    post_kb_events 'HELLO, WORLD'
+    post_kb_events '42'
+    post_kb_events 'the cake is a lie'
+    post_kb_events "\s"
+    post_kb_events '---'
   end
 
-  def test_numbers
-    post '42'
-  end
-
-  def test_letters
-    post 'the cake is a lie'
-  end
-
-  def test_escape_sequences
-    post "\s"
-  end
-
-  def test_hyphen
-    post '---'
+  def test_command_key_events
+    skip 'Need to get this figured out ASAP'
   end
 
 end
