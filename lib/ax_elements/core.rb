@@ -59,7 +59,8 @@ class << AX
     case AXUIElementCopyAttributeNames(element, ptr)
     when 0                        then ptr[0] # KAXErrorSuccess, perf hack
     when KAXErrorIllegalArgument  then
-      raise ArgumentError, "'#{element.inspect}' is not an AXUIElementRef"
+      msg = "'#{CFCopyDescription(element)}' is not an AXUIElementRef"
+      raise ArgumentError, msg
     when KAXErrorInvalidUIElement then invalid_element_message(element)
     when KAXErrorFailure          then failure_message
     when KAXErrorCannotComplete   then cannot_complete_message
@@ -87,11 +88,9 @@ class << AX
     case AXUIElementGetAttributeValueCount(element, attr, ptr)
     when 0                            then ptr[0] # KAXErrorSuccess
     when KAXErrorIllegalArgument      then
-      CFShow(element)
-      message  = "Either the element '#{element.inspect}' "
-      message << "or the attr '#{attr.inspect}' "
-      message << 'is not a legal argument'
-      raise ArgumentError, message
+      msg  = "Either the element '#{CFCopyDescription(element)}' "
+      msg << "or the attr '#{attr}' is not a legal argument"
+      raise ArgumentError, msg
     when KAXErrorAttributeUnsupported then unsupported_message(element, attr)
     when KAXErrorInvalidUIElement     then invalid_element_message(element)
     when KAXErrorCannotComplete       then cannot_complete_message
@@ -121,8 +120,9 @@ class << AX
     when 0                        then ptr[0] # KAXErrorSuccess, perf hack
     when KAXErrorNoValue          then nil
     when KAXErrorIllegalArgument  then
-      CFShow(element)
-      raise "The element '#{element}' or the attr '#{attr}' is not a legal argument"
+      msg  = "The element '#{CFCopyDescription(element)}' "
+      msg << "or the attr '#{attr}' is not a legal argument"
+      raise ArgumentError, msg
     when KAXErrorInvalidUIElement then invalid_element_message(element)
     when KAXErrorCannotComplete   then cannot_complete_message
     when KAXErrorNotImplemented   then not_implemented_message(element)
@@ -192,11 +192,9 @@ class << AX
     when KAXErrorNoValue              then false
     when KAXErrorCannotComplete       then cannot_complete_message
     when KAXErrorIllegalArgument      then
-      CFShow(element)
-      message  = "Either the element '#{element.inspect}' "
-      message << "or the attr '#{attr.inspect}' "
-      message << 'is not a legal argument'
-      raise ArgumentError, message
+      msg  = "Either the element '#{CFCopyDescription(element)}' "
+      msg << "or the attr '#{attr}' is not a legal argument"
+      raise ArgumentError, msg
     when KAXErrorAttributeUnsupported then unsupported_message(element, attr)
     when KAXErrorInvalidUIElement     then invalid_element_message(element)
     when KAXErrorNotImplemented       then not_implemented_message(element)
@@ -223,11 +221,9 @@ class << AX
     case AXUIElementSetAttributeValue(element, attr, value)
     when 0                            then value # KAXErrorSuccess, perf hack
     when KAXErrorIllegalArgument      then
-      CFShow(element)
-      CFShow(value)
-      message  = "You can't set '#{attr.inspect}' "
-      message << "to '#{value.inspect}' for '#{element.inspect}'"
-      raise ArgumentError, message
+      msg  = "You can't set '#{attr}' to '#{CFCopyDescription(value)}' "
+      msg << "for '#{CFCopyDescription(element)}'"
+      raise ArgumentError, msg
     when KAXErrorAttributeUnsupported then unsupported_message(element, attr)
     when KAXErrorInvalidUIElement     then invalid_element_message(element)
     when KAXErrorCannotComplete       then cannot_complete_message
@@ -254,8 +250,8 @@ class << AX
     case AXUIElementCopyActionNames(element, ptr)
     when 0                        then ptr[0] # KAXErrorSuccess, perf hack
     when KAXErrorIllegalArgument  then
-      CFShow(element)
-      raise ArgumentError, "'#{element.inspect}' is not an AXUIElementRef"
+      msg = "'#{CFCopyDescription(element)}' is not an AXUIElementRef"
+      raise ArgumentError, msg
     when KAXErrorInvalidUIElement then invalid_element_message(element)
     when KAXErrorFailure          then failure_message
     when KAXErrorCannotComplete   then cannot_complete_message
@@ -638,14 +634,13 @@ class << AX
   end
 
   def unsupported_message element, attr
-    CFShow(element)
-    CFShow(attr)
-    raise ArgumentError, "'#{element}' doesn't have '#{attr.inspect}'"
+    msg = "'#{CFCopyDescription(element)}' doesn't have '#{attr}'"
+    raise ArgumentError, msg
   end
 
   def invalid_element_message element
-    CFShow(element)
-    raise RuntimeError, "'#{element.inspect}' is no longer a valid token"
+    msg = "'#{CFCopyDescription(element)}' is no longer a valid token"
+    raise RuntimeError, msg
   end
 
   def cannot_complete_message
@@ -657,8 +652,9 @@ class << AX
   end
 
   def not_implemented_message element
-    CFShow(element)
-    raise NotImplementedError, "'#{element.inspect}' "'The program does not work with AXAPI properly'
+    msg  = "The program that owns '#{CFCopyDescription(element)}' "
+    msg << 'does not work with AXAPI properly'
+    raise NotImplementedError, msg
   end
 
   ##
