@@ -73,7 +73,7 @@ class << AX
   # @param [String] attr an attribute constant
   # @return [Fixnum]
   def attr_count_of_element element, attr
-    ptr  = Pointer.new :long_long
+    ptr = Pointer.new :long_long
     case AXUIElementGetAttributeValueCount(element, attr, ptr)
     when 0                            then ptr[0] # KAXErrorSuccess
     when KAXErrorIllegalArgument      then
@@ -104,7 +104,7 @@ class << AX
   # @param [AXUIElementRef]
   # @param [String] attr an attribute constant
   def attr_of_element element, attr
-    ptr  = Pointer.new :id
+    ptr = Pointer.new :id
     case AXUIElementCopyAttributeValue(element, attr, ptr)
     when 0                        then ptr[0] # KAXErrorSuccess, perf hack
     when KAXErrorNoValue          then nil
@@ -175,7 +175,7 @@ class << AX
   # @param [AXUIElementRef]
   # @param [String] attr an attribute constant
   def attr_of_element_writable? element, attr
-    ptr  = Pointer.new :bool
+    ptr = Pointer.new :bool
     case AXUIElementIsAttributeSettable(element, attr, ptr)
     when 0                            then ptr[0] # KAXErrorSuccess, perf hack
     when KAXErrorNoValue              then false
@@ -238,7 +238,7 @@ class << AX
   # @param [AXUIElementRef]
   # @return [Array<String>]
   def actions_of_element element
-    ptr  = Pointer.new ARRAY
+    ptr = Pointer.new ARRAY
     case AXUIElementCopyActionNames(element, ptr)
     when 0                        then ptr[0] # KAXErrorSuccess, perf hack
     when KAXErrorIllegalArgument  then
@@ -302,6 +302,7 @@ class << AX
     post_kb_events element, parse_kb_string(string)
     nil
   end
+
 
   # @group Parameterized Attributes
 
