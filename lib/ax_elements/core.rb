@@ -226,12 +226,14 @@ class << AX
   # @group Actions
 
   ##
-  # Get the list of actions that the given element can perform.
+  # Get the list of actions that the given element can perform. If an
+  # element does not have actions, then an empty list will be returned.
   #
   # @example
   #
   #   AX.actions_of_element(button_ref) # => ["AXPress"]
   #   AX.actions_of_element(menu_ref)   # => ["AXOpen", "AXCancel"]
+  #   AX.actions_of_element(window_ref) # => []
   #
   # @param [AXUIElementRef]
   # @return [Array<String>]
