@@ -342,31 +342,45 @@ class << AX
   end
 
   ##
-  # Fetch the given attribute's value from the given element using the given
-  # parameter. You will be given raw data from this method; that is, {Boxed}
-  # objects will still be wrapped in a `AXValueRef`, etc.
+  # Fetch the given pramaeterized attribute value of a given a given element
+  # using the given parameter. You will be given raw data from this method;
+  # that is, `Boxed` objects will still be wrapped in a `AXValueRef`, and
+  # elements will be `AXUIElementRef` objects instead of wrapped
+  # {AX::Element} objects.
   #
-  # @param [AXUIElementRef] element
+  # If the parameter needs to be a range or some other C struct, then you
+  # will need to wrap it in an `AXValueRef` before passing it to this
+  # method.
+  #
+  # @example
+  #
+  #   range = CFRange.new(1, 10).to_axvalue
+  #   AX.param_attr_of_element(text_field_ref, KAXStringForRangeParameterizedAttribute, range)
+  #     # => "ello, worl"
+  #
+  # @param [AXUIElementRef]
   # @param [String] attr an attribute constant
   def param_attr_of_element element, attr, param
-    ptr  = Pointer.new :id
+    ptr = Pointer.new :id
     case AXUIElementCopyParameterizedAttributeValue(element, attr, param, ptr)
-    when KAXErrorSuccess
-      ptr[0]
-    when KAXErrorAttributeUnsupported, KAXErrorParameterizedAttributeUnsupported
-      show element,
-        "It seems as though '#{element}' does not have parameterized attributes"
-    when KAXErrorNoValue
-      nil
+    when 0               then ptr[0] # KAXErrorSuccess, perf hack
+    when KAXErrorNoValue then nil
+    when KAXErrorAttributeUnsupported,
+         KAXErrorParameterizedAttributeUnsupported then
+      unsupported_message(element, attr)
     when KAXErrorIllegalArgument
-      show3 element, attr, value
-        "You can't set '#{attr}' to '#{value}' for '#{element}'"
-    when KAXErrorInvalidUIElement
-      show element, "The AXUIElementRef '#{element.inspect}' is no longer valid"
-    when KAXErrorCannotComplete
-      raise 'Some unspecified problem occurred with the AXAPI. Sorry. :('
-    when KAXErrorNotImplemented
-      show element, 'The program does not work with AXAPI properly'
+      msg  = "You can't set '#{attr}' to '#{CFCopyDescription(param)}' "
+      msg << "for '#{CFCopyDescription(element)}'"
+      raise ArgumentError, msg
+    when KAXErrorInvalidUIElement then invalid_element_message(element)
+    when KAXErrorCannotComplete   then cannot_complete_message
+    when KAXErrorNotImplemented   then not_implemented_message(element)
+    else
+      raise 'You should never reach this line!'
+    end
+  end
+
+
     else
       raise 'You should never reach this line!'
     end

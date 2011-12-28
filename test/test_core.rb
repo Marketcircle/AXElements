@@ -253,11 +253,7 @@ class TestCore < TestAX
   end
 
   def test_param_attrs_handles_errors
-    assert_raises ArgumentError do
-      AX.param_attrs_of_element(static_text)
-    end
-
-    assert_raises ArgumentError do
+    assert_raises ArgumentError do # invalid
       AX.param_attrs_of_element(nil)
     end
 
@@ -265,23 +261,46 @@ class TestCore < TestAX
   end
 
 
-class TestAXParamAttrOfElement < TestCore
 
-  def test_contains_proper_info
+  def test_param_attr_contains_proper_info
     attr = AX.param_attr_of_element(static_text,
                                     KAXStringForRangeParameterizedAttribute,
                                     CFRange.new(0, 5).to_axvalue)
     assert_equal 'AXEle', attr
-  end
 
-  def test_get_attributed_string
     attr = AX.param_attr_of_element(static_text,
                                     # this is why we need name tranformers
                                     KAXAttributedStringForRangeParameterizedAttribute,
                                     CFRange.new(0, 5).to_axvalue)
     assert_kind_of NSAttributedString, attr
     assert_equal 'AXEle', attr.string
+
+    # Should add a test case to test the no value case, but it will have
+    # to be fabricated in the test app.
   end
+
+  def test_param_attr_handles_errors
+    assert_raises ArgumentError do # has no param attrs
+      AX.param_attr_of_element REF,
+                               KAXStringForRangeParameterizedAttribute,
+                               CFRange.new(0, 10).to_axvalue
+    end
+
+    assert_raises ArgumentError do # invalid element
+      AX.param_attr_of_element nil,
+                               KAXStringForRangeParameterizedAttribute,
+                               CFRange.new(0, 10).to_axvalue
+    end
+
+    assert_raises ArgumentError do # invalid argument
+      AX.param_attr_of_element REF,
+                               KAXStringForRangeParameterizedAttribute,
+                               CFRange.new(0, 10)
+    end
+
+    # Need to test the other failure cases eventually...
+  end
+
 
 end
 
