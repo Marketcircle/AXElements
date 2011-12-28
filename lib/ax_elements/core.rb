@@ -306,29 +306,35 @@ class << AX
   # @group Parameterized Attributes
 
   ##
-  # List of parameterized attributes for the given element.
+  # List of parameterized attributes for the given element. If an
+  # element does not have parameterized attributes, then an empty
+  # list will be returned.
   #
-  # @param [AXUIElementRef] element low level accessibility object
+  # Most elements do not have parameterized attributes, but the ones
+  # that do, have many.
+  #
+  # @example
+  #
+  #   AX.param_attrs_of_element(text_field_ref) # => ["AXStringForRange", ...]
+  #   AX.param_attrs_of_element(window_ref)     # => []
+  #
+  # @param [AXUIElementRef]
   # @return [Array<String>]
   def param_attrs_of_element element
     ptr = Pointer.new ARRAY
     case AXUIElementCopyParameterizedAttributeNames(element, ptr)
-    when KAXErrorSuccess
-      ptr[0]
-    when KAXErrorAttributeUnsupported, KAXErrorParameterizedAttributeUnsupported
-      show element,
-        "It seems as though '#{element}' does not have parameterized attributes"
-    when KAXErrorIllegalArgument
-      show element,
-        "The element '#{element}' is not a legal argument"
-    when KAXErrorInvalidUIElement
-      show element, "The AXUIElementRef '#{element.inspect}' is no longer valid"
-    when KAXErrorFailure
-      raise 'Some kind of system failure occurred, stopping to be safe'
-    when KAXErrorCannotComplete
-      raise 'Some unspecified problem occurred with the AXAPI. Sorry. :('
-    when KAXErrorNotImplemented
-      show element, 'The program does not work with AXAPI properly'
+    when 0                        then ptr[0] # KAXErrorSuccess, perf hack
+    when KAXErrorAttributeUnsupported,
+         KAXErrorParameterizedAttributeUnsupported then
+      msg = "'#{CFCopyDescription(element)}' does not have parameterized attributes"
+      raise ArgumentError, msg
+    when KAXErrorIllegalArgument  then
+      msg = "'#{CFCopyDescription(element)}' is not an AXUIElementRef"
+      raise ArgumentError, msg
+    when KAXErrorInvalidUIElement then invalid_element_message(element)
+    when KAXErrorFailure          then failure_message
+    when KAXErrorCannotComplete   then cannot_complete_message
+    when KAXErrorNotImplemented   then not_implemented_message(element)
     else
       raise 'You should never reach this line!'
     end

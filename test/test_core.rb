@@ -242,22 +242,27 @@ class TestCore < TestAX
     skip 'Need to get this figured out ASAP'
   end
 
-end
 
 
-class TestAXParamAttrsOfElement < TestCore
-
-  def test_empty_for_dock
+  def test_param_attrs
     assert_empty AX.param_attrs_of_element REF
-  end
 
-  def test_not_empty_for_search_field
     assert_includes AX.param_attrs_of_element(static_text), KAXStringForRangeParameterizedAttribute
     assert_includes AX.param_attrs_of_element(static_text), KAXLineForIndexParameterizedAttribute
     assert_includes AX.param_attrs_of_element(static_text), KAXBoundsForRangeParameterizedAttribute
   end
 
-end
+  def test_param_attrs_handles_errors
+    assert_raises ArgumentError do
+      AX.param_attrs_of_element(static_text)
+    end
+
+    assert_raises ArgumentError do
+      AX.param_attrs_of_element(nil)
+    end
+
+    # Need to test the other failure cases eventually...
+  end
 
 
 class TestAXParamAttrOfElement < TestCore
