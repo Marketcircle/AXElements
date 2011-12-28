@@ -302,6 +302,31 @@ class TestCore < TestAX
   end
 
 
+
+  ##
+  # Kind of a bad test right now because the method itself
+  # lacks certain functionality that needs to be added...
+
+  def test_element_at_point_gets_dude
+    point = attribute_for button, KAXPositionAttribute
+    ptr   = Pointer.new CGPoint.type
+    AXValueGetValue(point, KAXValueCGPointType, ptr)
+    point = ptr[0]
+    element = AX.element_at_point(REF, *point.to_a)
+    assert_equal button, element
+
+    # also check the system object
+  end
+
+  def test_element_at_point_handles_errors
+    assert_raises ArgumentError do
+      AX.element_at_point(nil, 10, 10)
+    end
+
+    # Should test the other cases as well...
+  end
+
+
 end
 
 
@@ -427,22 +452,6 @@ class TestAXNotifications < TestCore
   end
 
 end
-
-
-class TestElementAtPosition < TestCore
-
-  def test_returns_a_button_when_i_give_the_coordinates_of_a_button
-    point = attribute_for button, KAXPositionAttribute
-    ptr   = Pointer.new CGPoint.type
-    AXValueGetValue(point, KAXValueCGPointType, ptr)
-    point = ptr[0]
-    element = AX.element_at_point(*point.to_a)
-    assert_equal button, element
-  end
-
-end
-
-
 class TestAXPIDThings < TestCore
 
   def test_app_for_pid_returns_raw_element

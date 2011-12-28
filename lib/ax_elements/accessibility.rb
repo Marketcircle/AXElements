@@ -62,10 +62,12 @@ class << Accessibility
   #
   # @return [AX::Element]
   def element_under_mouse
-    element_at_point Mouse.current_position
+    element_at_point AX::SYSTEM, Mouse.current_position
   end
 
   ##
+  # @note This API is broken right now...
+  #
   # Get the top most object at an arbitrary point on the screen.
   #
   # @overload element_at_point(x,y)
@@ -79,9 +81,9 @@ class << Accessibility
   #   @param [CGPoint] point
   #
   # @return [AX::Element]
-  def element_at_point *point
+  def element_at_point app = AX::SYSTEM, *point
     arg = point.size == 1 ? point.first : point
-    AX::Element.process AX.element_at_point(*arg.to_a.flatten)
+    AX::Element.process AX.element_at_point(app, *arg.to_a.flatten)
   end
   alias_method :element_at_position, :element_at_point
 

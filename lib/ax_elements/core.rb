@@ -381,6 +381,42 @@ class << AX
   end
 
 
+  # @group Element Entry Points
+
+  ##
+  # Find the element at a point on the screen that belongs to a given
+  # application.
+  #
+  # The coordinates should be specified using the flipped coordinate
+  # system (origin is in the top-left, increasing downward as if reading
+  # a book in English).
+  #
+  # If more than one element is at the position then the
+  # z-order of the elements will be used to determine which is
+  # "on top". To get the absolute top element, regardless of application,
+  # then pass system-wide element for the `app`.
+  #
+  # @example
+  #
+  #   AX.element_at_point(safari_ref,      453, 200) # web area for active tab
+  #   AX.element_at_point(system_wide_ref, 453, 200) # table from finder
+  #
+  # @param [AXUIElementRef]
+  # @param [Float]
+  # @param [Float]
+  # @return [AXUIElementRef]
+  def element_at_point app, x, y
+    ptr = Pointer.new ELEMENT
+    case AXUIElementCopyElementAtPosition(app, x, y, ptr)
+    when 0                        then ptr[0] # KAXErrorSuccess, perf hack
+    when KAXErrorNoValue          then nil
+    when KAXErrorIllegalArgument  then
+      msg  = "The point [#{x}, #{y}] is not a valid point, or "
+      msg << "'#{CFCopyDescription(app)}' is not an AXUIElementRef"
+      raise ArgumentError, msg
+    when KAXErrorInvalidUIElement then invalid_element_message(app)
+    when KAXErrorCannotComplete   then cannot_complete_message
+    when KAXErrorNotImplemented   then not_implemented_message(app)
     else
       raise 'You should never reach this line!'
     end
@@ -478,42 +514,6 @@ class << AX
         unregister_notif_callback observer, *pair
       end
       @notifs = {}
-    end
-  end
-
-  # @group Element Entry Points
-
-  ##
-  # This will give you the UI element located at the position given. If
-  # more than one element is at the position then the z-order of the
-  # elements will be used to determine which is "on top".
-  #
-  # The coordinates should be specified using the flipped coordinate
-  # system (origin is in the top-left, increasing downward as if reading
-  # a book in English).
-  #
-  # @param [Float]
-  # @param [Float]
-  # @return [AXUIElementRef]
-  def element_at_point x, y
-    ptr    = Pointer.new ELEMENT
-    system = AXUIElementCreateSystemWide()
-    case AXUIElementCopyElementAtPosition(system, x, y, ptr)
-    when KAXErrorSuccess
-      ptr[0]
-    when KAXErrorNoValue
-      nil
-    when KAXErrorIllegalArgument
-      show2 x, y,
-        "The point [#{x}, #{y}] is not a valid point."
-    when KAXErrorInvalidUIElement
-      raise 'An internal error has occured. Not your fault...'
-    when KAXErrorCannotComplete
-      raise 'Some unspecified problem occurred with the AXAPI. Sorry. :('
-    when KAXErrorNotImplemented
-      raise 'The program does not work with AXAPI properly'
-    else
-      raise 'You should never reach this line!'
     end
   end
 

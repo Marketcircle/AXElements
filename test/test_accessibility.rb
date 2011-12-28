@@ -49,10 +49,12 @@ class TestAccessibility < TestAX
   end
 
   def test_returns_some_kind_of_ax_element
+    flunk 'Fails now due to broken dependent API'
     assert_kind_of AX::Element, Accessibility.element_under_mouse
   end
 
   def test_returns_element_under_the_mouse
+    flunk 'Fails now due to broken dependent API'
     button = APP.main_window.close_button
     Mouse.move_to button.to_point, 0
     # sleep 0.05 # how often will this fail without waiting?
@@ -60,10 +62,11 @@ class TestAccessibility < TestAX
   end
 
   def test_element_at_point_returns_button_when_given_buttons_coordinates
+    flunk 'This API is broken right now and requires changes in a number of places'
     point = close_button.position
-    assert_equal close_button, Accessibility.element_at_point(*point.to_a)
-    assert_equal close_button, Accessibility.element_at_point(point.to_a)
-    assert_equal close_button, Accessibility.element_at_point(point)
+    assert_equal close_button, Accessibility.element_at_point(APP, *point.to_a)
+    assert_equal close_button, Accessibility.element_at_point(APP, point.to_a)
+    assert_equal close_button, Accessibility.element_at_point(APP, point)
   end
 
   def test_elemnent_at_point_is_element_at_position
