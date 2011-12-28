@@ -422,6 +422,53 @@ class << AX
     end
   end
 
+  ##
+  # Get the application accessibility object/token for an application
+  # given the process identifier (PID) for that application.
+  #
+  # @example
+  #
+  #   app = AX.application_for_pid(safari_pid) # => #<AXUIElementRefx00000000>
+  #   CFShow(app)
+  #
+  # @param [Fixnum]
+  # @return [AXUIElementRef]
+  def application_for_pid pid
+    if NSRunningApplication.runningApplicationWithProcessIdentifier pid
+      AXUIElementCreateApplication(pid)
+    else
+      raise ArgumentError, 'pid must belong to a running application'
+    end
+  end
+
+
+  # @group Misc.
+
+  ##
+  # Get the process identifier (PID) of the application that the given
+  # element belongs to.
+  #
+  # @example
+  #
+  #   AX.pid_of_element(safari_ref)     # => 12345
+  #   AX.pid_of_element(text_field_ref) # => 12345
+  #
+  # @param [AXUIElementRef]
+  # @return [Fixnum]
+  def pid_of_element element
+    ptr = Pointer.new :int
+    case AXUIElementGetPid(element, ptr)
+    when 0                        then ptr[0] # KAXErrorSuccess, perf hack
+    when KAXErrorIllegalArgument  then
+      msg = "'#{CFCopyDescription(element)}' is not a AXUIElementRef"
+      raise ArgumentError, msg
+    when KAXErrorInvalidUIElement then invalid_element_message(element)
+    else
+      raise 'You should never reach this line!'
+    end
+  end
+
+
   # @group Notifications
 
   ##
@@ -514,38 +561,6 @@ class << AX
         unregister_notif_callback observer, *pair
       end
       @notifs = {}
-    end
-  end
-
-  ##
-  # You can call this method to create the application object given
-  # the process identifier of the app.
-  #
-  # @param [Fixnum] pid process identifier for the application you want
-  # @return [AXUIElementRef]
-  def application_for_pid pid
-    raise ArgumentError, 'pid must be greater than 0' unless pid > 0
-    AXUIElementCreateApplication(pid)
-  end
-
-  # @group Misc.
-
-  ##
-  # Get the PID of the application that the given element belongs to.
-  #
-  # @param [AXUIElementRef] element
-  # @return [Fixnum]
-  def pid_of_element element
-    ptr  = Pointer.new :int
-    case AXUIElementGetPid(element, ptr)
-    when KAXErrorSuccess
-      ptr[0]
-    when KAXErrorIllegalArgument
-      show element, "Apparently '#{element}' is not a AXUIElementRef"
-    when KAXErrorInvalidUIElement
-      show element, "The AXUIElementRef '#{element.inspect}' is no longer valid"
-    else
-      raise 'You should never reach this line!'
     end
   end
 

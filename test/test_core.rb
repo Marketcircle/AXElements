@@ -327,6 +327,35 @@ class TestCore < TestAX
   end
 
 
+
+  def test_app_for_pid
+    # Should call CFEqual() under the hood, which is what we want
+    assert_equal REF, AX.application_for_pid(PID)
+  end
+
+  def test_app_for_pid_raises_for_bad_pid
+    assert_raises ArgumentError do
+      AX.application_for_pid 0
+    end
+
+    assert_raises ArgumentError do
+      AX.application_for_pid 2
+    end
+  end
+
+
+
+  def test_pid_of_element_gets_pid
+    assert_equal PID, AX.pid_of_element(REF)
+    assert_equal PID, AX.pid_of_element(window)
+  end
+
+  def test_pid_of_element_handles_errors
+    assert_raises ArgumentError do
+      AX.pid_of_element nil
+    end
+  end
+
 end
 
 
@@ -449,32 +478,6 @@ class TestAXNotifications < TestCore
     action_for radio_gaga, KAXPressAction
     AX.wait_for_notif(TIMEOUT)
     assert got_callback
-  end
-
-end
-class TestAXPIDThings < TestCore
-
-  def test_app_for_pid_returns_raw_element
-    ret  = AX.application_for_pid PID
-    role = attribute_for ret, KAXRoleAttribute
-    assert_equal KAXApplicationRole, role
-  end
-
-  def test_app_for_pid_raises_if_pid_is_zero
-    assert_raises ArgumentError do
-      AX.application_for_pid 0
-    end
-    assert_raises ArgumentError do
-      AX.application_for_pid -1
-    end
-  end
-
-  def test_pid_for_app
-    assert_equal PID, AX.pid_of_element(REF)
-  end
-
-  def test_pid_for_dock_app_is_docks_pid
-    assert_equal PID, AX.pid_of_element(window)
   end
 
 end
