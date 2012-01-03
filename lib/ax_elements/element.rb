@@ -460,7 +460,7 @@ class AX::Element
     end
 
 
-    private
+   # private
 
     ##
     # @private
