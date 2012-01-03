@@ -1,8 +1,6 @@
 doc
 .yardoc
 Gemfile.lock
-vendor/
-vendor_test/
 *.rbo
 *.gem
 xcuserdata
