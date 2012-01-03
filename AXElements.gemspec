@@ -36,7 +36,7 @@ describes user interactions.
   s.add_runtime_dependency 'activesupport', '~> 3.1.0'
   s.add_runtime_dependency 'i18n',          '~> 0.6.0' # le sigh
 
-  s.add_development_dependency 'minitest',  '~> 2.5'
-  s.add_development_dependency 'yard',      '~> 0.7.2'
+  s.add_development_dependency 'minitest',  '~> 2.10'
+  s.add_development_dependency 'yard',      '~> 0.7.4'
   s.add_development_dependency 'redcarpet', '~> 1.17'
 end
