@@ -1,3 +1,5 @@
+require 'key_coder'
+
 ##
 # Namespace for all the accessibility objects, as well as core
 # abstraction layer that that interacts with OS X Accessibility
@@ -627,7 +629,7 @@ class << AX
   #
   # @return [Hash]
   KEYCODE_MAP = {}
-  require 'key_coder'
+
 
   ##
   # Parse a string into a list of keyboard events to be executed in
