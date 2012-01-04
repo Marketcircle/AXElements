@@ -112,7 +112,7 @@ Proper releases to rubygems will be made as milestones are reached.
 
 ## Copyright
 
-Copyright (c) 2010-2011 Marketcircle Incorporated. All rights
+Copyright (c) 2010-2012 Marketcircle Incorporated. All rights
 reserved.
 
 AXElements is available under the standard 3-clause BSD license. See
