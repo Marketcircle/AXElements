@@ -89,6 +89,19 @@ class TestNSStringCamelize < MiniTest::Unit::TestCase
 end
 
 
+class TestNSStringUnderscore < MiniTest::Unit::TestCase
+
+  # a better test might be to take the method and bind it into a
+  # different context where ActiveSupport::Inflector resolved to
+  # a mock class with a mocked version #underscore
+  def test_calls_active_support
+    assert_equal 'hello_this_is_dog', 'HelloThisIsDog'.underscore
+    assert_equal 'nothing',           'nothing'.underscore
+  end
+
+end
+
+
 class TestNSStringPredicate < MiniTest::Unit::TestCase
 
   def test_true_if_string_ends_with_a_question_mark

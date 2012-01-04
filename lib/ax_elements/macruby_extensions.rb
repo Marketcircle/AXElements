@@ -1,4 +1,4 @@
-require 'active_support/inflector'
+require 'ax_elements/vendor/inflector'
 
 ##
 # Extensions to `NSArray`.
@@ -105,13 +105,22 @@ class NSString
   end
 
   ##
-  # Force the #singularize method to be defined on NSString objects,
+  # Force the `#singularize` method to be defined on NSString objects,
   # and therefore on Symbol objects...at least until that bug gets
   # fixed.
   #
   # @return [String]
   def singularize
     ActiveSupport::Inflector.singularize(self)
+  end
+
+  ##
+  # Force the `#underscore` method to be defined on NSString objects
+  # so that it works on all strings.
+  #
+  # @return [String]
+  def underscore
+    ActiveSupport::Inflector.underscore(self)
   end
 
   ##

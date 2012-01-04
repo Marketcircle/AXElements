@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-require 'active_support/inflector'
+require 'ax_elements/macruby_extensions'
 require 'ax_elements/element/inspector'
 require 'ax_elements/element/errors'
 require 'ax_elements/accessibility'
