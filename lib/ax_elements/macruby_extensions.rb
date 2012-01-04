@@ -136,9 +136,7 @@ class NSString
   #
   # @return [String,nil] returns `self`
   def camelize
-    gsub /(?:^|_)(.)/ do
-      $1.upcase! || $1
-    end
+    gsub /(?:^|_)(.)/ do $1.upcase! || $1 end
   end
 end
 
