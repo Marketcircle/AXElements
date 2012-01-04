@@ -29,7 +29,7 @@ end
 desc 'Start up irb with AXElements loaded'
 task :console => :ext do
   irb = ENV['RUBY_VERSION'] ? 'irb' : 'macirb'
-  sh "#{irb} -Ilib -Iext/key_coder -rubygems -rax_elements"
+  sh "#{irb} -Ilib -Iext -rubygems -rax_elements"
 end
 
 ## Compilation
@@ -39,7 +39,7 @@ Rake::CompileTask.new
 
 desc 'Compile C extensions'
 task :ext do
-  Dir.chdir 'ext/key_coder' do
+  Dir.chdir 'ext/ax_elements' do
     break if File.exists?('key_coder.bundle') && File.mtime('key_coder.bundle') > File.mtime('key_coder.m')
     ruby 'extconf.rb'
     sh   'make'
@@ -48,7 +48,7 @@ end
 
 desc 'Clean temporary files created by the C extension'
 task :clobber_ext do
-  Dir.chdir 'ext/key_coder' do
+  Dir.chdir 'ext/ax_elements' do
     ['Makefile', 'key_coder.o', 'key_coder.bundle'].each do |file|
       $stdout.puts "rm ext/key_coder/#{file}"
       rm file
@@ -71,7 +71,7 @@ end
 
 require 'rake/testtask'
 Rake::TestTask.new do |t|
-  t.libs     << 'test' << 'ext/key_coder'
+  t.libs     << 'test' << 'ext'
   t.pattern   = 'test/**/test_*.rb'
   t.ruby_opts = ['-rhelper']
   t.verbose   = true

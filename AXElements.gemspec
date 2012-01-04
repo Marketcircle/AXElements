@@ -18,12 +18,12 @@ describes user interactions.
   s.has_rdoc    = 'yard'
 
   s.require_paths << 'ext'
-  s.extensions    << 'ext/key_coder/extconf.rb'
+  s.extensions    << 'ext/ax_elements/extconf.rb'
 
 
   s.files            =
     Dir.glob('lib/**/*.rb*') +
-    [ 'ext/key_coder/extconf.rb', 'ext/key_coder/key_coder.m' ] +
+    [ 'ext/ax_elements/extconf.rb', 'ext/ax_elements/key_coder.m' ] +
     [ 'Rakefile' ]
   s.test_files       =
     Dir.glob('test/**/test_*.rb') +

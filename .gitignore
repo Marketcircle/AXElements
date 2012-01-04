@@ -6,6 +6,6 @@ Gemfile.lock
 xcuserdata
 .DS_Store
 test/fixture
-ext/key_coder/Makefile
-ext/key_coder/key_coder.bundle
-ext/key_coder/key_coder.o
+ext/*/Makefile
+ext/*/*.bundle
+ext/*/*.o

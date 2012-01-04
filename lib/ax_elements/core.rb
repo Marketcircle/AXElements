@@ -1,4 +1,4 @@
-require 'key_coder'
+require 'ax_elements/key_coder'
 
 ##
 # Namespace for all the accessibility objects, as well as core
