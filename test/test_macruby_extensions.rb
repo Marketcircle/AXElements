@@ -82,107 +82,44 @@ end
 
 
 class TestCGPointExtensions < MiniTest::Unit::TestCase
+
   SCREENS     = NSScreen.screens
   MAIN_SCREEN = NSScreen.mainScreen
 
-class TestCGPointCenterOfRect < TestCGPointExtensions
+  def test_center
+    def center origin_x, origin_y, width, height
+      CGPoint.new(origin_x,origin_y).center CGSize.new(width,height)
+    end
 
-  def test_unaltered_with_cgrectzero
-    assert_equal CGPointZero, CGPoint.center_of_rect(CGRectZero)
-  end
-
-  def test_middle_of_screen
-    frame = MAIN_SCREEN.frame
-    point = frame.origin.dup
-    point.x = frame.size.width / 2
-    point.y = frame.size.height / 2
-    assert_equal point, CGPoint.center_of_rect(frame)
-  end
-
-  def center_of_rect origin_x, origin_y, width, height
-    rect = CGRect.new(CGPoint.new(origin_x,origin_y), CGSize.new(width,height))
-    CGPoint.center_of_rect(rect)
-  end
-
-  def test_simple_square_with_origin_at_zero
-    point = center_of_rect(0.0, 0.0, 2.0, 2.0)
-    assert_equal 1, point.x
-    assert_equal 1, point.y
-  end
-
-  def test_simple_square_in_positive_positive_quadrant
-    point = center_of_rect(1.0, 1.0, 6.0, 6.0)
-    assert_equal 4, point.x
-    assert_equal 4, point.y
-  end
-
-  def test_rect_in_positive_positive_quadrant
-    point = center_of_rect(1.0, 2.0, 6.0, 10.0)
-    assert_equal 4, point.x
-    assert_equal 7, point.y
-  end
-
-  def test_rect_in_negative_positive_quadrant
-    point = center_of_rect(-123.0, 25.0, 6.0, 10.0)
-    assert_equal -120, point.x
-    assert_equal 30, point.y
-  end
-
-  def test_rect_starts_in_negative_positive_quadrant_but_is_in_positive_positive
-    point = center_of_rect(-10.0, 70.0, 20.0, 42.0)
-    assert_equal 0, point.x
-    assert_equal 91, point.y
-  end
-
-end
-
-
-class TestCGPointCenter < TestCGPointExtensions
-
-  def test_unaltered_with_cgrectzero
     assert_equal CGPointZero, CGPointZero.center(CGSizeZero)
-  end
 
-  def center origin_x, origin_y, width, height
-    CGPoint.new(origin_x,origin_y).center CGSize.new(width,height)
-  end
-
-  def test_simple_square_with_origin_at_zero
+    # simple square with origin at zero
     point = center(0.0, 0.0, 2.0, 2.0)
     assert_equal 1, point.x
     assert_equal 1, point.y
-  end
 
-  def test_simple_square_in_positive_positive_quadrant
+    # simple square in positive positive quadrant
     point = center(1.0, 1.0, 6.0, 6.0)
     assert_equal 4, point.x
     assert_equal 4, point.y
-  end
 
-  def test_rect_in_positive_positive_quadrant
+    # rect in positive positive quadrant
     point = center(1.0, 2.0, 6.0, 10.0)
     assert_equal 4, point.x
     assert_equal 7, point.y
-  end
 
-  def test_rect_in_negative_positive_quadrant
+    # rect in negative positive quadrant
     point = center(-123.0, 25.0, 6.0, 10.0)
     assert_equal -120, point.x
     assert_equal 30, point.y
-  end
 
-  def test_rect_starts_in_negative_positive_quadrant_but_is_in_positive_positive
+    # rect starts in negative positive quadrant but is in positive positive
     point = center(-10.0, 70.0, 20.0, 42.0)
     assert_equal 0, point.x
     assert_equal 91, point.y
   end
 
-end
-
-
-class TestCGPointToPoint < MiniTest::Unit::TestCase
-
-  def test_returns_self
+  def test_to_point_returns_self
     assert_equal CGPointZero, CGPointZero.to_point
     point = CGPoint.new(1, 1)
     assert_equal point, point.to_point

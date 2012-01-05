@@ -118,15 +118,6 @@ end
 # Extensions to `CGPoint`.
 class CGPoint
   ##
-  # Get the center point in a rectangle.
-  #
-  # @param [CGRect] rect
-  # @return [CGPoint]
-  def self.center_of_rect rect
-    rect.origin.center rect.size
-  end
-
-  ##
   # Find the center of a rectangle, treating `self` as the origin and
   # the given `size` as the size of the rectangle.
   #
