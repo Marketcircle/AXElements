@@ -9,22 +9,19 @@
 #import <Foundation/Foundation.h>
 #import <Carbon/Carbon.h>
 #import <CoreServices/CoreServices.h>
-#include "ruby/ruby.h"
 
-/*
- * @note Static keycode reference at
- *       /System/Library/Frameworks/Carbon.framework/Versions/A/Frameworks/HIToolbox.framework/Versions/A/Headers/Events.h
- *
- * Map of characters to key codes.
- *
- * @return [Hash{String=>Fixnum}]
- */
-static NSMutableDictionary* mAX_keycode_map;
+@interface KeyCodeGenerator : NSObject
+{}
 
-/*
- * Helper method to create the keycode mapping at runtime.
- */
-static void mAX_initialize_keycode_map() {
+// Helper method to create the dynamic portion of the keycode mapping at runtime.
++ (NSMutableDictionary*) dynamic_mapping;
+
+@end
+
+@implementation KeyCodeGenerator : NSObject
+{}
+
++ (NSMutableDictionary*) dynamic_mapping {
 
   TISInputSourceRef currentKeyboard      = TISCopyCurrentKeyboardInputSource();
   CFDataRef keyboardLayoutData           = (CFDataRef)TISGetInputSourceProperty(currentKeyboard,
@@ -34,7 +31,7 @@ static void mAX_initialize_keycode_map() {
   UniCharCount        actualStringLength = 0;
   UniChar                        string[255];
 
-  mAX_keycode_map = [[NSMutableDictionary alloc] initWithCapacity:255];
+  NSMutableDictionary* map = [[NSMutableDictionary alloc] initWithCapacity:255];
 
   for (int keyCode = 0; keyCode < 255; keyCode++) {
     UCKeyTranslate (
@@ -50,23 +47,15 @@ static void mAX_initialize_keycode_map() {
                     string
                     );
 
-    [mAX_keycode_map setObject:[NSNumber numberWithInt:keyCode]
-                        forKey:[NSString stringWithCharacters:string length:actualStringLength]];
+    [map setObject:[NSNumber numberWithInt:keyCode]
+            forKey:[NSString stringWithCharacters:string length:actualStringLength]];
   }
+
+  return map;
 
 }
 
+@end
+
 void Init_key_coder() {
-
-  // TODO: Make mapping keys lazy, expose a C function to map a single
-  //       character to a keycode, and define a hash in Ruby land that
-  //       will use the hash callback feature to get the mapping on demand.
-  //       POSSIBLE PROBLEM: How to handle alternative characters, like
-  //       symbols which require holding shift first? How would we know
-  //       about them?
-
-  // Initialize the mapping and expose it as a constant in the AX module
-  mAX_initialize_keycode_map();
-  rb_define_const(rb_const_get(rb_cObject, rb_intern("AX")), "KEYCODE_MAP", (VALUE)mAX_keycode_map);
-
 }
