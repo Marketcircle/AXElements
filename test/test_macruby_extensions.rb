@@ -28,6 +28,11 @@ class NSArrayExtensions < MiniTest::Unit::TestCase
     assert_equal expected, actual
   end
 
+  def test_blank
+    ary = NSArray.array
+    assert_equal ary.method(:empty?), ary.method(:blank?)
+  end
+
 end
 
 
@@ -157,6 +162,13 @@ class TestBoxedExtensions < MiniTest::Unit::TestCase
     assert_equal range, ptr[0]
   end
 
+end
+
+
+class TestNilClassExtensions < MiniTest::Unit::TestCase
+
+  def test_blank
+    assert_equal true, nil.blank?
   end
 
 end

@@ -930,6 +930,18 @@ class TestElementEquivalence < TestElements
 end
 
 
+class TestElementBlankPredicate < TestAX
+
+  def test_blank
+    app    = AX::Element.new REF, AX.attrs_of_element(REF)
+    window = app.attribute(:main_window)
+    assert_equal false, window.blank?
+    assert_equal false, app.blank?
+  end
+
+end
+
+
 class TestElementConstMap < MiniTest::Unit::TestCase
 
   def map
