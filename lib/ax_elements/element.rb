@@ -296,6 +296,17 @@ class AX::Element
   end
 
   ##
+  # @note Since `#inspect` is often overridden by subclasses, this cannot
+  #       be an alias.
+  #
+  # An alias for {#inspect}.
+  #
+  # @return [String]
+  def to_s
+    inspect
+  end
+
+  ##
   # Overriden to respond properly with regards to the ydnamic attribute
   # lookups, but will return false for potential implicit searches.
   def respond_to? name

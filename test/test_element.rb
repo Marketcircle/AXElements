@@ -786,6 +786,26 @@ class TestElementInspect < TestElements
 end
 
 
+class TestElementToString < TestElements
+
+  def test_to_s_just_calls_inspect
+    klass = Class.new(AX::Element) do
+
+      def initialize
+      end
+
+      def inspect
+        :test
+      end
+
+    end
+
+    assert_equal :test, klass.new.to_s
+  end
+
+end
+
+
 class TestElementRespondTo < TestElements
 
   def test_true_for_attributes_object_has
