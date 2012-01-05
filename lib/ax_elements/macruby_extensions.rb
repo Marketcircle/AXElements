@@ -141,7 +141,8 @@ end
 
 
 ##
-# Extensions to `Boxed` objects.
+# Extensions to `Boxed` objects. `Boxed` is the superclass for all structs
+# that MacRuby brings over using its BridgeSupport.
 class Boxed
   class << self
     ##
@@ -154,7 +155,8 @@ class Boxed
 
   ##
   # Create an `AXValue` from the `Boxed` instance. This will only
-  # work if for a few boxed types, check the AXAPI documentation.
+  # work if for a few boxed types, you will need to check the AXAPI
+  # documentation for an up to date list.
   #
   # @return [AXValueRef]
   def to_axvalue

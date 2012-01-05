@@ -128,30 +128,28 @@ class TestCGPointExtensions < MiniTest::Unit::TestCase
 end
 
 
-class TestBoxedToAXValue < MiniTest::Unit::TestCase
+class TestBoxedExtensions < MiniTest::Unit::TestCase
 
-  def test_point_makes_a_value
+  def test_to_axvalue
+    # point_makes_a_value
     value = CGPointZero.to_axvalue
     ptr   = Pointer.new CGPoint.type
     AXValueGetValue(value, 1, ptr)
     assert_equal CGPointZero, ptr[0]
-  end
 
-  def test_size_makes_a_value
+    # size_makes_a_value
     value = CGSizeZero.to_axvalue
     ptr   = Pointer.new CGSize.type
     AXValueGetValue(value, 2, ptr)
     assert_equal CGSizeZero, ptr[0]
-  end
 
-  def test_rect_makes_a_value
+    # rect_makes_a_value
     value = CGRectZero.to_axvalue
     ptr   = Pointer.new CGRect.type
     AXValueGetValue(value, 3, ptr)
     assert_equal CGRectZero, ptr[0]
-  end
 
-  def test_range_makes_a_value
+    # range_makes_a_value
     range = CFRange.new(5, 4)
     value = range.to_axvalue
     ptr   = Pointer.new CFRange.type
@@ -159,10 +157,6 @@ class TestBoxedToAXValue < MiniTest::Unit::TestCase
     assert_equal range, ptr[0]
   end
 
-  def test_values
-    [[CGPoint, 1], [CGSize, 2], [CGRect, 3], [CFRange, 4]].each do |klass, value|
-      assert_equal value, klass.instance_variable_get(:@ax_value)
-    end
   end
 
 end
