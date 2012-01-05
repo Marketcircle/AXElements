@@ -49,7 +49,8 @@ end
 ##
 # @private
 #
-# An empty string, performance hack.
+# An empty string, performance hack since using it means you do not
+# have to allocate new empty strings.
 #
 # @return [String]
 EMPTY_STRING = ''.freeze

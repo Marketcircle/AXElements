@@ -1,44 +1,26 @@
-class TestMacRubyExtensions < MiniTest::Unit::TestCase
+class NSArrayExtensions < MiniTest::Unit::TestCase
 
-  def test_second_returns_second_from_array
-    [[1,2],[:one,:two]].each { |array|
-      assert_equal array.last, NSArray.arrayWithArray(array).second
-      assert_equal array.last, array.second
-    }
-
-    [[1], [:one]].each { |array|
-      assert_nil NSArray.arrayWithArray(array).second
-      assert_nil array.second
-    }
-
-    [[1,2,3],[:one,:two,:three]].each { |array|
-      assert_equal array.last, NSArray.arrayWithArray(array).third
-      assert_equal array.last, array.third
-    }
-
-    [[1,2], [:one,:two]].each { |array|
-      assert_nil NSArray.arrayWithArray(array).third
-      assert_nil array.third
-    }
+  def test_second_returns_second
+    assert_equal :two, NSArray.arrayWithArray([:one, :two]).second
+    assert_nil         NSArray.arrayWithArray([:one]).second
   end
 
+  def test_third_returns_third
+    assert_equal :three, NSArray.arrayWithArray([:one, :two, :three]).third
+    assert_nil           NSArray.arrayWithArray([:one, :two]).third
+  end
 
-
-  def test_to_point_makes_a_point
+  def test_to_point
     assert_instance_of CGPoint, [1, 1].to_point
     assert_equal CGPoint.new(1,2), NSArray.arrayWithArray([1, 2, 3]).to_point
   end
 
-
-
-  def test_to_size_makes_a_size
+  def test_to_size
     assert_instance_of CGSize, [1, 1].to_size
     assert_equal CGSize.new(1,2), NSArray.arrayWithArray([1, 2, 3]).to_size
   end
 
-
-
-  def test_to_rect_makes_a_rect
+  def test_to_rect
     assert_instance_of CGRect, [1, 1, 1, 1].to_rect
 
     expected = CGRect.new(CGPoint.new(4,3),CGSize.new(2,5))
@@ -46,31 +28,14 @@ class TestMacRubyExtensions < MiniTest::Unit::TestCase
     assert_equal expected, actual
   end
 
+end
 
 
-  def test_camelize_snake_case_string_and_makes_it_camel_case
-    assert_equal 'AMethodName', 'a_method_name'.camelize
-    assert_equal 'MethodName',  'method_name'.camelize
-    assert_equal 'Name',        'name'.camelize
+class NSStringExtensions < MiniTest::Unit::TestCase
+
+  def test_empty_string_constant
+    assert Object.const_get(:EMPTY_STRING)
   end
-
-  def test_camelize_takes_camel_case_and_does_nothing
-    assert_equal 'AMethodName', 'AMethodName'.camelize
-    assert_equal 'MethodName',  'MethodName'.camelize
-    assert_equal 'Name',        'Name'.camelize
-  end
-
-
-
-  # a better test might be to take the method and bind it into a
-  # different context where ActiveSupport::Inflector resolved to
-  # a mock class with a mocked version #underscore
-  def test_underscore_calls_active_support
-    assert_equal 'hello_this_is_dog', 'HelloThisIsDog'.underscore
-    assert_equal 'nothing',           'nothing'.underscore
-  end
-
-
 
   def test_predicate?
     assert 'test?'.predicate?
@@ -83,25 +48,26 @@ class TestMacRubyExtensions < MiniTest::Unit::TestCase
     refute 'test'.predicate?
   end
 
-
-
-  # a better test might be to take the method and bind it into a
-  # different context where ActiveSupport::Inflector resolved to
-  # a mock class with a mocked version #singularize
   def test_singularize_calls_active_support
     assert_equal 'octopus', NSString.alloc.initWithString('octopi').singularize
-    assert_equal 'ox', NSString.alloc.initWithString('oxen').singularize
-    assert_equal 'box', NSString.alloc.initWithString('boxes').singularize
-    assert_equal 'box', NSString.alloc.initWithString('box').singularize
+    assert_equal 'ox',      NSString.alloc.initWithString('oxen').singularize
+    assert_equal 'box',     NSString.alloc.initWithString('boxes').singularize
+    assert_equal 'box',     NSString.alloc.initWithString('box').singularize
   end
 
-end
-
+  def test_underscore_calls_active_support
+    assert_equal 'hello_this_is_dog', 'HelloThisIsDog'.underscore
+    assert_equal 'nothing',           'nothing'.underscore
   end
 
-  end
+  def test_camelize
+    assert_equal 'AMethodName', 'a_method_name'.camelize
+    assert_equal 'MethodName',  'method_name'.camelize
+    assert_equal 'Name',        'name'.camelize
 
-
+    assert_equal 'AMethodName', 'AMethodName'.camelize
+    assert_equal 'MethodName',  'MethodName'.camelize
+    assert_equal 'Name',        'Name'.camelize
   end
 
 end
