@@ -28,8 +28,8 @@ require 'ax_elements/key_coder'
 # errors are handled (since CoreFoundation uses a different pattern for
 # that sort of thing).
 #
-# Ideally this API would be stateless, but I'm still working on that...
-class << AX
+# Except for the notification related APIs, everything here is stateless
+# and therefore thread safe.
 
 
   # @group Attributes
@@ -482,7 +482,7 @@ class << AX
   # @group Notifications
 
   ##
-  # @todo This method is too big, needs refactoring. It's own class?
+  # @todo This method is too big, needs refactoring into its own class.
   #
   # {file:docs/Notifications.markdown Notifications} are a way to put
   # non-polling delays into your scripts.
@@ -490,6 +490,13 @@ class << AX
   # Use this method to register to be notified of the specified event in
   # an application. You must also pass a block to this method to validate
   # the notification.
+  #
+  # @example
+  #
+  #   AX.register_for_notif(safari_ref, KAXWindowCreatedNotification) { |element, notif|
+  #     puts "#{element} sent #{notif}"
+  #     true
+  #   }
   #
   # @param [AXUIElementRef] ref the element which will send the notification
   # @param [String] name the name of the notification
@@ -542,15 +549,12 @@ class << AX
   def wait_for_notif timeout
     # We use RunInMode because it has timeout functionality, return values are
     case CFRunLoopRunInMode(KCFRunLoopDefaultMode, timeout, false)
-    when KCFRunLoopRunStopped  # Stopped with CFRunLoopStop.
-      true
-    when KCFRunLoopRunTimedOut # Time interval seconds passed.
-      false
-    when KCFRunLoopFinished    # Mode has no sources or timers.
-      raise 'Something went wrong with setting up the run loop'
-    when KCFRunLoopRunHandledSource
-      # Only applies when returnAfterSourceHandled is true.
-      raise 'This should never happen'
+    when KCFRunLoopRunStopped       then true  # Stopped with CFRunLoopStop.
+    when KCFRunLoopRunTimedOut      then false # Time interval seconds passed.
+    when KCFRunLoopFinished         then       # Mode has no sources or timers.
+      raise RuntimeError, 'The run loop was not configured properly'
+    when KCFRunLoopRunHandledSource then       # Only applies when returnAfterSourceHandled is true.
+      raise RuntimeError, 'Did you start your own run loop?'
     else
       raise 'You just found a an OS X bug (or a MacRuby bug)...'
     end
@@ -560,8 +564,7 @@ class << AX
   # @todo Flush any waiting notifs?
   #
   # Cancel _all_ notification registrations. Simple and clean, but a
-  # blunt tool at best. I didn't have time to figure out a better
-  # system :(
+  # blunt tool at best. This will have to do until I have more time.
   #
   # @return [nil]
   def unregister_notifs
@@ -689,6 +692,7 @@ class << AX
       end
     end
 
+    # @todo should this be done inside the loop?
     sleep events.count * key_rate
   end
 
