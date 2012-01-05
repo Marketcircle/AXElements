@@ -159,6 +159,11 @@ class << AX
   # `AX.attr_of_element(element, KAXRoleAttribute)` except that it
   # should be slightly faster.
   #
+  # @example
+  #
+  #   AX.role_for(window_ref) # => KAXWindowRole
+  #   AX.role_for(button_ref) # => KAXButtonRole
+  #
   # @param [AXUIElementRef]
   # @return [String]
   def role_for element
