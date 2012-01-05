@@ -50,7 +50,7 @@ desc 'Clean temporary files created by the C extension'
 task :clobber_ext do
   Dir.chdir 'ext/ax_elements' do
     ['Makefile', 'key_coder.o', 'key_coder.bundle'].each do |file|
-      $stdout.puts "rm ext/key_coder/#{file}"
+      $stdout.puts "rm ext/ax_elements/#{file}"
       rm file
     end
   end
