@@ -369,7 +369,7 @@ class TestAXNotifications < TestCore
   TIMEOUT       = 1.0
 
   def radio_group
-    @radio_group ||= child KAXRadioGroupRole
+    @@radio_group ||= child KAXRadioGroupRole
   end
 
   def radio_gaga
