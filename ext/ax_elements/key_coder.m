@@ -21,8 +21,6 @@
  */
 static NSMutableDictionary* mAX_keycode_map;
 
-static VALUE mAX;
-
 /*
  * Helper method to create the keycode mapping at runtime.
  */
@@ -53,7 +51,7 @@ static void mAX_initialize_keycode_map() {
                     );
 
     [mAX_keycode_map setObject:[NSNumber numberWithInt:keyCode]
-												forKey:[NSString stringWithCharacters:string length:actualStringLength]];
+                        forKey:[NSString stringWithCharacters:string length:actualStringLength]];
   }
 
 }
@@ -69,9 +67,6 @@ void Init_key_coder() {
 
   // Initialize the mapping and expose it as a constant in the AX module
   mAX_initialize_keycode_map();
-  mAX = rb_define_module("AX");
-  rb_define_const(mAX, "KEYCODE_MAP", (VALUE)mAX_keycode_map);
-  // No need to expose the method right now...
-  //rb_define_module_function(mAX, "initialize_keycode_map", mAX_initialize_keycode_map, 0);
+  rb_define_const(rb_const_get(rb_cObject, rb_intern("AX")), "KEYCODE_MAP", (VALUE)mAX_keycode_map);
 
 }

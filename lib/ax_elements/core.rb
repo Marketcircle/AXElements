@@ -1,4 +1,4 @@
-require 'ax_elements/key_coder'
+# -*- coding: utf-8 -*-
 
 ##
 # Namespace for all the accessibility objects, as well as core
@@ -8,6 +8,9 @@ module AX
   @ignore_notifs = true
   @notifs        = {}
 end
+
+# Load the key_coder extension after {AX} has been defined.
+require 'ax_elements/key_coder'
 
 ##
 # @todo I feel a bit weird having to instantiate a new pointer every
