@@ -176,7 +176,6 @@ class << Mouse
       CGEventPost(KCGHIDEventTap, event)
       sleep QUANTUM
     end
-    $stderr.puts 'Not moving anywhere' if from == to
     event = CGEventCreateMouseEvent(nil, type, to, button)
     CGEventPost(KCGHIDEventTap, event)
     sleep QUANTUM
