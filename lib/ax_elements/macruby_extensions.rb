@@ -99,6 +99,18 @@ class NSString
   def camelize
     gsub /(?:^|_)(.)/ do $1.upcase! || $1 end
   end
+
+  ##
+  # Add the standard `#map` method to NSString. This version has the
+  # extra property of concatenating whatever you return from the block
+  # to the final array instead of just appending it.
+  #
+  # @return [Array]
+  def map
+    ary = []
+    each_char { |x| ary.concat yield(x) }
+    ary
+  end
 end
 
 
