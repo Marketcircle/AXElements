@@ -119,7 +119,6 @@ with `@todo` tags.
 
 ### 0.7 (or maybe 1.0)
 
-- Make a decision about NSArray#method_missing
 - Merge notifications with actions as they are commonly combined
   + But how?
 - Mouse module cleanup and regression testing
