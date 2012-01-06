@@ -75,14 +75,6 @@ class NSStringExtensions < MiniTest::Unit::TestCase
     assert_equal 'Name',        'Name'.camelize
   end
 
-  def test_map
-    ret = NSString.stringWithString('hello').map { |_| true }
-    assert_equal [true, true, true, true, true], ret
-
-    ret = NSString.stringWithString('hello').map { |_| [true] }
-    assert_equal [true, true, true, true, true], ret
-  end
-
 end
 
 
