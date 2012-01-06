@@ -53,16 +53,6 @@ class MiniTest::Unit::TestCase
   end
 end
 
-##
-# A mix in module to allow capture of logs
-module LoggingCapture
-  def setup
-    super
-    @log_output = StringIO.new
-    Accessibility.log = Logger.new @log_output
-  end
-end
-
 module AXHelpers
   def pid_for name
     NSWorkspace.sharedWorkspace.runningApplications.find do |app|
