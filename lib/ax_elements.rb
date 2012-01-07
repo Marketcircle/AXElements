@@ -23,7 +23,6 @@ unless Object.const_defined? :KAXIdentifierAttribute
 end
 
 
-require 'ax_elements/macruby_extensions'
 require 'ax_elements/version'
 require 'ax_elements/element'
 
