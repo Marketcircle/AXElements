@@ -26,10 +26,12 @@ end
 require 'ax_elements/version'
 require 'ax_elements/element'
 
-require 'ax_elements/accessibility/language'
 
+# @todo Change 'language' to 'dsl'
 # Mix the language methods in to the TopLevel
+require 'accessibility/language'
 include Accessibility::Language
+
 
 ##
 # The Mac OS X dock application.
