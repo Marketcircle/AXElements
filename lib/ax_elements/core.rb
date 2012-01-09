@@ -30,7 +30,7 @@ require 'ax_elements/key_coder'
 #
 # Except for the notification related APIs, everything here is stateless
 # and therefore thread safe.
-
+class << AX
 
   # @group Attributes
 
