@@ -639,7 +639,7 @@ class << AX
   # order to support multiple keyboard layouts.
   #
   # @return [Hash]
-  KEYCODE_MAP = {}
+  KEYCODE_MAP = KeyCodeGenerator.dynamic_mapping
 
 
   ##
@@ -652,10 +652,10 @@ class << AX
     sequence = []
     string.each_char do |char|
       if char.match(/[A-Z]/)
-        code  = AX::KEYCODE_MAP[char.downcase]
+        code  = KEYCODE_MAP[char.downcase]
         event = [[56,true], [code,true], [code,false], [56,false]]
       else
-        code  = AX::KEYCODE_MAP[char]
+        code  = KEYCODE_MAP[char]
         event = [[code,true],[code,false]]
       end
       sequence.concat event
