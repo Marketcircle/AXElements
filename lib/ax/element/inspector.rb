@@ -13,15 +13,13 @@
 module Accessibility::PPInspector
 
   ##
-  # @todo I feel a bit bad about having such a large method that has
-  #       some inefficiencies.
-  #
   # Create an identifier for `self` using various attributes that should
   # make it very easy to identify the element.
   #
   # @return [String]
   def pp_identifier
-    # use or lack of use of #inspect is intentional for visual effect
+    # @todo Break this method up into chunks
+    # @note use, or lack of use, of #inspect is intentional for visual effect
 
     if attributes.include? KAXValueAttribute
       val = attribute :value
