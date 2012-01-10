@@ -120,7 +120,7 @@ class Accessibility::Core::StringParser
   # @param [String]
   # @return [Array<Array(Number,Boolean)>]
   def parse string
-    chars = string.split EMPTY_STRING
+    chars = string.split ::EMPTY_STRING
     until chars.empty?
       case char = chars.shift
       when ALT[char] then parse_alt     char
@@ -150,7 +150,7 @@ class Accessibility::Core::StringParser
     if code = MAPPING[char]
       [[code,true], [code,false]]
     else
-      raise ArgumentError, "Has no mapping, bail!"
+      raise ArgumentError, "#{char} has no mapping, bail!"
     end
   end
 
