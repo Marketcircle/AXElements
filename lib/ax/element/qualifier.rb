@@ -18,7 +18,7 @@ class Accessibility::Qualifier
   # Whether or not a candidate object matches the criteria given
   # at initialization.
   #
-  # @param [AX::Element] element
+  # @param [AX::Element]
   def qualifies? element
     return false unless the_right_type? element
     return false unless meets_criteria? element
@@ -57,7 +57,7 @@ class Accessibility::Qualifier
   def meets_criteria? element
     @criteria.all? do |filter, value|
       if value.kind_of? Hash
-        if element.attributes.include? KAXChildrenAttribute
+        if element.respond_to? :children
           !element.search(filter, value).blank?
         else
           false
