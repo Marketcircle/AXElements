@@ -38,8 +38,6 @@ class Accessibility::Graph
 
     # @return [String]
     def to_s
-      label   = "[label = \"#{ref.class}\"]"
-
       enabled = if ref.respond_to?(:enabled) && !ref.enabled?
                   '[style = filled] [color = "grey"]'
                 else
@@ -54,7 +52,51 @@ class Accessibility::Graph
 
       shape   = ref.actions.empty? ? '[shape = oval]' : '[shape = box]'
 
-      "#{id} #{label} #{enabled} #{focus} #{shape}"
+      "#{id} #{identifier} #{enabled} #{focus} #{shape}"
+    end
+
+
+    private
+
+    def identifier
+      klass = ref.class.to_s.split('::').last
+
+      if ref.attributes.include? KAXValueAttribute
+        val = attribute :value
+        if val.kind_of? NSString
+          return "[label = \"#{klass} #{val}\"]" unless val.empty?
+        else
+          # we assume that nil is not a legitimate value
+          unless val.nil?
+            return "[label = \"#{klass} value=#{val.inspect}\"]"
+          end
+        end
+      end
+
+      if attributes.include? KAXTitleAttribute
+        val = attribute(:title)
+        if val && !val.empty?
+          return "[label = \"#{klass} #{val.inspect}\""
+        end
+      end
+
+      # @todo Should create a special edge to the title ui element
+      if attributes.include? KAXTitleUIElementAttribute
+        #val = attribute :title_ui_element
+        return "[label = \"#{klass}\"]" #if val
+      end
+
+      if attributes.include? KAXDescriptionAttribute
+        val = attribute(:description).to_s
+        return BUFFER + val unless val.empty?
+      end
+
+      if attributes.include? KAXIdentifierAttribute
+        return " id=#{attribute(:identifier)}"
+      end
+
+      # @todo should we have other fallbacks?
+      return klass
     end
 
   end
