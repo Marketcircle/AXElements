@@ -139,6 +139,7 @@ class Accessibility::Core::StringParser
   end
 
   def parse_custom string
+    raise NotImplementedError
     # +
     #  have to go deeper
     # space
