@@ -188,6 +188,18 @@ class NilClass
 end
 
 
+##
+# Extensions to `NSObject`.
+class NSObject
+  ##
+  # @note This method does not show up in the documentation with
+  #       YARD 0.7.x
+  #
+  # @return [Object]
+  alias_method :to_axvalue, :self
+end
+
+
 # ##
 # # Correct a problem with ArgumentError not providing a proper backtrace.
 # class ArgumentError
