@@ -425,21 +425,21 @@ class AX::Element
   def attribute_for sym
     @@array = @attributes
     val     = @@const_map[sym]
-    val if attributes.include? val
+    val if @attributes.include? val
   end
 
   # (see #attribute_for)
   def action_for sym
     @@array = _actions
     val     = @@const_map[sym]
-    val if actions.include? val
+    val if _actions.include? val
   end
 
   # (see #attribute_for)
   def param_attribute_for sym
     @@array = _param_attributes
     val     = @@const_map[sym]
-    val if param_attributes.include? val
+    val if _param_attributes.include? val
   end
 
   ##
