@@ -1,4 +1,5 @@
 require 'singleton'
+require 'ax/element'
 
 ##
 # Represents the special `SystemWide` accessibility object.

@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 
+require 'ax/element'
+
 ##
 # Some additional constructors and conveniences for Application objects.
 #
