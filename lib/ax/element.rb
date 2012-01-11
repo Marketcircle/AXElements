@@ -58,7 +58,7 @@ class AX::Element
   # @param [Symbol]
   def attribute attr
     real_attr = attribute_for attr
-    raise Accessibility::Error::LookupFailure.new(self, attr) unless real_attr
+    raise Accessibility::LookupFailure.new(self, attr) unless real_attr
     self.class.attribute_for @ref, real_attr
   end
 
@@ -84,7 +84,7 @@ class AX::Element
   # @return [Number]
   def size_of attr
     real_attr = attribute_for attr
-    raise Accessibility::Error::LookupFailure.new(self, attr) unless real_attr
+    raise Accessibility::LookupFailure.new(self, attr) unless real_attr
     size_of real_attr, for: @ref
   end
 
@@ -112,7 +112,7 @@ class AX::Element
   # @param [Symbol] attr
   def writable_attr? attr
     real_attr = attribute_for attr
-    raise Accessibility::Error::LookupFailure.new(self, attr) unless real_attr
+    raise Accessibility::LookupFailure.new(self, attr) unless real_attr
     writable_attr? real_attr, for: @ref
   end
 
@@ -163,7 +163,7 @@ class AX::Element
   # @param [Symbol]
   def attribute attr, for_param: param
     real_attr = param_attribute_for attr
-    raise Accessibility::Error::LookupFailure.new(self, attr) unless real_attr
+    raise Accessibility::LookupFailure.new(self, attr) unless real_attr
     param = param.to_axvalue
     self.class.param_attribute_for @ref, real_attr, param
   end
@@ -201,7 +201,7 @@ class AX::Element
   # @return [Boolean] true if successful
   def perform name
     real_action = action_for name
-    raise Accessibility::Error::LookupFailure.new(self, name) unless real_action
+    raise Accessibility::LookupFailure.new(self, name) unless real_action
     perform real_action, for: @ref
   end
 
@@ -283,7 +283,7 @@ class AX::Element
     elsif @attributes.include? KAXChildrenAttribute
       result = search method, *args
       return result unless result.blank?
-      raise Accessibility::Error::SearchFailure.new(self, method, args.first)
+      raise Accessibility::SearchFailure.new(self, method, args.first)
 
     else
       super

@@ -26,7 +26,7 @@ class AX::Row < AX::Element
     columns = table.columns
     index   = columns.index { |x| x == column }
     return self.children.at(index) if index
-    raise Accessibility::Error::SearchFailure.new(self.parent, 'column', filters)
+    raise Accessibility::SearchFailure.new(self.parent, 'column', filters)
   end
 
 end
