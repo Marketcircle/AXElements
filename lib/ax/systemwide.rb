@@ -1,10 +1,8 @@
-require 'singleton'
 require 'ax/element'
 
 ##
 # Represents the special `SystemWide` accessibility object.
 class AX::SystemWide < AX::Element
-  include Singleton
 
   ##
   # Overridden since there is only one way to get the element ref.
@@ -47,10 +45,3 @@ class AX::SystemWide < AX::Element
   end
 
 end
-
-
-##
-# Singleton instance of the SystemWide element
-#
-# @return [AX::SystemWide]
-AX::SYSTEM = AX::SystemWide.instance

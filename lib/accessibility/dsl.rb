@@ -210,7 +210,7 @@ module Accessibility::DSL
   #   Send input to a specific application
   #   @param [#to_s]
   #   @param [AX::Application]
-  def type string, app = AX::SYSTEM
+  def type string, app = AX::SystemWide.new
     app.type_string string.to_s
   end
 
