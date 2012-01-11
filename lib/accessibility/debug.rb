@@ -43,8 +43,7 @@ module Accessibility::Debug
   # @return [String]
   def dump_for element
     output = element.inspect + "\n"
-    enum   = Accessibility::DFEnumerator.new(element)
-    enum.each_with_height do |element, depth|
+    element.each_child_with_level do |element, depth|
       output << "\t"*depth + element.inspect + "\n"
     end
     output
