@@ -1,3 +1,5 @@
+require 'ax/element'
+
 ##
 # Radio buttons are not the same as a generic button, radio buttons work
 # in mutually exclusive groups (you can only select one at a time). You

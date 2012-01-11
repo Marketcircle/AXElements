@@ -1,3 +1,5 @@
+require 'ax/element'
+
 ##
 # A generic push button and the base class for most, but not all,
 # other buttons, including close buttons and sort buttons, but

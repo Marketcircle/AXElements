@@ -39,3 +39,8 @@ include Accessibility::DSL
 #
 # @return [AX::Application]
 AX::DOCK = Accessibility.application_with_bundle_identifier 'com.apple.dock'
+
+require 'ax/button'
+require 'ax/radio_button'
+require 'ax/row'
+require 'ax/static_text'

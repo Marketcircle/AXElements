@@ -1,3 +1,5 @@
+require 'ax/element'
+
 ##
 # Represents text on the screen that cannot directly be changed by
 # a user, usually a label or an instructional text block.

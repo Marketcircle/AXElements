@@ -1,3 +1,5 @@
+require 'ax/element'
+
 ##
 # UI Element for the row in a table, outline, etc.
 class AX::Row < AX::Element
@@ -24,7 +26,7 @@ class AX::Row < AX::Element
     columns = table.columns
     index   = columns.index { |x| x == column }
     return self.children.at(index) if index
-    raise AX::Element::SearchFailure.new(self.parent, 'column', filters)
+    raise Accessibility::Error::SearchFailure.new(self.parent, 'column', filters)
   end
 
 end
