@@ -38,12 +38,13 @@ else
 end
 
 class MiniTest::Unit::TestCase
+
   def assert_instance_of_boolean value
     message = "Expected #{value.inspect} to be a boolean"
     assert value.is_a?(TrueClass) || value.is_a?(FalseClass), message
   end
 
-  def pid_from name # sneaky naming
+  def self.pid_from name # sneaky naming
     NSWorkspace.sharedWorkspace.runningApplications.find do |app|
       app.bundleIdentifier == name
     end.processIdentifier
@@ -60,6 +61,7 @@ class MiniTest::Unit::TestCase
 
   PID = pid_from APP_BUNDLE_IDENTIFIER
   REF = AXUIElementCreateApplication(PID)
+
 end
 
 ##
