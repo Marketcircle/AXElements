@@ -472,6 +472,7 @@ module Accessibility::Core
   # @param [Fixnum]
   # @return [AXUIElementRef]
   def application_for pid
+    NSRunLoop.currentRunLoop.runUntilDate Time.now
     if NSRunningApplication.runningApplicationWithProcessIdentifier pid
       AXUIElementCreateApplication(pid)
     else
