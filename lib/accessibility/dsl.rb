@@ -5,12 +5,15 @@ require 'mouse'
 ##
 # @todo Allow the animation duration to be overridden for Mouse stuff?
 #
+# DSL methods for AXElements.
+#
 # The idea here is to pull actions out from an object and put them
 # in front of object to give AXElements more of a DSL feel to make
 # communicating test steps more clear. See the
 # {file:docs/Acting.markdown Acting tutorial} for examples on how to use
 # methods from this module.
-module Accessibility::Language
+module Accessibility::DSL
+
 
   # @group Actions
 
@@ -28,7 +31,7 @@ module Accessibility::Language
       message = "undefined method `#{method}' for #{self}:#{self.class}"
       raise NoMethodError, message
     end
-    arg.perform_action method
+    arg.perform method
   end
 
   ##
@@ -37,7 +40,7 @@ module Accessibility::Language
   # @param [AX::Element]
   # @return [Boolean]
   def press element
-    element.perform_action :press
+    element.perform :press
   end
 
   ##
@@ -46,7 +49,7 @@ module Accessibility::Language
   # @param [AX::Element]
   # @return [Boolean]
   def show_menu element
-    element.perform_action :show_menu
+    element.perform :show_menu
   end
 
   ##
@@ -55,7 +58,7 @@ module Accessibility::Language
   # @param [AX::Element]
   # @return [Boolean]
   def pick element
-    element.perform_action :pick
+    element.perform :pick
   end
 
   ##
@@ -64,7 +67,7 @@ module Accessibility::Language
   # @param [AX::Element]
   # @return [Boolean]
   def decrement element
-    element.perform_action :decrement
+    element.perform :decrement
   end
 
   ##
@@ -73,7 +76,7 @@ module Accessibility::Language
   # @param [AX::Element]
   # @return [Boolean]
   def confirm element
-    element.perform_action :confirm
+    element.perform :confirm
   end
 
   ##
@@ -82,7 +85,7 @@ module Accessibility::Language
   # @param [AX::Element]
   # @return [Boolean]
   def increment element
-    element.perform_action :increment
+    element.perform :increment
   end
 
   ##
@@ -91,7 +94,7 @@ module Accessibility::Language
   # @param [AX::Element]
   # @return [Boolean]
   def delete element
-    element.perform_action :delete
+    element.perform :delete
   end
 
   ##
@@ -100,7 +103,7 @@ module Accessibility::Language
   # @param [AX::Element]
   # @return [Boolean]
   def cancel element
-    element.perform_action :cancel
+    element.perform :cancel
   end
 
   ##
@@ -109,17 +112,17 @@ module Accessibility::Language
   # @param [AX::Application]
   # @return [Boolean]
   def hide app
-    app.perform_action :hide
+    app.perform :hide
   end
 
   ##
-  # Tell an app to unhide itself, which does not guarantee it will be
+  # Tell an app to unhide itself. This does not guarantee it will be
   # focused.
   #
   # @param [AX::Application]
   # @return [Boolean]
   def unhide app
-    app.perform_action :unhide
+    app.perform :unhide
   end
 
   ##
@@ -128,14 +131,14 @@ module Accessibility::Language
   # @param [AX::Application]
   # @return [Boolean]
   def terminate app
-    app.perform_action :terminate
+    app.perform :terminate
   end
 
   ##
   # @note This method overrides `Kernel#raise` so we have to check the
   #       class of the first argument to decide which code path to take.
   #
-  # Try to perform the `press` action on the given element.
+  # Try to perform the `raise` action on the given element.
   #
   # @overload raise element
   #   @param [AX::Element] element
@@ -145,7 +148,7 @@ module Accessibility::Language
   #   The normal way to raise an exception.
   def raise *args
     arg = args.first
-    arg.kind_of?(AX::Element) ? arg.perform_action(:raise) : super
+    arg.kind_of?(AX::Element) ? arg.perform(:raise) : super
   end
 
   ##
@@ -154,13 +157,17 @@ module Accessibility::Language
   #
   # @param [AX::Element]
   def set_focus element
-    element.set_attribute(:focused, true) unless element.attribute(:focused?)
+    element.set(:focused, to: true) if element.responds_to? :focused?
   end
 
   ##
+  # @todo Handle parameterized attributes
+  #
   # @note We try to set focus to the element first; this is to avoid false
   #       positives where developers assumed an element would have to have
   #       focus before a user could change the value.
+  #
+  # Set the value of an attribute on an element.
   #
   # You would think that the `#set` method should belong to {AX::Element},
   # but I think taking it out of the class and putting it in front helps
@@ -179,14 +186,14 @@ module Accessibility::Language
   #
   # @return [nil] do not rely on a return value
   def set element, change
-    if element.respond_to? :focused
-      if element.attribute_writable? :focused
+    if element.responds_to? :focused
+      if element.writable_attribute? :focused
         set_focus element
       end
     end
 
     key, value = change.is_a?(Hash) ? change.first : [:value, change]
-    element.set_attribute key, value
+    element.set key, to: value
   end
 
   ##
@@ -207,16 +214,17 @@ module Accessibility::Language
     app.type_string string.to_s
   end
 
+
   # @group Notifications
 
+  include Accessibility::Core
+
   ##
-  # @todo Change this to `register_for_notification:from:` when the
-  #       syntax is supported by YARD (v0.8) or someone complains,
-  #       which ever comes first.
+  # Register for a notification from a specific element.
   #
-  # @param [AX::Element]
   # @param [String]
-  def register_for_notification element, notif, &block
+  # @param [AX::Element]
+  def register_for notif, from: element, &block
     element.on_notification notif, &block
   end
 
@@ -230,14 +238,18 @@ module Accessibility::Language
   #
   # @param [Float] timeout number of seconds to wait for a notification
   def wait_for_notification timeout = 10.0
-    AX.wait_for_notif(timeout).tap { |_| unregister_notifications }
+    # this would actually make more sense if it read "if wait(timeout)"
+    unless wait(timeout)
+      unregister_notifications
+    end
   end
 
   ##
   # Undo _all_ notification registries.
   def unregister_notifications
-    AX.unregister_notifs
+    unregister_notifs
   end
+
 
   # @group Mouse Input
 
