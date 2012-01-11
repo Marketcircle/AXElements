@@ -20,7 +20,7 @@ module Accessibility
     #
     # @return [AX::Element]
     def element_under_mouse
-      element_at_point Mouse.current_position, from: AX::SYSTEM
+      element_at_point Mouse.current_position, for: AX::SystemWide.new
     end
 
     ##
