@@ -9,7 +9,7 @@ class AX::SystemWide < AX::Element
   # Overridden since there is only one way to get the element ref.
   def initialize
     ref = AXUIElementCreateSystemWide()
-    super ref, AX.attrs_of_element(ref)
+    super ref, attrs_for(ref)
   end
 
   ##
@@ -18,7 +18,7 @@ class AX::SystemWide < AX::Element
   #
   # Generate keyboard events by simulating keyboard input.
   def type_string string
-    AX.keyboard_action @ref, string
+    keyboard_input string, to: @ref
   end
 
   ##
@@ -34,6 +34,15 @@ class AX::SystemWide < AX::Element
   # @raise [NoMethodError]
   def on_notification *args
     raise NoMethodError, 'AX::SystemWide cannot register for notifications'
+  end
+
+  ##
+  # `nil` if there was nothing at that point.
+  #
+  # @return [AX::Element,nil]
+  def element_at_point x, y
+    element = element_at_point x, and: y, for: @ref
+    self.class.process element
   end
 
 end

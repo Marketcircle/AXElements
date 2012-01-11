@@ -34,7 +34,7 @@ class AX::Application < AX::Element
 
   ##
   # Overridden to handle the {Accessibility::Language#set_focus} case.
-  def set_attribute attr, value
+  def set attr, to: value
     if attr == :focused
       if value
         @app.unhide
@@ -47,6 +47,7 @@ class AX::Application < AX::Element
     end
   end
 
+
   # @group Actions
 
   ##
@@ -56,7 +57,7 @@ class AX::Application < AX::Element
   # Ask the application to terminate itself. Be careful how you use this.
   #
   # @return [Boolean]
-  def perform_action name
+  def perform name
     case name
     when :terminate, :hide, :unhide
       @app.send name
@@ -71,7 +72,7 @@ class AX::Application < AX::Element
   #
   # @return [nil]
   def type_string string
-    AX.keyboard_action @ref, string
+    keyboard_input string, to: @ref
   end
 
   # @endgroup
@@ -83,6 +84,15 @@ class AX::Application < AX::Element
   # Override the base class to make sure the pid is included.
   def inspect
     (super).sub />$/, "#{pp_checkbox(:focused)} pid=#{self.pid}>"
+  end
+
+  ##
+  # `nil` if there was nothing at that point.
+  #
+  # @return [AX::Element,nil]
+  def element_at_point x, y
+    element = element_at_point x, and: y, for: @ref
+    self.class.process element
   end
 
 end
