@@ -24,13 +24,14 @@ end
 
 
 require 'ax_elements/version'
-require 'ax_elements/element'
+require 'accessibility'
+# @todo How to load the other default classes?
 
 
 # @todo Change 'language' to 'dsl'
 # Mix the language methods in to the TopLevel
-require 'accessibility/language'
-include Accessibility::Language
+require 'accessibility/dsl'
+include Accessibility::DSL
 
 
 ##
