@@ -167,6 +167,37 @@ module Accessibility::Core
   end
 
   ##
+  # Equivalent to calling {attr:for:} with the first argument being
+  # `KAXChildrenAttribute` and the second argument being what you
+  # passed to this method.
+  #
+  # @example
+  #
+  #   children_for application_ref # => [MenuBar, Window, ...]
+  #
+  # @param [AXUIElementRef]
+  # @return [Array<AX::Element>]
+  def children_for element
+    attr KAXChildrenAttribute, for: element
+  end
+
+  ##
+  # Equivalent to calling {attr:for:} with the first argument being
+  # `KAXValueAttribute` and the second argument being what you
+  # passed to this method.
+  #
+  # @example
+  #
+  #   value_for text_field_ref # => "Mark Rada"
+  #   value_for slider_ref     # => 42
+  #
+  # @param [AXUIElementRef]
+  # @return [Array<AX::Element>]
+  def value_for element
+    attr KAXValueAttribute, for: element
+  end
+
+  ##
   # Returns whether or not an attribute is writable for a specific element.
   #
   # @example

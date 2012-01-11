@@ -65,18 +65,6 @@ class MiniTest::Unit::TestCase
 end
 
 ##
-# Conveniences for Accessibility::Core
-module CoreHelpers
-  def children_for element
-    attr KAXChildrenAttribute, for: element
-  end
-
-  def value_for element
-    attr KAXValueAttribute, for: element
-  end
-end
-
-##
 # Just pretend that you didnt' see this hack
 class AX::Element
   attr_reader :ref
