@@ -8,9 +8,8 @@
 # @todo Refactor to try and reuse the same event for a single action
 #       instead of creating new events.
 # @todo Pause between down/up clicks
-module Mouse; end
-
-class << Mouse
+module Mouse
+  extend self
 
   ##
   # Number of animation steps per second.
