@@ -443,7 +443,7 @@ module Accessibility::Core
   # @param [Float]
   # @param [AXUIElementRef]
   # @return [AXUIElementRef]
-  def element_at_point x, y, for: app
+  def element_at_point x, and: y, for: app
     ptr = Pointer.new ELEMENT
     case AXUIElementCopyElementAtPosition(app, x, y, ptr)
     when 0                        then ptr[0] # KAXErrorSuccess, perf hack
