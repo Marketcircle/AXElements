@@ -25,6 +25,7 @@ module Accessibility
 
     private
 
+    # @return [String,nil]
     def pp_filters filters
       return unless filters
       return if     filters.empty?

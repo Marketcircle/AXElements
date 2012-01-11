@@ -528,24 +528,34 @@ module Accessibility::Core
 
   # @group Exception helpers
 
+  ##
+  # Raise a generic error message about something not being supported.
   def unsupported_message element, attr
     msg = "'#{CFCopyDescription(element)}' doesn't have '#{attr}'"
     raise ArgumentError, msg
   end
 
+  ##
+  # Raise a generic error message about tokens invalid.
   def invalid_message element
     msg = "'#{CFCopyDescription(element)}' is no longer a valid token"
     raise RuntimeError, msg
   end
 
+  ##
+  # Raise a generic error message about a generic AXAPI cockup.
   def cannot_complete_message
     raise RuntimeError, 'Some unspecified error occurred with AXAPI. Sorry. :('
   end
 
+  ##
+  # Raise a generic error message about a system wide problem (like out of memory).
   def failure_message
     raise RuntimeError, 'Some kind of system failure occurred, stopping to be safe'
   end
 
+  ##
+  # Raise a generic error message about something missing on the receiver.
   def not_implemented_message element
     msg  = "The program that owns '#{CFCopyDescription(element)}' "
     msg << 'does not work with AXAPI properly'
