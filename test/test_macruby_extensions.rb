@@ -125,6 +125,17 @@ class TestCGPointExtensions < MiniTest::Unit::TestCase
 end
 
 
+class TestNSObjectExtensions < MiniTest::Unit::TestCase
+
+  def test_to_axvalue_alias
+    obj = Object.new
+    assert_respond_to obj, :to_axvalue
+    assert_equal obj.method(:self), obj.method(:to_axvalue)
+  end
+
+end
+
+
 class TestBoxedExtensions < MiniTest::Unit::TestCase
 
   def test_to_axvalue
@@ -161,17 +172,6 @@ class TestNilClassExtensions < MiniTest::Unit::TestCase
 
   def test_blank
     assert_equal true, nil.blank?
-  end
-
-end
-
-
-class TestNSObjectExtensions < MiniTest::Unit::TestCase
-
-  def test_to_axvalue_alias
-    obj = Object.new
-    assert_respond_to obj, :to_axvalue
-    assert_equal obj.method(:self), obj.method(:to_axvalue)
   end
 
 end
