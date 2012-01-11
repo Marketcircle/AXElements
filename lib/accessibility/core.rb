@@ -23,7 +23,6 @@ require 'accessibility/core/string_parser'
 # Except for the notification related APIs, everything here is stateless
 # and therefore thread safe.
 module Accessibility::Core
-  include Accessibility::Notifications
 
 
   private

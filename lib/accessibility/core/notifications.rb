@@ -8,7 +8,7 @@
 #   - cannot_complete_message
 #
 # This module is designed to be mixed into {Accessibility::Core}.
-module Accessibility::Notifications
+module Accessibility::Core
 
   ##
   # Implementation of `#extended` callback so that the `notifs` attribute
