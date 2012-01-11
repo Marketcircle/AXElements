@@ -129,6 +129,18 @@ end
 
 
 ##
+# Extensions to `NSObject`.
+class NSObject
+  ##
+  # @note This method does not show up in the documentation with
+  #       YARD 0.7.x
+  #
+  # @return [Object]
+  alias_method :to_axvalue, :self
+end
+
+
+##
 # Extensions to `Boxed` objects. `Boxed` is the superclass for all structs
 # that MacRuby brings over using its BridgeSupport.
 class Boxed
@@ -185,18 +197,6 @@ class NilClass
   def blank?
     true
   end
-end
-
-
-##
-# Extensions to `NSObject`.
-class NSObject
-  ##
-  # @note This method does not show up in the documentation with
-  #       YARD 0.7.x
-  #
-  # @return [Object]
-  alias_method :to_axvalue, :self
 end
 
 
