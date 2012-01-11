@@ -8,7 +8,8 @@ require 'accessibility/core/string_parser'
 #       it would pay off to have a pool of pointers...
 #
 # Core abstraction layer that that interacts with OS X Accessibility
-# APIs (AXAPI).
+# APIs (AXAPI). You can just mix this module in wherever you want to add
+# some accessibility calls.
 #
 # All AXAPI methods that are used should be first wrapped in this module.
 # This module is responsible for handling pointers and dealing with error
