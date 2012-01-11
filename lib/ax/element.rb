@@ -59,7 +59,7 @@ class AX::Element
   def attribute attr
     real_attr = attribute_for attr
     raise Accessibility::LookupFailure.new(self, attr) unless real_attr
-    self.class.attribute_for @ref, real_attr
+    self.class.attribute real_attr, for: @ref
   end
 
   ##
@@ -165,7 +165,7 @@ class AX::Element
     real_attr = param_attribute_for attr
     raise Accessibility::LookupFailure.new(self, attr) unless real_attr
     param = param.to_axvalue
-    self.class.param_attribute_for @ref, real_attr, param
+    self.class.param_attribute param, for_param: param, for: @ref
   end
 
 
