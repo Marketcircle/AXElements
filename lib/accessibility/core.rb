@@ -334,7 +334,7 @@ module Accessibility::Core
   def keyboard_input string, to: app
     parser = Accessibility::Core::StringParser.new
     events = parser.parse string
-    post_kb_events app, events
+    post events, to: app
     nil
   end
 
@@ -352,7 +352,7 @@ module Accessibility::Core
     key_rate = 0.009
 
     events.each do |event|
-      case AXUIElementPostKeyboardEvent(element, 0, *event)
+      case AXUIElementPostKeyboardEvent(app, 0, *event)
       when KAXErrorSuccess          then
       when KAXErrorIllegalArgument  then
         msg  = "'#{CFCopyDescription(element)}' or #{event.inspect} "
