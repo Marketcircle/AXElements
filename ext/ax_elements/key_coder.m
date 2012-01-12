@@ -23,7 +23,7 @@
 
 + (NSMutableDictionary*) dynamic_mapping {
 
-  TISInputSourceRef currentKeyboard      = TISCopyCurrentKeyboardInputSource();
+  TISInputSourceRef currentKeyboard      = TISCopyCurrentKeyboardLayoutInputSource();
   CFDataRef keyboardLayoutData           = (CFDataRef)TISGetInputSourceProperty(currentKeyboard,
                                                                                 kTISPropertyUnicodeKeyLayoutData);
   const UCKeyboardLayout* keyboardLayout = (const UCKeyboardLayout*)CFDataGetBytePtr(keyboardLayoutData);
@@ -51,6 +51,7 @@
             forKey:[NSString stringWithCharacters:string length:actualStringLength]];
   }
 
+  CFRelease(currentKeyboard);
   return map;
 
 }
