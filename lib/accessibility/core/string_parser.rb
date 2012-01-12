@@ -121,21 +121,27 @@ module Accessibility::Core
     # @param [String]
     # @return [Array<Array(Number,Boolean)>]
     def parse string
-      chars = string.split ::EMPTY_STRING
+      chars  = string.split ::EMPTY_STRING
+      events = []
       until chars.empty?
-        case char = chars.shift
-        when ALT[char] then parse_alt     char
-        when "\\"      then parse_custom  chars
-        else                parse_dynamic char
-        end
+        char = chars.shift
+        event = if ALT[char]
+                  parse_alt char
+                elsif char == "\\"
+                  parse_custom chars
+                else
+                  parse_dynamic char
+                end
+        events.concat event
       end
+      events
     end
 
 
     private
 
     def parse_alt char
-      code  = MAPPING[SPECIAL[char]]
+      code  = MAPPING[ALT[char]]
       [[56,true], [code,true], [code,false], [56,false]]
     end
 
