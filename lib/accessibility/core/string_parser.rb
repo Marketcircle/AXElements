@@ -6,15 +6,22 @@ require 'ax_elements/key_coder'
 module Accessibility::Core
   class StringParser
 
+    def self.regenerate_dynamic_mapping
+      puts 'REMAPPING'
+      MAPPING.merge! KeyCodeGenerator.dynamic_mapping
+    end
+
     ##
-    # @note Static values come from `/System/Library/Frameworks/Carbon.framework/Versions/A/Frameworks/HIToolbox.framework/Versions/A/Headers/Events.h`
-    #
     # Map of characters to keycodes. The map is generated at boot time in
     # order to support multiple keyboard layouts.
     #
     # @return [Hash{String=>Fixnum}]
-    MAPPING = KeyCodeGenerator.dynamic_mapping
+    MAPPING = {}
 
+    ##
+    # @note Static values come from `/System/Library/Frameworks/Carbon.framework/Versions/A/Frameworks/HIToolbox.framework/Versions/A/Headers/Events.h`
+    #
+    # @return [Hash{String=>Fixnum}]
     ESCAPES = {
       "\n"              => 0x24,
       "\\ESCAPE"        => 0x35,
@@ -64,6 +71,7 @@ module Accessibility::Core
       "\\UP"            => 0x7E,
     }
 
+    # @return [Hash{String=>Fixnum}]
     ALT = {
       '~' => '`',
       '!' => '1',
@@ -168,3 +176,13 @@ module Accessibility::Core
 
   end
 end
+
+# Register to be notified if the keyboard layout changes at runtime
+# but we cannot use this unless there is a run loop running
+# NSDistributedNotificationCenter.defaultCenter.addObserver Accessibility::Core::StringParser,
+#                                                 selector: 'regenerate_dynamic_mapping',
+#                                                     name: KTISNotifySelectedKeyboardInputSourceChanged,
+#                                                   object: nil
+
+# Initialize the table
+Accessibility::Core::StringParser.regenerate_dynamic_mapping
