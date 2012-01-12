@@ -7,7 +7,6 @@ module Accessibility::Core
   class StringParser
 
     def self.regenerate_dynamic_mapping
-      puts 'REMAPPING'
       MAPPING.merge! KeyCodeGenerator.dynamic_mapping
     end
 
@@ -177,12 +176,14 @@ module Accessibility::Core
   end
 end
 
+##
+# @note This will only work if a run loop is runnig
+#
 # Register to be notified if the keyboard layout changes at runtime
-# but we cannot use this unless there is a run loop running
-# NSDistributedNotificationCenter.defaultCenter.addObserver Accessibility::Core::StringParser,
-#                                                 selector: 'regenerate_dynamic_mapping',
-#                                                     name: KTISNotifySelectedKeyboardInputSourceChanged,
-#                                                   object: nil
+NSDistributedNotificationCenter.defaultCenter.addObserver Accessibility::Core::StringParser,
+                                                selector: 'regenerate_dynamic_mapping',
+                                                    name: KTISNotifySelectedKeyboardInputSourceChanged,
+                                                  object: nil
 
 # Initialize the table
 Accessibility::Core::StringParser.regenerate_dynamic_mapping
