@@ -51,6 +51,7 @@
             forKey:[NSString stringWithCharacters:string length:actualStringLength]];
   }
 
+  CFMakeCollectable(currentKeyboard);
   return map;
 
 }
