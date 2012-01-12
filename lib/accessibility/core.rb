@@ -365,10 +365,9 @@ module Accessibility::Core
       else
         raise 'You should never reach this line!'
       end
-    end
 
-    # @todo should this be done inside the loop?
-    sleep events.count * key_rate
+      sleep key_rate
+    end
   end
 
 
