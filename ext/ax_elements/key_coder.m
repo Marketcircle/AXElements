@@ -51,7 +51,6 @@
             forKey:[NSString stringWithCharacters:string length:actualStringLength]];
   }
 
-  CFRelease(currentKeyboard);
   return map;
 
 }
