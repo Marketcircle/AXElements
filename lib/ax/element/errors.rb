@@ -16,6 +16,7 @@ module Accessibility
     include Accessibility::Debug
 
     def initialize searcher, searchee, filters
+      raise TypeError, 'filters must be a hash' unless filters.kind_of? Hash
       msg  = "Could not find `#{searchee}#{pp_filters}` "
       msg << "as a child of #{searcher.class}\n"
       msg << "Element Path:\n\t" << path(searcher)
