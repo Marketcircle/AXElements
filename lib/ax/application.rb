@@ -33,6 +33,8 @@ class AX::Application < AX::Element
     NSRunLoop.currentRunLoop.runUntilDate Time.now
     @app.active?
   end
+  alias_method :focused,  :active?
+  alias_method :focused?, :active?
 
   ##
   # Overridden to handle the {Accessibility::Language#set_focus} case.
