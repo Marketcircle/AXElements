@@ -465,8 +465,3 @@ class AX::Element
   TRANSLATOR = Accessibility::Translator.instance
 
 end
-
-require 'ax_elements/elements/row'
-require 'ax_elements/elements/button'
-require 'ax_elements/elements/static_text'
-require 'ax_elements/elements/radio_button'
