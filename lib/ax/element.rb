@@ -275,10 +275,10 @@ class AX::Element
   #
   def method_missing method, *args
     if attr = attribute_for(method)
-      return self.class.attribute_for @ref, attr
+      return self.class.attribute attr, for: @ref
 
     elsif attr = param_attribute_for(method)
-      return self.class.param_attribute_for @ref, attr, args.first
+      return self.class.param_attribute attr, for_param: args.first, for: @ref
 
     elsif @attributes.include? KAXChildrenAttribute
       result = search method, *args
