@@ -153,7 +153,7 @@ module Accessibility::Core
         event = if ALT[char]
                   parse_alt char
                 elsif char == "\\"
-                  parse_custom chars
+                  parse_custom chars.unshift char
                 else
                   parse_dynamic char
                 end
@@ -165,24 +165,30 @@ module Accessibility::Core
 
     private
 
+    # @param [String]
     def parse_alt char
       code  = MAPPING[ALT[char]]
       [[56,true], [code,true], [code,false], [56,false]]
     end
 
+    # @param [Array<String>]
     def parse_custom string
-      raise NotImplementedError
-      # +
-      #  have to go deeper
-      # space
-      #  done
-      #
-      # read letters into a new string until one of them is a space or +
-      # new string is the token to look up
-      # if it was space that we ended on, then do keydown and up and return
-      # if it was a +, then sandwich a recursive call between key down and key up
+      sequence = ''
+      while string
+        case string.first
+        when '+'
+          raise NotImplementedError, 'Hotkeys is not finished yet'
+        when ' ', nil
+          code = ESCAPES[sequence]
+          return [[code,true], [code,false]]
+        else
+          sequence << string.shift
+        end
+      end
+      raise 'String parsing failed!'
     end
 
+    # @param [String]
     def parse_dynamic char
       if code = MAPPING[char]
         [[code,true], [code,false]]
