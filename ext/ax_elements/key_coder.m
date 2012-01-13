@@ -31,9 +31,29 @@
   UniCharCount        actualStringLength = 0;
   UniChar                        string[255];
 
-  NSMutableDictionary* map = [[NSMutableDictionary alloc] initWithCapacity:255];
+  NSMutableDictionary* map = [[NSMutableDictionary alloc] initWithCapacity:100];
 
-  for (int keyCode = 0; keyCode < 255; keyCode++) {
+  // skip 65 - 92 since they are hard coded and do not change
+
+  for (int keyCode = 0; keyCode < 65; keyCode++) {
+    UCKeyTranslate (
+                    keyboardLayout,
+                    keyCode,
+                    kUCKeyActionDown,
+                    0,
+                    LMGetKbdType(), // kb type
+                    0, // OptionBits keyTranslateOptions,
+                    &deadKeyState,
+                    255,
+                    &actualStringLength,
+                    string
+                    );
+
+    [map setObject:[NSNumber numberWithInt:keyCode]
+            forKey:[NSString stringWithCharacters:string length:actualStringLength]];
+  }
+
+  for (int keyCode = 93; keyCode < 127; keyCode++) {
     UCKeyTranslate (
                     keyboardLayout,
                     keyCode,
