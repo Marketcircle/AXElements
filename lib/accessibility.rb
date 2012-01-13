@@ -75,6 +75,7 @@ module Accessibility
           return application_with_pid apps.first.processIdentifier
         end
       end
+      nil
     end
 
     ##
