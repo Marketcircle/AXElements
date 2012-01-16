@@ -227,6 +227,7 @@ module Accessibility::DSL
   def register_for notif, from: element, &block
     element.on_notification notif, &block
   end
+  alias_method :register_for_notification, :'register_for:from:'
 
   ##
   # Pause script execution until notification that has been registered
