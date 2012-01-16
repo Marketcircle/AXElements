@@ -314,7 +314,7 @@ class AX::Element
   # @return [Array(String,self)] the notification/element pair
   def on_notification name, &block
     notif = notif_for name
-    register_for notif, from: @ref do |sender, notification|
+    register_to_receive notif, from: @ref do |sender, notification|
       element = self.class.process sender
       block ? block.call(element, notification) : true
     end

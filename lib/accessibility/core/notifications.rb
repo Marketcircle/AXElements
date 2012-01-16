@@ -44,7 +44,7 @@ module Accessibility::Core
   #
   # @example
   #
-  #   register_for(KAXWindowCreatedNotification, from: safari) { |notif, element|
+  #   register_to_receive(KAXWindowCreatedNotification, from: safari) { |notif, element|
   #     puts "#{element.description} sent #{notif.inspect}"
   #     true
   #   }
@@ -58,7 +58,7 @@ module Accessibility::Core
   # @yieldparam [AXUIElementRef] element the element that sent the notification
   # @yieldreturn [Boolean] determines if the script should continue or wait
   # @return [Array(Observer, String, AXUIElementRef)] the registration triple
-  def register_for notif, from: element, &block
+  def register_to_receive notif, from: element, &block
     run_loop = CFRunLoopGetCurrent()
 
     # we are ignoring the context pointer since this is OO
