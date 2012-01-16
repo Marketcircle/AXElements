@@ -10,13 +10,6 @@
 # This module is designed to be mixed into {Accessibility::Core}.
 module Accessibility::Core
 
-  ##
-  # Implementation of `#extended` callback so that the `notifs` attribute
-  # gets initialized.
-  def self.extended modul
-    modul.instance_variable_set(:@notifs, {})
-  end
-
 
   private
 
@@ -27,7 +20,7 @@ module Accessibility::Core
   # that is the only data that is guaranteed to be unique.
   #
   # @return [Hash{AXObserverRef=>Array(String, AXUIElementRef)}]
-  attr_reader :notifs
+  NOTIFS = {}
 
   ##
   # @todo This method is too big, needs refactoring into its own class.
@@ -64,7 +57,7 @@ module Accessibility::Core
     # we are ignoring the context pointer since this is OO
     callback = Proc.new do |observer, sender, received_notif, _|
       LOCK.synchronize do
-        break if     @notifs.empty?
+        break if     NOTIFS.empty?
         break unless block.call(received_notif, sender)
 
         loop_source = AXObserverGetRunLoopSource(observer)
@@ -80,7 +73,7 @@ module Accessibility::Core
     CFRunLoopAddSource(run_loop, loop_source, KCFRunLoopDefaultMode)
 
     # must cache the triple of info in order to do unregistration
-    @notifs[new_observer] = [notif, element]
+    NOTIFS[new_observer] = [notif, element]
     [new_observer, notif, element]
   end
 
@@ -115,10 +108,10 @@ module Accessibility::Core
   # @return [nil]
   def unregister_notifs
     LOCK.synchronize do
-      @notifs.each_pair do |observer, pair|
+      NOTIFS.each_pair do |observer, pair|
         unregister observer, from_receiving: pair.first, from: pair.last
       end
-      @notifs = {}
+      NOTIFS.delete_if { |_| true }
     end
   end
 
