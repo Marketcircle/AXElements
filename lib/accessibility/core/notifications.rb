@@ -180,13 +180,13 @@ module Accessibility::Core
   # @param [String]
   # @param [AX::Element]
   def unregister observer, from_receiving: notif, from: element
-    case AXObserverRemoveNotification(observer, ref, notif)
+    case AXObserverRemoveNotification(observer, element, notif)
     when KAXErrorSuccess                    then true
     when KAXErrorNotificationNotRegistered  then
       raise RuntimeError, 'Notif was not registered to begin with...'
     when KAXErrorIllegalArgument            then
       msg  = "Either the observer '#{CFCopyDescription(observer)}', "
-      msg << "the element '#{CFCopyDescription(ref)}', or "
+      msg << "the element '#{CFCopyDescription(element)}', or "
       msg << "the notification '#{notif}' is not a legitimate argument"
       raise ArgumentError, msg
     when KAXErrorInvalidUIElementObserver   then
