@@ -131,7 +131,7 @@ module Accessibility::Core
   # @return [AXObserverRef]
   def observer_for element, calling: callback
     ptr  = Pointer.new OBSERVER
-    case AXObserverCreate(pid_of(element), callback, ptr)
+    case AXObserverCreate(pid_for(element), callback, ptr)
     when KAXErrorSuccess         then ptr[0]
     when KAXErrorIllegalArgument then
       msg  = "Either '#{CFCopyDescription(element)}' or "
