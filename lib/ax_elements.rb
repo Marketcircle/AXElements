@@ -28,7 +28,6 @@ require 'accessibility'
 # @todo How to load the other default classes?
 
 
-# @todo Change 'language' to 'dsl'
 # Mix the language methods in to the TopLevel
 require 'accessibility/dsl'
 include Accessibility::DSL
