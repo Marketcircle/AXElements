@@ -227,7 +227,17 @@ module Accessibility::DSL
   def register_for notif, from: element, &block
     element.on_notification notif, &block
   end
-  alias_method :register_for_notification, :'register_for:from:'
+
+  ##
+  # @deprecated This API exists for backwards compatability only
+  #
+  # Register for a notification from a specific element.
+  #
+  # @param [AX::Element]
+  # @param [String]
+  def register_for_notification element, notif, &block
+    register_for notif, from: element, &block
+  end
 
   ##
   # Pause script execution until notification that has been registered
