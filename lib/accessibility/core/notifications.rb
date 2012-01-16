@@ -68,7 +68,7 @@ module Accessibility::Core
     end
 
     new_observer = observer_for element, calling: callback
-    loop_source  = AXObserverGetRunLoopSource(dude)
+    loop_source  = AXObserverGetRunLoopSource(new_observer)
     register new_observer, to_receive: notif, from: element
     CFRunLoopAddSource(run_loop, loop_source, KCFRunLoopDefaultMode)
 
