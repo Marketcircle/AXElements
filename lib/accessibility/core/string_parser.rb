@@ -203,6 +203,11 @@ module Accessibility::Core
       [[56,true], [code,true], [code,false], [56,false]]
     end
 
+    ##
+    # Parse a character alias.
+    #
+    # @param [String]
+    # @return [Array(Array(Number,Boolean),Array(Number,Boolean))]
     def parse_alias char
       code = MAPPING[ALIASES[char]]
       [[code, true], [code, false]]
