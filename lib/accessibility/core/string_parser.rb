@@ -34,7 +34,6 @@ module Accessibility::Core
     #
     # @return [Hash{String=>Fixnum}]
     ESCAPES = {
-      "\n"              => 0x24,
       "\\ESCAPE"        => 0x35,
       "\\COMMAND"       => 0x37,
       "\\SHIFT"         => 0x38,
@@ -101,7 +100,8 @@ module Accessibility::Core
     }
 
     ##
-    # Mapping of
+    # Mapping of shifted (characters written when holding shift) characters
+    # to keycodes.
     #
     # @return [Hash{String=>Fixnum}]
     ALT = {
@@ -151,7 +151,16 @@ module Accessibility::Core
       'W'               => 'w',
       'X'               => 'x',
       'Y'               => 'y',
-      'Z'               => 'z'
+      'Z'               => 'z',
+    }
+
+
+    ##
+    # Map of aliased
+    #
+    # @return [Hash{String=>String}]
+    ALIASES = {
+      "\n"              => "\r"
     }
 
     ##
@@ -169,6 +178,8 @@ module Accessibility::Core
         char = chars.shift
         event = if ALT[char]
                   parse_alt char
+                elsif ALIASES[char]
+                  parse_alias char
                 elsif char == "\\"
                   parse_custom chars.unshift char
                 else
@@ -192,7 +203,14 @@ module Accessibility::Core
       [[56,true], [code,true], [code,false], [56,false]]
     end
 
+    def parse_alias char
+      code = MAPPING[ALIASES[char]]
+      [[code, true], [code, false]]
+    end
+
     ##
+    # @todo OMG too many cases for one method
+    #
     # Parse a custom escape sequence, possibly a hotkey sequence,
     # into one or more event pairs.
     #
@@ -206,7 +224,11 @@ module Accessibility::Core
           raise NotImplementedError, 'Hotkeys is not finished yet'
         when ' ', nil
           code = ESCAPES[sequence]
-          return [[code,true], [code,false]]
+          if code
+            return [[code,true], [code,false]]
+          else
+            return [[MAPPING["\\"], true], [MAPPING["\\"], false]]
+          end
         else
           sequence << string.shift
         end
