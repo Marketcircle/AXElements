@@ -304,7 +304,7 @@ module Accessibility::Core
     when KAXErrorActionUnsupported then unsupported_message(element, action)
     when KAXErrorIllegalArgument
       msg  = "The element '#{CFCopyDescription(element)}' "
-      msg << "or the action '#{attr}' is not a legal argument"
+      msg << "or the action '#{action}' is not a legal argument"
       raise ArgumentError, msg
     when KAXErrorInvalidUIElement  then invalid_message(element)
     when KAXErrorCannotComplete    then cannot_complete_message
