@@ -1,13 +1,3 @@
-##
-# Special module just for notifications. In order to mix this module in, you
-# will need to implement the following:
-#
-#   - pid_of(element)
-#   - invalid_message(observer)
-#   - failure_message
-#   - cannot_complete_message
-#
-# This module is designed to be mixed into {Accessibility::Core}.
 module Accessibility::Core
 
 
