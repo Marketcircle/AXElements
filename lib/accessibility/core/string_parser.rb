@@ -1,24 +1,36 @@
 require 'ax_elements/key_coder'
 
-##
-# Parses strings of human readable text into a series of events meant
-# to be processed by {Accessibility::Core#post:to:}.
 module Accessibility::Core
+
+  ##
+  # Parses strings of human readable text into a series of events meant to
+  # be processed by {Accessibility::Core#post:to:}.
+  #
+  # Supports most, if not all, latin keyboard layouts.
   class StringParser
 
-    def self.regenerate_dynamic_mapping
-      MAPPING.merge! KeyCodeGenerator.dynamic_mapping
-    end
-
     ##
-    # Map of characters to keycodes. The map is generated at boot time in
-    # order to support multiple keyboard layouts.
+    # Dynamic mapping of characters to keycodes. The map is generated at
+    # startup time in order to support multiple keyboard layouts.
     #
     # @return [Hash{String=>Fixnum}]
     MAPPING = {}
 
     ##
+    # Regenerate the portion of the key mapping that is set dynamically based
+    # on keyboard layout (e.g. US, Dvorak, etc.).
+    #
+    # This method is called once at startup and then, if a run loop, will be
+    # called again every time that the keyboard layout changes.
+    def self.regenerate_dynamic_mapping
+      # KeyCodeGenerator is declared in the Objective-C extension
+      MAPPING.merge! KeyCodeGenerator.dynamic_mapping
+    end
+
+    ##
     # @note Static values come from `/System/Library/Frameworks/Carbon.framework/Versions/A/Frameworks/HIToolbox.framework/Versions/A/Headers/Events.h`
+    #
+    # Map of custom escape sequences to their hardcoded keycode value.
     #
     # @return [Hash{String=>Fixnum}]
     ESCAPES = {
@@ -88,60 +100,65 @@ module Accessibility::Core
       "\\KEYPADEquals"  => 0x51,
     }
 
+    ##
+    # Mapping of
+    #
     # @return [Hash{String=>Fixnum}]
     ALT = {
-      '~' => '`',
-      '!' => '1',
-      '@' => '2',
-      '#' => '3',
-      '$' => '4',
-      '%' => '5',
-      '^' => '6',
-      '&' => '7',
-      '*' => '8',
-      '(' => '9',
-      ')' => '0',
-      '{' => '[',
-      '}' => ']',
-      '?' => '/',
-      '+' => '=',
-      '|' => "\\",
-      ':' => ';',
-      '_' => '-',
-      '"' => "'",
-      '<' => ',',
-      '>' => '.',
-      'A' => 'a',
-      'B' => 'b',
-      'C' => 'c',
-      'D' => 'd',
-      'E' => 'e',
-      'F' => 'f',
-      'G' => 'g',
-      'H' => 'h',
-      'I' => 'i',
-      'J' => 'j',
-      'K' => 'k',
-      'L' => 'l',
-      'M' => 'm',
-      'N' => 'n',
-      'O' => 'o',
-      'P' => 'p',
-      'Q' => 'q',
-      'R' => 'r',
-      'S' => 's',
-      'T' => 't',
-      'U' => 'u',
-      'V' => 'v',
-      'W' => 'w',
-      'X' => 'x',
-      'Y' => 'y',
-      'Z' => 'z'
+      '~'               => '`',
+      '!'               => '1',
+      '@'               => '2',
+      '#'               => '3',
+      '$'               => '4',
+      '%'               => '5',
+      '^'               => '6',
+      '&'               => '7',
+      '*'               => '8',
+      '('               => '9',
+      ')'               => '0',
+      '{'               => '[',
+      '}'               => ']',
+      '?'               => '/',
+      '+'               => '=',
+      '|'               => "\\",
+      ':'               => ';',
+      '_'               => '-',
+      '"'               => "'",
+      '<'               => ',',
+      '>'               => '.',
+      'A'               => 'a',
+      'B'               => 'b',
+      'C'               => 'c',
+      'D'               => 'd',
+      'E'               => 'e',
+      'F'               => 'f',
+      'G'               => 'g',
+      'H'               => 'h',
+      'I'               => 'i',
+      'J'               => 'j',
+      'K'               => 'k',
+      'L'               => 'l',
+      'M'               => 'm',
+      'N'               => 'n',
+      'O'               => 'o',
+      'P'               => 'p',
+      'Q'               => 'q',
+      'R'               => 'r',
+      'S'               => 's',
+      'T'               => 't',
+      'U'               => 'u',
+      'V'               => 'v',
+      'W'               => 'w',
+      'X'               => 'x',
+      'Y'               => 'y',
+      'Z'               => 'z'
     }
 
     ##
     # Parse a string into a list of keyboard events to be executed in
     # the given order.
+    #
+    # The result is an array of keycode/keystate pairs.
     #
     # @param [String]
     # @return [Array<Array(Number,Boolean)>]
@@ -165,13 +182,22 @@ module Accessibility::Core
 
     private
 
+    ##
+    # Lookup a shifted key character and generate the correct sequence
+    # of keys to press.
+    #
     # @param [String]
     def parse_alt char
       code  = MAPPING[ALT[char]]
       [[56,true], [code,true], [code,false], [56,false]]
     end
 
+    ##
+    # Parse a custom escape sequence, possibly a hotkey sequence,
+    # into one or more event pairs.
+    #
     # @param [Array<String>]
+    # @return [Array<Array(Number,Boolean)>]
     def parse_custom string
       sequence = ''
       while string
@@ -188,7 +214,12 @@ module Accessibility::Core
       raise 'String parsing failed!'
     end
 
+    ##
+    # Lookup the keycode for a dynamic character and return the pair
+    # of events for pressing the key.
+    #
     # @param [String]
+    # @return [Array(Array(Number,Boolean),Array(Number,Boolean))]
     def parse_dynamic char
       if code = MAPPING[char]
         [[code,true], [code,false]]
