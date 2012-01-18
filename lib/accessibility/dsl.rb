@@ -314,6 +314,26 @@ module Accessibility::DSL
   end
 
   ##
+  # Scroll though a table until the given element is visible.
+  #
+  # If you need to scroll an unknown ammount of units through a scroll area
+  # you can just pass the element that you need visible and this method
+  # will scroll to it for you.
+  #
+  # @param [AX::Element]
+  # @param [Symbol] dir `:up` or `:down`
+  # @return [Boolean]
+  def scroll_to element, direction: dir
+     scroll_area = element.parent.parent
+     move_mouse_to scroll_area
+
+     direction = dir == :up ? 5 : -5
+     until NSContainsRect(scroll_area.bounds, element.bounds)
+       scroll direction
+     end
+   end
+
+  ##
   # Perform a regular click.
   #
   # If an argument is provided then the mouse will move to that point
