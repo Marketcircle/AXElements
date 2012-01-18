@@ -368,6 +368,14 @@ class AX::Element
   end
 
   ##
+  # Get the bounding rectangle for the element.
+  #
+  # @return [CGRect]
+  def bounds
+    CGRectMake(*attribute(:position),*attribute(:size))
+  end
+
+  ##
   # Concept borrowed from `Active Support`. It is used during implicit
   # searches to determine if searches yielded responses.
   def blank?
