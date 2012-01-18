@@ -9,3 +9,5 @@ test/fixture
 ext/*/Makefile
 ext/*/*.bundle
 ext/*/*.o
+.rvmrc
+
