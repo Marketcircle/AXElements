@@ -324,7 +324,12 @@ module Accessibility::DSL
   # @param [Symbol] dir `:up` or `:down`
   # @return [Boolean]
   def scroll_to element, direction: dir
-     scroll_area = element.parent.parent
+     def scroll_area_for element
+       return element if element.kind_of? AX::ScrollArea
+       return scroll_area_for element.parent
+     end
+
+     scroll_area = scroll_area_for element
      move_mouse_to scroll_area
 
      direction = dir == :up ? 5 : -5
