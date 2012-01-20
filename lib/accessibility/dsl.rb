@@ -321,22 +321,22 @@ module Accessibility::DSL
   # will scroll to it for you.
   #
   # @param [AX::Element]
-  # @param [Symbol] dir `:up` or `:down`
   # @return [Boolean]
-  def scroll_to element, direction: dir
-     def scroll_area_for element
-       return element if element.kind_of? AX::ScrollArea
-       return scroll_area_for element.parent
-     end
+  def scroll_to element
+    def scroll_area_for element
+      return element if element.kind_of? AX::ScrollArea
+      return scroll_area_for element.parent
+    end
 
-     scroll_area = scroll_area_for element
-     move_mouse_to scroll_area
+    scroll_area = scroll_area_for element
+    move_mouse_to scroll_area
 
-     direction = dir == :up ? 5 : -5
-     until NSContainsRect(scroll_area.bounds, element.bounds)
-       scroll direction
-     end
-   end
+    # calculate direction to scroll
+    direction = element.position.y > scroll_area.position.y ? -5 : 5
+    until NSContainsRect(scroll_area.bounds, element.bounds)
+      scroll direction
+    end
+  end
 
   ##
   # Perform a regular click.
