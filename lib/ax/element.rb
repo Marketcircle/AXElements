@@ -106,14 +106,14 @@ class AX::Element
   #
   # @example
   #
-  #   element.writable_attr? :size  # => true
-  #   element.writable_attr? :value # => false
+  #   element.writable_attribute? :size  # => true
+  #   element.writable_attribute? :value # => false
   #
   # @param [Symbol] attr
-  def writable_attr? attr
     real_attr = attribute_for attr
     raise Accessibility::LookupFailure.new(self, attr) unless real_attr
     writable_attr? real_attr, for: @ref
+  def writable_attribute? attr
   end
 
   ##
@@ -127,7 +127,7 @@ class AX::Element
   # @param [String] attr an attribute constant
   # @return the value that you were setting is returned
   def set attr, to: value
-    unless writable_attr? attr
+    unless writable_attribute? attr
       raise NoMethodError, "#{attr} is read-only for #{inspect}"
     end
     real_attr = attribute_for attr
@@ -149,8 +149,8 @@ class AX::Element
   #   text_field.param_attributes # => [:string_for_range, :attributed_string, ...]
   #
   # @return [Array<String>]
-  def param_attributes
     _param_attributes.map { |x| TRANSLATOR[x].underscore.to_sym }
+  def parameterized_attributes
   end
 
   ##
@@ -161,11 +161,11 @@ class AX::Element
   #  text_field.attribute :string_for_range, for_param: (2..8).relative_to(10)
   #
   # @param [Symbol]
-  def attribute attr, for_param: param
     real_attr = param_attribute_for attr
     raise Accessibility::LookupFailure.new(self, attr) unless real_attr
     param = param.to_axvalue
     self.class.param_attribute param, for_param: param, for: @ref
+  def attribute attr, for_parameter: param
   end
 
 
@@ -197,12 +197,12 @@ class AX::Element
   #
   #   button.perform :press # => true
   #
-  # @param [String] name an action constant
+  # @param [String] action an action constant
   # @return [Boolean] true if successful
-  def perform name
     real_action = action_for name
     raise Accessibility::LookupFailure.new(self, name) unless real_action
     perform real_action, for: @ref
+  def perform action
   end
 
 
