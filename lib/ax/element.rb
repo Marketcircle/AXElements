@@ -21,8 +21,8 @@ end
 # The abstract base class for all accessibility objects. This class
 # provides generic functionality that all accessibility objects require.
 class AX::Element
-  include Accessibility::Core
   include Accessibility::PPInspector
+  include Accessibility::Core
   extend  Accessibility::Factory
 
 

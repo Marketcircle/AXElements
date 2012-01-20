@@ -314,6 +314,8 @@ module Accessibility::DSL
   end
 
   ##
+  # @todo Scroll horizontally.
+  #
   # Scroll though a table until the given element is visible.
   #
   # If you need to scroll an unknown ammount of units through a scroll area
