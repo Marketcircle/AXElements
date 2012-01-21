@@ -45,7 +45,7 @@ class AX::Element
   #
   # @return [Array<Symbol>]
   def attributes
-    @attributes.map { |x| TRANSLATOR[x].underscore.to_sym }
+    TRANSLATOR.rubyize @attributes
   end
 
   ##
@@ -57,7 +57,7 @@ class AX::Element
   #
   # @param [Symbol]
   def attribute attr
-    real_attr = attribute_for attr
+    real_attr = lookup attr, with: @attributes
     raise Accessibility::LookupFailure.new(self, attr) unless real_attr
     self.class.attribute real_attr, for: @ref
   end
@@ -83,7 +83,7 @@ class AX::Element
   # @param [Symbol]
   # @return [Number]
   def size_of attr
-    real_attr = attribute_for attr
+    real_attr = lookup attr, with: @attributes
     raise Accessibility::LookupFailure.new(self, attr) unless real_attr
     size_of real_attr, for: @ref
   end
@@ -110,10 +110,10 @@ class AX::Element
   #   element.writable_attribute? :value # => false
   #
   # @param [Symbol] attr
-    real_attr = attribute_for attr
+  def writable_attribute? attr
+    real_attr = lookup attr, with: @attributes
     raise Accessibility::LookupFailure.new(self, attr) unless real_attr
     writable_attr? real_attr, for: @ref
-  def writable_attribute? attr
   end
 
   ##
@@ -130,9 +130,8 @@ class AX::Element
     unless writable_attribute? attr
       raise NoMethodError, "#{attr} is read-only for #{inspect}"
     end
-    real_attr = attribute_for attr
-    value     = value.to_axvalue
-    set real_attr, to: value, for: @ref
+    real_attr = lookup attr, with: @attributes
+    set real_attr, to: value.to_axvalue, for: @ref
     value
   end
 
@@ -149,8 +148,8 @@ class AX::Element
   #   text_field.param_attributes # => [:string_for_range, :attributed_string, ...]
   #
   # @return [Array<String>]
-    _param_attributes.map { |x| TRANSLATOR[x].underscore.to_sym }
   def parameterized_attributes
+    TRANSLATOR.rubyize _parameterized_attributes
   end
 
   ##
@@ -161,11 +160,10 @@ class AX::Element
   #  text_field.attribute :string_for_range, for_param: (2..8).relative_to(10)
   #
   # @param [Symbol]
-    real_attr = param_attribute_for attr
-    raise Accessibility::LookupFailure.new(self, attr) unless real_attr
-    param = param.to_axvalue
-    self.class.param_attribute param, for_param: param, for: @ref
   def attribute attr, for_parameter: param
+    real_attr = lookup attr, with: _parameterized_attributes
+    raise Accessibility::LookupFailure.new(self, attr) unless real_attr
+    self.class.param_attr param, for_param: param.to_axvalue, for: @ref
   end
 
 
@@ -182,7 +180,7 @@ class AX::Element
   #
   # @return [Array<String>]
   def actions
-    _actions.map { |x| TRANSLATOR[x].underscore.to_sym }
+    TRANSLATOR.rubyize _actions
   end
 
   ##
@@ -199,10 +197,10 @@ class AX::Element
   #
   # @param [String] action an action constant
   # @return [Boolean] true if successful
-    real_action = action_for name
+  def perform action
+    real_action = lookup action, with: _actions
     raise Accessibility::LookupFailure.new(self, name) unless real_action
     perform real_action, for: @ref
-  def perform action
   end
 
 
@@ -274,21 +272,19 @@ class AX::Element
   #   window.application # => SearchFailure is raised
   #
   def method_missing method, *args
-    if attr = attribute_for(method)
-      return self.class.attribute attr, for: @ref
+    attr = lookup method, with: @attributes
+    return self.class.attribute attr, for: @ref if attr
 
-    elsif attr = param_attribute_for(method)
-      return self.class.param_attribute attr, for_param: args.first, for: @ref
+    attr = lookup method, with: _parameterized_attributes
+    return self.class.param_attribute attr, for_param: args.first, for: @ref if attr
 
-    elsif @attributes.include? KAXChildrenAttribute
+    if @attributes.include? KAXChildrenAttribute
       result = search method, *args
       return result unless result.blank?
       raise Accessibility::SearchFailure.new(self, method, args.first)
-
-    else
-      super
-
     end
+
+    super
   end
 
 
@@ -313,7 +309,7 @@ class AX::Element
   # @yieldreturn [Boolean]
   # @return [Array(String,self)] the notification/element pair
   def on_notification name, &block
-    notif = notif_for name
+    notif = TRANSLATOR.guess_notification_for name
     register_to_receive notif, from: @ref do |sender, notification|
       element = self.class.process sender
       block ? block.call(element, notification) : true
@@ -352,8 +348,8 @@ class AX::Element
   # Overriden to respond properly with regards to dynamic attribute
   # lookups, but will return false for potential implicit searches.
   def respond_to? name
-    return true if attribute_for name
-    return true if param_attribute_for name
+    return true if lookup name, with: @attributes
+    return true if lookup name, with: _parameterized_attributes
     return @attributes.include? KAXDescriptionAttribute if name == :description
     return super
   end
@@ -387,7 +383,7 @@ class AX::Element
   #
   # Like {#respond_to?}, this is overriden to include attribute methods.
   def methods include_super = true, include_objc_super = false
-    attributes << param_attributes << super
+    attributes << parameterized_attributes << super
   end
 
   ##
@@ -404,71 +400,18 @@ class AX::Element
 
   protected
 
-  def _param_attributes
-    @param_attributes ||= param_attrs_for @ref
+  def _parameterized_attributes
+    @parameterized_attributes ||= param_attrs_for @ref
   end
 
   def _actions
     @actions ||= actions_for @ref
   end
 
-  ##
-  # Try to turn an arbitrary symbol into a notification constant, and
-  # then get the value of the constant.
-  #
-  # @param [#to_s]
-  # @return [String]
-  def notif_for name
-    name  = name.to_s
-    const = "KAX#{name.camelize}Notification"
-    Object.const_defined?(const) ? Object.const_get(const) : name
+  def lookup key, with: values
+    value = TRANSLATOR.lookup key, with: values
+    return value if values.include? value
   end
-
-  ##
-  # Find the constant value for the given symbol. If nothing is found
-  # then `nil` will be returned.
-  #
-  # @param [Symbol]
-  # @return [String,nil]
-  def attribute_for sym
-    @@array = @attributes
-    val     = @@const_map[sym]
-    val if @attributes.include? val
-  end
-
-  # (see #attribute_for)
-  def action_for sym
-    @@array = _actions
-    val     = @@const_map[sym]
-    val if _actions.include? val
-  end
-
-  # (see #attribute_for)
-  def param_attribute_for sym
-    @@array = _param_attributes
-    val     = @@const_map[sym]
-    val if _param_attributes.include? val
-  end
-
-  ##
-  # @todo Move this to {Accessibility::Translator}
-  #
-  # Memoized map for symbols to constants used for attribute/action
-  # lookups.
-  #
-  # @return [Hash{Symbol=>String}]
-  @@const_map = Hash.new do |hash,key|
-    @@array.each { |x| hash[TRANSLATOR[x].underscore.to_sym] = x }
-    if hash.has_key? key
-      hash[key]
-    else # try other cases of transformations
-      real_key = key.chomp('?').to_sym
-      hash.has_key?(real_key) ? hash[key] = hash[real_key] : nil
-    end
-  end
-
-  # preload the table
-  @@const_map[:id] = KAXIdentifierAttribute
 
   TRANSLATOR = Accessibility::Translator.instance
 

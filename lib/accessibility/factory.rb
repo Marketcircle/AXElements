@@ -72,12 +72,12 @@ module Accessibility::Factory
               subrole, role = role_pair_for ref
               # Some objects claim to have a subrole but return nil
               if subrole
-                class_for TRANSLATOR[subrole], and: TRANSLATOR[role]
+                class_for TRANSLATOR.unprefix(subrole), and: TRANSLATOR.unprefix(role)
               else
-                class_for TRANSLATOR[role]
+                class_for TRANSLATOR.unprefix(role)
               end
             else
-              class_for TRANSLATOR[role_for ref]
+              class_for TRANSLATOR.unprefix(role_for ref)
             end
     klass.new ref, attrs
   end
