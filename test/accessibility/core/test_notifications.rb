@@ -103,20 +103,20 @@ class TestAccessibilityCoreNotifications < MiniTest::Unit::TestCase
     refute_includes Accessibility::Core::NOTIFS.keys, triple.first
   end
 
-  # def test_unregistering_noops_if_not_registered
-  #   assert_block do
-  #     5.times { unregister_notifs }
-  #   end
-  # end
+  def test_unregistering_noops_if_not_registered
+    assert_block do
+      5.times { unregister_notifs }
+    end
+  end
 
-  # def test_listening_to_app_catches_everything
-  #   got_callback   = false
-  #   register_to_receive KAXValueChangedNotification, from: REF do |_,_|
-  #     got_callback = true
-  #   end
-  #   perform KAXPressAction, for: radio_gaga
-  #   wait TIMEOUT
-  #   assert got_callback
-  # end
+  def test_listening_to_app_catches_everything
+    got_callback   = false
+    register_to_receive KAXValueChangedNotification, from: REF do |_,_|
+      got_callback = true
+    end
+    perform KAXPressAction, for: radio_gaga
+    wait TIMEOUT
+    assert got_callback
+  end
 
 end
