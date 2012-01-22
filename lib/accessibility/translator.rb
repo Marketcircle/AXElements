@@ -17,14 +17,14 @@ class Accessibility::Translator
   ##
   # Initialize the caches.
   def initialize
-    @unprefixes = Hash.new do |hash, key|
+    @unprefixes     = Hash.new do |hash, key|
       hash[key] = key.sub /^[A-Z]*?AX(?:Is)?|\s+/, ::EMPTY_STRING
     end
-    @normalized = Hash.new do |hash, key|
+    @normalizations = Hash.new do |hash, key|
       hash[key] =  @unprefixes[key].underscore.to_sym
     end
-    @rubyisms   = Hash.new do |hash, key|
-      @values.each { |value| hash[@normalized[value]] = value }
+    @rubyisms       = Hash.new do |hash, key|
+      @values.each { |value| hash[@normalizations[value]] = value }
       if hash.has_key? key
         hash[key]
       else
@@ -67,7 +67,7 @@ class Accessibility::Translator
 
   # @return [Array<Symbol>]
   def rubyize keys
-    keys.map { |x| @normalized[x] }
+    keys.map { |x| @normalizations[x] }
   end
 
   ##
