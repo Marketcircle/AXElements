@@ -293,7 +293,7 @@ module Accessibility::DSL
   #
   # @param [#to_point]
   def drag_mouse_to arg
-    Mouse.drag_to point.to_point
+    Mouse.drag_to arg.to_point
   end
 
   ##
