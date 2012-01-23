@@ -92,7 +92,7 @@ class TestAccessibilityCore < MiniTest::Unit::TestCase
   end
 
   def test_attr_value_handles_errors
-    assert_raises RuntimeError do
+    assert_raises ArgumentError do
       attr('MADEUPATTRIBUTE', for: REF)
     end
   end
