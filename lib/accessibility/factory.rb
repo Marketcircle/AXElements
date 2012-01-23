@@ -56,7 +56,6 @@ module Accessibility::Factory
     end
   end
 
-
   ##
   # @todo Should we handle cases where a subrole has a value of
   #       'Unknown'? What is the performance impact?
@@ -83,7 +82,38 @@ module Accessibility::Factory
   end
 
   ##
-  # Find the class for a given role.
+  # @todo Consider mapping in all cases to avoid returning a CFArray
+  #
+  # We assume a homogeneous array and only massage element arrays right now.
+  #
+  # @return [Array]
+  def process_array vals
+    return vals if vals.empty?
+    return vals if CFGetTypeID(vals.first) != REF_TYPE
+    return vals.map { |val| process_element val }
+  end
+
+  ##
+  # @todo This should be in {Accessibility::Core} since it works directly
+  #       with AXAPI functions.
+  #
+  # Extract the stuct contained in an `AXValueRef`.
+  #
+  # @param [AXValueRef] value
+  # @return [Boxed]
+  def process_box value
+    box_type = AXValueGetType(value)
+    ptr      = Pointer.new BOX_TYPES[box_type]
+    AXValueGetValue(value, box_type, ptr)
+    ptr[0]
+  end
+
+
+  private
+
+  ##
+  # Find the class for a given role. If the class does not exist it will
+  # be created on demand.
   #
   # @param [#to_s]
   # @return [Class]
@@ -96,12 +126,12 @@ module Accessibility::Factory
   end
 
   ##
-  # Like `#const_get` except that if the class does not exist yet then
-  # it will assume the constant belongs to a class and creates the class
-  # for you.
+  # Find the class for a given subrole and role. If the class does not
+  # exist it will be created on demand.
   #
-  # @param [Array<String>] const the value you want as a constant
-  # @return [Class] a reference to the class being looked up
+  # @param [#to_s]
+  # @param [#to_s]
+  # @return [Class]
   def class_for subrole, and: role
     if AX.const_defined? subrole, false
       AX.const_get subrole
@@ -134,33 +164,6 @@ module Accessibility::Factory
     end
     klass = Class.new AX.const_get(superklass)
     AX.const_set name, klass
-  end
-
-  ##
-  # @todo Consider mapping in all cases to avoid returning a CFArray
-  #
-  # We assume a homogeneous array and only massage element arrays right now.
-  #
-  # @return [Array]
-  def process_array vals
-    return vals if vals.empty?
-    return vals if CFGetTypeID(vals.first) != REF_TYPE
-    return vals.map { |val| process_element val }
-  end
-
-  ##
-  # @todo This should be in {Accessibility::Core} since it works directly
-  #       with AXAPI functions.
-  #
-  # Extract the stuct contained in an `AXValueRef`.
-  #
-  # @param [AXValueRef] value
-  # @return [Boxed]
-  def process_box value
-    box_type = AXValueGetType(value)
-    ptr      = Pointer.new BOX_TYPES[box_type]
-    AXValueGetValue(value, box_type, ptr)
-    ptr[0]
   end
 
 end
