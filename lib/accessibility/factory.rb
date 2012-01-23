@@ -4,6 +4,7 @@ require 'accessibility/translator'
 ##
 # Set of methods used for processing low level data from AXAPI methods.
 module Accessibility::Factory
+  include Accessibility::Core
 
   ##
   # Reference to the singleton instance of the translator.
