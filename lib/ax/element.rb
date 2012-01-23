@@ -59,7 +59,7 @@ class AX::Element
   def attribute attr
     real_attr = lookup attr, with: @attributes
     raise Accessibility::LookupFailure.new(self, attr) unless real_attr
-    self.class.attribute real_attr, for: @ref
+    self.class.process attr(real_attr, for: @ref)
   end
 
   ##
@@ -163,7 +163,7 @@ class AX::Element
   def attribute attr, for_parameter: param
     real_attr = lookup attr, with: _parameterized_attributes
     raise Accessibility::LookupFailure.new(self, attr) unless real_attr
-    self.class.param_attr param, for_param: param.to_axvalue, for: @ref
+    self.class.process param_attr(real_attr, for_param: param.to_axvalue, for: @ref)
   end
 
 
@@ -272,11 +272,17 @@ class AX::Element
   #   window.application # => SearchFailure is raised
   #
   def method_missing method, *args
-    attr = lookup method, with: @attributes
-    return self.class.attribute attr, for: @ref if attr
+    attribute = lookup method, with: @attributes
+    if attribute
+      result = attr attribute, for: @ref
+      return self.class.process result
+    end
 
-    attr = lookup method, with: _parameterized_attributes
-    return self.class.param_attribute attr, for_param: args.first, for: @ref if attr
+    attribute = lookup method, with: _parameterized_attributes
+    if attribute
+      result = param_attr attribute, for_param: args.first, for: @ref
+      return self.class.process result
+    end
 
     if @attributes.include? KAXChildrenAttribute
       result = search method, *args
@@ -311,7 +317,7 @@ class AX::Element
   def on_notification name, &block
     notif = TRANSLATOR.guess_notification_for name
     register_to_receive notif, from: @ref do |sender, notification|
-      element = self.class.process sender
+      element = self.class.process_element sender
       block ? block.call(element, notification) : true
     end
     [notif, self]

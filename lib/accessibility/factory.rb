@@ -3,32 +3,40 @@ require 'accessibility/translator'
 
 ##
 # Set of methods used for processing low level data from AXAPI methods.
-#
-# The processing can sometimes require some fancy metaprogramming and should
 module Accessibility::Factory
-  include Accessibility::Core
 
+  ##
+  # Reference to the singleton instance of the translator.
+  #
+  # @return [Accessibility::Translator]
   TRANSLATOR = Accessibility::Translator.instance
 
   ##
-  # Retrieve and process the value of the given attribute for the
-  # given element reference.
+  # Type ID for `AXUIElementRef` objects.
   #
-  # @param [AXUIElementRef]
-  # @param [String]
-  def attribute attr, for: ref
-    process attr(attr, for: ref)
-  end
+  # @return [Number]
+  REF_TYPE   = AXUIElementGetTypeID()
 
   ##
-  # Retrieve and process the value of the given parameterized attribute
-  # for the parameter and given element reference.
+  # Type ID for `CFArrayRef` objects.
   #
-  # @param [AXUIElementRef]
-  # @param [String]
-  def param_attribute attr, for_param: param, for: ref
-    process param_attr(attr, for_param: param.to_axvalue, for: ref)
-  end
+  # @return [Number]
+  ARRAY_TYPE = CFArrayGetTypeID()
+
+  # Type ID for `AXValueRef` objects.
+  #
+  # @return [Number]
+  BOX_TYPE   = AXValueGetTypeID()
+
+  ##
+  # Map of type encodings used for wrapping structs when coming from
+  # an `AXValueRef`.
+  #
+  # The list is order sensitive, which is why we unshift nil, but
+  # should probably be more rigorously defined at runtime.
+  #
+  # @return [String,nil]
+  BOX_TYPES = [CGPoint, CGSize, CGRect, CFRange].map! { |x| x.type }.unshift(nil)
 
   ##
   # Processes any given data from an AXAPI method and wraps it if
@@ -48,22 +56,6 @@ module Accessibility::Factory
     end
   end
 
-  ##
-  # Type ID for `AXUIElementRef` objects.
-  #
-  # @return [Number]
-  REF_TYPE   = AXUIElementGetTypeID()
-
-  ##
-  # Type ID for `CFArrayRef` objects.
-  #
-  # @return [Number]
-  ARRAY_TYPE = CFArrayGetTypeID()
-
-  # Type ID for `AXValueRef` objects.
-  #
-  # @return [Number]
-  BOX_TYPE   = AXValueGetTypeID()
 
   ##
   # @todo Should we handle cases where a subrole has a value of
@@ -170,15 +162,5 @@ module Accessibility::Factory
     AXValueGetValue(value, box_type, ptr)
     ptr[0]
   end
-
-  ##
-  # Map of type encodings used for wrapping structs when coming from
-  # an `AXValueRef`.
-  #
-  # The list is order sensitive, which is why we unshift nil, but
-  # should probably be more rigorously defined at runtime.
-  #
-  # @return [String,nil]
-  BOX_TYPES = [CGPoint, CGSize, CGRect, CFRange].map! { |x| x.type }.unshift(nil)
 
 end
