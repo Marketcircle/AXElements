@@ -56,7 +56,7 @@ class MiniTest::Unit::TestCase
   # end
 
   def self.bench_range
-    bench_exp 10, 10_000
+    bench_exp 100, 100_000
   end
 
   PID = pid_from APP_BUNDLE_IDENTIFIER
