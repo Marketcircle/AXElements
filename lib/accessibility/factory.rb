@@ -38,24 +38,32 @@ module Accessibility::Factory
   # Generally, used to process an `AXValue` into a `CGPoint` or an
   # `AXUIElementRef` into some kind of {AX::Element} object.
   def process value
-    return nil if value.nil?
-    id = ATTR_MASSAGERS[CFGetTypeID(value)]
-    id ? self.send(id, value) : value
+    return nil if value.nil? # CFGetTypeID(nil) crashes runtime
+    case CFGetTypeID(value)
+    when ARRAY_TYPE then process_array value
+    when REF_TYPE   then process_element value
+    when BOX_TYPE   then process_box value
+    else
+      value
+    end
   end
 
   ##
-  # Map Core Foundation type ID numbers to methods. This is how
-  # double dispatch is used to massage low level data into
-  # something nice.
+  # Type ID for `AXUIElementRef` objects.
   #
-  # Indexes are looked up and added to the array at runtime in
-  # case values change in the future.
+  # @return [Number]
+  REF_TYPE   = AXUIElementGetTypeID()
+
+  ##
+  # Type ID for `CFArrayRef` objects.
   #
-  # @return [Array<Symbol>]
-  ATTR_MASSAGERS = []
-  ATTR_MASSAGERS[AXUIElementGetTypeID()] = :process_element
-  ATTR_MASSAGERS[CFArrayGetTypeID()]     = :process_array
-  ATTR_MASSAGERS[AXValueGetTypeID()]     = :process_box
+  # @return [Number]
+  ARRAY_TYPE = CFArrayGetTypeID()
+
+  # Type ID for `AXValueRef` objects.
+  #
+  # @return [Number]
+  BOX_TYPE   = AXValueGetTypeID()
 
   ##
   # @todo Should we handle cases where a subrole has a value of
@@ -143,8 +151,9 @@ module Accessibility::Factory
   #
   # @return [Array]
   def process_array vals
-    return vals if vals.empty? || !ATTR_MASSAGERS[CFGetTypeID(vals.first)]
-    vals.map { |val| process_element val }
+    return vals if vals.empty?
+    return vals if CFGetTypeID(vals.first) != REF_TYPE
+    return vals.map { |val| process_element val }
   end
 
   ##
