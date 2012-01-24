@@ -51,8 +51,11 @@ module Accessibility::Factory
   # @todo Should we handle cases where a subrole has a value of
   #       'Unknown'? What is the performance impact?
   #
-  # Takes an `AXUIElementRef` and gives you some kind of accessibility
-  # object.
+  # Takes an `AXUIElementRef` and gives you some kind of wrapped
+  # accessibility object.
+  #
+  # Some code paths have been unrolled for efficiency. Don't hate player,
+  # hate the game.
   #
   # @param [AXUIElementRef]
   # @return [AX::Element]
@@ -73,8 +76,6 @@ module Accessibility::Factory
   end
 
   ##
-  # @todo Consider mapping in all cases to avoid returning a CFArray
-  #
   # We assume a homogeneous array and only massage element arrays right now.
   #
   # @return [Array]
@@ -132,7 +133,7 @@ module Accessibility::Factory
   # `superklass` as the superclass..
   #
   # @param [#to_s] name
-  # @param [String,Symbol] superklass
+  # @param [#to_s] superklass
   # @return [Class]
   def create_class name, with_superclass: superklass
     unless AX.const_defined? superklass, false
