@@ -1,3 +1,5 @@
+require 'accessibility/core'
+
 ##
 # Extensions to `NSArray`.
 class NSArray
@@ -144,6 +146,8 @@ end
 # Extensions to `Boxed` objects. `Boxed` is the superclass for all structs
 # that MacRuby brings over using its BridgeSupport.
 class Boxed
+  include Accessibility::Core
+
   class << self
     ##
     # The `AXValue` constant for the struct type. Not all structs
@@ -160,10 +164,7 @@ class Boxed
   #
   # @return [AXValueRef]
   def to_axvalue
-    klass = self.class
-    ptr = Pointer.new klass.type
-    ptr.assign self
-    AXValueCreate(klass.ax_value, ptr)
+    wrap self
   end
 end
 

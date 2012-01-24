@@ -30,16 +30,6 @@ module Accessibility::Factory
   BOX_TYPE   = AXValueGetTypeID()
 
   ##
-  # Map of type encodings used for wrapping structs when coming from
-  # an `AXValueRef`.
-  #
-  # The list is order sensitive, which is why we unshift nil, but
-  # should probably be more rigorously defined at runtime.
-  #
-  # @return [String,nil]
-  BOX_TYPES = [CGPoint, CGSize, CGRect, CFRange].map! { |x| x.type }.unshift(nil)
-
-  ##
   # Processes any given data from an AXAPI method and wraps it if
   # needed. Meant for taking a return value from {Accessibility::Core#attr:for:}
   # and friends.
@@ -51,7 +41,7 @@ module Accessibility::Factory
     case CFGetTypeID(value)
     when ARRAY_TYPE then process_array value
     when REF_TYPE   then process_element value
-    when BOX_TYPE   then process_box value
+    when BOX_TYPE   then unwrap value
     else
       value
     end
@@ -92,21 +82,6 @@ module Accessibility::Factory
     return vals if vals.empty?
     return vals if CFGetTypeID(vals.first) != REF_TYPE
     return vals.map { |val| process_element val }
-  end
-
-  ##
-  # @todo This should be in {Accessibility::Core} since it works directly
-  #       with AXAPI functions.
-  #
-  # Extract the stuct contained in an `AXValueRef`.
-  #
-  # @param [AXValueRef] value
-  # @return [Boxed]
-  def process_box value
-    box_type = AXValueGetType(value)
-    ptr      = Pointer.new BOX_TYPES[box_type]
-    AXValueGetValue(value, box_type, ptr)
-    ptr[0]
   end
 
 

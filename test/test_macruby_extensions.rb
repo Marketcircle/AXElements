@@ -137,32 +137,20 @@ end
 
 
 class TestBoxedExtensions < MiniTest::Unit::TestCase
+  include Accessibility::Core
 
-  def test_to_axvalue
-    # point_makes_a_value
-    value = CGPointZero.to_axvalue
-    ptr   = Pointer.new CGPoint.type
-    AXValueGetValue(value, 1, ptr)
-    assert_equal CGPointZero, ptr[0]
+  def test_to_axvalue_calls_back
+    point = CGPointMake(1, 2)
+    assert_equal wrap(point), point.to_axvalue
 
-    # size_makes_a_value
-    value = CGSizeZero.to_axvalue
-    ptr   = Pointer.new CGSize.type
-    AXValueGetValue(value, 2, ptr)
-    assert_equal CGSizeZero, ptr[0]
+    size  = CGSizeMake(2, 5)
+    assert_equal wrap(size), size.to_axvalue
 
-    # rect_makes_a_value
-    value = CGRectZero.to_axvalue
-    ptr   = Pointer.new CGRect.type
-    AXValueGetValue(value, 3, ptr)
-    assert_equal CGRectZero, ptr[0]
+    rect  = CGRectMake(5, 9, 8, 4)
+    assert_equal wrap(rect), rect.to_axvalue
 
-    # range_makes_a_value
     range = CFRange.new(5, 4)
-    value = range.to_axvalue
-    ptr   = Pointer.new CFRange.type
-    AXValueGetValue(value, 4, ptr)
-    assert_equal range, ptr[0]
+    assert_equal wrap(range), range.to_axvalue
   end
 
 end

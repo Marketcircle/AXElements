@@ -418,8 +418,57 @@ module Accessibility::Core
     handle_error code, element
   end
 
+  ##
+  # Extract the stuct contained in an `AXValueRef`.
+  #
+  # @example
+  #
+  #   unwrap wrapped_point # => #<CGPoint x=44.3 y=99.0>
+  #   unwrap wrapped_range # => #<CFRange begin=7 length=100>
+  #
+  # @param [AXValueRef]
+  # @param [Number]
+  # @return [Boxed]
+  def unwrap value
+    box_type = AXValueGetType(value)
+    ptr      = Pointer.new BOX_TYPES[box_type]
+    if AXValueGetValue(value, box_type, ptr)
+      ptr[0]
+    else
+      raise ArgumentError, "'#{box_type.inspect}' is not a valid box type"
+    end
+  end
+
+  ##
+  # Wrap a `Boxed` object as an `AXValueRef`.
+  #
+  # @example
+  #
+  #   wrap CGPointMake(12, 34) # => #<AXValueRef:0x455678e2>
+  #   wrap CGSizeMake(56, 78)  # => #<AXValueRef:0x555678e2>
+  #
+  # @param [Object]
+  # @param [Class]
+  # @return [AXValueRef]
+  def wrap value
+    klass = value.class
+    ptr   = Pointer.new klass.type
+    ptr.assign value
+    AXValueCreate(klass.ax_value, ptr)
+  end
+
   # @endgroup
 
+
+  ##
+  # Map of type encodings used for wrapping structs when coming from
+  # an `AXValueRef`.
+  #
+  # The list is order sensitive, which is why we unshift nil, but
+  # should probably be more rigorously defined at runtime.
+  #
+  # @return [String,nil]
+  BOX_TYPES = [CGPoint, CGSize, CGRect, CFRange].map! { |x| x.type }.unshift(nil)
 
   ##
   # @private
