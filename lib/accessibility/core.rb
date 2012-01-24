@@ -447,7 +447,7 @@ module Accessibility::Core
   #   wrap CGPointMake(12, 34) # => #<AXValueRef:0x455678e2>
   #   wrap CGSizeMake(56, 78)  # => #<AXValueRef:0x555678e2>
   #
-  # @param [Object]
+  # @param [Boxed]
   # @param [Class]
   # @return [AXValueRef]
   def wrap value
