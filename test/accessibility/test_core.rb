@@ -155,6 +155,16 @@ class TestAccessibilityCore < MiniTest::Unit::TestCase
     end
   end
 
+  def test_set_attr_returns_setting_value
+    string = 'The answer to life, the universe, and everything...'
+    result = set KAXValueAttribute, to: string, for: search_box
+    assert_equal string, result
+
+    string = ::EMPTY_STRING
+    result = set KAXValueAttribute, to: string, for: search_box
+    assert_equal string, result
+  end
+
   def test_set_attr_handles_errors
     assert_raises ArgumentError do
       set 'FAKE', to: true, for: REF

@@ -44,19 +44,10 @@ module Accessibility::Core
   # @param [AXUIElementRef]
   # @return [Array<String>]
   def attrs_for element
-    ptr = Pointer.new ARRAY
-    case AXUIElementCopyAttributeNames(element, ptr)
-    when 0                        then ptr[0] # KAXErrorSuccess, perf hack
-    when KAXErrorIllegalArgument  then
-      msg = "'#{CFCopyDescription(element)}' is not an AXUIElementRef"
-      raise ArgumentError, msg
-    when KAXErrorInvalidUIElement then invalid_message(element)
-    when KAXErrorFailure          then failure_message
-    when KAXErrorCannotComplete   then cannot_complete_message
-    when KAXErrorNotImplemented   then not_implemented_message(element)
-    else
-      raise 'You should never reach this line!'
-    end
+    ptr  = Pointer.new ARRAY
+    code = AXUIElementCopyAttributeNames(element, ptr)
+    return ptr[0] if code.zero?
+    handle_error code, element
   end
 
   ##
@@ -74,20 +65,10 @@ module Accessibility::Core
   # @param [AXUIElementRef]
   # @return [Fixnum]
   def size_of attr, for: element
-    ptr = Pointer.new :long_long
-    case AXUIElementGetAttributeValueCount(element, attr, ptr)
-    when 0                            then ptr[0] # KAXErrorSuccess
-    when KAXErrorIllegalArgument      then
-      msg  = "Either the element '#{CFCopyDescription(element)}' "
-      msg << "or the attr '#{attr}' is not a legal argument"
-      raise ArgumentError, msg
-    when KAXErrorAttributeUnsupported then unsupported_message(element, attr)
-    when KAXErrorInvalidUIElement     then invalid_message(element)
-    when KAXErrorCannotComplete       then cannot_complete_message
-    when KAXErrorNotImplemented       then not_implemented_message(element)
-    else
-      raise 'You should never reach this line!'
-    end
+    ptr  = Pointer.new :long_long
+    code = AXUIElementGetAttributeValueCount(element, attr, ptr)
+    return ptr[0] if code.zero?
+    handle_error code, element, attr
   end
 
   ##
@@ -105,20 +86,11 @@ module Accessibility::Core
   # @param [String] attr an attribute constant
   # @param [AXUIElementRef]
   def attr attr, for: element
-    ptr = Pointer.new :id
-    case AXUIElementCopyAttributeValue(element, attr, ptr)
-    when 0                        then ptr[0] # KAXErrorSuccess, perf hack
-    when KAXErrorNoValue          then nil
-    when KAXErrorIllegalArgument  then
-      msg  = "The element '#{CFCopyDescription(element)}' "
-      msg << "or the attr '#{attr}' is not a legal argument"
-      raise ArgumentError, msg
-    when KAXErrorInvalidUIElement then invalid_message(element)
-    when KAXErrorCannotComplete   then cannot_complete_message
-    when KAXErrorNotImplemented   then not_implemented_message(element)
-    else
-      raise 'You should never reach this line!'
-    end
+    ptr  = Pointer.new :id
+    code = AXUIElementCopyAttributeValue(element, attr, ptr)
+    return ptr[0] if code.zero?
+    return nil    if code == KAXErrorNoValue
+    handle_error code, element, attr
   end
 
   ##
@@ -208,21 +180,11 @@ module Accessibility::Core
   # @param [String] attr an attribute constant
   # @param [AXUIElementRef]
   def writable_attr? attr, for: element
-    ptr = Pointer.new :bool
-    case AXUIElementIsAttributeSettable(element, attr, ptr)
-    when KAXErrorSuccess              then ptr[0]
-    when KAXErrorNoValue              then false
-    when KAXErrorCannotComplete       then cannot_complete_message
-    when KAXErrorIllegalArgument      then
-      msg  = "Either the element '#{CFCopyDescription(element)}' "
-      msg << "or the attr '#{attr}' is not a legal argument"
-      raise ArgumentError, msg
-    when KAXErrorAttributeUnsupported then unsupported_message(element, attr)
-    when KAXErrorInvalidUIElement     then invalid_message(element)
-    when KAXErrorNotImplemented       then not_implemented_message(element)
-    else
-      raise 'You should never reach this line!'
-    end
+    ptr  = Pointer.new :bool
+    code = AXUIElementIsAttributeSettable(element, attr, ptr)
+    return ptr[0] if code.zero?
+    return false  if code == KAXErrorNoValue
+    handle_error code, element, attr
   end
 
   ##
@@ -240,19 +202,9 @@ module Accessibility::Core
   # @param [AXUIElementRef]
   # @return [Object] returns the value that was set
   def set attr, to: value, for: element
-    case AXUIElementSetAttributeValue(element, attr, value)
-    when KAXErrorSuccess              then value
-    when KAXErrorIllegalArgument      then
-      msg  = "You can't set '#{attr}' to '#{CFCopyDescription(value)}' "
-      msg << "for '#{CFCopyDescription(element)}'"
-      raise ArgumentError, msg
-    when KAXErrorAttributeUnsupported then unsupported_message(element, attr)
-    when KAXErrorInvalidUIElement     then invalid_message(element)
-    when KAXErrorCannotComplete       then cannot_complete_message
-    when KAXErrorNotImplemented       then not_implemented_message(element)
-    else
-      raise 'You should never reach this line!'
-    end
+    code = AXUIElementSetAttributeValue(element, attr, value)
+    return value if code.zero?
+    handle_error code, element, attr
   end
 
 
@@ -271,19 +223,10 @@ module Accessibility::Core
   # @param [AXUIElementRef]
   # @return [Array<String>]
   def actions_for element
-    ptr = Pointer.new ARRAY
-    case AXUIElementCopyActionNames(element, ptr)
-    when KAXErrorSuccess          then ptr[0]
-    when KAXErrorIllegalArgument  then
-      msg = "'#{CFCopyDescription(element)}' is not an AXUIElementRef"
-      raise ArgumentError, msg
-    when KAXErrorInvalidUIElement then invalid_message(element)
-    when KAXErrorFailure          then failure_message
-    when KAXErrorCannotComplete   then cannot_complete_message
-    when KAXErrorNotImplemented   then not_implemented_message(element)
-    else
-      raise 'You should never reach this line!'
-    end
+    ptr  = Pointer.new ARRAY
+    code = AXUIElementCopyActionNames(element, ptr)
+    return ptr[0] if code.zero?
+    handle_error code, element
   end
 
   ##
@@ -299,19 +242,9 @@ module Accessibility::Core
   # @param [AXUIElementRef]
   # @return [Boolean]
   def perform action, for: element
-    case AXUIElementPerformAction(element, action)
-    when KAXErrorSuccess           then true
-    when KAXErrorActionUnsupported then unsupported_message(element, action)
-    when KAXErrorIllegalArgument
-      msg  = "The element '#{CFCopyDescription(element)}' "
-      msg << "or the action '#{action}' is not a legal argument"
-      raise ArgumentError, msg
-    when KAXErrorInvalidUIElement  then invalid_message(element)
-    when KAXErrorCannotComplete    then cannot_complete_message
-    when KAXErrorNotImplemented    then not_implemented_message(element)
-    else
-      raise 'You should never reach this line!'
-    end
+    code = AXUIElementPerformAction(element, action)
+    return true if code.zero?
+    handle_error code, element, action
   end
 
   ##
@@ -352,20 +285,8 @@ module Accessibility::Core
     key_rate = 0.009
 
     events.each do |event|
-      case AXUIElementPostKeyboardEvent(app, 0, *event)
-      when KAXErrorSuccess          then
-      when KAXErrorIllegalArgument  then
-        msg  = "'#{CFCopyDescription(element)}' or #{event.inspect} "
-        msg << 'is not a legal argument'
-        raise ArgumentError, msg
-      when KAXErrorInvalidUIElement then invalid_message(element)
-      when KAXErrorFailure          then failure_message
-      when KAXErrorCannotComplete   then cannot_complete_message
-      when KAXErrorNotImplemented   then not_implemented_message(element)
-      else
-        raise 'You should never reach this line!'
-      end
-
+      code = AXUIElementPostKeyboardEvent(app, 0, *event)
+      handle_error code, app unless code.zero?
       sleep key_rate
     end
   end
@@ -389,23 +310,10 @@ module Accessibility::Core
   # @param [AXUIElementRef]
   # @return [Array<String>]
   def param_attrs_for element
-    ptr = Pointer.new ARRAY
-    case AXUIElementCopyParameterizedAttributeNames(element, ptr)
-    when KAXErrorSuccess          then ptr[0]
-    when KAXErrorAttributeUnsupported,
-         KAXErrorParameterizedAttributeUnsupported then
-      msg = "'#{CFCopyDescription(element)}' does not have parameterized attributes"
-      raise ArgumentError, msg
-    when KAXErrorIllegalArgument  then
-      msg = "'#{CFCopyDescription(element)}' is not an AXUIElementRef"
-      raise ArgumentError, msg
-    when KAXErrorInvalidUIElement then invalid_message(element)
-    when KAXErrorFailure          then failure_message
-    when KAXErrorCannotComplete   then cannot_complete_message
-    when KAXErrorNotImplemented   then not_implemented_message(element)
-    else
-      raise 'You should never reach this line!'
-    end
+    ptr  = Pointer.new ARRAY
+    code = AXUIElementCopyParameterizedAttributeNames(element, ptr)
+    return ptr[0] if code.zero?
+    handle_error code, element
   end
 
   ##
@@ -429,23 +337,11 @@ module Accessibility::Core
   # @param [Object] param
   # @param [AXUIElementRef]
   def param_attr attr, for_param: param, for: element
-    ptr = Pointer.new :id
-    case AXUIElementCopyParameterizedAttributeValue(element, attr, param, ptr)
-    when 0               then ptr[0] # KAXErrorSuccess, perf hack
-    when KAXErrorNoValue then nil
-    when KAXErrorAttributeUnsupported,
-         KAXErrorParameterizedAttributeUnsupported then
-      unsupported_message(element, attr)
-    when KAXErrorIllegalArgument
-      msg  = "You can't set '#{attr}' to '#{CFCopyDescription(param)}' "
-      msg << "for '#{CFCopyDescription(element)}'"
-      raise ArgumentError, msg
-    when KAXErrorInvalidUIElement then invalid_message(element)
-    when KAXErrorCannotComplete   then cannot_complete_message
-    when KAXErrorNotImplemented   then not_implemented_message(element)
-    else
-      raise 'You should never reach this line!'
-    end
+    ptr  = Pointer.new :id
+    code = AXUIElementCopyParameterizedAttributeValue(element, attr, param, ptr)
+    return ptr[0] if code.zero?
+    return nil    if code == KAXErrorNoValue
+    handle_error code, element, attr, param
   end
 
 
@@ -474,20 +370,11 @@ module Accessibility::Core
   # @param [AXUIElementRef]
   # @return [AXUIElementRef]
   def element_at_point x, and: y, for: app
-    ptr = Pointer.new ELEMENT
-    case AXUIElementCopyElementAtPosition(app, x, y, ptr)
-    when 0                        then ptr[0] # KAXErrorSuccess, perf hack
-    when KAXErrorNoValue          then nil
-    when KAXErrorIllegalArgument  then
-      msg  = "The point [#{x}, #{y}] is not a valid point, or "
-      msg << "'#{CFCopyDescription(app)}' is not an AXUIElementRef"
-      raise ArgumentError, msg
-    when KAXErrorInvalidUIElement then invalid_message(app)
-    when KAXErrorCannotComplete   then cannot_complete_message
-    when KAXErrorNotImplemented   then not_implemented_message(app)
-    else
-      raise 'You should never reach this line!'
-    end
+    ptr  = Pointer.new ELEMENT
+    code = AXUIElementCopyElementAtPosition(app, x, y, ptr)
+    return ptr[0] if code.zero?
+    return nil    if code == KAXErrorNoValue
+    handle_error code, app, x, y, nil
   end
 
   ##
@@ -525,16 +412,10 @@ module Accessibility::Core
   # @param [AXUIElementRef]
   # @return [Fixnum]
   def pid_for element
-    ptr = Pointer.new :int
-    case AXUIElementGetPid(element, ptr)
-    when 0                        then ptr[0] # KAXErrorSuccess, perf hack
-    when KAXErrorIllegalArgument  then
-      msg = "'#{CFCopyDescription(element)}' is not a AXUIElementRef"
-      raise ArgumentError, msg
-    when KAXErrorInvalidUIElement then invalid_message(element)
-    else
-      raise 'You should never reach this line!'
-    end
+    ptr  = Pointer.new :int
+    code = AXUIElementGetPid(element, ptr)
+    return ptr[0] if code.zero?
+    handle_error code, element
   end
 
   # @endgroup
@@ -556,41 +437,49 @@ module Accessibility::Core
   # @return [String]
   ELEMENT  = '^{__AXUIElement}'.freeze
 
-
-  # @group Exception helpers
-
-  ##
-  # Raise a generic error message about something not being supported.
-  def unsupported_message element, attr
-    msg = "'#{CFCopyDescription(element)}' doesn't have '#{attr}'"
-    raise ArgumentError, msg
-  end
-
-  ##
-  # Raise a generic error message about tokens invalid.
-  def invalid_message element
-    msg = "'#{CFCopyDescription(element)}' is no longer a valid token"
-    raise RuntimeError, msg
-  end
-
-  ##
-  # Raise a generic error message about a generic AXAPI cockup.
-  def cannot_complete_message
-    raise RuntimeError, 'Some unspecified error occurred with AXAPI. Sorry. :('
-  end
-
-  ##
-  # Raise a generic error message about a system wide problem (like out of memory).
-  def failure_message
-    raise RuntimeError, 'Some kind of system failure occurred, stopping to be safe'
-  end
-
-  ##
-  # Raise a generic error message about something missing on the receiver.
-  def not_implemented_message element
-    msg  = "The program that owns '#{CFCopyDescription(element)}' "
-    msg << 'does not work with AXAPI properly'
-    raise NotImplementedError, msg
+  # @param [Number]
+  def handle_error code, *args
+    case code
+    when KAXErrorIllegalArgument
+      msg = case args.size
+            when 1
+              "'#{CFCopyDescription(args.first)}' is not an AXUIElementRef"
+            when 2
+              "Either the element '#{CFCopyDescription(args.first)}' " +
+                "or the attr/action '#{args.second}' is not a legal argument"
+            when 3
+              "You can't set '#{args.second}' to '#{CFCopyDescription(args.third)}' " +
+                "for '#{CFCopyDescription(args.first)}'"
+            when 4
+              "The point [#{args.second}, #{args.third}] is not a valid point, or " +
+                "'#{CFCopyDescription(args.first)}' is not an AXUIElementRef"
+            end
+      raise ArgumentError, msg
+    when KAXErrorInvalidUIElement
+      msg = "'#{CFCopyDescription(args.first)}' is no longer a valid token"
+      raise RuntimeError, msg
+    when KAXErrorAttributeUnsupported
+      msg = "'#{CFCopyDescription(args.first)}' doesn't have '#{args.second}'"
+      raise ArgumentError, msg
+    when KAXErrorActionUnsupported
+      msg = "'#{CFCopyDescription(args.first)}' doesn't have '#{args.second}'"
+      raise ArgumentError, msg
+    when KAXErrorParameterizedAttributeUnsupported then
+      msg = "'#{CFCopyDescription(args.first)}' does not have parameterized attributes"
+      raise ArgumentError, msg
+    when KAXErrorFailure
+      msg = 'Some kind of system failure occurred, stopping to be safe'
+      raise RuntimeError, msg
+    when KAXErrorCannotComplete
+      msg = 'Some unspecified error occurred with AXAPI. Sorry. :('
+      raise RuntimeError, msg
+    when KAXErrorNotImplemented
+      msg  = "The program that owns '#{CFCopyDescription(args.first)}' "
+      msg << 'does not work with AXAPI properly'
+      raise NotImplementedError, msg
+    else
+      raise "You should never reach this line! [#{code.inspect}]"
+    end
   end
 
 end
