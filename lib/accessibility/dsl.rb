@@ -342,8 +342,11 @@ module Accessibility::DSL
   end
 
   ##
+  # Scroll a popup menu to an item in the menu and then move the
+  # mouse pointer to that item.
   #
   # @param [AX::Element]
+  # @return [Boolean]
   def scroll_menu_to element
     def menu_for element
       return element if element.kind_of? AX::Menu
