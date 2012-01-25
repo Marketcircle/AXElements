@@ -27,23 +27,32 @@ module Accessibility::Factory
   private
 
   ##
+  # @private
+  #
   # Reference to the singleton instance of the translator.
   #
   # @return [Accessibility::Translator]
   TRANSLATOR = Accessibility::Translator.instance
 
   ##
+  # @private
+  #
   # Type ID for `AXUIElementRef` objects.
   #
   # @return [Number]
   REF_TYPE   = AXUIElementGetTypeID()
 
   ##
+  # @private
+  #
   # Type ID for `CFArrayRef` objects.
   #
   # @return [Number]
   ARRAY_TYPE = CFArrayGetTypeID()
 
+  ##
+  # @private
+  #
   # Type ID for `AXValueRef` objects.
   #
   # @return [Number]
