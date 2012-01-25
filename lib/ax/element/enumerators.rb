@@ -59,7 +59,7 @@ module Accessibility::Enumerator
       until stack.empty?
         current = stack.shift
         yield current
-        if current.attributes.include? KAXChildrenAttribute
+        if current.respond_to? :children
           # need to reverse it since child ordering seems to matter in practice
           stack.unshift *current.attribute(:children)
         end
@@ -90,9 +90,9 @@ module Accessibility::Enumerator
     # @param [#call]
     def recursive_each_with_level element, depth, block
       block.call element, depth
-      if element.attributes.include? KAXChildrenAttribute
+      if element.respond_to? :children
         element.attribute(:children).each do |x|
-          recursive_each_with_height x, depth + 1, block
+          recursive_each_with_level x, depth + 1, block
         end
       end
     end
