@@ -314,53 +314,6 @@ module Accessibility::DSL
   end
 
   ##
-  # @todo Scroll horizontally.
-  #
-  # Scroll though a table until the given element is visible.
-  #
-  # If you need to scroll an unknown ammount of units through a scroll area
-  # you can just pass the element that you need visible and this method
-  # will scroll to it for you.
-  #
-  # @param [AX::Element]
-  # @return [Boolean]
-  def scroll_to element
-    scroll_area = element.ancestor :scroll_area
-
-    return if NSContainsRect(scroll_area.bounds, element.bounds)
-    move_mouse_to scroll_area
-    # calculate direction to scroll
-    direction = element.position.y > scroll_area.position.y ? -5 : 5
-    until NSContainsRect(scroll_area.bounds, element.bounds)
-      scroll direction
-    end
-  end
-
-  ##
-  # Scroll a popup menu to an item in the menu and then move the
-  # mouse pointer to that item.
-  #
-  # @param [AX::Element]
-  # @return [Boolean]
-  def scroll_menu_to element
-    menu = element.ancestor :menu
-
-    return if NSContainsRect(menu.bounds, element.bounds)
-
-    move_mouse_to menu
-    # calculate direction to scroll
-    direction = element.position.y > menu.position.y ? -5 : 5
-    until NSContainsRect(menu.bounds, element.bounds)
-      scroll direction
-    end
-
-    until Accessibility.element_under_mouse == element
-      move_mouse_to element
-      sleep 0.1
-    end
-  end
-
-  ##
   # Perform a regular click.
   #
   # If an argument is provided then the mouse will move to that point
@@ -417,6 +370,53 @@ module Accessibility::DSL
     set_focus app
     press app.menu_bar_item(title:(app.title))
     press app.menu_bar.menu_item(title:'Preferences…')
+  end
+
+  ##
+  # @todo Scroll horizontally.
+  #
+  # Scroll though a table until the given element is visible.
+  #
+  # If you need to scroll an unknown ammount of units through a scroll area
+  # you can just pass the element that you need visible and this method
+  # will scroll to it for you.
+  #
+  # @param [AX::Element]
+  # @return [Boolean]
+  def scroll_to element
+    scroll_area = element.ancestor :scroll_area
+
+    return if NSContainsRect(scroll_area.bounds, element.bounds)
+    move_mouse_to scroll_area
+    # calculate direction to scroll
+    direction = element.position.y > scroll_area.position.y ? -5 : 5
+    until NSContainsRect(scroll_area.bounds, element.bounds)
+      scroll direction
+    end
+  end
+
+  ##
+  # Scroll a popup menu to an item in the menu and then move the
+  # mouse pointer to that item.
+  #
+  # @param [AX::Element]
+  # @return [Boolean]
+  def scroll_menu_to element
+    menu = element.ancestor :menu
+
+    return if NSContainsRect(menu.bounds, element.bounds)
+
+    move_mouse_to menu
+    # calculate direction to scroll
+    direction = element.position.y > menu.position.y ? -5 : 5
+    until NSContainsRect(menu.bounds, element.bounds)
+      scroll direction
+    end
+
+    until Accessibility.element_under_mouse == element
+      move_mouse_to element
+      sleep 0.1
+    end
   end
 
 end
