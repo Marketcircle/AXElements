@@ -33,7 +33,7 @@ describes user interactions.
     [ '.yardopts', 'LICENSE.txt', 'README.markdown' ]
 
 
-  s.add_development_dependency 'minitest',  '~> 2.10'
+  s.add_development_dependency 'minitest',  '~> 2.11'
   s.add_development_dependency 'yard',      '~> 0.7.4'
   s.add_development_dependency 'redcarpet', '~> 1.17'
 end
