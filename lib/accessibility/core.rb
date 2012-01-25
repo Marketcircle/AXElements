@@ -1,3 +1,4 @@
+require 'accessibility/core/error_handler'
 require 'accessibility/core/notifications'
 require 'accessibility/core/string_parser'
 
@@ -485,50 +486,5 @@ module Accessibility::Core
   #
   # @return [String]
   ELEMENT  = '^{__AXUIElement}'.freeze
-
-  # @param [Number]
-  def handle_error code, *args
-    case code
-    when KAXErrorIllegalArgument
-      msg = case args.size
-            when 1
-              "'#{CFCopyDescription(args.first)}' is not an AXUIElementRef"
-            when 2
-              "Either the element '#{CFCopyDescription(args.first)}' " +
-                "or the attr/action '#{args.second}' is not a legal argument"
-            when 3
-              "You can't set '#{args.second}' to '#{CFCopyDescription(args.third)}' " +
-                "for '#{CFCopyDescription(args.first)}'"
-            when 4
-              "The point [#{args.second}, #{args.third}] is not a valid point, or " +
-                "'#{CFCopyDescription(args.first)}' is not an AXUIElementRef"
-            end
-      raise ArgumentError, msg
-    when KAXErrorInvalidUIElement
-      msg = "'#{CFCopyDescription(args.first)}' is no longer a valid token"
-      raise RuntimeError, msg
-    when KAXErrorAttributeUnsupported
-      msg = "'#{CFCopyDescription(args.first)}' doesn't have '#{args.second}'"
-      raise ArgumentError, msg
-    when KAXErrorActionUnsupported
-      msg = "'#{CFCopyDescription(args.first)}' doesn't have '#{args.second}'"
-      raise ArgumentError, msg
-    when KAXErrorParameterizedAttributeUnsupported then
-      msg = "'#{CFCopyDescription(args.first)}' does not have parameterized attributes"
-      raise ArgumentError, msg
-    when KAXErrorFailure
-      msg = 'Some kind of system failure occurred, stopping to be safe'
-      raise RuntimeError, msg
-    when KAXErrorCannotComplete
-      msg = 'Some unspecified error occurred with AXAPI. Sorry. :('
-      raise RuntimeError, msg
-    when KAXErrorNotImplemented
-      msg  = "The program that owns '#{CFCopyDescription(args.first)}' "
-      msg << 'does not work with AXAPI properly'
-      raise NotImplementedError, msg
-    else
-      raise "You should never reach this line! [#{code.inspect}]"
-    end
-  end
 
 end

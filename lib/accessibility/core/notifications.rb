@@ -1,3 +1,5 @@
+require 'accessibility/core/error_handler'
+
 module Accessibility::Core
 
 
@@ -114,16 +116,9 @@ module Accessibility::Core
   # @return [AXObserverRef]
   def observer_for element, calling: callback
     ptr  = Pointer.new OBSERVER
-    case AXObserverCreate(pid_for(element), callback, ptr)
-    when KAXErrorSuccess         then ptr[0]
-    when KAXErrorIllegalArgument then
-      msg  = "Either '#{CFCopyDescription(element)}' or "
-      msg << "'#{callback.inspect}' is not a valid argument"
-      raise ArgumentError, msg
-    when KAXErrorFailure         then failure_message
-    else
-      raise 'You should never reach this line!'
-    end
+    code = AXObserverCreate(pid_for(element), callback, ptr)
+    return ptr[0] if code.zero?
+    handle_error code, element, callback
   end
 
   ##
@@ -133,27 +128,9 @@ module Accessibility::Core
   # @param [String]
   # @param [AX::Element]
   def register observer, to_receive: notif, from: element
-    case AXObserverAddNotification(observer, element, notif, nil)
-    when KAXErrorSuccess                       then true
-    when KAXErrorInvalidUIElementObserver      then invalid_message(observer)
-    when KAXErrorIllegalArgument               then
-      msg  = "Either '#{CFCopyDescription(observer)}', "
-      msg << "'#{CFCopyDescription(element)}', or '#{notif}' is not valid"
-      raise ArgumentError, msg
-    when KAXErrorNotificationUnsupported       then
-      msg = "'#{CFCopyDescription(element)}' doesn't support notifications"
-      raise ArgumentError, msg
-    when KAXErrorNotificationAlreadyRegistered then
-      # @todo Does this really neeed to raise an exception? Seems
-      #       like a warning would be sufficient.
-      msg  = "You have already registered to hear about '#{notif}' "
-      msg << "from '#{CFCopyDescription(element)}'"
-      raise ArgumentError, msg
-    when KAXErrorCannotComplete                then cannot_complete_message
-    when KAXErrorFailure                       then failure_message
-    else
-      raise 'You should never reach this line'
-    end
+    code = AXObserverAddNotification(observer, element, notif, nil)
+    return true if code.zero?
+    handle_error code, element, notif, observer, nil, nil
   end
 
   ##
@@ -163,35 +140,9 @@ module Accessibility::Core
   # @param [String]
   # @param [AX::Element]
   def unregister observer, from_receiving: notif, from: element
-    case AXObserverRemoveNotification(observer, element, notif)
-    when KAXErrorSuccess                    then true
-    when KAXErrorNotificationNotRegistered  then
-      raise RuntimeError, 'Notif was not registered to begin with...'
-    when KAXErrorIllegalArgument            then
-      msg  = "Either the observer '#{CFCopyDescription(observer)}', "
-      msg << "the element '#{CFCopyDescription(element)}', or "
-      msg << "the notification '#{notif}' is not a legitimate argument"
-      raise ArgumentError, msg
-    when KAXErrorInvalidUIElementObserver   then
-      msg  = "'#{CFCopyDescription(observer)}' is no longer valid or "
-      msg << 'was never valid'
-      raise ArgumentError, msg
-    when KAXErrorIllegalArgument            then
-      msg  = "Either '#{CFCopyDescription(observer)}', "
-      msg << "'#{CFCopyDescription(element)}', or '#{notif}' is not valid"
-      raise ArgumentError, msg
-    when KAXErrorNotificationUnsupported    then
-      msg = "'#{CFCopyDescription(element)}' does not support notifications"
-      raise NoMethodError, msg
-    when KAXErrorNotificationNotRegistered  then
-      msg  = "You have not yet registered to hear about '#{notif}' "
-      msg << "from '#{CFCopyDescription(element)}'"
-      raise RuntimeError, msg
-    when KAXErrorCannotComplete             then cannot_complete_message
-    when KAXErrorFailure                    then failure_message
-    else
-      raise 'You should never reach this line!'
-    end
+    code = AXObserverRemoveNotification(observer, element, notif)
+    return true if code.zero?
+    handle_error code, element, notif, observer, nil, nil
   end
 
   ##
