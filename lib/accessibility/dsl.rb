@@ -342,6 +342,31 @@ module Accessibility::DSL
   end
 
   ##
+  #
+  # @param [AX::Element]
+  def scroll_menu_to element
+    def menu_for element
+      return element if element.kind_of? AX::Menu
+      return menu_for element.parent
+    end
+    menu = menu_for element
+
+    return if NSContainsRect(menu.bounds, element.bounds)
+
+    move_mouse_to menu
+    # calculate direction to scroll
+    direction = element.position.y > menu.position.y ? -5 : 5
+    until NSContainsRect(menu.bounds, element.bounds)
+      scroll direction
+    end
+
+    until Accessibility.element_under_mouse == element
+      move_mouse_to element
+      sleep 0.1
+    end
+  end
+
+  ##
   # Perform a regular click.
   #
   # If an argument is provided then the mouse will move to that point
