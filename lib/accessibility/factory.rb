@@ -76,7 +76,7 @@ module Accessibility::Factory
   end
 
   ##
-  # We assume a homogeneous array and only massage element arrays right now.
+  # We assume a homogeneous array and only wrap element arrays right now.
   #
   # @return [Array]
   def process_array vals

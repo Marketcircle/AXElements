@@ -81,6 +81,7 @@ class AX::Application < AX::Element
 
   # @endgroup
 
+
   # @todo Do we need to override #respond_to? and #methods for
   #       the :focused? case as well?
 

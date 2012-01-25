@@ -217,8 +217,8 @@ class AX::Element
   #
   #   AX::DOCK.search( :application_dock_item, title:'Finder' )
   #
-  # @param [#to_s] kind
-  # @param [Hash{Symbol=>Object}] filters
+  # @param [#to_s]
+  # @param [Hash{Symbol=>Object}]
   # @return [AX::Element,nil,Array<AX::Element>,Array<>]
   def search kind, filters = {}
     kind      = kind.camelize
