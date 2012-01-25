@@ -7,7 +7,7 @@ class Accessibility::Qualifier
   # Initialize a qualifier with the kind of object that you want to
   # qualify and a dictionary of filter criteria.
   #
-  # @param [String,Symbol]
+  # @param [#to_s]
   # @param [Hash]
   def initialize klass, criteria
     @sym      = klass
@@ -53,7 +53,7 @@ class Accessibility::Qualifier
   # Determines if the element meets all the criteria of the filters,
   # spawning sub-searches if necessary.
   #
-  # @param [AX::Element] element
+  # @param [AX::Element]
   def meets_criteria? element
     @criteria.all? do |filter, value|
       if value.kind_of? Hash
@@ -62,8 +62,15 @@ class Accessibility::Qualifier
         else
           false
         end
+
       elsif element.respond_to? filter
-        element.send(filter) == value
+        element_value = element.send(filter)
+        if value.kind_of?(Regexp) && element_value.respond_to?(:match)
+          element_value.match value
+        else
+          element_value == value
+        end
+
       else # this legitimately occurs
         false
       end
