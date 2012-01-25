@@ -61,8 +61,8 @@ class Accessibility::Graph
     def identifier
       klass = ref.class.to_s.split('::').last
 
-      if ref.attributes.include? KAXValueAttribute
-        val = attribute :value
+      if ref.respond_to? :value
+        val = ref.attribute :value
         if val.kind_of? NSString
           return "[label = \"#{klass} #{val}\"]" unless val.empty?
         else
@@ -73,26 +73,26 @@ class Accessibility::Graph
         end
       end
 
-      if attributes.include? KAXTitleAttribute
-        val = attribute(:title)
+      if ref.respond_to? :title
+        val = ref.attribute(:title)
         if val && !val.empty?
           return "[label = \"#{klass} #{val.inspect}\""
         end
       end
 
       # @todo Should create a special edge to the title ui element
-      if attributes.include? KAXTitleUIElementAttribute
+      if ref.respond_to? :title_ui_element
         #val = attribute :title_ui_element
         return "[label = \"#{klass}\"]" #if val
       end
 
-      if attributes.include? KAXDescriptionAttribute
-        val = attribute(:description).to_s
+      if ref.respond_to? :description
+        val = ref.attribute(:description).to_s
         return BUFFER + val unless val.empty?
       end
 
-      if attributes.include? KAXIdentifierAttribute
-        return " id=#{attribute(:identifier)}"
+      if ref.respond_to? :id
+        return " id=#{ref.attribute(:identifier)}"
       end
 
       # @todo should we have other fallbacks?
@@ -166,7 +166,7 @@ class Accessibility::Graph
   # breadth first ordering of the enumerator, which makes building the
   # edges very easy.
   def build!
-    Accessibility::BFEnumerator.new(nodes.last.ref).each do |element|
+    Accessibility::Enumerators::BreadthFirst.new(nodes.last.ref).each do |element|
       node   = Node.new(element)
       nodes << node
       edges << Edge.new(node, edge_queue.shift)

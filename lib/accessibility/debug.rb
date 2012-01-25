@@ -44,7 +44,7 @@ module Accessibility::Debug
   def dump_for element
     output = element.inspect + "\n"
     # @todo should use each_child_with_level instead
-    enum   = Accessibility::Enumerator::DepthFirst.new element
+    enum   = Accessibility::Enumerators::DepthFirst.new element
     enum.each_with_level do |element, depth|
       output << "\t"*depth + element.inspect + "\n"
     end

@@ -2,9 +2,29 @@ require 'accessibility/core'
 require 'accessibility/translator'
 
 ##
-# Set of methods used for processing low level data from AXAPI methods.
+# Mixin made for processing low level data from AXAPI methods.
 module Accessibility::Factory
   include Accessibility::Core
+
+  ##
+  # Processes any given data from an AXAPI method and wraps it if
+  # needed. Meant for taking a return value from {Accessibility::Core#attr:for:}
+  # and friends.
+  #
+  # Generally, used to process an `AXValue` into a `CGPoint` or an
+  # `AXUIElementRef` into some kind of {AX::Element} object.
+  def process value
+    return nil if value.nil? # CFGetTypeID(nil) crashes runtime
+    case CFGetTypeID(value)
+    when ARRAY_TYPE then process_array value
+    when REF_TYPE   then process_element value
+    when BOX_TYPE   then unwrap value
+    else
+      value
+    end
+  end
+
+  private
 
   ##
   # Reference to the singleton instance of the translator.
@@ -28,24 +48,6 @@ module Accessibility::Factory
   #
   # @return [Number]
   BOX_TYPE   = AXValueGetTypeID()
-
-  ##
-  # Processes any given data from an AXAPI method and wraps it if
-  # needed. Meant for taking a return value from {Accessibility::Core#attr:for:}
-  # and friends.
-  #
-  # Generally, used to process an `AXValue` into a `CGPoint` or an
-  # `AXUIElementRef` into some kind of {AX::Element} object.
-  def process value
-    return nil if value.nil? # CFGetTypeID(nil) crashes runtime
-    case CFGetTypeID(value)
-    when ARRAY_TYPE then process_array value
-    when REF_TYPE   then process_element value
-    when BOX_TYPE   then unwrap value
-    else
-      value
-    end
-  end
 
   ##
   # @todo Should we handle cases where a subrole has a value of
@@ -84,9 +86,6 @@ module Accessibility::Factory
     return vals if CFGetTypeID(vals.first) != REF_TYPE
     return vals.map { |val| process_element val }
   end
-
-
-  private
 
   ##
   # Find the class for a given role. If the class does not exist it will

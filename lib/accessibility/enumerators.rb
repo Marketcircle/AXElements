@@ -1,4 +1,4 @@
-module Accessibility::Enumerator
+module Accessibility::Enumerators
 
   ##
   # Enumerator for visiting each element in a UI hierarchy in breadth

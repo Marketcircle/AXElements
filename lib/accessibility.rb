@@ -1,13 +1,14 @@
 require 'mouse'
-require 'ax/element'
 require 'ax/application'
 require 'ax/systemwide'
 require 'accessibility/debug'
+require 'accessibility/factory'
 
 ##
 # The main AXElements namespace.
 module Accessibility
   extend Accessibility::Debug
+  extend Accessibility::Factory
 
   class << self
 
@@ -97,9 +98,6 @@ module Accessibility
       application_with_pid(app.processIdentifier) if app
     end
 
-    include Accessibility::Core
-    include Accessibility::Factory
-
     ##
     # Get the accessibility object for an application given its PID.
     #
@@ -109,7 +107,7 @@ module Accessibility
     #
     # @return [AX::Application]
     def application_with_pid pid
-      process_element application_for pid
+      process application_for pid
     end
 
     # @endgroup

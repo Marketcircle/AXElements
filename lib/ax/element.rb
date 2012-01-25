@@ -2,13 +2,12 @@
 
 require 'ax_elements/macruby_extensions'
 require 'ax_elements/vendor/inflector'
-require 'accessibility/core'
 require 'accessibility/factory'
+require 'accessibility/enumerators'
+require 'accessibility/qualifier'
+require 'accessibility/errors'
+require 'accessibility/pp_inspector'
 
-require 'ax/element/inspector'
-require 'ax/element/errors'
-require 'ax/element/enumerators'
-require 'ax/element/qualifier'
 
 ##
 # Namespace container for all the accessibility objects.
@@ -22,8 +21,7 @@ end
 # provides generic functionality that all accessibility objects require.
 class AX::Element
   include Accessibility::PPInspector
-  include Accessibility::Core
-  extend  Accessibility::Factory
+  include Accessibility::Factory
 
 
   # @param [AXUIElementRef]
@@ -59,7 +57,7 @@ class AX::Element
   def attribute attr
     real_attr = lookup attr, with: @attributes
     raise Accessibility::LookupFailure.new(self, attr) unless real_attr
-    self.class.process attr(real_attr, for: @ref)
+    process attr(real_attr, for: @ref)
   end
 
   ##
@@ -163,7 +161,7 @@ class AX::Element
   def attribute attr, for_parameter: param
     real_attr = lookup attr, with: _parameterized_attributes
     raise Accessibility::LookupFailure.new(self, attr) unless real_attr
-    self.class.process param_attr(real_attr, for_param: param.to_axvalue, for: @ref)
+    process param_attr(real_attr, for_param: param.to_axvalue, for: @ref)
   end
 
 
@@ -225,7 +223,7 @@ class AX::Element
     klass     = kind.singularize
     search    = klass == kind ? :find : :find_all
     qualifier = Accessibility::Qualifier.new(klass, filters)
-    tree      = Accessibility::Enumerator::BreadthFirst.new(self)
+    tree      = Accessibility::Enumerators::BreadthFirst.new(self)
 
     tree.send(search) { |element| qualifier.qualifies? element }
   end
@@ -297,14 +295,12 @@ class AX::Element
   def method_missing method, *args
     attribute = lookup method, with: @attributes
     if attribute
-      result = attr attribute, for: @ref
-      return self.class.process result
+      return process attr(attribute, for: @ref)
     end
 
     attribute = lookup method, with: _parameterized_attributes
     if attribute
-      result = param_attr attribute, for_param: args.first, for: @ref
-      return self.class.process result
+      return process param_attr(attribute, for_param: args.first, for: @ref)
     end
 
     if @attributes.include? KAXChildrenAttribute
@@ -340,7 +336,7 @@ class AX::Element
   def on_notification name, &block
     notif = TRANSLATOR.guess_notification_for name
     register_to_receive notif, from: @ref do |notification, sender|
-      element = self.class.process_element sender
+      element = process sender
       block ? block.call(notification, element) : true
     end
     [notif, self]
@@ -441,7 +437,5 @@ class AX::Element
     value = TRANSLATOR.lookup key, with: values
     return value if values.include? value
   end
-
-  TRANSLATOR = Accessibility::Translator.instance
 
 end
