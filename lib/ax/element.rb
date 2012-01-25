@@ -231,6 +231,29 @@ class AX::Element
   end
 
   ##
+  # Search for an ancestor of the current elemenet.
+  #
+  # As the opposite of {#search}, this also takes filters, and can
+  # be used to find a specific ancestor for the current element.
+  #
+  # @example
+  #
+  #   button.ancestor :window       # => #<AX::StandardWindow>
+  #   row.ancestor    :scroll_area  # => #<AX::ScrollArea>
+  #
+  # @param [#to_s]
+  # @param [Hash{Symbol=>Object}]
+  # @return [AX::Element]
+  def ancestor kind, filters = {}
+    qualifier = Accessibility::Qualifier.new(kind.camelize, filters)
+    element   = attribute :parent
+    until qualifier.qualifies? element
+      element = element.attribute :parent
+    end
+    element
+  end
+
+  ##
   # We use {#method_missing} to dynamically handle requests to lookup
   # attributes or search for elements in the view hierarchy. An attribute
   # lookup is always tried first, followed by a parameterized attribute

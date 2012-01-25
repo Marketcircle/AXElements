@@ -325,14 +325,9 @@ module Accessibility::DSL
   # @param [AX::Element]
   # @return [Boolean]
   def scroll_to element
-    def scroll_area_for element
-      return element if element.kind_of? AX::ScrollArea
-      return scroll_area_for element.parent
-    end
-    scroll_area = scroll_area_for element
+    scroll_area = element.ancestor :scroll_area
 
     return if NSContainsRect(scroll_area.bounds, element.bounds)
-
     move_mouse_to scroll_area
     # calculate direction to scroll
     direction = element.position.y > scroll_area.position.y ? -5 : 5
@@ -348,11 +343,7 @@ module Accessibility::DSL
   # @param [AX::Element]
   # @return [Boolean]
   def scroll_menu_to element
-    def menu_for element
-      return element if element.kind_of? AX::Menu
-      return menu_for element.parent
-    end
-    menu = menu_for element
+    menu = element.ancestor :menu
 
     return if NSContainsRect(menu.bounds, element.bounds)
 
