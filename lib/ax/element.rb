@@ -310,15 +310,15 @@ class AX::Element
   # for more information.
   #
   # @param [#to_s]
-  # @yieldparam [AX::Element]
   # @yieldparam [String]
+  # @yieldparam [AX::Element]
   # @yieldreturn [Boolean]
   # @return [Array(String,self)] the notification/element pair
   def on_notification name, &block
     notif = TRANSLATOR.guess_notification_for name
-    register_to_receive notif, from: @ref do |sender, notification|
+    register_to_receive notif, from: @ref do |notification, sender|
       element = self.class.process_element sender
-      block ? block.call(element, notification) : true
+      block ? block.call(notification, element) : true
     end
     [notif, self]
   end
