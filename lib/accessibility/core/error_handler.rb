@@ -41,8 +41,7 @@ module Accessibility::Core
       msg = 'Some kind of system failure occurred, stopping to be safe'
       raise RuntimeError, msg
     when KAXErrorCannotComplete
-      msg = 'Some unspecified error occurred with AXAPI. Sorry. :('
-      raise RuntimeError, msg
+      handle_cannot_complete args.first
     when KAXErrorNotImplemented
       msg  = "The program that owns '#{CFCopyDescription(args.first)}' "
       msg << 'does not work with AXAPI properly'
@@ -71,6 +70,19 @@ module Accessibility::Core
     else
       raise "You should never reach this line! [#{code.inspect}]"
     end
+  end
+
+  # @param [AXUIElementRef]
+  def handle_cannot_complete ref
+    NSRunLoop.currentRunLoop.runUntilDate Time.now
+    pid = pid_for ref
+    app = NSRunningApplication.runningApplicationWithProcessIdentifier pid
+    msg = if app
+            'Some unspecified error occurred with AXAPI. Sorry. :('
+          else
+            "Application for pid=#{pid} is no longer running. Maybe it crashed?"
+          end
+    raise RuntimeError, msg
   end
 
 end
