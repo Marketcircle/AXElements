@@ -391,4 +391,17 @@ class TestAccessibilityCore < MiniTest::Unit::TestCase
     assert_equal range, ptr[0]
   end
 
+
+
+  def test_set_timeout
+    assert_equal 10, set_timeout_to(10, for: REF)
+    assert_equal 0,  set_timeout_to(0, for: REF)
+  end
+
+  def test_set_timeout_handles_errors
+    assert_raises ArgumentError do
+      set_timeout_to 10, for: nil
+    end
+  end
+
 end

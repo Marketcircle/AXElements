@@ -458,6 +458,24 @@ module Accessibility::Core
     AXValueCreate(klass.ax_value, ptr)
   end
 
+
+  # @group Debug
+
+  ##
+  # Change the timeout value for an element or globally.
+  #
+  # To change the global value, pass the system wide object for
+  # the `element` argument.
+  #
+  # @param [Number]
+  # @param [AXUIElementRef]
+  # @return [Number]
+  def set_timeout_to seconds, for: element
+    code = AXUIElementSetMessagingTimeout(element, seconds)
+    return seconds if code.zero?
+    handle_error code, element, seconds
+  end
+
   # @endgroup
 
 
