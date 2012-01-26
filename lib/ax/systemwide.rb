@@ -41,7 +41,7 @@ class AX::SystemWide < AX::Element
   # @return [AX::Element,nil]
   def element_at_point x, y
     element = element_at_point x, and: y, for: @ref
-    self.class.process element
+    process element
   end
 
 end
