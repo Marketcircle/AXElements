@@ -2,6 +2,10 @@ require 'ax/element'
 
 ##
 # Represents the special `SystemWide` accessibility object.
+#
+# Previously, this object was a singleton, but that apparently causes problems
+# with the AXAPIs. So you should always create a new instance of the system wide
+# object when you need to use it (even though they are all the same thing).
 class AX::SystemWide < AX::Element
 
   ##
@@ -16,12 +20,16 @@ class AX::SystemWide < AX::Element
   #       events to which ever app has focus.
   #
   # Generate keyboard events by simulating keyboard input.
+  #
+  # See the {file:docs/KeyboardEvents.markdown Keyboard tutorial} for
+  # more information on how to format strings.
   def type_string string
     keyboard_input string, to: @ref
   end
 
   ##
-  # Overridden to avoid a difficult to understand error message.
+  # The system wide object cannot be used to perform searches. This method
+  # is just an override to avoid a difficult to understand error messages.
   def search *args
     raise NoMethodError, 'AX::SystemWide cannot search'
   end
@@ -36,7 +44,10 @@ class AX::SystemWide < AX::Element
   end
 
   ##
-  # `nil` if there was nothing at that point.
+  # Find the element in at the given point for the topmost appilcation
+  # window.
+  #
+  # `nil` will be returned if there was nothing at that point.
   #
   # @return [AX::Element,nil]
   def element_at_point x, y
