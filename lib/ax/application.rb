@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 require 'ax/element'
 
 ##
@@ -17,10 +15,13 @@ class AX::Application < AX::Element
     @app = NSRunningApplication.runningApplicationWithProcessIdentifier pid
   end
 
+
   # @group Attributes
 
   ##
   # Overridden to handle the {Accessibility::Language#set_focus} case.
+  #
+  # (see AX::Element#attribute)
   def attribute attr
     attr == :focused? || attr == :focused ? active? : super
   end
@@ -38,6 +39,8 @@ class AX::Application < AX::Element
 
   ##
   # Overridden to handle the {Accessibility::Language#set_focus} case.
+  #
+  # (see AX::Element#set:to:)
   def set attr, to: value
     if attr == :focused
       if value
@@ -55,10 +58,9 @@ class AX::Application < AX::Element
   # @group Actions
 
   ##
-  # @note This object becomes poisonous after the app terminates. If you
-  #       try to use it again, you will crash MacRuby.
+  # Overridden to provide extra actions (e.g. `hide`, `terminate`).
   #
-  # Ask the application to terminate itself. Be careful how you use this.
+  # (see AX::Element#perform)
   #
   # @return [Boolean]
   def perform name
@@ -71,8 +73,11 @@ class AX::Application < AX::Element
   end
 
   ##
-  # Send keyboard input to `self`, the control that currently has focus
-  # will the control that receives the key presses.
+  # Send keyboard input to `self`, the control in the app that currently
+  # has focus will receive the key presses.
+  #
+  # For details on how to format the string, check out the
+  # {file:docs/KeyboardEvents.markdown Keyboard tutorial}.
   #
   # @return [nil]
   def type_string string
@@ -82,9 +87,6 @@ class AX::Application < AX::Element
   # @endgroup
 
 
-  # @todo Do we need to override #respond_to? and #methods for
-  #       the :focused? case as well?
-
   ##
   # Override the base class to make sure the pid is included.
   def inspect
@@ -92,7 +94,9 @@ class AX::Application < AX::Element
   end
 
   ##
-  # `nil` if there was nothing at that point.
+  # Find the element in `self` that is present at point given.
+  #
+  # `nil` will be returned if there was nothing at that point.
   #
   # @return [AX::Element,nil]
   def element_at_point x, y
