@@ -23,7 +23,12 @@ class AX::Application < AX::Element
   #
   # (see AX::Element#attribute)
   def attribute attr
-    attr == :focused? || attr == :focused ? active? : super
+    case attr
+    when :focused?, :focused then active?
+    when :hidden?,  :hidden  then hidden?
+    else
+      super
+    end
   end
 
   ##
@@ -38,17 +43,27 @@ class AX::Application < AX::Element
   alias_method :focused?, :active?
 
   ##
+  # Ask the app whether or not it is hidden.
+  def hidden?
+    NSRunLoop.currentRunLoop.runUntilDate Time.now
+    @app.hidden?
+  end
+
+  ##
   # Overridden to handle the {Accessibility::Language#set_focus} case.
   #
   # (see AX::Element#set:to:)
   def set attr, to: value
-    if attr == :focused
+    case attr
+    when :focused, :active
       if value
         @app.unhide
         @app.activateWithOptions NSApplicationActivateIgnoringOtherApps
       else
         @app.hide
       end
+    when :hidden then
+      value ? @app.hide : @app.unhide
     else
       super
     end

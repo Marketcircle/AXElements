@@ -38,17 +38,21 @@ class TestAXApplication < MiniTest::Unit::TestCase
   end
 
   def test_can_hide_and_unhide_app
+    app.set :hidden, to: true
+    sleep 0.1
+    assert app.hidden?
+
+    app.set :hidden, to: false
+    sleep 0.1
+    refute app.hidden?
+
     app.perform :hide
-    sleep 0.2
-    refute app.active?
-    refute app.attribute :focused
-    refute app.attribute :focused?
+    sleep 0.1
+    assert app.hidden?
 
     app.perform :unhide
-    sleep 0.2
-    assert app.active?
-    assert app.attribute :focused
-    assert app.attribute :focused?
+    sleep 0.1
+    refute app.hidden?
 
   ensure
     running_app.activateWithOptions NSApplicationActivateIgnoringOtherApps
