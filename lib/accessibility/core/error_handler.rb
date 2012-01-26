@@ -78,7 +78,7 @@ module Accessibility::Core
     pid = pid_for ref
     app = NSRunningApplication.runningApplicationWithProcessIdentifier pid
     msg = if app
-            'Some unspecified error occurred with AXAPI. Sorry. :('
+            'Some unspecified error occurred with AXAPI, possibly a timeout. :('
           else
             "Application for pid=#{pid} is no longer running. Maybe it crashed?"
           end
