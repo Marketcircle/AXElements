@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 
 require 'mouse'
+require 'accessibility/core'
+require 'ax/element'
 
 ##
 # @todo Allow the animation duration to be overridden for Mouse stuff?
@@ -13,6 +15,7 @@ require 'mouse'
 # {file:docs/Acting.markdown Acting tutorial} for examples on how to use
 # methods from this module.
 module Accessibility::DSL
+  include Accessibility::Core
 
 
   # @group Actions
@@ -217,8 +220,6 @@ module Accessibility::DSL
 
   # @group Notifications
 
-  include Accessibility::Core
-
   ##
   # Register for a notification from a specific element.
   #
@@ -249,7 +250,6 @@ module Accessibility::DSL
   #
   # @param [Float] timeout number of seconds to wait for a notification
   def wait_for_notification timeout = 10.0
-    # this would actually make more sense if it read "if wait(timeout)"
     unless wait(timeout)
       unregister_notifications
     end
@@ -350,6 +350,7 @@ module Accessibility::DSL
     Mouse.double_click
   end
 
+
   # @group Macros
 
   ##
@@ -405,9 +406,8 @@ module Accessibility::DSL
     menu = element.ancestor :menu
 
     return if NSContainsRect(menu.bounds, element.bounds)
-
     move_mouse_to menu
-    # calculate direction to scroll
+
     direction = element.position.y > menu.position.y ? -5 : 5
     until NSContainsRect(menu.bounds, element.bounds)
       scroll direction
