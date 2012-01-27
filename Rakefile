@@ -8,8 +8,8 @@ def safe_require path, name
   yield
 rescue LoadError => e
   $stderr.puts "It seems as though you do not have #{name} installed."
-  command = ENV['RUBY_VERSION'] ? 'gem' : 'sudo macgem'
-  $stderr.puts "You can install it by running `#{command} install #{name}`."
+  command = ENV['RUBY_VERSION'] ? 'rake' : 'sudo macrake'
+  $stderr.puts "You can install it by running `#{command} setup_dev`"
 end
 
 
