@@ -24,6 +24,7 @@ task :garden => :yard do
   sh 'yard graph --full --dependencies --dot="-Tpng:quartz" -f docs/images/AX.dot'
 end
 
+
 ## Console
 
 desc 'Start up irb with AXElements loaded'
@@ -31,6 +32,7 @@ task :console => :ext do
   irb = ENV['RUBY_VERSION'] ? 'irb' : 'macirb'
   sh "#{irb} -Ilib -Iext -rubygems -rax_elements"
 end
+
 
 ## Compilation
 
@@ -57,6 +59,7 @@ task :clobber_ext do
 end
 task :clobber => :clobber_ext
 
+
 ## Testing
 
 desc 'Open the fixture app'
@@ -78,6 +81,7 @@ Rake::TestTask.new do |t|
 end
 task :test => [:ext, :fixture]
 
+
 ## Gem Packaging
 require 'rubygems/dependency_installer'
 require 'rake/gempackagetask'
@@ -86,8 +90,7 @@ spec = Gem::Specification.load('AXElements.gemspec')
 
 Rake::GemPackageTask.new(spec) { }
 
-# This only installs this gem, it does not take deps into consideration
-desc 'Build gem and install it'
+desc 'Build gem and install it (does not look at dependencies)'
 task :install => :gem do
   Gem::Installer.new("pkg/#{spec.file_name}").install
 end
