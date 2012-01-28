@@ -224,21 +224,21 @@ module Accessibility::Core
     def parse_custom string
       sequence = ''
       while string
-        case string.first
+        case char = string.shift
         when '+'
           raise NotImplementedError, 'Hotkeys is not finished yet'
         when ' ', nil
-          code = ESCAPES[sequence]
-          if code
-            return [[code,true], [code,false]]
-          else
-            return [[MAPPING["\\"], true], [MAPPING["\\"], false]]
-          end
+          events = if code = ESCAPES[sequence]
+                     [[code, true], [code, false]]
+                   else
+                     [[MAPPING["\\"], true], [MAPPING["\\"], false]]
+                   end
+          return events
         else
-          sequence << string.shift
+          sequence << char
         end
       end
-      raise 'String parsing failed!'
+      raise 'String parsing failed! (btw, this is impossible)'
     end
 
     ##

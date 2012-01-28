@@ -28,8 +28,13 @@ class TestAccessibilityStringParser < MiniTest::Unit::TestCase
   end
 
   def test_parse_escapes
-    skip 'shit'
-    parser.parse("\\")
+    expected = [[42, true], [42, false]]
+    actual   = parser.parse("\\")
+    assert_equal expected, actual
+
+    expected = [[0x7C, true], [0x7C, false]]
+    actual   = parser.parse("\\->")
+    assert_equal expected, actual
   end
 
   def test_parses_backslash
