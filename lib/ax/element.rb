@@ -197,7 +197,7 @@ class AX::Element
   # @return [Boolean] true if successful
   def perform action
     real_action = lookup action, with: _actions
-    raise Accessibility::LookupFailure.new(self, name) unless real_action
+    raise Accessibility::LookupFailure.new(self, action) unless real_action
     perform real_action, for: @ref
   end
 
