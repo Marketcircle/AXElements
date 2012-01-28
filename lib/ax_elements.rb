@@ -17,6 +17,8 @@ end
 unless Object.const_defined? :KAXIdentifierAttribute
   ##
   # Added for backwards compatability with Snow Leopard.
+  # This attribute is standard with Lion and newer. AXElements depends
+  # on it being defined.
   #
   # @return [String]
   KAXIdentifierAttribute = 'AXIdentifier'.freeze
@@ -27,7 +29,7 @@ require 'ax_elements/version'
 require 'accessibility'
 # @todo How to load the other default classes?
 
-# Mix the language methods in to the TopLevel
+# Mix the language methods into the TopLevel
 require 'accessibility/dsl'
 include Accessibility::DSL
 

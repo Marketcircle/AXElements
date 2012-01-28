@@ -289,7 +289,7 @@ module Accessibility::DSL
   # to the point given by calling `#to_point` on the argument.
   #
   # Generally, you will pass a {CGPoint} or some kind of {AX::Element},
-  # but you could pass anything that responds to #to_point.
+  # but you could pass anything that responds to `#to_point`.
   #
   # @param [#to_point]
   def drag_mouse_to arg
