@@ -43,7 +43,7 @@ class AX::Element
   #
   # @return [Array<Symbol>]
   def attributes
-    TRANSLATOR.rubyize @attrs
+    @attributes ||= TRANSLATOR.rubyize @attrs
   end
 
   ##
@@ -423,9 +423,6 @@ class AX::Element
 
 
   protected
-
-  attr_reader :attrs
-  alias_method :_attributes, :attrs
 
   def _parameterized_attributes
     @param_attrs ||= param_attrs_for @ref

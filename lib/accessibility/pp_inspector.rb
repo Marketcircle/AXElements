@@ -6,7 +6,7 @@
 #
 # The module only expects three methods in order to operate:
 #
-#  - `#_attributes` returns a list of available attributes
+#  - `#attributes` returns a list of available attributes
 #  - `#attribute` returns the value of a given attribute
 #  - `#size_of` returns the size for an attribute
 #
@@ -21,7 +21,7 @@ module Accessibility::PPInspector
     # @todo Break this method up into chunks
     # @note use, or lack of use, of #inspect is intentional for visual effect
 
-    if _attributes.include? KAXValueAttribute
+    if attributes.include? :value
       val = attribute :value
       if val.kind_of? NSString
         return " #{val.inspect}" unless val.empty?
@@ -31,22 +31,22 @@ module Accessibility::PPInspector
       end
     end
 
-    if _attributes.include? KAXTitleAttribute
+    if attributes.include? :title
       val = attribute(:title)
       return " #{val.inspect}" if val && !val.empty?
     end
 
-    if _attributes.include? KAXTitleUIElementAttribute
+    if attributes.include? :title_ui_element
       val = attribute :title_ui_element
       return BUFFER + val.inspect if val
     end
 
-    if _attributes.include? KAXDescriptionAttribute
+    if attributes.include? :description
       val = attribute(:description).to_s
       return BUFFER + val unless val.empty?
     end
 
-    if _attributes.include? KAXIdentifierAttribute
+    if attributes.include? :identifier
       return " id=#{attribute(:identifier)}"
     end
 
@@ -78,7 +78,7 @@ module Accessibility::PPInspector
     if child_count > 1
       " #{child_count} children"
     elsif child_count == 1
-      ' 1 child'
+      ONE_CHILD
     else # there are some odd edge cases
       ::EMPTY_STRING
     end
@@ -106,5 +106,14 @@ module Accessibility::PPInspector
   #
   # @return [String]
   BUFFER = ' '.freeze
+
+  ##
+  # @private
+  #
+  # Constant string used by {#pp_children} when the number of
+  # children is 1.
+  #
+  # @return [String]
+  ONE_CHILD = ' 1 child'
 
 end
