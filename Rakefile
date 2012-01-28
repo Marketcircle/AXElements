@@ -83,6 +83,7 @@ task :test => [:ext, :fixture]
 
 
 ## Gem Packaging
+require 'rubygems/user_interaction'
 require 'rubygems/dependency_installer'
 require 'rake/gempackagetask'
 
