@@ -27,8 +27,8 @@ class AX::Element
   # @param [AXUIElementRef]
   # @param [Array<String>]
   def initialize ref, attrs
-    @ref        = ref
-    @attributes = attrs
+    @ref   = ref
+    @attrs = attrs
   end
 
 
@@ -43,7 +43,7 @@ class AX::Element
   #
   # @return [Array<Symbol>]
   def attributes
-    TRANSLATOR.rubyize @attributes
+    TRANSLATOR.rubyize @attrs
   end
 
   ##
@@ -55,7 +55,7 @@ class AX::Element
   #
   # @param [Symbol]
   def attribute attr
-    real_attr = lookup attr, with: @attributes
+    real_attr = lookup attr, with: @attrs
     raise Accessibility::LookupFailure.new(self, attr) unless real_attr
     process attr(real_attr, for: @ref)
   end
@@ -81,7 +81,7 @@ class AX::Element
   # @param [Symbol]
   # @return [Number]
   def size_of attr
-    real_attr = lookup attr, with: @attributes
+    real_attr = lookup attr, with: @attrs
     raise Accessibility::LookupFailure.new(self, attr) unless real_attr
     size_of real_attr, for: @ref
   end
@@ -109,7 +109,7 @@ class AX::Element
   #
   # @param [Symbol] attr
   def writable_attribute? attr
-    real_attr = lookup attr, with: @attributes
+    real_attr = lookup attr, with: @attrs
     raise Accessibility::LookupFailure.new(self, attr) unless real_attr
     writable_attr? real_attr, for: @ref
   end
@@ -128,7 +128,7 @@ class AX::Element
     unless writable_attribute? attr
       raise NoMethodError, "#{attr} is read-only for #{inspect}"
     end
-    real_attr = lookup attr, with: @attributes
+    real_attr = lookup attr, with: @attrs
     set real_attr, to: value.to_axvalue, for: @ref
     value
   end
@@ -293,7 +293,7 @@ class AX::Element
   #   window.application # => SearchFailure is raised
   #
   def method_missing method, *args
-    attribute = lookup method, with: @attributes
+    attribute = lookup method, with: @attrs
     if attribute
       return process attr(attribute, for: @ref)
     end
@@ -303,7 +303,7 @@ class AX::Element
       return process param_attr(attribute, for_param: args.first, for: @ref)
     end
 
-    if @attributes.include? KAXChildrenAttribute
+    if @attrs.include? KAXChildrenAttribute
       result = search method, *args
       return result unless result.blank?
       raise Accessibility::SearchFailure.new(self, method, args.first)
@@ -351,10 +351,10 @@ class AX::Element
   # @return [String]
   def inspect
     msg  = "#<#{self.class}" << pp_identifier
-    msg << pp_position if @attributes.include? KAXPositionAttribute
-    msg << pp_children if @attributes.include? KAXChildrenAttribute
-    msg << pp_checkbox(:enabled) if @attributes.include? KAXEnabledAttribute
-    msg << pp_checkbox(:focused) if @attributes.include? KAXFocusedAttribute
+    msg << pp_position if @attrs.include? KAXPositionAttribute
+    msg << pp_children if @attrs.include? KAXChildrenAttribute
+    msg << pp_checkbox(:enabled) if @attrs.include? KAXEnabledAttribute
+    msg << pp_checkbox(:focused) if @attrs.include? KAXFocusedAttribute
     msg << '>'
   end
 
@@ -373,9 +373,9 @@ class AX::Element
   # Overriden to respond properly with regards to dynamic attribute
   # lookups, but will return false for potential implicit searches.
   def respond_to? name
-    return true if lookup name, with: @attributes
+    return true if lookup name, with: @attrs
     return true if lookup name, with: _parameterized_attributes
-    return @attributes.include? KAXDescriptionAttribute if name == :description
+    return @attrs.include? KAXDescriptionAttribute if name == :description
     return super
   end
 
@@ -424,12 +424,11 @@ class AX::Element
 
   protected
 
-  def _attributes
-    @attributes
-  end
+  attr_reader :attrs
+  alias_method :_attributes, :attrs
 
   def _parameterized_attributes
-    @parameterized_attributes ||= param_attrs_for @ref
+    @param_attrs ||= param_attrs_for @ref
   end
 
   def _actions
