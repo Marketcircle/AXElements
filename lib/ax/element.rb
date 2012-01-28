@@ -378,7 +378,6 @@ class AX::Element
     return @attributes.include? KAXDescriptionAttribute if name == :description
     return super
   end
-  alias_method :responds_to?, :respond_to?
 
   ##
   # Get the center point of the element.

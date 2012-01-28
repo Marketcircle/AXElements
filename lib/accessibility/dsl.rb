@@ -160,7 +160,7 @@ module Accessibility::DSL
   #
   # @param [AX::Element]
   def set_focus element
-    element.set(:focused, to: true) if element.responds_to? :focused?
+    element.set(:focused, to: true) if element.respond_to? :focused?
   end
 
   ##
@@ -189,7 +189,7 @@ module Accessibility::DSL
   #
   # @return [nil] do not rely on a return value
   def set element, change
-    if element.responds_to? :focused
+    if element.respond_to? :focused
       if element.writable_attribute? :focused
         set_focus element
       end
