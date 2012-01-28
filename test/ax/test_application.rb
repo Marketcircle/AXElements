@@ -22,13 +22,11 @@ class TestAXApplication < MiniTest::Unit::TestCase
 
   def test_can_set_focus_and_blur_app # lol, blur
     app.set :focused, to: false
-    sleep 0.1
     refute app.active?
     refute app.attribute :focused
     refute app.attribute :focused?
 
     app.set :focused, to: true
-    sleep 0.1
     assert app.active?
     assert app.attribute :focused
     assert app.attribute :focused?
@@ -39,19 +37,15 @@ class TestAXApplication < MiniTest::Unit::TestCase
 
   def test_can_hide_and_unhide_app
     app.set :hidden, to: true
-    sleep 0.1
     assert app.hidden?
 
     app.set :hidden, to: false
-    sleep 0.1
     refute app.hidden?
 
     app.perform :hide
-    sleep 0.1
     assert app.hidden?
 
     app.perform :unhide
-    sleep 0.1
     refute app.hidden?
 
   ensure

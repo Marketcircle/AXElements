@@ -57,13 +57,13 @@ class AX::Application < AX::Element
     case attr
     when :focused, :active
       if value
-        @app.unhide
+        perform :unhide
         @app.activateWithOptions NSApplicationActivateIgnoringOtherApps
       else
-        @app.hide
+        perform :hide
       end
     when :hidden then
-      value ? @app.hide : @app.unhide
+      perform(value ? :hide : :unhide)
     else
       super
     end
@@ -81,7 +81,7 @@ class AX::Application < AX::Element
   def perform name
     case name
     when :terminate, :hide, :unhide
-      @app.send name
+      @app.send(name).tap { |_| sleep 0.15 }
     else
       super
     end
