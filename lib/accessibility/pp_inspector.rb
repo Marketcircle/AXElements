@@ -6,7 +6,7 @@
 #
 # The module only expects three methods in order to operate:
 #
-#  - `@attributes` returns a list of available attributes
+#  - `#_attributes` returns a list of available attributes
 #  - `#attribute` returns the value of a given attribute
 #  - `#size_of` returns the size for an attribute
 #
@@ -21,7 +21,7 @@ module Accessibility::PPInspector
     # @todo Break this method up into chunks
     # @note use, or lack of use, of #inspect is intentional for visual effect
 
-    if @attributes.include? KAXValueAttribute
+    if _attributes.include? KAXValueAttribute
       val = attribute :value
       if val.kind_of? NSString
         return " #{val.inspect}" unless val.empty?
@@ -31,22 +31,22 @@ module Accessibility::PPInspector
       end
     end
 
-    if @attributes.include? KAXTitleAttribute
+    if _attributes.include? KAXTitleAttribute
       val = attribute(:title)
       return " #{val.inspect}" if val && !val.empty?
     end
 
-    if @attributes.include? KAXTitleUIElementAttribute
+    if _attributes.include? KAXTitleUIElementAttribute
       val = attribute :title_ui_element
       return BUFFER + val.inspect if val
     end
 
-    if @attributes.include? KAXDescriptionAttribute
+    if _attributes.include? KAXDescriptionAttribute
       val = attribute(:description).to_s
       return BUFFER + val unless val.empty?
     end
 
-    if @attributes.include? KAXIdentifierAttribute
+    if _attributes.include? KAXIdentifierAttribute
       return " id=#{attribute(:identifier)}"
     end
 

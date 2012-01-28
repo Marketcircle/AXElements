@@ -424,6 +424,10 @@ class AX::Element
 
   protected
 
+  def _attributes
+    @attributes
+  end
+
   def _parameterized_attributes
     @parameterized_attributes ||= param_attrs_for @ref
   end
