@@ -26,10 +26,9 @@ module Accessibility
 
     private
 
-    # @return [String,nil]
+    # @return [String]
     def pp_filters filters
-      return unless filters
-      return if     filters.empty?
+      return ::EMPTY_STRING if filters.empty?
 
       list = filters.map { |k, v| "#{k}: #{v.inspect}" }
       "(#{list.join(', ')})"
