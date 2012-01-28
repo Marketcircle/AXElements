@@ -15,14 +15,14 @@ end
 
 ## Documentation
 
-safe_require 'yard', 'yard' do
-  YARD::Rake::YardocTask.new
-end
+# safe_require 'yard', 'yard' do
+#   YARD::Rake::YardocTask.new
+# end
 
-desc 'Generate Graphviz object graph'
-task :garden => :yard do
-  sh 'yard graph --full --dependencies --dot="-Tpng:quartz" -f docs/images/AX.dot'
-end
+# desc 'Generate Graphviz object graph'
+# task :garden => :yard do
+#   sh 'yard graph --full --dependencies --dot="-Tpng:quartz" -f docs/images/AX.dot'
+# end
 
 
 ## Console
