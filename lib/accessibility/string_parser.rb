@@ -157,8 +157,8 @@ module Accessibility::StringParser
   }
 
   ##
-  # Map of aliased characters. They should map to characters in the
-  # generated {MAPPING}.
+  # Map of aliased characters. You can map any one character here to
+  # a new string that will be recursively parsed.
   #
   # @return [Hash{String=>String}]
   ALIASES = {
