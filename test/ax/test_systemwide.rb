@@ -9,11 +9,11 @@ class TestAXSystemWide < MiniTest::Unit::TestCase
     assert_equal system, system
   end
 
-  def test_type_string_forwards_call
+  def test_type_string_forwards_events
     element = system
     got_callback = false
-    element.define_singleton_method :'keyboard_input:to:' do |string, ref|
-      got_callback = true if string = 'test' && ref = REF
+    element.define_singleton_method :'post:to:' do |events, ref|
+      got_callback = true if events.kind_of?(Array) && ref = REF
     end
     element.type_string 'test'
     assert got_callback

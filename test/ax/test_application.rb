@@ -85,10 +85,10 @@ class TestAXApplication < MiniTest::Unit::TestCase
     assert called_super
   end
 
-  def test_type_string_forwards_call
+  def test_type_string_forwards_events
     got_callback = false
-    app.define_singleton_method :'keyboard_input:to:' do |string, ref|
-      got_callback = true if string = 'test' && ref = REF
+    app.define_singleton_method :'post:to:' do |events, ref|
+      got_callback = true if events.kind_of?(Array) && ref = REF
     end
     app.type_string 'test'
     assert got_callback

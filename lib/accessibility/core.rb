@@ -1,6 +1,5 @@
 require 'accessibility/core/error_handler'
 require 'accessibility/core/notifications'
-require 'accessibility/core/string_parser'
 
 ##
 # @todo I feel a bit weird having to instantiate a new pointer every
@@ -23,7 +22,7 @@ require 'accessibility/core/string_parser'
 # that sort of thing).
 #
 # Except for the notification related APIs, everything here is stateless
-# and therefore thread safe.
+# and therefore should be thread safe.
 module Accessibility::Core
 
 
@@ -249,40 +248,31 @@ module Accessibility::Core
   end
 
   ##
-  # Generate keyboard events given a string of characters.
-  #
-  # In cases where you need (or want) to simulate keyboard input, such
-  # as triggering hotkeys, you will need to use this method. There are
-  # a lot of details on how to use this method, so the full
-  # documentation is in the
-  # {file:docs/KeyboardEvents.markdown Keyboard Events} tutorial.
-  #
-  # @example
-  #
-  #   keyboard_input "www.macruby.org\r", to: safari_ref,
-  #
-  # @param [String] string keyboard events as a string
-  # @param [AXUIElementRef] app must be an application or
-  #   the system-wide accessibility object
-  # @return [nil]
-  def keyboard_input string, to: app
-    parser = Accessibility::Core::StringParser.new
-    events = parser.parse string
-    post events, to: app
-    nil
-  end
-
-  ##
   # Post the list of given keyboard events to the given application,
   # or the system-wide accessibility object.
   #
-  # Events should be generated using {Accessibility::Core::StringParser},
-  # and this method is normally only called by {keyboard_input:to:}.
+  # Events could be generated from a string using output from
+  # {Accessibility::StringParser}.
   #
-  # @param [AXUIElementRef] app
+  # Events are number/boolean tuples, where the number is a keycode
+  # and the boolean is the keypress state (true is keydown, false is
+  # keyup).
+  #
+  # You can learn more about keyboard events from the
+  # {file:docs/KeyboardEvents.markdown Keyboard Events} documentation.
+  #
+  # @example
+  #
+  #   include Accessibility::StringParser
+  #   events = create_events_for "Hello, world!\n"
+  #   post events, to: safari_ref
+  #
   # @param [Array<Array(Number,Boolean)>]
+  # @param [AXUIElementRef]
   def post events, to: app
-    # This is just a magic number from trial and error. I tried both the repeat interval (NXKeyRepeatInterval) and threshold (NXKeyRepeatThreshold) but both were way too big.
+    # This is just a magic number from trial and error. I tried
+    # both the repeat interval (NXKeyRepeatInterval) and threshold
+    # (NXKeyRepeatThreshold) but both were way too big.
     key_rate = 0.009
 
     events.each do |event|

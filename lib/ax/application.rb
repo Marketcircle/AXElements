@@ -1,4 +1,5 @@
 require 'ax/element'
+require 'accessibility/string_parser'
 
 ##
 # Some additional constructors and conveniences for Application objects.
@@ -6,6 +7,8 @@ require 'ax/element'
 # As this class has evolved, it has gathered some functionality from
 # the `NSRunningApplication` class.
 class AX::Application < AX::Element
+  include Accessibility::StringParser
+
 
   ##
   # Overridden so that we can also cache the `NSRunningApplication`
@@ -92,11 +95,13 @@ class AX::Application < AX::Element
   # has focus will receive the key presses.
   #
   # For details on how to format the string, check out the
-  # {file:docs/KeyboardEvents.markdown Keyboard tutorial}.
+  # {file:docs/KeyboardEvents.markdown Keyboard} documentation.
   #
-  # @return [nil]
+  # @return [Boolean]
   def type_string string
-    keyboard_input string, to: @ref
+    events = create_events_for string
+    post events, to: @ref
+    true
   end
 
   # @endgroup

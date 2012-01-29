@@ -1,4 +1,5 @@
 require 'ax/element'
+require 'accessibility/string_parser'
 
 ##
 # Represents the special `SystemWide` accessibility object.
@@ -7,6 +8,8 @@ require 'ax/element'
 # with the AXAPIs. So you should always create a new instance of the system wide
 # object when you need to use it (even though they are all the same thing).
 class AX::SystemWide < AX::Element
+  include Accessibility::StringParser
+
 
   ##
   # Overridden since there is only one way to get the element ref.
@@ -21,10 +24,14 @@ class AX::SystemWide < AX::Element
   #
   # Generate keyboard events by simulating keyboard input.
   #
-  # See the {file:docs/KeyboardEvents.markdown Keyboard tutorial} for
+  # See the {file:docs/KeyboardEvents.markdown Keyboard} documentation for
   # more information on how to format strings.
+  #
+  # @return [Boolean]
   def type_string string
-    keyboard_input string, to: @ref
+    events = create_events_for string
+    post events, to: @ref
+    true
   end
 
   ##
