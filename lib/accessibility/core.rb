@@ -492,7 +492,8 @@ module Accessibility::Core
 
   ##
   # The delay between key presses. The default value is `0.01`, which
-  # should be about 100 characters per second.
+  # should be about 50 characters per second (down and up are separate
+  # events).
   #
   # This is just a magic number from trial and error. Both the repeat
   # interval (NXKeyRepeatInterval) and threshold (NXKeyRepeatThreshold),
@@ -502,7 +503,8 @@ module Accessibility::Core
   KEY_RATE = case ENV['KEY_RATE']
              when 'VERY_SLOW' then 1.0
              when 'SLOW'      then 0.1
-             else                  0.01
+             when nil         then 0.01
+             else                  ENV['KEY_RATE'].to_f
              end
 
 end
