@@ -107,3 +107,13 @@ to the system, which usually means the application that currently is
 active. Note that you cannot be more specific than the application
 that you want to send the events to, within the application, the
 control that has keyboard focus will receive the events.
+
+### Changing Typing Speed
+
+You can set the typing speed at load time by setting the environment
+variable `KEY_RATE`. See {Accessibility::Core::KEY\_RATE} for details on
+possible values. An example of using it would be:
+
+    KEY_RATE=SLOW irb -rubygems -rax_elements
+    KEY_RATE=0.25 rspec gui_spec.rb
+
