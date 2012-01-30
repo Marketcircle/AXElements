@@ -40,10 +40,13 @@ module Accessibility::StringParser
   ESCAPES = {
     "\\ESCAPE"        => 0x35,
     "\\COMMAND"       => 0x37,
+    "\\CMD"           => 0x37,
     "\\SHIFT"         => 0x38,
     "\\CAPS"          => 0x39,
     "\\OPTION"        => 0x3A,
+    "\\OPT"           => 0x3A,
     "\\CONTROL"       => 0x3B,
+    "\\CTRL"          => 0x3B,
     "\\RSHIFT"        => 0x3C,
     "\\ROPTION"       => 0x3D,
     "\\RCONTROL"      => 0x3E,
