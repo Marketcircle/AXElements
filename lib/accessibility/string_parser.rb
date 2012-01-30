@@ -23,6 +23,8 @@ module Accessibility::StringParser
   private
 
   ##
+  # @private
+  #
   # Dynamic mapping of characters to keycodes. The map is generated at
   # startup time in order to support multiple keyboard layouts.
   #
@@ -102,6 +104,8 @@ module Accessibility::StringParser
   }
 
   ##
+  # @private
+  #
   # Mapping of shifted (characters written when holding shift) characters
   # to keycodes.
   #
@@ -165,7 +169,22 @@ module Accessibility::StringParser
     "\n"              => "\r"
   }
 
+  ##
+  # @private
+  #
+  # Constant representing the event to set the SHIFT key to the
+  # 'down' state.
+  #
+  # @return [Array<Array(Number, Boolean)>]
   SHIFT_DOWN = [[56, true]]
+
+  ##
+  # @private
+  #
+  # Constant representing the event to set the SHIFT key to the
+  # 'up' state.
+  #
+  # @return [Array<Array(Number, Boolean)>]
   SHIFT_UP   = [[56, false]]
 
   ##
