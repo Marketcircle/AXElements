@@ -273,7 +273,7 @@ module Accessibility::Core
     # This is just a magic number from trial and error. I tried
     # both the repeat interval (NXKeyRepeatInterval) and threshold
     # (NXKeyRepeatThreshold) but both were way too big.
-    key_rate = 0.009
+    key_rate = 0.01
 
     events.each do |event|
       code = AXUIElementPostKeyboardEvent(app, 0, *event)
