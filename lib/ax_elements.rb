@@ -27,7 +27,6 @@ end
 
 require 'ax_elements/version'
 require 'accessibility'
-# @todo How to load the other default classes?
 
 # Mix the language methods into the TopLevel
 require 'accessibility/dsl'
