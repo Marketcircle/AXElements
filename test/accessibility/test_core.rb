@@ -224,7 +224,7 @@ class TestAccessibilityCore < MiniTest::Unit::TestCase
 
   def test_post_events
     events = [[0x56,true], [0x56,false], [0x54,true], [0x54,false]]
-    string = 42
+    string = '42'
 
     set KAXFocusedAttribute, to: true, for: search_box
     post events, to: REF

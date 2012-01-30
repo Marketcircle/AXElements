@@ -57,7 +57,7 @@ module Accessibility::Core
     when KAXErrorNotificationUnsupported
       msg = "'#{CFCopyDescription(args.first)}' doesn't support notifications"
       raise ArgumentError, msg
-    when AXErrorNotificationAlreadyRegistered
+    when KAXErrorNotificationAlreadyRegistered
       # @todo Does this really neeed to raise an exception? Seems
       #       like a warning would be sufficient.
       msg  = "You have already registered to hear about '#{args.second}' "
