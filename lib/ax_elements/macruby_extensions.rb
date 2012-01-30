@@ -74,7 +74,7 @@ class NSString
   #
   # @return [String]
   def singularize
-    ActiveSupport::Inflector.singularize(self)
+    Accessibility::Inflector.singularize(self)
   end
 
   ##
@@ -83,7 +83,7 @@ class NSString
   #
   # @return [String]
   def underscore
-    ActiveSupport::Inflector.underscore(self)
+    Accessibility::Inflector.underscore(self)
   end
 
   ##

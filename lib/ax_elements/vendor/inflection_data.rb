@@ -1,4 +1,4 @@
-module ActiveSupport
+module Accessibility
   Inflector.inflections do |inflect|
     inflect.plural(/$/, 's')
     inflect.plural(/s$/i, 's')

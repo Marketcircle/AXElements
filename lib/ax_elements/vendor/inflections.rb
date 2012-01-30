@@ -1,4 +1,4 @@
-module ActiveSupport
+module Accessibility
   module Inflector
     # A singleton instance of this class is yielded by Inflector.inflections, which can then be used to specify additional
     # inflection rules. Examples:
