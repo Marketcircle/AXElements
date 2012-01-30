@@ -270,15 +270,10 @@ module Accessibility::Core
   # @param [Array<Array(Number,Boolean)>]
   # @param [AXUIElementRef]
   def post events, to: app
-    # This is just a magic number from trial and error. I tried
-    # both the repeat interval (NXKeyRepeatInterval) and threshold
-    # (NXKeyRepeatThreshold) but both were way too big.
-    key_rate = 0.01
-
     events.each do |event|
       code = AXUIElementPostKeyboardEvent(app, 0, *event)
       handle_error code, app unless code.zero?
-      sleep key_rate
+      sleep KEY_RATE
     end
   end
 
@@ -494,5 +489,20 @@ module Accessibility::Core
   #
   # @return [String]
   ELEMENT  = '^{__AXUIElement}'.freeze
+
+  ##
+  # The delay between key presses. The default value is `0.01`, which
+  # should be about 100 characters per second.
+  #
+  # This is just a magic number from trial and error. Both the repeat
+  # interval (NXKeyRepeatInterval) and threshold (NXKeyRepeatThreshold),
+  # but both were way too big.
+  #
+  # @return [Number]
+  KEY_RATE = case ENV['KEY_RATE']
+             when 'VERY_SLOW' then 1.0
+             when 'SLOW'      then 0.1
+             else                  0.01
+             end
 
 end
