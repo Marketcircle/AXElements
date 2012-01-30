@@ -222,23 +222,25 @@ class TestAccessibilityCore < MiniTest::Unit::TestCase
   ##
   # The keyboard simulation stuff is a bit weird...
 
-  def test_keyboard_input
-    def post_kb_events string
-      set KAXFocusedAttribute, to: true, for: search_box
-      keyboard_input string, to: REF
-      assert_equal string, value_for(search_box)
-    ensure # reset for next test
-      button = children_for(search_box).find { |x| role_for(x) == KAXButtonRole }
-      perform KAXPressAction, for: button
-    end
+  def test_post_events
+    events = [[0x56,true], [0x56,false], [0x54,true], [0x54,false]]
+    string = 42
 
-    post_kb_events 'HELLO, WORLD'
-    post_kb_events '42'
-    post_kb_events 'the cake is a lie'
-    post_kb_events "\s"
-    post_kb_events '---'
-    post_kb_events '!@#$%^&*()<>'
-    # @todo hotkeys
+    set KAXFocusedAttribute, to: true, for: search_box
+    post events, to: REF
+    assert_equal string, value_for(search_box)
+
+  ensure # reset for next test
+    button = children_for(search_box).find { |x|
+      role_for(x) == KAXButtonRole
+    }
+    perform KAXPressAction, for: button
+  end
+
+  def test_post_events_handles_errors
+    assert_raises ArgumentError do
+      post [[56, true], [56, false]], to: nil
+    end
   end
 
 
