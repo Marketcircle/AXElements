@@ -84,7 +84,7 @@ class AX::Application < AX::Element
   def perform name
     case name
     when :terminate, :hide, :unhide
-      @app.send(name).tap { |_| sleep 0.15 }
+      @app.send(name).tap { |_| sleep 0.2 }
     else
       super
     end
