@@ -229,7 +229,9 @@ module Accessibility::StringParser
     while string
       case char = string.shift
       when '+'
-        raise NotImplementedError, 'Hotkeys is not finished yet'
+        code = ESCAPES[sequence]
+        substring = _read_hotkey string
+        return [[code, true]] + create_events_for(substring) + [[code, false]]
       when ' ', nil
         events = if code = ESCAPES[sequence]
                    [[code, true], [code, false]]
@@ -241,7 +243,22 @@ module Accessibility::StringParser
         sequence << char
       end
     end
-    raise 'You tried to parse an empty string!'
+    raise ArgumentError, 'You tried to parse an empty string!'
+  end
+
+  ##
+  # @note This will remove some of the array of strings given.
+  #
+  # @param [Array<String>]
+  # @return
+  def _read_hotkey string
+    hotkey = ''
+    while string
+      char = string.shift
+      return hotkey if char == ' ' || char == nil
+      hotkey << char
+    end
+    raise ArgumentError, 'You tried to make a hotkey with nothing'
   end
 
 end
