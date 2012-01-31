@@ -1,11 +1,12 @@
 --private
+--protected
 --no-cache
 --no-output
 --verbose
 --markup markdown
 --markup-provider redcarpet
 --asset docs/images:images
---readme README.yard
+--readme README.markdown
 lib/**/*.rb
 ext/**/*.m
 -

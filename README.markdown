@@ -9,11 +9,12 @@ GUI manipulation, whether it be finding controls on the screen,
 typing, clicking, or other ways in which a user can interact with the
 computer.
 
-## Examples
+
+## Demo
 
 Perhaps you want to do something with the finder. This example opens a
-new Finder window, goes to the Applications directory, quick looks the
-first app and then opens the application:
+new Finder window, finds Activity Monitor, and then opens the application
+from a quick look window:
 
 ```ruby
     require 'rubygems'
@@ -22,17 +23,23 @@ first app and then opens the application:
     finder = Accessibility.application_with_bundle_identifier 'com.apple.finder'
     set_focus finder
 
-    menu = finder.menu_bar_item(title: 'File')
-    press menu
-    press menu.menu_item(title: 'New Finder Window')
-    sleep 1 # otherwise everything happens as fast as possible
+    press finder.menu_bar_item(title: 'File')
+    press finder.menu_bar_item(title: 'File').menu_item(title: 'New Finder Window')
+    sleep 1 # this is so you can see it happen in "slow motion"
 
     window = finder.main_window
     click window.outline.row(static_text: { value: 'Applications' })
-    press window.toolbar.button(description: 'Quick Look')
-    sleep 1
 
-    press finder.quick_look.button(identifier: 'QLControlOpen')
+    utilities = window.row(text_field: { filename: 'Utilities' })
+    scroll_to utilities
+    double_click utilities
+
+    activity_monitor = window.text_field( filename: /Activity Monitor/ )
+    scroll_to activity_monitor
+    click activity_monitor
+    type " " # type a space, which should bring up quick look
+
+    click finder.quick_look.button(identifier: 'QLControlOpen')
 ```
 
 A simpler example would be changing the system volume by moving the
@@ -40,7 +47,7 @@ slider in the menu bar:
 
 ```ruby
     require 'rubygems'
-    require 'AXElements'
+    require 'ax_elements'
 
     ui = Accessibility.application_with_bundle_identifier 'com.apple.systemuiserver'
     volume = ui.menu_extra(description: 'system sound volume')
@@ -50,40 +57,72 @@ slider in the menu bar:
     15.times { increment  volume.slider }
 ```
 
+
+## Getting Setup
+
+You need to have the OS X developer tools installed in build and
+install AXElements (sorry). Go ahead and install the tools now if you
+haven't done that yet, I'll wait. Once you have the developer tools, 
+you should install MacRuby, the latest release should be sufficient,
+but nightly builds are usually better. If you are on Snow Leopard, you
+will also need to install the
+[Bridge Support Preview](http://www.macruby.org/blog/2010/10/08/bridgesupport-preview.html).
+
+Then you can install AXElements. For the time being, you should install
+from source. You can install like this:
+
+```bash
+    cd ~/Documents # or where you want to put the AXElements code
+    git clone git://github.com/Marketcircle/AXElements
+    cd AXElements
+```
+
+AXElements has no gem dependencies, so you can try it out in `macirb` at
+this point:
+
+```bash
+    rake install
+    rake console
+```
+
+__NOTE__: If you are not using RVM, then you should use `macrake`
+instead of `rake`, and do so for any other references to `rake` in the
+documentation. You may also need to add `sudo` to your command when you
+install the gem. Also, remember that if you are not using RVM with
+MacRuby but still have RVM installed then you will need to disable RVM
+like so:
+
+```bash
+    rvm use system
+```
+
+
 ## Getting Started
 
 The
 [documentation](http://rdoc.info/github/Marketcircle/AXElements/master/frames)
-is the best place to get started, it will help you
-get setup and includes a few tutorials with examples. Documentation is
-hosted by rdoc.info, but you can also generate it yourself using YARD.
+is the best place to get started, it includes tutorials to help you get
+started as well the API documentation (API docs are broken right now due
+to incompatabilities between MacRuby and YARD). The starting tutorial is the
+[Inspecting Tutorial](docs/Inspecting.markdown Inspecting).
 
-Documentation is stored in the `docs/` directory, but the
+Documentation is hosted by rdoc.info, but you can also generate it yourself
+using YARD. Documentation is stored in the `docs/` directory, but the
 documentation includes a number of cross references and even some
 pictures so you will lose a lot of the quality if you view them as
-plain text. You can view the generated documentation at
-[rdoc.info](http://rdoc.info/github/Marketcircle/AXElements/master/frames).
+plain text.
 
-At the moment, it is best to install AXElements from source:
+Though it is not required, you may want to read Apple's
+[Accessibility Overview](http://developer.apple.com/library/mac/#documentation/Accessibility/Conceptual/AccessibilityMacOSX/OSXAXModel/OSXAXmodel.html)
+as a primer on some the rationale for the accessibility APIs as well
+as the technical underpinnings of AXElements.
 
-```bash
-    git clone https://github.com/Marketcircle/AXElements.git
-    cd AXElements
-
-    # if you use MacRuby with RVM
-    rake setup_dev
-    rake install
-
-    # if you don't use MacRuby with RVM
-    sudo rake setup_dev
-    sudo rake install
-```
 
 ## Development
 
-A stable release of AXElements is under way! The main focus is an
-overall refactoring to create a more robust core, end user features
-will become more consistent, and performance will
+Development of a stable release of AXElements is under way! The main
+focus is an overall refactoring to create a more robust core, end user
+features will become more consistent, and performance will
 increase. Documentation will be overhauled and more examples will be
 added. It will be magical, so we're code naming the next version
 "Clefairy".
@@ -92,13 +131,42 @@ added. It will be magical, so we're code naming the next version
 
 Proper releases to rubygems will be made as milestones are reached.
 
-```bash
-    # If you use MacRuby with RVM
-    gem install AXElements --pre
+### Road Map
 
-    # If you don't use MacRuby with RVM
-    sudo macgem install AXElements --pre
-```
+There are still a bunch of things that could be done to improve
+AXElements. Some of the higher level tasks are outlined in various
+[Github Issues](http://github.com/Marketcircle/AXElements/issues).
+Smaller items are peppered through the code base and marked with `@todo`
+tags.
+
+
+## Test Suite
+
+Before starting development on your machine, you should run the test
+suite and make sure things are kosher. The nature of this library
+requires that the tests take over your computer while they run. The
+tests aren't programmed to do anything destructive, but if you
+interfere with them then something could go wrong. To run the tests
+you simply need to run the `test` task:
+
+    rake test
+
+__NOTE__: There may be some tests are dependent on Accessibility
+features that are new in OS X Lion which will cause test failures on
+OS X Snow Leopard. If you have any issues then you should look at the
+output to find hints at what went wrong and/or log a bug. AXElements
+will support Snow Leopard for as long as MacRuby does, but I do not
+have easy access to a Snow Leopard machine to verify that things still
+work.
+
+### Benchmarks
+
+Benchmarks are also included as part of the test suite, but they are
+disabled by default. In order to enable them you need to set the
+`BENCH` environment variable:
+
+    BENCH=1 rake test
+
 
 ## Contributing to AXElements
 
@@ -110,10 +178,11 @@ Proper releases to rubygems will be made as milestones are reached.
 * Make sure to add tests for it. This is important so I don't break it in a future version unintentionally.
 * Please try not to mess with the Rakefile, version, or history. If you want to have your own version, or is otherwise necessary, that is fine, but please isolate to its own commit so I can cherry-pick around it.
 
+
 ## Copyright
 
 Copyright (c) 2010-2012 Marketcircle Incorporated. All rights
 reserved.
 
 AXElements is available under the standard 3-clause BSD license. See
-LICENSE.txt for further details.
+{file:LICENSE.txt LICENSE.txt} for further details.
