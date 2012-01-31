@@ -83,7 +83,7 @@ class TestAccessibilityCoreNotifications < MiniTest::Unit::TestCase
     register_to_receive KAXValueChangedNotification, from: radio_gaga do |_,_| true end
     perform KAXPressAction, for: radio_gaga
     time = measure_time { wait SHORT_TIMEOUT }
-    assert time < 0.02, 'Might fail if your machine is under heavy load'
+    assert time < 0.02, 'Might fail sometimes due to latency issues or high machine load'
   end
 
   def test_works_with_custom_notifs
