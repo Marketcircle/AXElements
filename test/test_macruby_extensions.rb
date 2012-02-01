@@ -33,6 +33,21 @@ class NSArrayExtensions < MiniTest::Unit::TestCase
     assert_equal ary.method(:empty?), ary.method(:blank?)
   end
 
+  def test_method_missing
+    assert_raises NoMethodError do
+      [1].rows
+    end
+    assert_raises NoMethodError do
+      [REF].rows
+    end
+    assert_raises NoMethodError do
+      [AX::DOCK, :cake].title
+    end
+
+    assert_equal ['Dock'], [AX::DOCK].titles
+    assert_equal [false],  [AX::DOCK].focused?
+    # @todo test getting rows from a table
+  end
 end
 
 

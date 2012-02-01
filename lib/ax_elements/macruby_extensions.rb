@@ -1,4 +1,5 @@
 require 'accessibility/core'
+require 'ax_elements/vendor/inflector'
 
 ##
 # Extensions to `NSArray`.
@@ -45,6 +46,50 @@ class NSArray
   # Borrowed from ActiveSupport. Too bad this docstring isn't being
   # picked up by YARD.
   alias_method :blank?, :empty?
+
+  alias_method :nsarray_method_missing, :method_missing
+  ##
+  # If the array contains {AX::Element} objects and the elements respond
+  # to the method name then the method will be mapped across the array.
+  # In this case, you can artificially pluralize the attribute name and
+  # the lookup will singularize the method name for you.
+  #
+  # @example
+  #
+  #   rows   = outline.rows      # :rows is already an attribute
+  #   fields = rows.text_fields  # you want the AX::TextField from each row
+  #   fields.values              # grab the values
+  #
+  #   outline.rows.text_fields.values # all at once
+  #
+  def method_missing method, *args
+    map do |x|
+      nsarray_method_missing method, *args unless x.kind_of? AX::Element
+      meth = x.respond_to?(method) ? method : singularized(method)
+      x.send meth, *args
+    end
+  end
+
+
+  private
+
+  ##
+  # @private
+  #
+  # Cached the constant value to avoid `#dup` call.
+  #
+  # @return [String]
+  QUESTION_MARK = '?'.freeze
+
+  ##
+  # Try to mangle a method name to a singularized form. This will also
+  # chomp off a '?' at the end of the symbol in cases of predicates.
+  #
+  # @param [Symbol]
+  # @return [Symbol]
+  def singularized sym
+    sym.chomp(QUESTION_MARK).singularize.to_sym
+  end
 end
 
 
