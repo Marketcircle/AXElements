@@ -56,11 +56,12 @@ module Accessibility::Debug
   # of time you wish for the item to be highlighted.
   #
   # @param [AX::Element]
+  # @param [NSColor]
   # @param [Number]
-  def highlight element, time = 5.0
+  def highlight element, time = 5.0, colour = NSColor.redColor
     app = NSApplication.sharedApplication
     app.delegate = self
-    @window = highlight_window_for element.bounds
+    @window = highlight_window_for element.bounds, colour
     @sleep  = time
     app.run
     @window
@@ -80,8 +81,9 @@ module Accessibility::Debug
   # Create the window that acts as the highligted portion of the screen.
   #
   # @param [NSRect]
+  # @param [NSColor]
   # @return [NSWindow]
-  def highlight_window_for bounds
+  def highlight_window_for bounds, colour
     window = NSWindow.alloc.initWithContentRect bounds,
                                      styleMask: NSBorderlessWindowMask,
                                        backing: NSBackingStoreBuffered,
@@ -90,7 +92,7 @@ module Accessibility::Debug
     window.setOpaque false
     window.setAlphaValue 0.20
     window.setLevel NSStatusWindowLevel
-    window.setBackgroundColor NSColor.redColor
+    window.setBackgroundColor colour
     window.setIgnoresMouseEvents true
     window.setFrame bounds, display: false
     window.makeKeyAndOrderFront NSApp
