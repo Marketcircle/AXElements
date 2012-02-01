@@ -51,4 +51,49 @@ module Accessibility::Debug
     output
   end
 
+  ##
+  # Highlight an element on screen. You can optionally pass the amount
+  # of time you wish for the item to be highlighted.
+  #
+  # @param [AX::Element]
+  # @param [Number]
+  def highlight element, time = 5.0
+    app = NSApplication.sharedApplication
+    app.delegate = self
+    @window = highlight_window_for element.bounds
+    @sleep  = time
+    app.run
+    @window
+  end
+
+  # @private
+  def applicationDidFinishLaunching sender
+    sleep @sleep
+    @window.close
+    NSApplication.sharedApplication.stop self
+  end
+
+
+  private
+
+  ##
+  # Create the window that acts as the highligted portion of the screen.
+  #
+  # @param [NSRect]
+  # @return [NSWindow]
+  def highlight_window_for bounds
+    window = NSWindow.alloc.initWithContentRect bounds,
+                                     styleMask: NSBorderlessWindowMask,
+                                       backing: NSBackingStoreBuffered,
+                                         defer: true
+
+    window.setOpaque false
+    window.setAlphaValue 0.20
+    window.setLevel NSStatusWindowLevel
+    window.setBackgroundColor NSColor.redColor
+    window.setIgnoresMouseEvents true
+    window.setFrame bounds, display: false
+    window.makeKeyAndOrderFront NSApp
+    window
+  end
 end
