@@ -30,7 +30,7 @@ describes user interactions.
     [ 'test/helper.rb' ]
   s.extra_rdoc_files =
     Dir.glob('docs/**/*') +
-    [ '.yardopts', 'LICENSE.txt', 'README.markdown' ]
+    [ '.yardopts', 'README.markdown' ]
 
 
   s.add_development_dependency 'minitest',  '~> 2.11'
