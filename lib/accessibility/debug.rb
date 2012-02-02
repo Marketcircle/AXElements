@@ -78,7 +78,7 @@ module Accessibility::Debug
   private
 
   ##
-  # Create the window that acts as the highligted portion of the screen.
+  # Create the window that acts as the highlighted portion of the screen.
   #
   # @param [NSRect]
   # @param [NSColor]
