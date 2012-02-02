@@ -84,6 +84,7 @@ module Accessibility::Debug
   # @param [NSColor]
   # @return [NSWindow]
   def highlight_window_for bounds, colour
+    bounds.flip!
     window = NSWindow.alloc.initWithContentRect bounds,
                                      styleMask: NSBorderlessWindowMask,
                                        backing: NSBackingStoreBuffered,

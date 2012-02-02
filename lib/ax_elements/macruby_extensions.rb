@@ -225,6 +225,27 @@ end
 # Extensions to `CGRect`.
 class CGRect
   @ax_value = KAXValueCGRectType
+
+  ##
+  # Treats the rect as belonging to the flipped co-ordinate system
+  # and then flips it to be using the Cartesian co-ordinate system.
+  #
+  # @return [CGRect]
+  def flip!
+    origin.y = screen_height - NSMaxY(self)
+    self
+  end
+
+
+  private
+
+  ##
+  # Return the height of the main screen.
+  #
+  # @return [Float]
+  def screen_height
+    NSMaxY(NSScreen.mainScreen.frame)
+  end
 end
 
 
