@@ -34,7 +34,7 @@ describes user interactions.
 
 
   s.add_development_dependency 'minitest',  '~> 2.11'
-  s.add_development_dependency 'yard',      '~> 0.7.4'
+  s.add_development_dependency 'yard',      '~> 0.7.5'
   s.add_development_dependency 'redcarpet', '~> 1.17'
 end
 
