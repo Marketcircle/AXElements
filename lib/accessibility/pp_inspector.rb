@@ -38,12 +38,12 @@ module Accessibility::PPInspector
 
     if attributes.include? :title_ui_element
       val = attribute :title_ui_element
-      return BUFFER + val.inspect if val
+      return " #{val.inspect}" if val
     end
 
     if attributes.include? :description
       val = attribute(:description).to_s
-      return BUFFER + val unless val.empty?
+      return " #{val}" unless val.empty?
     end
 
     if attributes.include? :identifier
@@ -97,15 +97,6 @@ module Accessibility::PPInspector
 
 
   private
-
-  ##
-  # @private
-  #
-  # A string with a single space, used as a buffer. This is a
-  # performance hack.
-  #
-  # @return [String]
-  BUFFER = ' '.freeze
 
   ##
   # @private
