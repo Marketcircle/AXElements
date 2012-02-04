@@ -1,3 +1,5 @@
+##
+# Namespace for enumerators used to navigate accessibility hierarchies.
 module Accessibility::Enumerators
 
   ##
