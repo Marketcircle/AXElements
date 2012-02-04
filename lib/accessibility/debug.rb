@@ -52,30 +52,42 @@ module Accessibility::Debug
   end
 
   ##
-  # Highlight an element on screen. You can optionally pass the amount
-  # of time you wish for the item to be highlighted.
+  # Highlight an element on screen. You can optionally specify the
+  # highlight colour or pass a timeout to automatically have the
+  # highlighter disappear.
+  #
+  # The highlighter is actually a window, so if you do not set a
+  # timeout, you will need to call `#close` on the `NSWindow` object
+  # that this method returns in order to get rid of the highlighter.
+  #
+  # You could use this method to highlight an arbitrary number of
+  # elements on screen, with a rainbow of colours for debugging.
   #
   # @param [AX::Element]
-  # @param [NSColor]
-  # @param [Number]
-  def highlight element, time = 5.0, colour = NSColor.redColor
-    app = NSApplication.sharedApplication
-    app.delegate = self
-    @window = highlight_window_for element.bounds, colour
-    @sleep  = time
-    app.run
-    @window
-  end
-
-  # @private
-  def applicationDidFinishLaunching sender
-    sleep @sleep
-    @window.close
-    NSApplication.sharedApplication.stop self
+  # @param [Hash] opts
+  # @option opts [Number] :timeout
+  # @option opts [NSColor] :colour
+  # @return [NSWindow]
+  def highlight element, opts = {}
+    app    = NSApplication.sharedApplication
+    colour = opts[:colour] || opts[:color] || NSColor.redColor
+    window = highlight_window_for element.bounds, colour
+    kill window, after: opts[:timeout] if opts.has_key? :timeout
+    window
   end
 
 
   private
+
+  # @param [NSWindow]
+  # @param [Number]
+  def kill window, after: time
+    @kill_queue ||= Dispatch::Queue.new 'com.marketcircle.AXElements'
+    @kill_queue.async do
+      sleep time
+      window.close
+    end
+  end
 
   ##
   # Create the window that acts as the highlighted portion of the screen.
