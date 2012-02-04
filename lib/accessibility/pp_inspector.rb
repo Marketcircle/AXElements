@@ -92,7 +92,7 @@ module Accessibility::PPInspector
   # @param [Symbol]
   # @return [String]
   def pp_checkbox attr
-    " #{attr}[#{attribute(attr) ? '✔' : '✘'}]"
+    " #{attr}[#{attribute(attr) ? CHECKMARK : CROSS }]"
   end
 
 
@@ -101,7 +101,17 @@ module Accessibility::PPInspector
   ##
   # @private
   #
+  # Constant string used by {#pp_checkbox}.
   #
   # @return [String]
+  CHECKMARK = '✔'
+
+  ##
+  # @private
+  #
+  # Constant string used by {#pp_checkbox}.
+  #
+  # @return [String]
+  CROSS = '✘'
 
 end
