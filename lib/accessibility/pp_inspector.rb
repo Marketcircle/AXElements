@@ -78,7 +78,7 @@ module Accessibility::PPInspector
     if child_count > 1
       " #{child_count} children"
     elsif child_count == 1
-      ONE_CHILD
+      ' 1 child'
     else # there are some odd edge cases
       ::EMPTY_STRING
     end
@@ -101,10 +101,7 @@ module Accessibility::PPInspector
   ##
   # @private
   #
-  # Constant string used by {#pp_children} when the number of
-  # children is 1.
   #
   # @return [String]
-  ONE_CHILD = ' 1 child'
 
 end
