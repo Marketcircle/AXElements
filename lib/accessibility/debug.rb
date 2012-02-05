@@ -57,8 +57,9 @@ module Accessibility::Debug
   # highlighter disappear.
   #
   # The highlighter is actually a window, so if you do not set a
-  # timeout, you will need to call `#close` on the `NSWindow` object
-  # that this method returns in order to get rid of the highlighter.
+  # timeout, you will need to call `#stop` or `#close` on the `NSWindow`
+  # object that this method returns in order to get rid of the
+  # highlighter.
   #
   # You could use this method to highlight an arbitrary number of
   # elements on screen, with a rainbow of colours for debugging.
@@ -109,6 +110,9 @@ module Accessibility::Debug
     window.setIgnoresMouseEvents true
     window.setFrame bounds, display: false
     window.makeKeyAndOrderFront NSApp
+    def window.stop
+      close
+    end
     window
   end
 end
