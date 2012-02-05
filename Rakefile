@@ -3,20 +3,16 @@ require 'rubygems'
 task :default => :test
 task :clean   => :clobber
 
-def safe_require path, name
-  require path
-  yield
-rescue LoadError => e
-  $stderr.puts "It seems as though you do not have #{name} installed."
-  command = ENV['RUBY_VERSION'] ? 'rake' : 'sudo macrake'
-  $stderr.puts "You can install it by running `#{command} setup_dev`"
-end
-
 
 ## Documentation
 
-# safe_require 'yard', 'yard' do
+# begin
+#   require 'yard'
 #   YARD::Rake::YardocTask.new
+# rescue LoadError => e
+#   $stderr.puts 'It seems as though you do not have yard installed.'
+#   command = ENV['RUBY_VERSION'] ? 'rake' : 'sudo macrake'
+#   $stderr.puts "You can install it by running `#{command} setup_dev`"
 # end
 
 # desc 'Generate Graphviz object graph'
