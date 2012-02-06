@@ -224,8 +224,8 @@ module Accessibility::DSL
   ##
   # Register for a notification from a specific element.
   #
-  # @param [String]
-  # @param [AX::Element]
+  # @param [#to_s]
+  # @param [Array(#to_s,AX::Element)]
   def register_for notif, from: element, &block
     element.on_notification notif, &block
   end
