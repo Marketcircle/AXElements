@@ -7,7 +7,13 @@ class Accessibility::Qualifier
   # Initialize a qualifier with the kind of object that you want to
   # qualify and a dictionary of filter criteria.
   #
-  # @param [#to_s]
+  # @example
+  #
+  #   Accessibility::Qualifier.new(:StandardWindow, title: 'Test')
+  #   Accessibility::Qualifier.new(:Button, {})
+  #   Accessibility::Qualifier.new(:Table, { row: { title: /Price/ } })
+  #
+  # @param [#to_s] klass
   # @param [Hash]
   def initialize klass, criteria
     @sym      = klass
