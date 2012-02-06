@@ -10,4 +10,4 @@ ext/*/Makefile
 ext/*/*.bundle
 ext/*/*.o
 .rvmrc
-
+*.dot
