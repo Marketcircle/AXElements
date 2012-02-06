@@ -24,6 +24,7 @@ module Accessibility::Factory
     end
   end
 
+
   private
 
   ##
