@@ -419,8 +419,6 @@ class AX::Element
   alias_method :eql?, :==
   alias_method :equal?, :==
 
-  # @todo Do we need to override #=== as well?
-
 
   protected
 

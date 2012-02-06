@@ -146,8 +146,6 @@ module Accessibility::Core
   end
 
   ##
-  # @todo Would a Dispatch::Semaphore be better?
-  #
   # Semaphore used to synchronize async notification stuff.
   #
   # @return [Mutex]

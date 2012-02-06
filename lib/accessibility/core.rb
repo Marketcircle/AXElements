@@ -94,6 +94,8 @@ module Accessibility::Core
   end
 
   ##
+  # @note Error codes are not checked here, you should only call this
+  #       method if you know the element has a subrole.
   # @note You might get `nil` back as the subrole, so you need to check.
   #
   # Quick macro for getting the subrole/role pair for a given
@@ -110,7 +112,6 @@ module Accessibility::Core
   def role_pair_for element
     role = role_for element
     ptr  = Pointer.new :id
-    # @todo Handle error codes?
     AXUIElementCopyAttributeValue(element, KAXSubroleAttribute, ptr)
     [ptr[0], role]
   end
