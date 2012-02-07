@@ -64,6 +64,12 @@ module Accessibility::Debug
   # You could use this method to highlight an arbitrary number of
   # elements on screen, with a rainbow of colours for debugging.
   #
+  # @example
+  #
+  #   highlighter = highlight window.outline
+  #   highlight window.outline.row, colour: NSColor.greenColor, timeout: 5
+  #   highlighter.stop
+  #
   # @param [AX::Element]
   # @param [Hash] opts
   # @option opts [Number] :timeout
