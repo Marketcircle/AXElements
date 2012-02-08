@@ -262,6 +262,39 @@ module Accessibility::DSL
     unregister_notifs
   end
 
+  ##
+  # @note This has not been thoroughly tested yet, in some cases it may
+  #       cause MacRuby to crash.
+  #
+  # Simply wait around for something to show up. This method takes a block
+  # which should give the path for an element that will eventually exist,
+  # or possibly already exists when you call this method. This method works
+  # by polling until the element appears or a timeout occurs.
+  #
+  # This is an alternative to using the notifications system. It is far
+  # easier to use than notifications in most cases, but it will perform
+  # more slowly.
+  #
+  # @example
+  #
+  #   # Waiting for a hypothetical email from Mark Rada to appear
+  #   wait_for(5) { mail.main_window.static_text(value: 'Mark Rada') }
+  #
+  #   # Waiting for a dialog window to show up
+  #   wait_for { app.dialog }
+  #
+  # @param [Number]
+  # @yield
+  # @return [AX::Element]
+  def wait_for timeout = 30
+    start ||= Time.now
+    yield
+  rescue Accessibility::SearchFailure, RuntimeError => e
+    raise e unless e.message.match /system failure/
+    raise e if (Time.now - start) > timeout
+    sleep 0.25 && retry
+  end
+
 
   # @group Mouse Input
 
