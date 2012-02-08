@@ -398,7 +398,6 @@ class TestAccessibilityCore < MiniTest::Unit::TestCase
   def test_spin_runloop
     @run_loop_ran = false
     def run_loop_test
-      puts 'got called'
       @run_loop_ran = true
     end
 
