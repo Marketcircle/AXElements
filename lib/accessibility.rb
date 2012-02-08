@@ -92,7 +92,7 @@ module Accessibility
     def application_with_name name
       # @todo We don't launch apps if they are not running, but we could if
       #       we used `NSWorkspace#launchApplication`, but it will be a headache
-      NSRunLoop.currentRunLoop.runUntilDate Time.now
+      spin_run_loop
       workspace = NSWorkspace.sharedWorkspace
       app = workspace.runningApplications.find { |app| app.localizedName == name }
       application_with_pid(app.processIdentifier) if app

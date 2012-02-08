@@ -39,7 +39,7 @@ class AX::Application < AX::Element
   # to the dynamic #focused? method, but might make more sense to use
   # in some cases.
   def active?
-    NSRunLoop.currentRunLoop.runUntilDate Time.now
+    spin_run_loop
     @app.active?
   end
   alias_method :focused,  :active?
@@ -48,7 +48,7 @@ class AX::Application < AX::Element
   ##
   # Ask the app whether or not it is hidden.
   def hidden?
-    NSRunLoop.currentRunLoop.runUntilDate Time.now
+    spin_run_loop
     @app.hidden?
   end
 
