@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 # Functional and system tests for AXElements
 
 class TestAccessibilityDSL < MiniTest::Unit::TestCase
@@ -72,21 +73,36 @@ class TestAccessibilityDSL < MiniTest::Unit::TestCase
     end
   end
 
-  def test_type
-    def try string, expected = nil
-      expected = string unless expected
-      text_area.set :focused, to: true
-      dsl.type string
-      assert_equal expected, text_area.value
-    ensure # reset for next test
-      dsl.type "\\COMMAND+a \b"
-    end
+  def try_typing string, expected = nil
+    expected = string unless expected
+    text_area.set :focused, to: true
+    dsl.type string
+    assert_equal expected, text_area.value
+  ensure # reset for next test
+    dsl.type "\\COMMAND+a \b"
+  end
 
-    try "A proper sentence, with punctuation and the number 9. LOL!\tA 'quoted' string--then some @#*$ cursing."
-    try "The cake is a lie!\b\b\b\bgift!", 'The cake is a gift!'
-    try ", world!\\CONTROL+a Hello", 'Hello, world!'
-    try "Hai.\\<- \\<- \b", "Hi."
-    try "First line.\nSecond line."
+  def test_typing_human_string
+    try_typing(
+     "A proper sentence, with punctuation and the number 9. LOL!\tA 'quoted' string--then some @#*$ cursing."
+    )
+  end
+
+  def test_typing_backspaces
+    try_typing "The cake is a lie!\b\b\b\bgift!", 'The cake is a gift!'
+  end
+
+  def test_typing_hotkeys
+    try_typing ", world!\\CONTROL+a Hello", 'Hello, world!'
+    try_typing "MacRuby\\OPTION+2",         'MacRuby™'
+  end
+
+  def test_typing_command_keys
+    try_typing "Hai.\\<- \\<- \b", "Hi."
+  end
+
+  def test_typing_ruby_escapes
+    try_typing "First line.\nSecond line."
   end
 
   def test_dsl_is_mixed_into_toplevel
