@@ -395,6 +395,20 @@ class TestAccessibilityCore < MiniTest::Unit::TestCase
 
 
 
+  def test_spin_runloop
+    @run_loop_ran = false
+    def run_loop_test
+      puts 'got called'
+      @run_loop_ran = true
+    end
+
+    performSelector 'run_loop_test', afterDelay: 0
+
+    assert @run_loop_ran
+  end
+
+
+
   def test_set_timeout
     assert_equal 10, set_timeout_to(10, for: REF)
     assert_equal 0,  set_timeout_to(0, for: REF)

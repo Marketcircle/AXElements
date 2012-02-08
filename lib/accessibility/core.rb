@@ -444,6 +444,19 @@ module Accessibility::Core
     AXValueCreate(klass.ax_value, ptr)
   end
 
+  ##
+  # Spin the run loop once. For the purpose of receiving notification
+  # callbacks.
+  #
+  # @example
+  #
+  #   spin_run_loop # not much to it
+  #
+  # @return [self] returns the receiver
+  def spin_run_loop
+    NSRunLoop.currentRunLoop.runUntilDate Time.now
+  end
+
 
   # @group Debug
 
