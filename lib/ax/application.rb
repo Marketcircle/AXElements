@@ -58,14 +58,7 @@ class AX::Application < AX::Element
   # (see AX::Element#set:to:)
   def set attr, to: value
     case attr
-    when :focused, :active
-      if value
-        perform :unhide
-        @app.activateWithOptions NSApplicationActivateIgnoringOtherApps
-      else
-        perform :hide
-      end
-    when :hidden then
+    when :focused, :active, :hidden
       perform(value ? :hide : :unhide)
     else
       super
@@ -83,8 +76,9 @@ class AX::Application < AX::Element
   # @return [Boolean]
   def perform name
     case name
-    when :terminate, :hide, :unhide
-      @app.send(name).tap { |_| sleep 0.2 }
+    when :terminate then call_app(:terminated?, name)
+    when :hide      then call_app(:hidden?,     name)
+    when :unhide    then call_app(:active?,     :activateWithOptions, NSApplicationActivateIgnoringOtherApps)
     else
       super
     end
@@ -122,6 +116,21 @@ class AX::Application < AX::Element
   def element_at_point x, y
     element = element_at_point x, and: y, for: @ref
     process element
+  end
+
+
+  private
+
+  ##
+  # Call to the underlying `NSRunningApplication` object and wait an
+  # arbitrary amount of time for the action to complete.
+  #
+  # @param [#to_s]
+  def call_app test, *send_args
+    @app.send *send_args
+    sleep 0.2
+    spin_run_loop
+    @app.send test
   end
 
 end
