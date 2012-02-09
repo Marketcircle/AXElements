@@ -120,6 +120,19 @@ class AX::Application < AX::Element
     process element
   end
 
+  ##
+  # Get the bundle identifier for the application.
+  #
+  # @example
+  #
+  #   safari.bundle_identifier 'com.apple.safari'
+  #   daylite.bundle_identifier 'com.marketcircle.Daylite'
+  #
+  # @return [String]
+  def bundle_identifier
+    @app.bundleIdentifier
+  end
+
 
   private
 

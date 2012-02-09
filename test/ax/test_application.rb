@@ -100,6 +100,10 @@ class TestAXApplication < MiniTest::Unit::TestCase
     assert_equal button, app.element_at_point(*point.to_a)
   end
 
+  def test_bundle_identifier
+    assert_equal APP_BUNDLE_IDENTIFIER, app.bundle_identifier
+  end
+
   def test_dock_constant_is_set
     assert_instance_of AX::Application, AX::DOCK
     assert_equal 'Dock', AX::DOCK.title
