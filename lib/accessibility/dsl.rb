@@ -449,7 +449,7 @@ module Accessibility::DSL
 
     until Accessibility.element_under_mouse == element
       move_mouse_to element
-      sleep 0.1
+      sleep 0.2
     end
   end
 
