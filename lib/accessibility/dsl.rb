@@ -391,20 +391,24 @@ module Accessibility::DSL
   # Show the "About" window for an app.
   #
   # @param [AX::Application]
+  # @return [AX::Window]
   def show_about_window_for app
     set_focus app
     press app.menu_bar_item(title:(app.title))
     press app.menu_bar.menu_item(title: "About #{app.title}")
+    app.dialog
   end
 
   ##
   # Try to open the preferences for an app using the menu bar.
   #
   # @param [AX::Application]
+  # @return [AX::Window]
   def show_preferences_window_for app
     set_focus app
     press app.menu_bar_item(title:(app.title))
     press app.menu_bar.menu_item(title:'Preferences…')
+    app.dialog
   end
 
   ##
