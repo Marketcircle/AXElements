@@ -90,6 +90,13 @@ class NSStringExtensions < MiniTest::Unit::TestCase
     assert_equal 'Name',        'Name'.camelize
   end
 
+  def test_blank?
+    assert ''.blank?
+    refute "\b".blank?
+    refute 'bob'.blank?
+    refute "\n".blank?
+  end
+
 end
 
 

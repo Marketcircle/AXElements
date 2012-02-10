@@ -146,6 +146,13 @@ class NSString
   def camelize
     gsub /(?:^|_)(.)/ do $1.upcase! || $1 end
   end
+
+  ##
+  # @method blank?
+  #
+  # Borrowed from ActiveSupport. Too bad this docstring isn't being
+  # picked up by YARD.
+  alias_method :blank?, :empty?
 end
 
 
