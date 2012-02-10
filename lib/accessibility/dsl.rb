@@ -128,6 +128,7 @@ module Accessibility::DSL
   def unhide app
     app.perform :unhide
   end
+  alias_method :show, :unhide
 
   ##
   # Tell an app to quit.
