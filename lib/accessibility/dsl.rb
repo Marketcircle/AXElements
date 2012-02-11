@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 
 require 'mouse'
-require 'accessibility/core'
 require 'ax/element'
 require 'ax/systemwide'
 
@@ -16,7 +15,6 @@ require 'ax/systemwide'
 # {file:docs/Acting.markdown Acting tutorial} for examples on how to use
 # methods from this module.
 module Accessibility::DSL
-  include Accessibility::Core
 
 
   # @group Actions
@@ -228,6 +226,8 @@ module Accessibility::DSL
   # @param [#to_s]
   # @param [Array(#to_s,AX::Element)]
   def register_for notif, from: element, &block
+    @registered_elements ||= []
+    @registered_elements << element
     element.on_notification notif, &block
   end
 
@@ -251,16 +251,28 @@ module Accessibility::DSL
   # registrations will be unregistered to avoid future complications.
   #
   # @param [Float] timeout number of seconds to wait for a notification
+  # @return [Boolean]
   def wait_for_notification timeout = 10.0
-    unless wait(timeout)
-      unregister_notifications
+    # We use RunInMode because it has timeout functionality
+    case CFRunLoopRunInMode(KCFRunLoopDefaultMode, timeout, false)
+    when KCFRunLoopRunStopped       then true
+    when KCFRunLoopRunTimedOut      then false.tap { |_| unregister_notifications }
+    when KCFRunLoopFinished         then
+      raise RuntimeError, 'The run loop was not configured properly'
+    when KCFRunLoopRunHandledSource then
+      raise RuntimeError, 'Did you start your own run loop?'
+    else
+      raise 'You just found a bug, might be yours, or OS X, or MacRuby...'
     end
   end
 
   ##
   # Undo _all_ notification registries.
   def unregister_notifications
-    unregister_notifs
+    @registered_elements.each do |element|
+      element.unregister_notifications
+    end
+    @registered_elements = []
   end
 
   ##
