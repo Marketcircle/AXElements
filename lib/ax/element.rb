@@ -385,7 +385,7 @@ class AX::Element
   # @return [CGPoint]
   def to_point
     point, size = attrs [KAXPositionAttribute, KAXSizeAttribute], for: @ref
-    point.center size
+    unwrap(point).center unwrap(size)
   end
 
   ##
@@ -393,7 +393,8 @@ class AX::Element
   #
   # @return [CGRect]
   def bounds
-    CGRectMake(attrs([KAXPositionAttribute, KAXSizeAttribute], for: @ref))
+    point, size = attrs [KAXPositionAttribute, KAXSizeAttribute], for: @ref
+    CGRectMake(*unwrap(point), *unwrap(size))
   end
 
   ##
