@@ -1,5 +1,4 @@
 require 'accessibility/core/error_handler'
-require 'accessibility/core/notifications'
 
 ##
 # @todo I feel a bit weird having to instantiate a new pointer every
@@ -21,8 +20,7 @@ require 'accessibility/core/notifications'
 # errors are handled (since CoreFoundation uses a different pattern for
 # that sort of thing).
 #
-# Except for the notification related APIs, everything here is stateless
-# and therefore should be thread safe.
+# This module is stateless and should therefore be threadsafe.
 module Accessibility::Core
 
 
@@ -385,6 +383,47 @@ module Accessibility::Core
   end
 
 
+  # @group Notifications
+
+  ##
+  # Create and return a notification observer for the given object's
+  # application.
+  #
+  # @param [AXUIElementRef] element
+  # @param [Method,Proc] callback
+  # @return [AXObserverRef]
+  def observer_for element, calling: callback
+    ptr  = Pointer.new OBSERVER
+    code = AXObserverCreate(pid_for(element), callback, ptr)
+    return ptr[0] if code.zero?
+    handle_error code, element, callback
+  end
+
+  ##
+  # Register a notification observer for a specific event.
+  #
+  # @param [AXObserverRef]
+  # @param [String]
+  # @param [AX::Element]
+  def register observer, to_receive: notif, from: element
+    code = AXObserverAddNotification(observer, element, notif, nil)
+    return true if code.zero?
+    handle_error code, element, notif, observer, nil, nil
+  end
+
+  ##
+  # Unregister a notification that has been previously setup.
+  #
+  # @param [AXObserverRef]
+  # @param [String]
+  # @param [AX::Element]
+  def unregister observer, from_receiving: notif, from: element
+    code = AXObserverRemoveNotification(observer, element, notif)
+    return true if code.zero?
+    handle_error code, element, notif, observer, nil, nil
+  end
+
+
   # @group Misc.
 
   ##
@@ -503,6 +542,14 @@ module Accessibility::Core
   #
   # @return [String]
   ELEMENT  = '^{__AXUIElement}'.freeze
+
+  ##
+  # @private
+  #
+  # `Pointer` type encoding for `AXObserverRef` objects.
+  #
+  # @return [String]
+  OBSERVER = '^{__AXObserver}'.freeze
 
   ##
   # The delay between key presses. The default value is `0.01`, which
