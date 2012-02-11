@@ -91,6 +91,33 @@ module Accessibility::Core
     handle_error code, element, attr
   end
 
+
+  ##
+  # Fetch multiple attribute values for the given element at once. You will
+  # be given raw data from this method; that is, `Boxed` objects will
+  # still be wrapped in a `AXValueRef`, and elements will be
+  # `AXUIElementRef` objects instead of wrapped {AX::Element} objects.
+  #
+  # @example
+  #   attrs [KAXPositionAttribute, KAXSizeAttribute], for: window
+  #       # => [#<AXValueRefx00000000>, #<AXValueRefx00000000>]
+  #
+  #   attrs [KAXParentAttribute],  for: window  # => [#<AXUIElementRefx00000000>]
+  #   attrs [KAXNoValueAttribute], for: window  # => [nil]
+  #
+  # @param [Array<String>]
+  # @param [AXUIElementRef]
+  # @return [Array]
+  def attrs attrs, for: element
+    ptr = Pointer.new ARRAY
+    code = AXUIElementCopyMultipleAttributeValues(element, attrs, 0, ptr)
+    return ptr[0] if code.zero?
+    if code == KAXErrorNoValue
+      return ptr[0].map { |x| CFGetTypeID(x) == AXVALUE_ID ? nil : x }
+    end
+    handle_error code, element, attrs
+  end
+
   ##
   # @note Error codes are not checked here, you should only call this
   #       method if you know the element has a subrole.
@@ -567,5 +594,13 @@ module Accessibility::Core
              when nil         then 0.01
              else                  ENV['KEY_RATE'].to_f
              end
+
+  ##
+  # @private
+  #
+  # Cached value. Perfermance hack.
+  #
+  # @return [Number]
+  AXVALUE_ID = AXValueGetTypeID()
 
 end
