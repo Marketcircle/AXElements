@@ -65,20 +65,16 @@ class Accessibility::Qualifier
       if value.kind_of? Hash
         if element.respond_to? :children
           !element.search(filter, value).blank?
-        else
-          false
         end
 
       elsif element.respond_to? filter
         element_value = element.send(filter)
-        if value.kind_of?(Regexp) && element_value.respond_to?(:match)
-          element_value.match value
+        if value.kind_of? Regexp
+          element_value.to_s.match value
         else
           element_value == value
         end
 
-      else # this legitimately occurs
-        false
       end
     end
   end
