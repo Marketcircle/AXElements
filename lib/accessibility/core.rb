@@ -135,10 +135,7 @@ module Accessibility::Core
   # @param [AXUIElementRef]
   # @return [Array(String,String), Array(nil,String)]
   def role_pair_for element
-    role = role_for element
-    ptr  = Pointer.new :id
-    AXUIElementCopyAttributeValue(element, KAXSubroleAttribute, ptr)
-    [ptr[0], role]
+    attrs ROLES, for: element
   end
 
   ##
@@ -602,5 +599,13 @@ module Accessibility::Core
   #
   # @return [Number]
   AXVALUE_ID = AXValueGetTypeID()
+
+  ##
+  # @private
+  #
+  # Perf hack.
+  #
+  # @return [Array(String,String)]
+  ROLES = [KAXSubroleAttribute, KAXRoleAttribute]
 
 end
