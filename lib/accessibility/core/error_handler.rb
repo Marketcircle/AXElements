@@ -49,10 +49,12 @@ module Accessibility::Core
     raise klass, msg, caller(1)
   end
 
+  # @private
   def handle_failure ref
     "A system failure occurred with #{ref}, stopping to be safe"
   end
 
+  # @private
   def handle_illegal_argument *args
     case args.size
     when 1
@@ -75,14 +77,17 @@ module Accessibility::Core
     end
   end
 
+  # @private
   def handle_invalid_element ref
     "#{ref} is no longer a valid reference"
   end
 
+  # @private
   def handle_invalid_observer ref, lol, observer
     "#{observer.description} is no longer a valid observer for #{ref}, or was never valid"
   end
 
+  # @private
   # @param [AXUIElementRef]
   def handle_cannot_complete ref
     spin_run_loop
@@ -95,41 +100,50 @@ module Accessibility::Core
     end
   end
 
+  # @private
   def handle_attr_unsupported ref, attr
     "#{ref} does not have a #{attr.inspect} attribute"
   end
 
+  # @private
   def handle_action_unsupported ref, action
     "#{ref} does not have a #{action.inspect} action"
   end
 
+  # @private
   def handle_notif_unsupported ref, notif
     "#{ref} does not support the #{notif.inspect} notification"
   end
 
+  # @private
   def handle_not_implemented ref
     "The program that owns #{ref} does not work with AXAPI properly"
   end
 
   ##
+  # @private
   # @todo Does this really neeed to raise an exception? Seems
   #       like a warning would be sufficient.
   def handle_notif_registered ref, notif
     "You have already registered to hear about #{notif.inspect} from #{ref}"
   end
 
+  # @private
   def handle_notif_not_registered ref, notif
     "You have not registered to hear about #{notif.inspect} from #{ref}"
   end
 
+  # @private
   def handle_api_disabled
     'AXAPI has been disabled'
   end
 
+  # @private
   def handle_param_attr_unsupported ref, attr
     "#{ref} does not have a #{attr.inspect} parameterized attribute"
   end
 
+  # @private
   def handle_not_enough_precision
     "AXAPI said there was not enough precision ¯\(°_o)/¯"
   end
