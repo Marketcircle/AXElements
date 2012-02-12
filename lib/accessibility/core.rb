@@ -709,10 +709,7 @@ module Accessibility::Core
   ##
   # @private
   #
-  # Cached value. Perfermance hack.
   #
-  # @return [Number]
-  AXVALUE_ID = AXValueGetTypeID()
 
   ##
   # @private
