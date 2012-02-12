@@ -92,6 +92,9 @@ module Accessibility::Core
   end
 
   ##
+  # @note This method becomes faster than calling {attr:for:} at ~3 attributes;
+  #       complexity of this method is sublinear for increasing sizes of `attrs`.
+  #
   # Fetch multiple attribute values for the given element at once. You will
   # be given raw data from this method; that is, `Boxed` objects will
   # still be wrapped in a `AXValueRef`, and elements will be
@@ -133,7 +136,10 @@ module Accessibility::Core
   # @param [AXUIElementRef]
   # @return [Array(String,String), Array(nil,String)]
   def role_pair_for element
-    attrs ROLES, for: element
+    role = role_for element
+    ptr  = Pointer.new :id
+    AXUIElementCopyAttributeValue(element, KAXSubroleAttribute, ptr)
+    [ptr[0], role]
   end
 
   ##
@@ -703,14 +709,6 @@ module Accessibility::Core
              when nil         then 0.01
              else                  ENV['KEY_RATE'].to_f
              end
-
-  ##
-  # @private
-  #
-  # Perf hack.
-  #
-  # @return [Array(String,String)]
-  ROLES = [KAXSubroleAttribute, KAXRoleAttribute]
 
   ##
   # @private
