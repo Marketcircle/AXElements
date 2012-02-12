@@ -11,3 +11,4 @@ ext/*/*.bundle
 ext/*/*.o
 .rvmrc
 *.dot
+pkg/*
