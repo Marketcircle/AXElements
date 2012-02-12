@@ -79,23 +79,25 @@ task :test => [:ext, :fixture]
 
 
 ## Gem Packaging
-require 'rubygems/user_interaction'
-require 'rubygems/dependency_installer'
-require 'rake/gempackagetask'
 
+require 'rubygems/package_task'
 spec = Gem::Specification.load('AXElements.gemspec')
-
-Rake::GemPackageTask.new(spec) { }
+Gem::PackageTask.new(spec) { }
 
 desc 'Build gem and install it (does not look at dependencies)'
 task :install => :gem do
+  require 'rubygems/installer'
   Gem::Installer.new("pkg/#{spec.file_name}").install
 end
 
+
+## Setup
+
 desc 'Install dependencies for development'
 task :setup_dev do
+  require 'rubygems/dependency_installer'
   spec.development_dependencies.each do |dep|
-    puts "Installing #{dep.name}"
+    puts "Installing #{dep.name} (#{dep.requirement})"
     Gem::DependencyInstaller.new.install(dep.name, dep.requirement)
   end
 end
