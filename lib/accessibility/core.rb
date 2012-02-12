@@ -709,7 +709,10 @@ module Accessibility::Core
   ##
   # @private
   #
+  # Perf hack.
   #
+  # @return [Array(String,String)]
+  ROLES = [KAXSubroleAttribute, KAXRoleAttribute]
 
   ##
   # @private
