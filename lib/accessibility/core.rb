@@ -91,7 +91,6 @@ module Accessibility::Core
     handle_error code, element, attr
   end
 
-
   ##
   # Fetch multiple attribute values for the given element at once. You will
   # be given raw data from this method; that is, `Boxed` objects will
@@ -109,12 +108,11 @@ module Accessibility::Core
   # @param [AXUIElementRef]
   # @return [Array]
   def attrs attrs, for: element
-    ptr = Pointer.new ARRAY
+    ptr  = Pointer.new ARRAY
     code = AXUIElementCopyMultipleAttributeValues(element, attrs, 0, ptr)
-    return ptr[0] if code.zero?
-    if code == KAXErrorNoValue
-      return ptr[0].map { |x| CFGetTypeID(x) == AXVALUE_ID ? nil : x }
-    end
+    return ptr[0].map { |x|
+      AXValueGetType(x) == KAXValueAXErrorType ? nil : x
+    } if code.zero? || code == KAXErrorNoValue
     handle_error code, element, attrs
   end
 

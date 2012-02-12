@@ -107,8 +107,8 @@ class TestAccessibilityCore < MiniTest::Unit::TestCase
   def test_attrs_value_is_correct
     assert_equal ['AXElementsTester'], attrs([KAXTitleAttribute],  for: REF)
     assert_equal [false],              attrs([KAXHiddenAttribute], for: REF)
-    assert_equal [CGPoint, CGSize],
-      attrs([KAXPositionAttribute, KAXSizeAttribute], for: window).map(&:class)
+    assert_equal [CGPoint.ax_value, CGSize.ax_value],
+      attrs([KAXPositionAttribute, KAXSizeAttribute], for: window).map { |x| AXValueGetType(x) }
   end
 
   def test_attrs_value_fills_in_nils_when_no_value_error_occurs
@@ -118,7 +118,13 @@ class TestAccessibilityCore < MiniTest::Unit::TestCase
 
   def test_attrs_value_handles_errors
     assert_raises ArgumentError do
-      attrs(['MADEUPATTRIBUTE'], for: REF)
+      attrs(['MADEUPATTRIBUTE'], for: nil)
+    end
+    assert_raises ArgumentError do
+      attrs(nil, for: REF)
+    end
+    assert_raises ArgumentError do
+      attrs([], for: REF)
     end
   end
 
