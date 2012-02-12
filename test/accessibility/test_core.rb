@@ -379,6 +379,13 @@ class TestAccessibilityCore < MiniTest::Unit::TestCase
 
 
 
+  def test_enabled?
+    assert enabled?
+    # @todo I guess that's good enough?
+  end
+
+
+
   def test_pid_for_gets_pid
     assert_equal PID, pid_for(REF)
     assert_equal PID, pid_for(window)

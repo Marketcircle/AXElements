@@ -455,6 +455,20 @@ module Accessibility::Core
   # @group Misc.
 
   ##
+  # Ask whether or not AXAPI is enabled.
+  #
+  # @example
+  #
+  #   enabled?  # => true
+  #
+  #   # After unchecking "Enable access for assistive devices" in System Prefs
+  #   enabled?  # => false
+  #
+  def enabled?
+    AXAPIEnabled()
+  end
+
+  ##
   # Get the process identifier (PID) of the application that the given
   # element belongs to.
   #
