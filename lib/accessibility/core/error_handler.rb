@@ -39,13 +39,12 @@ module Accessibility::Core
   # @param [Number]
   def handle_error code, *args
     args[0]              = args[0].description if args[0]
-    klass, handler, argc = AXERROR[code]
-    msg = if handler
-            self.send handler, *args[argc]
-          else
-            klass = RuntimeError
-            "You should never reach this line [#{code.inspect}]"
-          end
+    klass, handler, argc = AXERROR[code] || [RuntimeError]
+    msg                  = if handler
+                             self.send handler, *args[argc]
+                           else
+                             "You should never reach this line [#{code}]"
+                           end
     raise klass, msg, caller(1)
   end
 
