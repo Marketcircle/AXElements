@@ -525,7 +525,7 @@ class TestAccessibilityCore < MiniTest::Unit::TestCase
   end
 
   def test_cannot_complete
-    def pid_for lol
+    def self.pid_for lol
       NSRunningApplication
         .runningApplicationsWithBundleIdentifier('com.apple.finder')
         .first.processIdentifier
@@ -534,7 +534,7 @@ class TestAccessibilityCore < MiniTest::Unit::TestCase
          should_raise: RuntimeError,
        with_fragments: [/Some unspecified error/, ref, /:\(/]
 
-    def pid_for lol; false; end
+    def self.pid_for lol; false; end
     error_handler_test [KAXErrorCannotComplete, nil],
          should_raise: RuntimeError,
        with_fragments: [/Application for pid/, /Maybe it crashed\?/]
