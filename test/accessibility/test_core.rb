@@ -565,7 +565,7 @@ class TestAccessibilityCore < MiniTest::Unit::TestCase
   def test_not_enough_precision
     error_handler_test [KAXErrorNotEnoughPrecision],
          should_raise: RuntimeError,
-       with_fragments: [/not enough precision/, "¯\(°_o)/¯"]
+       with_fragments: [/not enough precision/, '¯\(°_o)/¯']
   end
 
 end
