@@ -396,6 +396,13 @@ class TestAccessibilityCore < MiniTest::Unit::TestCase
 
 
 
+  def test_enabled?
+    assert enabled?
+    # @todo I guess that's good enough?
+  end
+
+
+
   def test_app_for_pid
     # @note Should call CFEqual() under the hood, which is what we want
     assert_equal REF, application_for(PID)
@@ -409,13 +416,6 @@ class TestAccessibilityCore < MiniTest::Unit::TestCase
     assert_raises ArgumentError do
       application_for 2
     end
-  end
-
-
-
-  def test_enabled?
-    assert enabled?
-    # @todo I guess that's good enough?
   end
 
 
