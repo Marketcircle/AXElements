@@ -388,6 +388,14 @@ class TestAccessibilityCore < MiniTest::Unit::TestCase
 
 
 
+  def test_run_loop_source
+    observer = observer_for(REF, calling: method(:observer_callback))
+    assert_equal CFRunLoopSourceGetTypeID(),
+      CFGetTypeID(run_loop_source_for(observer))
+  end
+
+
+
   def test_app_for_pid
     # @note Should call CFEqual() under the hood, which is what we want
     assert_equal REF, application_for(PID)

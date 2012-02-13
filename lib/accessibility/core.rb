@@ -440,6 +440,27 @@ module Accessibility::Core
   end
 
   ##
+  # Get the run loop source for the given observer. You will need to
+  # get the source for an observer added the a run loop source in
+  # your script in order to begin receiving notifications.
+  #
+  # @example
+  #
+  #   # get the source
+  #   source = run_loop_source_for observer
+  #
+  #   # add the source to the current run loop
+  #   CFRunLoopAddSource(CFRunLoopGetCurrent(), source, KCFRunLoopDefaultMode)
+  #
+  #   # don't forget to remove the source when you are done!
+  #
+  # @param [AXObserverRef]
+  # @return [CFRunLoopSourceRef]
+  def run_loop_source_for observer
+    AXObserverGetRunLoopSource(observer)
+  end
+
+  ##
   # Register a notification observer for a specific event.
   #
   # @param [AXObserverRef]
