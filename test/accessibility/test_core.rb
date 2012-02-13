@@ -362,6 +362,29 @@ class TestAccessibilityCore < MiniTest::Unit::TestCase
 
 
 
+  def observer_callback observer, element, notif, context
+    @notif_triple = [observer, element, notif, context]
+  end
+
+  def test_observer_for
+    assert_equal AXObserverGetTypeID(),
+      observer_for(REF, calling: method(:observer_callback))
+
+    assert_equal AXObserverGetTypeID(),
+      observer_for(window, calling: method(:observer_callback))
+  end
+
+  def test_observer_for_handles_errors
+    assert_raises ArgumentError do
+      observer_for nil, calling: method(:observer_callback)
+    end
+    assert_raises ArgumentError do
+      observer_for REF, calling: nil
+    end
+  end
+
+
+
   def test_app_for_pid
     # @note Should call CFEqual() under the hood, which is what we want
     assert_equal REF, application_for(PID)
