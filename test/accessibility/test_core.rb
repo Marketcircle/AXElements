@@ -10,8 +10,12 @@ class TestAccessibilityCore < MiniTest::Unit::TestCase
     @@window ||= attr KAXMainWindowAttribute, for: REF
   end
 
+  def children
+    @@chidlren ||= children_for window
+  end
+
   def child name
-    children_for(window).find { |item| role_for(item) == name }
+    children.find { |item| role_for(item) == name }
   end
 
   def slider;      @@slider      ||= child KAXSliderRole;     end
@@ -21,7 +25,7 @@ class TestAccessibilityCore < MiniTest::Unit::TestCase
   def static_text; @@static_text ||= child KAXStaticTextRole; end
 
   def yes_button
-    @@yes_button ||= children_for(window).find do |item|
+    @@yes_button ||= children.find do |item|
       if role_for(item) == KAXButtonRole
         attr(KAXTitleAttribute, for: item) == 'Yes'
       end
