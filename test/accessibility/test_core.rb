@@ -393,6 +393,37 @@ class TestAccessibilityCore < MiniTest::Unit::TestCase
 
 
 
+  def test_notification_registration
+    observer = observer_for(PID, calling: method(:observer_callback))
+    assert   register(observer,     to_receive: KAXWindowCreatedNotification, from: REF)
+    assert unregister(observer, from_receiving: KAXWindowCreatedNotification, from: REF)
+  end
+
+  def test_notification_registrations_handle_errors
+    observer = observer_for(PID, calling: method(:observer_callback))
+
+    assert_raises ArgumentError do
+      register(nil, to_receive: KAXWindowCreatedNotification, from: REF)
+    end
+    assert_raises ArgumentError do
+      register(observer, to_receive: nil, from: REF)
+    end
+    assert_raises ArgumentError do
+      register(observer, to_receive: KAXWindowCreatedNotification, from: nil)
+    end
+    assert_raises ArgumentError do
+      unregister(nil, from_receiving: KAXWindowCreatedNotification, from: REF)
+    end
+    assert_raises ArgumentError do
+      unregister(observer, from_receiving: nil, from: REF)
+    end
+    assert_raises ArgumentError do
+      unregister(observer, from_receiving: KAXWindowCreatedNotification, from: nil)
+    end
+  end
+
+
+
   def test_enabled?
     assert enabled?
     # @todo I guess that's good enough?

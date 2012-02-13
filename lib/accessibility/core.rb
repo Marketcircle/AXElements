@@ -418,6 +418,9 @@ module Accessibility::Core
   # application. You can either pass a method reference, proc, or just
   # attach a regular block to this method, but you must choose one.
   #
+  # Observer's belong to an application, so you can cache a particular
+  # observer and use it for many different notification registrations.
+  #
   # @example
   #
   #   observer_for pid_for(window_ref), calling: self.method(:notif_callback)
@@ -461,11 +464,18 @@ module Accessibility::Core
   end
 
   ##
+  # @todo Should passing around a context be supported?
+  #
   # Register a notification observer for a specific event.
+  #
+  # @example
+  #
+  #   register observer, to_receive: KAXWindowCreatedNotification, from: window
   #
   # @param [AXObserverRef]
   # @param [String]
   # @param [AX::Element]
+  # @return [Boolean]
   def register observer, to_receive: notif, from: element
     code = AXObserverAddNotification(observer, element, notif, nil)
     return true if code.zero?
@@ -478,6 +488,7 @@ module Accessibility::Core
   # @param [AXObserverRef]
   # @param [String]
   # @param [AX::Element]
+  # @return [Boolean]
   def unregister observer, from_receiving: notif, from: element
     code = AXObserverRemoveNotification(observer, element, notif)
     return true if code.zero?
