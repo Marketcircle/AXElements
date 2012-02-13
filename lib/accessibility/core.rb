@@ -415,14 +415,26 @@ module Accessibility::Core
 
   ##
   # Create and return a notification observer for the given object's
-  # application.
+  # application. You can either pass a method reference, proc, or just
+  # attach a regular block to this method, but you must choose one.
+  #
+  # @example
+  #
+  #   observer_for window_ref, calling: self.method(:notif_callback)
+  #   observer_for window_ref, calling: nil do |observer, element, notif, context|
+  #     # do stuff...
+  #   end
   #
   # @param [AXUIElementRef] element
-  # @param [Method,Proc] callback
+  # @param [Method,Proc,nil] callback
+  # @yieldparam [AXObserverRef]
+  # @yieldparam [AXUIElementRef]
+  # @yieldparam [String]
+  # @yieldparam [Object]
   # @return [AXObserverRef]
   def observer_for element, calling: callback
     ptr  = Pointer.new OBSERVER
-    code = AXObserverCreate(pid_for(element), callback, ptr)
+    code = AXObserverCreate(pid_for(element), (callback || Proc.new), ptr)
     return ptr[0] if code.zero?
     handle_error code, element, callback
   end

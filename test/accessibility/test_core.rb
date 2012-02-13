@@ -368,10 +368,13 @@ class TestAccessibilityCore < MiniTest::Unit::TestCase
 
   def test_observer_for
     assert_equal AXObserverGetTypeID(),
-      observer_for(REF, calling: method(:observer_callback))
+      CFGetTypeID(observer_for(REF, calling: method(:observer_callback)))
 
     assert_equal AXObserverGetTypeID(),
-      observer_for(window, calling: method(:observer_callback))
+      CFGetTypeID(observer_for(window, calling: method(:observer_callback)))
+
+    observer = observer_for window, calling: nil do |herp, derp, erp, burp| end
+    assert_equal AXObserverGetTypeID(), CFGetTypeID(observer)
   end
 
   def test_observer_for_handles_errors
