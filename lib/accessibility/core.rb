@@ -420,21 +420,21 @@ module Accessibility::Core
   #
   # @example
   #
-  #   observer_for window_ref, calling: self.method(:notif_callback)
-  #   observer_for window_ref, calling: nil do |observer, element, notif, context|
+  #   observer_for pid_for(window_ref), calling: self.method(:notif_callback)
+  #   observer_for pid_for(window_ref), calling: nil do |observer, element, notif, context|
   #     # do stuff...
   #   end
   #
-  # @param [AXUIElementRef] element
-  # @param [Method,Proc,nil] callback
+  # @param [Number] pid
+  # @param [Method,Proc,nil]
   # @yieldparam [AXObserverRef]
   # @yieldparam [AXUIElementRef]
   # @yieldparam [String]
   # @yieldparam [Object]
   # @return [AXObserverRef]
-  def observer_for element, calling: callback
+  def observer_for pid, calling: callback
     ptr  = Pointer.new OBSERVER
-    code = AXObserverCreate(pid_for(element), (callback || Proc.new), ptr)
+    code = AXObserverCreate(pid, (callback || Proc.new), ptr)
     return ptr[0] if code.zero?
     handle_error code, element, callback
   end
