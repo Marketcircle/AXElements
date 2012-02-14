@@ -397,7 +397,7 @@ module Accessibility::DSL
     set_focus app
     press app.menu_bar_item(title:(app.title))
     press app.menu_bar.menu_item(title: "About #{app.title}")
-    app.dialog
+    wait_for { app.dialog }
   end
 
   ##
@@ -409,7 +409,7 @@ module Accessibility::DSL
     set_focus app
     press app.menu_bar_item(title:(app.title))
     press app.menu_bar.menu_item(title:'Preferences…')
-    app.dialog
+    wait_for { app.dialog }
   end
 
   ##
