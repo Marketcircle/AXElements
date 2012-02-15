@@ -139,6 +139,39 @@ module Accessibility::DSL
   end
 
   ##
+  # Find the app with the given option.
+  #
+  # @example
+  #
+  #   app_with identifier: 'com.apple.finder'
+  #   app_with name: 'Finder'
+  #   app_with pid: 35843
+  #
+  # @param [Hash{Symbol=>Object}] opt
+  # @option opt [Symbol] :bundle_identifier
+  # @option opt [Symbol] :identifier
+  # @option opt [Symbol] :bundle_id
+  # @option opt [Symbol] :id
+  # @option opt [Symbol] :name
+  # @option opt [Symbol] :process_identifier
+  # @option opt [Symbol] :pid
+  # @return [AX::Application]
+  def app_with opt
+    value = opt.values.first
+    case opt.keys.first
+    when :bundle_identifier, :bundle_id, :identifier, :id
+      Accessibility.application_with_bundle_identifier value
+    when :name
+      Accessibility.application_with_name value
+    when :process_identifier, :pid
+      Accessibility.application_with_pid value
+    else
+      raise ArgumentError, "#{key.inspect} is not a valid option"
+    end
+  end
+  alias_method :launch, :app_with
+
+  ##
   # @note This method overrides `Kernel#raise` so we have to check the
   #       class of the first argument to decide which code path to take.
   #
