@@ -4,12 +4,19 @@ framework 'Cocoa'
 begin
   unless AXAPIEnabled()
     raise RuntimeError, <<-EOS
-Universal Access is disabled on this machine. Please enable it in the System Preferences.
+------------------------------------------------------------------------
+Universal Access is disabled on this machine.
+
+Please enable it in the System Preferences.
+------------------------------------------------------------------------
     EOS
   end
 rescue NoMethodError
   raise NotImplementedError, <<-EOS
-You need to install the latest BridgeSupport preview for AXElements to work.
+------------------------------------------------------------------------
+You need to install the latest BridgeSupport preview so that AXElements
+has access to CoreFoundation.
+------------------------------------------------------------------------
   EOS
 end
 
@@ -26,7 +33,6 @@ end
 
 
 require 'ax_elements/version'
-require 'accessibility'
 
 # Mix the language methods into the TopLevel
 require 'accessibility/dsl'

@@ -9,7 +9,8 @@ module Accessibility::Debug
   # @example
   #
   #   element = AX::DOCK.list.application_dock_item
-  #   path_for element # => [AX::ApplicationDockItem, AX::List, AX::Application]
+  #   path_for element
+  #     # => [AX::ApplicationDockItem, AX::List, AX::Application]
   #
   # @param [AX::Element]
   # @return [Array<AX::Element>] the path in ascending order

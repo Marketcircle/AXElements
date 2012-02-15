@@ -37,7 +37,8 @@ module Accessibility::Core
   # @example
   #
   #   attrs_for AXUIElementCreateSystemWide()
-  #     # => ["AXRole", "AXRoleDescription", "AXFocusedUIElement", "AXFocusedApplication"]
+  #     # => ["AXRole", "AXRoleDescription",
+  #     #     "AXFocusedUIElement", "AXFocusedApplication"]
   #
   # @param [AXUIElementRef]
   # @return [Array<String>]
@@ -77,8 +78,8 @@ module Accessibility::Core
   #
   # @example
   #   attr KAXTitleAttribute,   for: window  # => "HotCocoa Demo"
-  #   attr KAXSizeAttribute,    for: window  # => #<AXValueRefx00000000>
-  #   attr KAXParentAttribute,  for: window  # => #<AXUIElementRefx00000000>
+  #   attr KAXSizeAttribute,    for: window  # => #<AXValueRef>
+  #   attr KAXParentAttribute,  for: window  # => #<AXUIElementRef>
   #   attr KAXNoValueAttribute, for: window  # => nil
   #
   # @param [String] attr an attribute constant
@@ -92,8 +93,9 @@ module Accessibility::Core
   end
 
   ##
-  # @note This method becomes faster than calling {attr:for:} at ~3 attributes;
-  #       complexity of this method is sublinear for increasing sizes of `attrs`.
+  # @note This method becomes faster than calling {attr:for:} at ~3
+  #       attributes; complexity of this method is sublinear for
+  #       increasing sizes of `attrs`.
   #
   # Fetch multiple attribute values for the given element at once. You will
   # be given raw data from this method; that is, `Boxed` objects will
@@ -104,7 +106,7 @@ module Accessibility::Core
   #   attrs [KAXPositionAttribute, KAXSizeAttribute], for: window
   #       # => [#<AXValueRefx00000000>, #<AXValueRefx00000000>]
   #
-  #   attrs [KAXParentAttribute],  for: window  # => [#<AXUIElementRefx00000000>]
+  #   attrs [KAXParentAttribute],  for: window  # => [#<AXUIElementRef>]
   #   attrs [KAXNoValueAttribute], for: window  # => [nil]
   #
   # @param [Array<String>]
@@ -342,8 +344,8 @@ module Accessibility::Core
   #
   # @example
   #
-  #   range = CFRange.new(1, 10).to_axvalue
-  #   param_attr KAXStringForRangeParameterizedAttribute, for_param: range, for: text_field_ref
+  #   r = CFRange.new(1, 10).to_axvalue
+  #   param_attr KAXStringForRangeParameterizedAttribute, for_param: r, for: tf
   #     # => "ello, worl"
   #
   # @param [String] attr an attribute constant
@@ -351,7 +353,7 @@ module Accessibility::Core
   # @param [AXUIElementRef]
   def param_attr attr, for_param: param, for: element
     ptr  = Pointer.new :id
-    code = AXUIElementCopyParameterizedAttributeValue(element, attr, param, ptr)
+    code = AXUIElementCopyParameterizedAttributeValue(element,attr,param,ptr)
     return ptr[0] if code.zero?
     return nil    if code == KAXErrorNoValue
     handle_error code, element, attr, param
@@ -424,7 +426,8 @@ module Accessibility::Core
   # @example
   #
   #   observer_for pid_for(window_ref), calling: self.method(:notif_callback)
-  #   observer_for pid_for(window_ref), calling: nil do |observer, element, notif, context|
+  #   observer_for pid_for(window_ref), calling: nil do
+  #     |observer, element, notif, context|
   #     # do stuff...
   #   end
   #
@@ -649,8 +652,9 @@ module Accessibility::Core
   end
 
   # @private
-  def handle_invalid_observer ref, lol, observer
-    "#{observer.description} is no longer a valid observer for #{ref}, or was never valid"
+  def handle_invalid_observer ref, lol, obsrvr
+    "#{obsrvr.description} is no longer a valid observer for #{ref}" +
+      'or was never valid'
   end
 
   # @private
@@ -660,7 +664,7 @@ module Accessibility::Core
     pid = pid_for ref
     app = NSRunningApplication.runningApplicationWithProcessIdentifier pid
     if app
-      "Some unspecified error occurred using #{ref} with AXAPI, possibly a timeout. :("
+      "An unspecified error occurred using #{ref} with AXAPI, maybe a timeout"
     else
       "Application for pid=#{pid} is no longer running. Maybe it crashed?"
     end
@@ -725,7 +729,7 @@ module Accessibility::Core
   # should probably be more rigorously defined at runtime.
   #
   # @return [String,nil]
-  BOX_TYPES = [CGPoint, CGSize, CGRect, CFRange].map! { |x| x.type }.unshift(nil)
+  BOX_TYPES = [CGPoint, CGSize, CGRect, CFRange].map!(&:type).unshift(nil)
 
   ##
   # @private

@@ -4,12 +4,12 @@ require 'accessibility/string_parser'
 ##
 # Represents the special `SystemWide` accessibility object.
 #
-# Previously, this object was a singleton, but that apparently causes problems
-# with the AXAPIs. So you should always create a new instance of the system wide
-# object when you need to use it (even though they are all the same thing).
+# Previously, this object was a singleton, but that apparently causes
+# problems with the AXAPIs. So you should always create a new instance
+# of the system wide object when you need to use it (even though they
+# are all the same thing).
 class AX::SystemWide < AX::Element
   include Accessibility::StringParser
-
 
   ##
   # Overridden since there is only one way to get the element ref.
