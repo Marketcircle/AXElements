@@ -3,6 +3,7 @@
 require 'mouse'
 require 'ax/element'
 require 'ax/systemwide'
+require 'accessibility'
 
 ##
 # @todo Allow the animation duration to be overridden for Mouse stuff?
