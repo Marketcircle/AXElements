@@ -499,39 +499,7 @@ module Accessibility::Core
   end
 
 
-  # @group Misc.
-
-  ##
-  # Ask whether or not AXAPI is enabled.
-  #
-  # @example
-  #
-  #   enabled?  # => true
-  #
-  #   # After unchecking "Enable access for assistive devices" in System Prefs
-  #   enabled?  # => false
-  #
-  def enabled?
-    AXAPIEnabled()
-  end
-
-  ##
-  # Get the process identifier (PID) of the application that the given
-  # element belongs to.
-  #
-  # @example
-  #
-  #   pid_for safari_ref      # => 12345
-  #   pid_for text_field_ref  # => 12345
-  #
-  # @param [AXUIElementRef]
-  # @return [Fixnum]
-  def pid_for element
-    ptr  = Pointer.new :int
-    code = AXUIElementGetPid(element, ptr)
-    return ptr[0] if code.zero?
-    handle_error code, element
-  end
+  # @group Working with AXValueRef's
 
   ##
   # Extract the stuct contained in an `AXValueRef`.
@@ -570,6 +538,41 @@ module Accessibility::Core
     ptr   = Pointer.new klass.type
     ptr.assign value
     AXValueCreate(klass.ax_value, ptr)
+  end
+
+
+  # @group Misc.
+
+  ##
+  # Ask whether or not AXAPI is enabled.
+  #
+  # @example
+  #
+  #   enabled?  # => true
+  #
+  #   # After unchecking "Enable access for assistive devices" in System Prefs
+  #   enabled?  # => false
+  #
+  def enabled?
+    AXAPIEnabled()
+  end
+
+  ##
+  # Get the process identifier (PID) of the application that the given
+  # element belongs to.
+  #
+  # @example
+  #
+  #   pid_for safari_ref      # => 12345
+  #   pid_for text_field_ref  # => 12345
+  #
+  # @param [AXUIElementRef]
+  # @return [Fixnum]
+  def pid_for element
+    ptr  = Pointer.new :int
+    code = AXUIElementGetPid(element, ptr)
+    return ptr[0] if code.zero?
+    handle_error code, element
   end
 
   ##

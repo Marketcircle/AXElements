@@ -428,6 +428,40 @@ class TestAccessibilityCore < MiniTest::Unit::TestCase
 
 
 
+  def test_unwrap
+    assert_equal CGPointZero, unwrap(wrap(CGPointZero))
+    assert_equal CGSizeMake(10,10), unwrap(wrap(CGSizeMake(10,10)))
+  end
+
+  def test_wrap
+    # point_makes_a_value
+    value = wrap CGPointZero
+    ptr   = Pointer.new CGPoint.type
+    AXValueGetValue(value, 1, ptr)
+    assert_equal CGPointZero, ptr[0]
+
+    # size_makes_a_value
+    value = wrap CGSizeZero
+    ptr   = Pointer.new CGSize.type
+    AXValueGetValue(value, 2, ptr)
+    assert_equal CGSizeZero, ptr[0]
+
+    # rect_makes_a_value
+    value = wrap CGRectZero
+    ptr   = Pointer.new CGRect.type
+    AXValueGetValue(value, 3, ptr)
+    assert_equal CGRectZero, ptr[0]
+
+    # range_makes_a_value
+    range = CFRange.new(5, 4)
+    value = wrap range
+    ptr   = Pointer.new CFRange.type
+    AXValueGetValue(value, 4, ptr)
+    assert_equal range, ptr[0]
+  end
+
+
+
   def test_enabled?
     assert enabled?
     # @todo I guess that's good enough?
@@ -461,40 +495,6 @@ class TestAccessibilityCore < MiniTest::Unit::TestCase
     assert_raises ArgumentError do
       pid_for nil
     end
-  end
-
-
-
-  def test_unwrap
-    assert_equal CGPointZero, unwrap(wrap(CGPointZero))
-    assert_equal CGSizeMake(10,10), unwrap(wrap(CGSizeMake(10,10)))
-  end
-
-  def test_wrap
-    # point_makes_a_value
-    value = wrap CGPointZero
-    ptr   = Pointer.new CGPoint.type
-    AXValueGetValue(value, 1, ptr)
-    assert_equal CGPointZero, ptr[0]
-
-    # size_makes_a_value
-    value = wrap CGSizeZero
-    ptr   = Pointer.new CGSize.type
-    AXValueGetValue(value, 2, ptr)
-    assert_equal CGSizeZero, ptr[0]
-
-    # rect_makes_a_value
-    value = wrap CGRectZero
-    ptr   = Pointer.new CGRect.type
-    AXValueGetValue(value, 3, ptr)
-    assert_equal CGRectZero, ptr[0]
-
-    # range_makes_a_value
-    range = CFRange.new(5, 4)
-    value = wrap range
-    ptr   = Pointer.new CFRange.type
-    AXValueGetValue(value, 4, ptr)
-    assert_equal range, ptr[0]
   end
 
 
