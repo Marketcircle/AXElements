@@ -481,7 +481,22 @@ module Accessibility::DSL
   #
   # @return [AX::Element]
   def element_under_mouse
-    Accessibility.element_at_point Mouse.current_position, for: system_wide
+    element_at_point Mouse.current_position, for: system_wide
+  end
+
+  ##
+  # Get the top most object at an arbitrary point on the screen.
+  #
+  # @overload element_at_point([x, y], from: app)
+  #   @param [Array(Float,Float)] point
+  #
+  # @overload element_at_point(CGPoint.new(x,y), from: app)
+  #   @param [CGPoint] point
+  #
+  # @return [AX::Element]
+  def element_at_point point, for: app
+    x, y = *point.to_a
+    app.element_at_point x, y
   end
 
   ##
