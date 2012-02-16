@@ -667,7 +667,8 @@ module Accessibility::Core
     pid = pid_for ref
     app = NSRunningApplication.runningApplicationWithProcessIdentifier pid
     if app
-      "An unspecified error occurred using #{ref} with AXAPI, maybe a timeout"
+      "An unspecified error occurred using #{ref} with AXAPI" +
+        ', maybe a timeout :('
     else
       "Application for pid=#{pid} is no longer running. Maybe it crashed?"
     end

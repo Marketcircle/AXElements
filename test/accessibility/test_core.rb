@@ -572,7 +572,7 @@ class TestAccessibilityCore < MiniTest::Unit::TestCase
     end
     error_handler_test [KAXErrorCannotComplete, REF],
          should_raise: RuntimeError,
-       with_fragments: [/Some unspecified error/, ref, /:\(/]
+       with_fragments: [/An unspecified error/, ref, /:\(/]
 
     def self.pid_for lol; false; end
     error_handler_test [KAXErrorCannotComplete, nil],
