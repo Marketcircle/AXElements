@@ -433,6 +433,35 @@ module Accessibility::DSL
   end
 
 
+  # @group Debug
+
+  def highlight element, opts = {}
+    Accessibility::Debug.highlight element, opts
+  end
+
+  def path_for element
+    Accessibility::Debug.path element
+  end
+
+  def subtree_for element
+    # @todo Create Element#descendants
+    Accessibility::Debug.text_subtree element
+  end
+
+  ##
+  # @note This is an unfinished feature
+  #
+  # Make a `dot` format graph of the tree, meant for graphing with
+  # GraphViz.
+  #
+  # @return [String]
+  def graph element, open = true
+    Accessibility::Debug.graph_subtree element
+    # @todo Use the `open` flag to decide if it should be sent to
+    #       graphviz and opened right away
+  end
+
+
   # @group Misc.
 
   ##
