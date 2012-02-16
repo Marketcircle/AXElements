@@ -366,45 +366,37 @@ class TestAccessibilityCore < MiniTest::Unit::TestCase
 
 
 
-  def observer_callback observer, element, notif, context
-    @notif_triple = [observer, element, notif, context]
-  end
-
   def test_observer_for
-    assert_equal AXObserverGetTypeID(),
-      CFGetTypeID(observer_for(PID, calling: method(:observer_callback)))
-
-    observer = observer_for PID, calling: nil do |herp, derp, erp, burp| end
-    assert_equal AXObserverGetTypeID(), CFGetTypeID(observer)
+    assert_equal AXObserverGetTypeID(), CFGetTypeID(observer_for(PID) { })
   end
 
   def test_observer_for_handles_errors
     assert_raises TypeError do
-      observer_for nil, calling: method(:observer_callback)
+      observer_for nil do end
     end
     assert_raises ArgumentError do
-      observer_for PID, calling: nil
+      observer_for PID
     end
   end
 
 
 
   def test_run_loop_source
-    observer = observer_for(PID, calling: method(:observer_callback))
+    observer = observer_for(PID) { |_,_,_,_| }
     assert_equal CFRunLoopSourceGetTypeID(),
       CFGetTypeID(run_loop_source_for(observer))
   end
 
 
 
-  def test_notification_registration
-    observer = observer_for(PID, calling: method(:observer_callback))
+  def test_notification_registration_and_unregistration
+    observer = observer_for(PID) { |_,_,_,_| }
     assert   register(observer,     to_receive: KAXWindowCreatedNotification, from: REF)
     assert unregister(observer, from_receiving: KAXWindowCreatedNotification, from: REF)
   end
 
   def test_notification_registrations_handle_errors
-    observer = observer_for(PID, calling: method(:observer_callback))
+    observer = observer_for(PID) { |_,_,_,_| }
 
     assert_raises ArgumentError do
       register(nil, to_receive: KAXWindowCreatedNotification, from: REF)
