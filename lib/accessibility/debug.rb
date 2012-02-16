@@ -15,9 +15,9 @@ module Accessibility::Debug
   #
   # @param [AX::Element]
   # @return [Array<AX::Element>] the path in ascending order
-  def path_for *elements
+  def path *elements
     element = elements.last
-    return path_for(elements << element.parent) if element.respond_to? :parent
+    return path(elements << element.parent) if element.respond_to? :parent
     return elements
   end
 
