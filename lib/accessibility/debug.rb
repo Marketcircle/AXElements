@@ -28,7 +28,7 @@ module Accessibility::Debug
   # GraphViz.
   #
   # @return [String]
-  def graph_for root
+  def graph_subtree root
     dot = Accessibility::Graph.new(root)
     dot.build!
     dot.to_s
