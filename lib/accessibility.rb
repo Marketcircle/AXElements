@@ -1,6 +1,4 @@
 require 'mouse'
-require 'ax/application'
-require 'ax/systemwide'
 require 'accessibility/factory'
 
 ##
