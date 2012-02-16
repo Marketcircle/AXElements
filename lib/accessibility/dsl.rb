@@ -247,7 +247,7 @@ module Accessibility::DSL
   #   Send input to a specific application
   #   @param [#to_s]
   #   @param [AX::Application]
-  def type string, app = AX::SystemWide.new
+  def type string, app = system_wide
     app.type_string string.to_s
   end
 
@@ -429,6 +429,17 @@ module Accessibility::DSL
   def double_click obj = nil
     move_mouse_to obj if obj
     Mouse.double_click
+  end
+
+
+  # @group Misc.
+
+  ##
+  # Convenience for `AX::SystemWide.new`.
+  #
+  # @return [AX::SystemWide]
+  def system_wide
+    AX::SystemWide.new
   end
 
 
