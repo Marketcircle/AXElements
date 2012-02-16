@@ -564,7 +564,7 @@ module Accessibility::DSL
       scroll direction
     end
 
-    until Accessibility.element_under_mouse == element
+    until element_under_mouse == element
       move_mouse_to element
       sleep 0.2
     end
