@@ -1,6 +1,7 @@
 require 'accessibility/graph'
 
 module Accessibility::Debug
+  extend self
 
   ##
   # Get a list of elements, starting with an element you give, and riding
