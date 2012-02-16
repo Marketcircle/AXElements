@@ -1,13 +1,11 @@
 require 'mouse'
 require 'ax/application'
 require 'ax/systemwide'
-require 'accessibility/debug'
 require 'accessibility/factory'
 
 ##
 # The main AXElements namespace.
 module Accessibility
-  extend Accessibility::Debug
   extend Accessibility::Factory
 
   class << self
