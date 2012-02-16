@@ -395,6 +395,25 @@ class TestAccessibilityCore < MiniTest::Unit::TestCase
     assert unregister(observer, from_receiving: KAXWindowCreatedNotification, from: REF)
   end
 
+  def test_notification_registers_everything_correctly # integration
+    callback = Proc.new do |observer, element, notif, ctx|
+      @notif_triple = [observer, element, notif]
+    end
+    observer = observer_for PID, &callback
+    register observer, to_receive: 'Cheezburger', from: yes_button
+
+    source = run_loop_source_for observer
+    CFRunLoopAddSource(CFRunLoopGetCurrent(), source, KCFRunLoopDefaultMode)
+
+    perform KAXPressAction, for: yes_button
+    spin_run_loop
+
+    assert_equal [observer, yes_button, 'Cheezburger'], @notif_triple
+
+  ensure
+    CFRunLoopRemoveSource(CFRunLoopGetCurrent(), source, KCFRunLoopDefaultMode)
+  end
+
   def test_notification_registrations_handle_errors
     observer = observer_for(PID) { |_,_,_,_| }
 
