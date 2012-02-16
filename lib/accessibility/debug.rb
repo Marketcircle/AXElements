@@ -43,7 +43,7 @@ module Accessibility::Debug
   #   puts subtree_for app
   #
   # @return [String]
-  def subtree_for element
+  def text_subtree element
     output = element.inspect + "\n"
     # @todo should use each_child_with_level instead
     enum   = Accessibility::Enumerators::DepthFirst.new element
