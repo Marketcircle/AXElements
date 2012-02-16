@@ -446,6 +446,15 @@ module Accessibility::DSL
   # @group Macros
 
   ##
+  # Get the current mouse position and return the top most element at
+  # that point.
+  #
+  # @return [AX::Element]
+  def element_under_mouse
+    Accessibility.element_at_point Mouse.current_position, for: system_wide
+  end
+
+  ##
   # Show the "About" window for an app.
   #
   # @param [AX::Application]

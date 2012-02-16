@@ -16,15 +16,6 @@ module Accessibility
     # @group Finding an object at a point
 
     ##
-    # Get the current mouse position and return the top most element at
-    # that point.
-    #
-    # @return [AX::Element]
-    def element_under_mouse
-      element_at_point Mouse.current_position, for: AX::SystemWide.new
-    end
-
-    ##
     # Get the top most object at an arbitrary point on the screen.
     #
     # @overload element_at_point([x, y], from: app)
