@@ -2,6 +2,7 @@
 
 require 'mouse'
 require 'ax/element'
+require 'ax/application'
 require 'ax/systemwide'
 require 'accessibility'
 require 'accessibility/debug'
