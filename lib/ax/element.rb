@@ -315,9 +315,19 @@ class AX::Element
 
   # @group Notifications
 
+  def notifs
+    @notifs ||= {}
+  end
+
   ##
-  # Register a callback block to run when a notification is sent by
-  # the object.
+  # Register to receive notification of the given event being completed
+  # by the given element.
+  #
+  # {file:docs/Notifications.markdown Notifications} are a way to put
+  # non-polling delays into your scripts.
+  #
+  # Use this method to register to be notified of the specified event in
+  # an application.
   #
   # The block is optional. The block will be given the sender of the
   # notification, which will almost always be `self`, and also the name
@@ -325,21 +335,48 @@ class AX::Element
   # boolean value that decides if the notification received is the
   # expected one.
   #
-  # Read the {file:docs/Notifications.markdown Notifications tutorial}
-  # for more information.
+  # @example
   #
-  # @param [#to_s]
-  # @yieldparam [String]
-  # @yieldparam [AX::Element]
+  #   on_notification(:window_created) { |sender|
+  #     puts "#{sender.inspect} sent the ':window_created' notification"
+  #     true
+  #   }
+  #
+  # @param [#to_s] notif the name of the notification
+  # @yield Validate the notification; the block should return truthy if
+  #        the notification received is the expected one and the script can
+  #        stop waiting, otherwise should return falsy.
+  # @yieldparam [String] notif the name of the notification
+  # @yieldparam [AXUIElementRef] element the element that sent the notification
   # @yieldreturn [Boolean]
-  # @return [Array(String,self)] the notification/element pair
+  # @return [Array(Observer, String, CFRunLoopSource)]
   def on_notification name, &block
-    notif = TRANSLATOR.guess_notification_for name
-    register_to_receive notif, from: @ref do |notification, sender|
-      element = process sender
-      block ? block.call(notification, element) : true
+    notif    = TRANSLATOR.guess_notification_for name
+    observer = observer_for self.pid, &notif_callback_for(&block)
+    source   = run_loop_source_for observer
+    CFRunLoopAddSource(CFRunLoopGetCurrent(), source, KCFRunLoopDefaultMode)
+    register observer, to_receive: notif, from: @ref
+    notifs[name] = [observer, notif, source]
+  end
+
+  def unregister_notification name
+    unless notifs.has_key? name
+      raise ArgumentError, "You have no registrations for #{name}"
     end
-    [notif, self]
+    _unregister_notification *notifs.delete(name)[0..1]
+  end
+
+  ##
+  # Cancel _all_ notification registrations for this object. Simple and
+  # clean, but a blunt tool at best. This will have to do for the time
+  # being...
+  #
+  # @return [nil]
+  def unregister_all
+    notifs.keys.each do |notif|
+      unregister_notification notif
+    end
+    nil
   end
 
   # @endgroup
@@ -437,6 +474,25 @@ class AX::Element
   def lookup key, with: values
     value = TRANSLATOR.lookup key, with: values
     return value if values.include? value
+  end
+
+  def notif_callback_for &block
+    # we are ignoring the context pointer since this is OO
+    Proc.new do |observer, sender, notif, _|
+      break unless block.call(process sender) if block
+      _unregister_notification observer, notif
+      CFRunLoopStop(CFRunLoopGetCurrent())
+    end
+  end
+
+  ##
+  # @todo What are the implications of not removing the run loop source?
+  #       Taking it out would clobber other notifications that are using
+  #       the same source, so we would have to check if we can remove it.
+  #
+  def _unregister_notification observer, notif
+    # @todo remove run loop source?
+    unregister observer, from_receiving: notif, from: @ref
   end
 
 end
