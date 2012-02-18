@@ -1,7 +1,5 @@
 require 'rubygems'
-
 require 'ax_elements'
-require 'stringio'
 
 # We want to launch the test app and make sure it responds to
 # accessibility queries, but that is difficult, so we just sleep
