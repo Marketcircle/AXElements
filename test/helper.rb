@@ -22,6 +22,8 @@ else
   at_exit do TEST_APP.terminate end
 end
 
+RUNNING_COMPILED =
+  $LOADED_FEATURES.find { |file| file.match /ax_elements.rbo/ }
 
 gem     'minitest'
 require 'minitest/autorun'

@@ -541,7 +541,9 @@ class TestAccessibilityCore < MiniTest::Unit::TestCase
     handle_error *args
   rescue Exception => e
     assert_instance_of klass, e, e.inspect
-    assert_match @@meth, e.backtrace.first, e.backtrace
+    unless RUNNING_COMPILED
+      assert_match @@meth, e.backtrace.first, e.backtrace
+    end
     msgs.each do |msg|
       assert_match msg, e.message
     end
