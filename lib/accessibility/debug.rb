@@ -1,6 +1,7 @@
 require 'accessibility/graph'
 
 module Accessibility::Debug
+  extend self
 
   ##
   # Get a list of elements, starting with an element you give, and riding
@@ -14,9 +15,9 @@ module Accessibility::Debug
   #
   # @param [AX::Element]
   # @return [Array<AX::Element>] the path in ascending order
-  def path_for *elements
+  def path *elements
     element = elements.last
-    return path_for(elements << element.parent) if element.respond_to? :parent
+    return path(elements << element.parent) if element.respond_to? :parent
     return elements
   end
 
@@ -27,7 +28,7 @@ module Accessibility::Debug
   # GraphViz.
   #
   # @return [String]
-  def graph_for root
+  def graph_subtree root
     dot = Accessibility::Graph.new(root)
     dot.build!
     dot.to_s
@@ -39,10 +40,10 @@ module Accessibility::Debug
   #
   # @example
   #
-  #   puts dump_for app
+  #   puts subtree_for app
   #
   # @return [String]
-  def dump_for element
+  def text_subtree element
     output = element.inspect + "\n"
     # @todo should use each_child_with_level instead
     enum   = Accessibility::Enumerators::DepthFirst.new element
@@ -122,4 +123,5 @@ module Accessibility::Debug
     end
     window
   end
+
 end

@@ -1,9 +1,5 @@
 require 'rubygems'
-
 require 'ax_elements'
-require 'stringio'
-
-# Accessibility.log.level = Logger::DEBUG
 
 # We want to launch the test app and make sure it responds to
 # accessibility queries, but that is difficult, so we just sleep
@@ -65,7 +61,7 @@ class MiniTest::Unit::TestCase
 end
 
 ##
-# Just pretend that you didnt' see this hack
+# Just pretend that you didn't see this hack
 class AX::Element
   attr_reader :ref
 end

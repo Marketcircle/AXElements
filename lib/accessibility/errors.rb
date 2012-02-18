@@ -19,7 +19,7 @@ module Accessibility
       filters = {} unless filters.kind_of? Hash
       msg  = "Could not find `#{searchee}#{pp_filters(filters)}` "
       msg << "as a child of #{searcher.class}\n"
-      msg << "Element Path:\n\t" << path(searcher)
+      msg << "Element Path:\n\t" << path_to(searcher)
       super msg
     end
 
@@ -34,8 +34,8 @@ module Accessibility
       "(#{list.join(', ')})"
     end
 
-    def path element
-      path_for(element).map! { |x| x.inspect }.join("\n\t")
+    def path_to element
+      path(element).map! { |x| x.inspect }.join("\n\t")
     end
   end
 

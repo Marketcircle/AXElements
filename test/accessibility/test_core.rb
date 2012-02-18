@@ -366,45 +366,56 @@ class TestAccessibilityCore < MiniTest::Unit::TestCase
 
 
 
-  def observer_callback observer, element, notif, context
-    @notif_triple = [observer, element, notif, context]
-  end
-
   def test_observer_for
-    assert_equal AXObserverGetTypeID(),
-      CFGetTypeID(observer_for(PID, calling: method(:observer_callback)))
-
-    observer = observer_for PID, calling: nil do |herp, derp, erp, burp| end
-    assert_equal AXObserverGetTypeID(), CFGetTypeID(observer)
+    assert_equal AXObserverGetTypeID(), CFGetTypeID(observer_for(PID) { })
   end
 
   def test_observer_for_handles_errors
     assert_raises TypeError do
-      observer_for nil, calling: method(:observer_callback)
+      observer_for nil do end
     end
     assert_raises ArgumentError do
-      observer_for PID, calling: nil
+      observer_for PID
     end
   end
 
 
 
   def test_run_loop_source
-    observer = observer_for(PID, calling: method(:observer_callback))
+    observer = observer_for(PID) { |_,_,_,_| }
     assert_equal CFRunLoopSourceGetTypeID(),
       CFGetTypeID(run_loop_source_for(observer))
   end
 
 
 
-  def test_notification_registration
-    observer = observer_for(PID, calling: method(:observer_callback))
+  def test_notification_registration_and_unregistration
+    observer = observer_for(PID) { |_,_,_,_| }
     assert   register(observer,     to_receive: KAXWindowCreatedNotification, from: REF)
     assert unregister(observer, from_receiving: KAXWindowCreatedNotification, from: REF)
   end
 
+  def test_notification_registers_everything_correctly # integration
+    callback = Proc.new do |observer, element, notif, ctx|
+      @notif_triple = [observer, element, notif]
+    end
+    observer = observer_for PID, &callback
+    register observer, to_receive: 'Cheezburger', from: yes_button
+
+    source = run_loop_source_for observer
+    CFRunLoopAddSource(CFRunLoopGetCurrent(), source, KCFRunLoopDefaultMode)
+
+    perform KAXPressAction, for: yes_button
+    spin_run_loop
+
+    assert_equal [observer, yes_button, 'Cheezburger'], @notif_triple
+
+  ensure
+    CFRunLoopRemoveSource(CFRunLoopGetCurrent(), source, KCFRunLoopDefaultMode)
+  end
+
   def test_notification_registrations_handle_errors
-    observer = observer_for(PID, calling: method(:observer_callback))
+    observer = observer_for(PID) { |_,_,_,_| }
 
     assert_raises ArgumentError do
       register(nil, to_receive: KAXWindowCreatedNotification, from: REF)
@@ -424,6 +435,40 @@ class TestAccessibilityCore < MiniTest::Unit::TestCase
     assert_raises ArgumentError do
       unregister(observer, from_receiving: KAXWindowCreatedNotification, from: nil)
     end
+  end
+
+
+
+  def test_unwrap
+    assert_equal CGPointZero, unwrap(wrap(CGPointZero))
+    assert_equal CGSizeMake(10,10), unwrap(wrap(CGSizeMake(10,10)))
+  end
+
+  def test_wrap
+    # point_makes_a_value
+    value = wrap CGPointZero
+    ptr   = Pointer.new CGPoint.type
+    AXValueGetValue(value, 1, ptr)
+    assert_equal CGPointZero, ptr[0]
+
+    # size_makes_a_value
+    value = wrap CGSizeZero
+    ptr   = Pointer.new CGSize.type
+    AXValueGetValue(value, 2, ptr)
+    assert_equal CGSizeZero, ptr[0]
+
+    # rect_makes_a_value
+    value = wrap CGRectZero
+    ptr   = Pointer.new CGRect.type
+    AXValueGetValue(value, 3, ptr)
+    assert_equal CGRectZero, ptr[0]
+
+    # range_makes_a_value
+    range = CFRange.new(5, 4)
+    value = wrap range
+    ptr   = Pointer.new CFRange.type
+    AXValueGetValue(value, 4, ptr)
+    assert_equal range, ptr[0]
   end
 
 
@@ -461,40 +506,6 @@ class TestAccessibilityCore < MiniTest::Unit::TestCase
     assert_raises ArgumentError do
       pid_for nil
     end
-  end
-
-
-
-  def test_unwrap
-    assert_equal CGPointZero, unwrap(wrap(CGPointZero))
-    assert_equal CGSizeMake(10,10), unwrap(wrap(CGSizeMake(10,10)))
-  end
-
-  def test_wrap
-    # point_makes_a_value
-    value = wrap CGPointZero
-    ptr   = Pointer.new CGPoint.type
-    AXValueGetValue(value, 1, ptr)
-    assert_equal CGPointZero, ptr[0]
-
-    # size_makes_a_value
-    value = wrap CGSizeZero
-    ptr   = Pointer.new CGSize.type
-    AXValueGetValue(value, 2, ptr)
-    assert_equal CGSizeZero, ptr[0]
-
-    # rect_makes_a_value
-    value = wrap CGRectZero
-    ptr   = Pointer.new CGRect.type
-    AXValueGetValue(value, 3, ptr)
-    assert_equal CGRectZero, ptr[0]
-
-    # range_makes_a_value
-    range = CFRange.new(5, 4)
-    value = wrap range
-    ptr   = Pointer.new CFRange.type
-    AXValueGetValue(value, 4, ptr)
-    assert_equal range, ptr[0]
   end
 
 
@@ -572,7 +583,7 @@ class TestAccessibilityCore < MiniTest::Unit::TestCase
     end
     error_handler_test [KAXErrorCannotComplete, REF],
          should_raise: RuntimeError,
-       with_fragments: [/Some unspecified error/, ref, /:\(/]
+       with_fragments: [/An unspecified error/, ref, /:\(/]
 
     def self.pid_for lol; false; end
     error_handler_test [KAXErrorCannotComplete, nil],

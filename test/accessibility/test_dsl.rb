@@ -109,4 +109,8 @@ class TestAccessibilityDSL < MiniTest::Unit::TestCase
     assert_includes Object.new.class.ancestors, Accessibility::DSL
   end
 
+  def test_system_wide
+    assert_instance_of AX::SystemWide, dsl.system_wide
+  end
+
 end

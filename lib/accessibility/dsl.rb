@@ -2,8 +2,10 @@
 
 require 'mouse'
 require 'ax/element'
+require 'ax/application'
 require 'ax/systemwide'
 require 'accessibility'
+require 'accessibility/debug'
 
 ##
 # @todo Allow the animation duration to be overridden for Mouse stuff?
@@ -157,8 +159,8 @@ module Accessibility::DSL
   # @option opt [Symbol] :pid
   # @return [AX::Application]
   def app_with opt
-    key, value = opt.take 1
-    case key
+    value = opt.values.first
+    case opt.keys.first
     when :bundle_identifier, :bundle_id, :identifier, :id
       Accessibility.application_with_bundle_identifier value
     when :name
@@ -247,7 +249,7 @@ module Accessibility::DSL
   #   Send input to a specific application
   #   @param [#to_s]
   #   @param [AX::Application]
-  def type string, app = AX::SystemWide.new
+  def type string, app = system_wide
     app.type_string string.to_s
   end
 
@@ -432,7 +434,71 @@ module Accessibility::DSL
   end
 
 
+  # @group Debug
+
+  def highlight element, opts = {}
+    Accessibility::Debug.highlight element, opts
+  end
+
+  def path_for element
+    Accessibility::Debug.path element
+  end
+
+  def subtree_for element
+    # @todo Create Element#descendants
+    Accessibility::Debug.text_subtree element
+  end
+
+  ##
+  # @note This is an unfinished feature
+  #
+  # Make a `dot` format graph of the tree, meant for graphing with
+  # GraphViz.
+  #
+  # @return [String]
+  def graph element, open = true
+    Accessibility::Debug.graph_subtree element
+    # @todo Use the `open` flag to decide if it should be sent to
+    #       graphviz and opened right away
+  end
+
+
+  # @group Misc.
+
+  ##
+  # Convenience for `AX::SystemWide.new`.
+  #
+  # @return [AX::SystemWide]
+  def system_wide
+    AX::SystemWide.new
+  end
+
+
   # @group Macros
+
+  ##
+  # Get the current mouse position and return the top most element at
+  # that point.
+  #
+  # @return [AX::Element]
+  def element_under_mouse
+    element_at_point Mouse.current_position, for: system_wide
+  end
+
+  ##
+  # Get the top most object at an arbitrary point on the screen.
+  #
+  # @overload element_at_point([x, y], from: app)
+  #   @param [Array(Float,Float)] point
+  #
+  # @overload element_at_point(CGPoint.new(x,y), from: app)
+  #   @param [CGPoint] point
+  #
+  # @return [AX::Element]
+  def element_at_point point, for: app
+    x, y = *point.to_a
+    app.element_at_point x, y
+  end
 
   ##
   # Show the "About" window for an app.
@@ -443,7 +509,7 @@ module Accessibility::DSL
     set_focus app
     press app.menu_bar_item(title:(app.title))
     press app.menu_bar.menu_item(title: "About #{app.title}")
-    app.dialog
+    wait_for { app.dialog }
   end
 
   ##
@@ -455,7 +521,7 @@ module Accessibility::DSL
     set_focus app
     press app.menu_bar_item(title:(app.title))
     press app.menu_bar.menu_item(title:'Preferences…')
-    app.dialog
+    wait_for { app.dialog }
   end
 
   ##
@@ -498,7 +564,7 @@ module Accessibility::DSL
       scroll direction
     end
 
-    until Accessibility.element_under_mouse == element
+    until element_under_mouse == element
       move_mouse_to element
       sleep 0.2
     end
