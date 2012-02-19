@@ -85,10 +85,32 @@ class TestAXApplication < MiniTest::Unit::TestCase
     assert called_super
   end
 
+  def test_keydown
+    got_callback = false
+    app.define_singleton_method :'post:to:' do |events, ref|
+      if events[0][1] == true && events.size == 1 && ref == REF
+        got_callback = true
+      end
+    end
+    app.keydown "\\OPTION"
+    assert got_callback
+  end
+
+  def test_keyup
+    got_callback = false
+    app.define_singleton_method :'post:to:' do |events, ref|
+      if events[0][1] == false && events.size == 1 && ref == REF
+        got_callback = true
+      end
+    end
+    app.keyup "\\OPTION"
+    assert got_callback
+  end
+
   def test_type_string_forwards_events
     got_callback = false
     app.define_singleton_method :'post:to:' do |events, ref|
-      got_callback = true if events.kind_of?(Array) && ref = REF
+      got_callback = true if events.kind_of?(Array) && ref == REF
     end
     app.type_string 'test'
     assert got_callback

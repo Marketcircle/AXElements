@@ -100,6 +100,15 @@ class AX::Application < AX::Element
     true
   end
 
+  def keydown key
+    post [[ESCAPES[key], true]], to: @ref
+    true
+  end
+
+  def keyup key
+    post [[ESCAPES[key], false]], to: @ref
+  end
+
   # @endgroup
 
 

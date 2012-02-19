@@ -34,6 +34,16 @@ class AX::SystemWide < AX::Element
     true
   end
 
+  def keydown modifier
+    post [[ESCAPES[modifier], true]], to: @ref
+    true
+  end
+
+  def keyup modifier
+    post [[ESCAPES[modifier], false]], to: @ref
+    true
+  end
+
   ##
   # The system wide object cannot be used to perform searches. This method
   # is just an override to avoid a difficult to understand error messages.

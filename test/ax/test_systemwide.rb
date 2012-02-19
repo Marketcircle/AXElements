@@ -4,6 +4,28 @@ class TestAXSystemWide < MiniTest::Unit::TestCase
     assert_equal system_wide, system_wide
   end
 
+  def test_keydown
+    element = system_wide
+    got_callback = false
+    element.define_singleton_method :'post:to:' do |events, ref|
+      if events[0][1] == true && events.size == 1 && ref == element.ref
+        got_callback = true
+      end
+    end
+    element.keydown "\\OPTION"
+    assert got_callback
+  end
+
+  def test_keyup
+    element = system_wide
+    got_callback = false
+    element.define_singleton_method :'post:to:' do |events, ref|
+      if events[0][1] == false && events.size == 1 && ref == element.ref
+        got_callback = true
+      end
+    end
+    element.keyup "\\OPTION"
+    assert got_callback
   end
 
   def test_type_string_forwards_events
