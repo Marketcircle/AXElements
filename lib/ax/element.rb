@@ -2,11 +2,11 @@
 
 require 'ax_elements/macruby_extensions'
 require 'ax_elements/vendor/inflector'
-require 'accessibility/factory'
 require 'accessibility/enumerators'
 require 'accessibility/qualifier'
 require 'accessibility/errors'
 require 'accessibility/pp_inspector'
+require 'accessibility/factory'
 
 
 ##
