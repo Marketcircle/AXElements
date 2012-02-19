@@ -42,6 +42,15 @@ class TestAccessibilityCore < MiniTest::Unit::TestCase
 
 
 
+
+  # trivial but important for backwards compat with Snow Leopard
+  def test_identifier_const
+    assert Object.const_defined? :KAXIdentifierAttribute
+    assert_equal 'AXIdentifier', KAXIdentifierAttribute
+  end
+
+
+
   ##
   # AFAICT every accessibility object **MUST** have attributes, so
   # there are no tests to check what happens when they do not exist;
