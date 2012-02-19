@@ -98,11 +98,10 @@ module Mouse
   # A standard click. Default position is the current position.
   #
   # @param [CGPoint]
-  def click point = current_position
+  def click point = current_position, duration = 12
     event = CGEventCreateMouseEvent(nil, KCGEventLeftMouseDown, point, KCGMouseButtonLeft)
     CGEventPost(KCGHIDEventTap, event)
-    # @todo Should not set number of sleep frames statically.
-    12.times do sleep QUANTUM end
+    duration.times do sleep QUANTUM end
     CGEventSetType(event, KCGEventLeftMouseUp)
     CGEventPost(KCGHIDEventTap, event)
   end
@@ -111,9 +110,10 @@ module Mouse
   # Standard secondary click. Default position is the current position.
   #
   # @param [CGPoint]
-  def secondary_click point = current_position
+  def secondary_click point = current_position, duration = 12
     event = CGEventCreateMouseEvent(nil, KCGEventRightMouseDown, point, KCGMouseButtonRight)
     CGEventPost(KCGHIDEventTap, event)
+    duration.times do sleep QUANTUM end
     CGEventSetType(event, KCGEventRightMouseUp)
     CGEventPost(KCGHIDEventTap, event)
   end
@@ -150,9 +150,10 @@ module Mouse
   #
   # @param [CGPoint]
   # @param [Number]
-  def arbitrary_click point = current_position, button = KCGMouseButtonCenter
+  def arbitrary_click point = current_position, button = KCGMouseButtonCenter, duration = 12
     event = CGEventCreateMouseEvent(nil, KCGEventOtherMouseDown, point, button)
     CGEventPost(KCGHIDEventTap, event)
+    duration.times do sleep QUANTUM end
     CGEventSetType(event, KCGEventOtherMouseUp)
     CGEventPost(KCGHIDEventTap, event)
   end
