@@ -577,6 +577,20 @@ module Accessibility::Core
   end
 
   ##
+  # Create a new reference to the system wide object. This is very useful when
+  # working with the system wide object as you cannot cache the system wide
+  # reference and need to keep creating new instances all the time.
+  #
+  # @example
+  #
+  #   system_wide  # => #<AXUIElementRefx00000000>
+  #
+  # @return [AXUIElementRef]
+  def system_wide
+    AXUIElementCreateSystemWide()
+  end
+
+  ##
   # Spin the run loop once. For the purpose of receiving notification
   # callbacks.
   #

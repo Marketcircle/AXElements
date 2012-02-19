@@ -510,6 +510,12 @@ class TestAccessibilityCore < MiniTest::Unit::TestCase
 
 
 
+  def test_system_wide
+    assert_equal AXUIElementCreateSystemWide(), system_wide
+  end
+
+
+
   def test_spin_runloop
     @run_loop_ran = false
     def run_loop_test
