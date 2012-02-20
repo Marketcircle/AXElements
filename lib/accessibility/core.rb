@@ -45,15 +45,12 @@ require 'ax_elements/version'
 # APIs (AXAPI). You can just mix this module in wherever you want to add
 # some accessibility calls.
 #
-# All AXAPI methods that are used should be first wrapped in this module.
 # This module is responsible for handling pointers and dealing with error
-# codes for functions that make use of them.
-#
-# The methods in this module provide a clean Ruby-ish interface to the low
-# level CoreFoundation functions that compose AXAPI. In doing this, we can
-# hide away the need to work with pointers and centralize how AXAPI related
-# errors are handled (since CoreFoundation uses a different pattern for
-# that sort of thing).
+# codes for functions that make use of them. The methods in this module
+# provide a clean Ruby-ish interface to the low level CoreFoundation
+# functions that compose AXAPI. In doing this, we can hide away the need
+# to work with pointers and centralize how AXAPI related errors are handled
+# (since CoreFoundation uses a different pattern for that sort of thing).
 #
 # This module is stateless and should therefore be threadsafe.
 module Accessibility::Core
