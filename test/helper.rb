@@ -1,5 +1,4 @@
-require 'rubygems'
-require 'ax_elements'
+framework 'Cocoa'
 
 # We want to launch the test app and make sure it responds to
 # accessibility queries, but that is difficult, so we just sleep
@@ -16,7 +15,7 @@ if TEST_APP.nil?
   $stderr.puts 'Run `rake fixture`'
   exit 3
 else
-  sleep 3 # I haven't yet figured out a good way of knowing exactly
+  sleep 2 # I haven't yet figured out a good way of knowing exactly
           # when the app is ready
   # Make sure the test app is closed when testing finishes
   at_exit do TEST_APP.terminate end
@@ -25,8 +24,10 @@ end
 RUNNING_COMPILED =
   $LOADED_FEATURES.find { |file| file.match /ax_elements.rbo/ }
 
+require 'rubygems'
 gem     'minitest'
 require 'minitest/autorun'
+require 'ax_elements'
 
 # preprocessor powers, assemble!
 if ENV['BENCH']
