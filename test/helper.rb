@@ -21,13 +21,15 @@ else
   at_exit do TEST_APP.terminate end
 end
 
+# Figure out if we are testing a compiled version of AXElements, since some
+# tests will fail due to incomplete MacRuby features.
 RUNNING_COMPILED =
   $LOADED_FEATURES.find { |file| file.match /ax_elements.rbo/ }
 
 require 'rubygems'
+require 'ax_elements'
 gem     'minitest'
 require 'minitest/autorun'
-require 'ax_elements'
 
 # preprocessor powers, assemble!
 if ENV['BENCH']
