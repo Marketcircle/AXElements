@@ -5,7 +5,7 @@ framework 'Cocoa'
 APP_BUNDLE_URL = NSURL.fileURLWithPath File.expand_path './test/fixture/Release/AXElementsTester.app'
 APP_BUNDLE_IDENTIFIER = 'com.marketcircle.AXElementsTester'
 
-error = Pointer.new :id
+error    = Pointer.new :id
 TEST_APP = NSWorkspace.sharedWorkspace.launchApplicationAtURL APP_BUNDLE_URL,
                                                      options: NSWorkspaceLaunchAsync,
                                                configuration: {},
@@ -16,7 +16,7 @@ if TEST_APP.nil?
   exit 3
 else
   sleep 2 # I haven't yet figured out a good way of knowing exactly
-          # when the app is ready
+          # when the app is ready for accessibility stuff
   # Make sure the test app is closed when testing finishes
   at_exit do TEST_APP.terminate end
 end
