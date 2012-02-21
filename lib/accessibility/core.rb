@@ -36,6 +36,13 @@ end
 
 
 ##
+# See [MacRuby pull request #60](https://github.com/MacRuby/MacRuby/pulls/60)
+# for the purpose of this. This is only useful here until the pull request is
+# merged.
+AXUIElementCreateSystemWide().class.send(:alias_method, :inspect, :description)
+
+
+##
 # @todo I feel a bit weird having to instantiate a new pointer every
 #       time I want to fetch an attribute. Since allocations are costly,
 #       it hurts performance a lot when it comes to searches. I wonder if
