@@ -6,7 +6,7 @@ module Accessibility
   # Error raised when a dynamic attribute lookup fails.
   class LookupFailure < ArgumentError
     def initialize element, name
-      super "#{name} was not found for #{element.inspect}"
+      super "#{name.inspect} was not found for #{element.inspect}"
     end
   end
 
