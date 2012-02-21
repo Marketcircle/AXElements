@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+require   'ax_elements/version'
 framework 'Cocoa'
 
 # check that the Accessibility APIs are enabled and are available to MacRuby
@@ -33,7 +34,6 @@ unless Object.const_defined? :KAXIdentifierAttribute
   KAXIdentifierAttribute = 'AXIdentifier'.freeze
 end
 
-require 'ax_elements/version'
 
 ##
 # @todo I feel a bit weird having to instantiate a new pointer every
