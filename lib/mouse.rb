@@ -1,3 +1,5 @@
+framework 'Quartz'
+
 ##
 # [Reference](http://developer.apple.com/library/mac/#documentation/Carbon/Reference/QuartzEventServicesRef/Reference/reference.html).
 #
