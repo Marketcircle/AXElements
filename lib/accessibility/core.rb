@@ -665,7 +665,7 @@ module Accessibility::Core
 
   # @param [Number]
   def handle_error code, *args
-    args[0]              = args[0].description if args[0]
+    args[0]              = args[0].inspect if args[0]
     klass, handler, argc = AXERROR[code] || [RuntimeError]
     msg                  = if handler
                              self.send handler, *args[argc]
@@ -691,12 +691,12 @@ module Accessibility::Core
         'is not a legal argument'
     when 3
       "You can't set #{args.second.inspect} to " +
-        "#{args.third.description.inspect} for #{args.first}"
+        "#{args.third.inspect} for #{args.first}"
     when 4
       "The point [#{args.second}, #{args.third}] is not a valid point, " +
         "or #{args.first} is not an AXUIElementRef"
     when 5
-      "Either the observer #{args.third.description}, " +
+      "Either the observer #{args.third.inspect}, " +
         "the element #{args.first}, or " +
         "the notification #{args.second.inspect} " +
         "is not a legitimate argument"
@@ -710,7 +710,7 @@ module Accessibility::Core
 
   # @private
   def handle_invalid_observer ref, lol, obsrvr
-    "#{obsrvr.description} is no longer a valid observer for #{ref}" +
+    "#{obsrvr.inspect} is no longer a valid observer for #{ref}" +
       'or was never valid'
   end
 
