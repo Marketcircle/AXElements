@@ -74,6 +74,13 @@ task :fixture do
   sh 'cd test/AXElementsTester && xcodebuild'
 end
 
+desc 'Remove the built fixture app'
+task :clobber_fixture do
+  $stdout.puts 'rm -rf test/fixture'
+  rm_rf 'test/fixture'
+end
+task :clobber => :clobber_fixture
+
 require 'rake/testtask'
 Rake::TestTask.new do |t|
   t.libs     << 'test' << 'ext'
