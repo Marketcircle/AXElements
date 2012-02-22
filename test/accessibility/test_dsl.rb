@@ -84,7 +84,7 @@ class TestAccessibilityDSL < MiniTest::Unit::TestCase
 
   def test_typing_human_string
     try_typing(
-     "A proper sentence, with punctuation and the number 9. LOL!\tA 'quoted' string--then some @#*$ cursing."
+     "A sentence, with punctuation and num8ers. LOL!\tA 'quoted' string--then some @#*$."
     )
   end
 
@@ -102,7 +102,7 @@ class TestAccessibilityDSL < MiniTest::Unit::TestCase
   end
 
   def test_typing_ruby_escapes
-    try_typing "First line.\nSecond line."
+    try_typing "First.\nSecond."
   end
 
   def test_dsl_is_mixed_into_toplevel
