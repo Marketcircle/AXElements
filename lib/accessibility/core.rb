@@ -128,6 +128,7 @@ module Accessibility::Core
     code = AXUIElementCopyAttributeValue(element, attr, ptr)
     return ptr[0] if code.zero?
     return nil    if code == KAXErrorNoValue
+    return []     if code == KAXErrorFailure && attr == KAXChildrenAttribute
     handle_error code, element, attr
   end
 
