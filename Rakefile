@@ -26,7 +26,7 @@ task :clean   => :clobber
 desc 'Start up irb with AXElements loaded'
 task :console => :ext do
   irb = ENV['RUBY_VERSION'] ? 'irb' : 'macirb'
-  sh "#{irb} -Ilib -Iext -rubygems -rax_elements"
+  sh "#{irb} -Ilib -rubygems -rax_elements"
 end
 
 
@@ -40,10 +40,12 @@ task :ext do
   ext    = 'key_code_generator'
   bundle = "#{ext}.bundle"
   source = "#{ext}.m"
+  root   = ENV['PWD']
   Dir.chdir "ext/accessibility/#{ext}" do
     break if File.exists?(bundle) && File.mtime(bundle) > File.mtime(source)
     ruby 'extconf.rb'
     sh   'make'
+    cp   bundle, "#{root}/lib/accessibility"
   end
 end
 
@@ -58,6 +60,8 @@ task :clobber_ext do
       rm file
     end
   end
+  $stdout.puts "rm lib/accessibility/#{bundle}"
+  rm "lib/accessibility/#{bundle}"
 end
 task :clobber => :clobber_ext
 
