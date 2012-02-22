@@ -1,4 +1,4 @@
-require 'ax_elements/key_coder'
+require 'accessibility/key_code_generator'
 
 ##
 # Parses strings of human readable text into a series of events meant to

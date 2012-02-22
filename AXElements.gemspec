@@ -16,14 +16,12 @@ describes user interactions.
   s.homepage    = 'http://github.com/Marketcircle/AXElements'
   s.licenses    = ['BSD 3-clause']
   s.has_rdoc    = 'yard'
-
-  s.require_paths << 'ext'
-  s.extensions    << 'ext/ax_elements/extconf.rb'
+  s.extensions << 'ext/accessibility/key_code_generator/extconf.rb'
 
 
   s.files            =
     Dir.glob('lib/**/*.rb*') +
-    [ 'ext/ax_elements/extconf.rb', 'ext/ax_elements/key_coder.m' ] +
+    Dir.glob('ext/**/*{.rb,.m}') +
     [ 'Rakefile' ]
   s.test_files       =
     Dir.glob('test/**/test_*.rb') +
@@ -37,4 +35,3 @@ describes user interactions.
   s.add_development_dependency 'yard',      '~> 0.7.5'
   s.add_development_dependency 'redcarpet', '~> 1.17'
 end
-

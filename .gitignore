@@ -6,9 +6,9 @@ Gemfile.lock
 xcuserdata
 .DS_Store
 test/fixture
-ext/*/Makefile
-ext/*/*.bundle
-ext/*/*.o
+Makefile
+*.bundle
+*.o
 .rvmrc
 *.dot
 pkg/*

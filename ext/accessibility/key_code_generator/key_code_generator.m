@@ -1,6 +1,6 @@
 /*
- *  key_coder.m
- *  KeyCoder
+ *  key_code_generator.m
+ *  KeyCodeGenerator
  *
  *  Created by Mark Rada on 11-07-27.
  *  Copyright 2011 Marketcircle Incorporated. All rights reserved.
@@ -78,5 +78,5 @@
 
 @end
 
-void Init_key_coder() {
+void Init_key_code_generator() {
 }
