@@ -312,8 +312,8 @@ module Accessibility::DSL
   end
 
   ##
-  # @note This has not been thoroughly tested yet, in some cases it may
-  #       cause MacRuby to crash.
+  # @todo Perhaps this method shoud raise an exception in failure cases
+  #       instead of returning nil
   #
   # Simply wait around for something to show up. This method takes a block
   # which should give the path for an element that will eventually exist,
@@ -334,14 +334,21 @@ module Accessibility::DSL
   #
   # @param [Number]
   # @yield
-  # @return [AX::Element]
-  def wait_for timeout = 30
-    start ||= Time.now
-    yield
-  rescue Accessibility::SearchFailure, RuntimeError => e
-    raise e unless e.message.match /system failure/
-    raise e if (Time.now - start) > timeout
-    sleep 0.25 && retry
+  # @return [AX::Element,nil]
+  def wait_for element, opts = {}
+    timeout = opts.delete(:timeout) || 30
+    filters = opts.delete(:filters)
+    parent  = opts.delete(:as_descendant_of) || opts.delete(:parent)
+    raise ArgumentError, 'parent opt required' unless parent
+
+    start = Time.now
+    until Time.now - start > timeout
+      result = parent.search(element)
+      return result unless result.blank?
+      sleep 0.25
+    end
+
+    nil # raise Accessibility::SearchFailure ?
   end
 
 
@@ -509,7 +516,7 @@ module Accessibility::DSL
     set_focus app
     press app.menu_bar_item(title:(app.title))
     press app.menu_bar.menu_item(title: "About #{app.title}")
-    wait_for { app.dialog }
+    wait_for :dialog, as_descendant_of: app
   end
 
   ##
@@ -518,10 +525,11 @@ module Accessibility::DSL
   # @param [AX::Application]
   # @return [AX::Window]
   def show_preferences_window_for app
+    raise NotImplementedError, 'Please fix me up :('
     set_focus app
     press app.menu_bar_item(title:(app.title))
     press app.menu_bar.menu_item(title:'Preferences…')
-    wait_for { app.dialog }
+    wait_for :dialog, as_descendant_of: app
   end
 
   ##
