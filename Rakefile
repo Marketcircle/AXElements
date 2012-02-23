@@ -86,13 +86,18 @@ end
 task :clobber => :clobber_fixture
 
 require 'rake/testtask'
-Rake::TestTask.new do |t|
-  t.libs     << 'test' << 'ext'
-  t.pattern   = 'test/**/test_*.rb'
-  t.ruby_opts = ['-rhelper']
-  t.verbose   = true
+namespace :test do
+  Rake::TestTask.new(:unit) do |t|
+    t.libs     << 'test'
+    t.pattern   = 'test/unit/**/test_*.rb'
+    t.ruby_opts = ['-rhelper']
+    t.verbose   = true
+  end
+  task :unit => [:ext, :fixture]
 end
-task :test => [:ext, :fixture]
+
+desc 'Run all tests'
+task :test => 'test:unit'
 
 
 ## Gem Packaging
@@ -101,7 +106,7 @@ require 'rubygems/package_task'
 spec = Gem::Specification.load('AXElements.gemspec')
 Gem::PackageTask.new(spec) { }
 
-desc 'Build gem and install it (does not look at dependencies)'
+desc 'Build and install gem (not including deps)'
 task :install => :gem do
   require 'rubygems/installer'
   Gem::Installer.new("pkg/#{spec.file_name}").install
