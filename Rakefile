@@ -87,17 +87,19 @@ task :clobber => :clobber_fixture
 
 require 'rake/testtask'
 namespace :test do
-  Rake::TestTask.new(:unit) do |t|
-    t.libs     << 'test'
-    t.pattern   = 'test/unit/**/test_*.rb'
-    t.ruby_opts = ['-rhelper']
-    t.verbose   = true
+  [:unit, :integration].each do |group|
+    Rake::TestTask.new(group) do |t|
+      t.libs     << 'test'
+      t.pattern   = "test/#{group}/**/test_*.rb"
+      t.ruby_opts = ['-rhelper']
+      t.verbose   = true
+    end
+    task group => [:ext, :fixture]
   end
-  task :unit => [:ext, :fixture]
 end
 
 desc 'Run all tests'
-task :test => 'test:unit'
+task :test => ['test:unit', 'test:integration']
 
 
 ## Gem Packaging
