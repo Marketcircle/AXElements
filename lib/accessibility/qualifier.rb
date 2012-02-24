@@ -4,6 +4,9 @@
 class Accessibility::Qualifier
 
   ##
+  # @note Parameterized attributes are not currently supported as a
+  #       filtering criteria.
+  #
   # Initialize a qualifier with the kind of object that you want to
   # qualify and a dictionary of filter criteria.
   #
@@ -16,8 +19,8 @@ class Accessibility::Qualifier
   # @param [#to_s] klass
   # @param [Hash]
   def initialize klass, criteria
-    @sym      = klass
-    @criteria = criteria
+    @sym = klass
+    compile criteria
   end
 
   ##
@@ -33,6 +36,22 @@ class Accessibility::Qualifier
 
 
   private
+
+  ##
+  # Take a hash of search filters and generate an optimized search
+  #
+  # @param [Hash]
+  def compile criteria
+    @filters = criteria.map do |key, value|
+      if value.kind_of? Hash
+        [:subsearch, key, value]
+      elsif value.kind_of? Regexp
+        [:match, key, value]
+      else
+        [:equality, key, value]
+      end
+    end
+  end
 
   ##
   # Checks if a candidate object is of the correct class, respecting
@@ -51,31 +70,31 @@ class Accessibility::Qualifier
   end
 
   ##
-  # @todo How could we handle filters that use parameterized
-  #       attributes?
-  # @todo Optimize searching by compiling filters into an
-  #       optimized filter qualifier. `eval` is not an option.
-  #
   # Determines if the element meets all the criteria of the filters,
   # spawning sub-searches if necessary.
   #
   # @param [AX::Element]
   def meets_criteria? element
-    @criteria.all? do |filter, value|
-      if value.kind_of? Hash
-        if element.respond_to? :children
-          !element.search(filter, value).blank?
-        end
+    @filters.all? do |filter|
+      self.send *filter, element
+    end
+  end
 
-      elsif element.respond_to? filter
-        element_value = element.send(filter)
-        if value.kind_of? Regexp
-          element_value.to_s.match value
-        else
-          element_value == value
-        end
+  def subsearch klass, criteria, element
+    if element.attributes.include? :children
+      !element.search(klass, criteria).blank?
+    end
+  end
 
-      end
+  def match attr, regexp, element
+    if element.attributes.include? attr
+      element.attribute(attr).match regexp
+    end
+  end
+
+  def equality attr, value, element
+    if element.attributes.include? attr
+      element.attribute(attr) == value
     end
   end
 
