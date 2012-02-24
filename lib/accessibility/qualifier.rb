@@ -4,9 +4,6 @@
 class Accessibility::Qualifier
 
   ##
-  # @note Parameterized attributes are not currently supported as a
-  #       filtering criteria.
-  #
   # Initialize a qualifier with the kind of object that you want to
   # qualify and a dictionary of filter criteria.
   #
@@ -45,6 +42,12 @@ class Accessibility::Qualifier
     @filters = criteria.map do |key, value|
       if value.kind_of? Hash
         [:subsearch, key, value]
+      elsif key.kind_of? Array
+        if value.kind_of? Regexp
+          [:parameterized_match, *key, value]
+        else
+          [:parameterized_equality, *key, value]
+        end
       elsif value.kind_of? Regexp
         [:match, key, value]
       else
@@ -95,6 +98,18 @@ class Accessibility::Qualifier
   def equality attr, value, element
     if element.attributes.include? attr
       element.attribute(attr) == value
+    end
+  end
+
+  def parameterized_match attr, param, regexp, element
+    if element.parameterized_attributes.include? attr
+      element.parameterized_attribute(attr, param).match regexp
+    end
+  end
+
+  def parameterized_equality attr, param, value, element
+    if element.parameterized_attributes.include? attr
+      element.parameterized_attribute(attr, param) == regexp
     end
   end
 
