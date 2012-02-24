@@ -1,4 +1,4 @@
-class TestAccessibiityErrors < MiniTest::Unit::TestCase
+class TestAccessibilityErrors < MiniTest::Unit::TestCase
 
   def test_lookup_failure_shows_inspect_output_of_arguments
     e = Accessibility::LookupFailure.new(:element, :name)
