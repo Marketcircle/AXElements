@@ -47,6 +47,9 @@ class AX::Element
   end
 
   ##
+  # @todo Consider returning `nil` if the element does not have
+  #       the given attribute.
+  #
   # Get the value of an attribute.
   #
   # @example
