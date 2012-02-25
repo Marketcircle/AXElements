@@ -6,7 +6,6 @@ framework 'ApplicationServices'
 # @todo Inertial scrolling
 # @todo Bezier paths
 # @todo More intelligent default duration
-# @todo Point arguments should accept a pair tuple...or should they?
 # @todo Refactor to try and reuse the same event for a single action
 #       instead of creating new events.
 # @todo Pause between down/up clicks
