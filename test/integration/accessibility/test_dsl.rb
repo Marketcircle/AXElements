@@ -113,4 +113,48 @@ class TestAccessibilityDSL < MiniTest::Unit::TestCase
     assert_instance_of AX::SystemWide, dsl.system_wide
   end
 
+  def test_element_under_mouse
+    [
+      app.main_window.close_button,
+      app.main_window.value_indicator
+    ].each do |element|
+      move_mouse_to element
+      assert_equal element, dsl.element_under_mouse
+    end
+  end
+
+  def test_element_at_point
+    [
+      app.main_window.minimize_button,
+      app.main_window.increment_arrow
+    ].each do |element|
+      assert_equal element, dsl.element_at_point(element.to_point, for: app)
+    end
+  end
+
+  def test_show_about_window
+    dialog = dsl.show_about_window_for app
+    assert_instance_of AX::Dialog, dialog
+    assert_equal 'AXElementsTester icon', dialog.image.description
+  ensure
+    press dialog.close_button if dialog
+  end
+
+  def test_show_prefs_for_app
+    prefs = dsl.show_preferences_window_for app
+    assert_kind_of AX::Window, prefs
+    assert_equal 'Preferences', prefs.title
+  ensure
+    press prefs.close_button if prefs
+  end
+
+  def test_scroll_to
+    table = app.main_window.table
+    ['AXIsNyan', 'AXSubrole'].each do |attr|
+      text = table.text_field(value: attr)
+      dsl.scroll_to text
+      assert NSContainsRect(table.bounds, text.bounds)
+    end
+  end
+
 end
