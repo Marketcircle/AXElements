@@ -520,16 +520,20 @@ module Accessibility::DSL
   end
 
   ##
-  # Try to open the preferences for an app using the menu bar.
+  # @note This method assumes that the app has setup the standard
+  #       CMD+, hotkey to open the pref window
+  #
+  # Try to open the preferences for an app. Returns the window that
+  # is opened.
   #
   # @param [AX::Application]
   # @return [AX::Window]
   def show_preferences_window_for app
-    raise NotImplementedError, 'Please fix me up :('
-    set_focus app
-    press app.menu_bar_item(title:(app.title))
-    press app.menu_bar.menu_item(title:'Preferences…')
-    wait_for :dialog, as_descendant_of: app
+    pref_window = nil
+    register_for(:window_created, from: app) { |w| pref_window = w }
+    type "\\COMMAND+,", app
+    wait_for_notification
+    pref_window
   end
 
   ##
