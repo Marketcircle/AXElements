@@ -424,7 +424,6 @@ class AX::Element
   #
   # @return [CGPoint]
   def to_point
-    highlight self, timeout: 1.5, color: NSColor.orangeColor if $DEBUG
     point = attr KAXPositionAttribute, for: @ref
     size  = attr KAXSizeAttribute,     for: @ref
     unwrap(point).center unwrap(size)
