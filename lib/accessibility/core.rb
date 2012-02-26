@@ -106,6 +106,7 @@ module Accessibility::Core
     ptr  = Pointer.new :long_long
     code = AXUIElementGetAttributeValueCount(element, attr, ptr)
     return ptr[0] if code.zero?
+    return 0      if code == KAXErrorFailure
     handle_error code, element, attr
   end
 
