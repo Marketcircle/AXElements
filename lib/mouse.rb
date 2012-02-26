@@ -173,7 +173,6 @@ module Mouse
     start   = Time.now
     timeout = false
     until close_enough?(current_position, to) || timeout do
-      timeout = true if Time.now - start > 5
       xremaining = (to.x - current_position.x)
       yremaining = (to.y - current_position.y)
       x = xstep.abs > xremaining.abs ? xremaining : xstep
@@ -183,6 +182,7 @@ module Mouse
       event = CGEventCreateMouseEvent(nil, type, from, button)
       CGEventPost(KCGHIDEventTap, event)
       sleep QUANTUM
+      timeout = true if Time.now - start > 5
     end
   end
 
