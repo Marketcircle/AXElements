@@ -13,4 +13,8 @@ class TestAccessibilityCore < MiniTest::Unit::TestCase
     cancel menu if menu
   end
 
+  def test_size_of_is_zero_when_failure_occurs
+    skip 'TODO: not sure how to trigger such a failure..'
+  end
+
 end
