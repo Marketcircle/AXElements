@@ -20,6 +20,7 @@ module Accessibility
       msg  = "Could not find `#{searchee}#{pp_filters(filters)}` "
       msg << "as a child of #{searcher.class}\n"
       msg << "Element Path:\n\t" << path_to(searcher)
+      msg << "Subtree:\n\t" << subtree_for(searcher) if $DEBUG
       super msg
     end
 
