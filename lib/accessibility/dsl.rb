@@ -508,7 +508,10 @@ module Accessibility::DSL
   end
 
   ##
-  # Show the "About" window for an app.
+  # @note This method assumes that the "About" window is an `AX::Dialog`
+  #
+  # Show the "About" window for an app. Returns the window that is
+  # opened.
   #
   # @param [AX::Application]
   # @return [AX::Window]
