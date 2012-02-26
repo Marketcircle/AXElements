@@ -5,7 +5,20 @@ require 'accessibility/factory'
 module Accessibility
   extend Accessibility::Factory
 
+
   class << self
+    # @group Debug
+
+    ##
+    # Whether or not to turn on DEBUG features in AXElements. The
+    # value is inherited from `$DEBUG` but can be overridden by an
+    # environment variable named `AXDEBUG`.
+    #
+    # @return [Boolean]
+    attr_accessor :debug
+    alias_method :debug?, :debug
+
+
     # @group Finding an application object
 
     ##
@@ -94,4 +107,12 @@ module Accessibility
     end
 
   end
+
+  # Initialize the DEBUG value
+  @debug = if ENV['AXDEBUG']
+             ENV['AXDEBUG'] == 'true'
+           else
+             $DEBUG
+           end
+
 end
