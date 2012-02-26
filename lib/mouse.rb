@@ -187,8 +187,8 @@ module Mouse
   end
 
   def close_enough? current, target
-    x = (current.x - target.x).abs
-    y = (current.y - target.y).abs
+    x = current.x - target.x
+    y = current.y - target.y
     delta = Math.sqrt((x**2) + (y**2))
     delta <= 2.0
   end
