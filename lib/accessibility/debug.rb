@@ -79,7 +79,7 @@ module Accessibility::Debug
   # @return [NSWindow]
   def highlight element, opts = {}
     app    = NSApplication.sharedApplication
-    colour = opts[:colour] || opts[:color] || NSColor.redColor
+    colour = opts[:colour] || opts[:color] || NSColor.magentaColor
     window = highlight_window_for element.bounds, colour
     kill window, after: opts[:timeout] if opts.has_key? :timeout
     window
