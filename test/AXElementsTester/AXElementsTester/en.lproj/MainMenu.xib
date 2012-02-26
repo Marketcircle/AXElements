@@ -1764,7 +1764,6 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 							<string key="NSFrame">{{13, 10}, {267, 280}}</string>
 							<reference key="NSSuperview" ref="439893737"/>
 							<reference key="NSWindow"/>
-							<reference key="NSNextKeyView" ref="848062562"/>
 							<array class="NSMutableArray" key="NSTabViewItems">
 								<object class="NSTabViewItem" id="233042657">
 									<string key="NSIdentifier">1</string>
@@ -1778,7 +1777,6 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 												<string key="NSFrame">{{10, 3}, {227, 238}}</string>
 												<reference key="NSSuperview" ref="848062562"/>
 												<reference key="NSWindow"/>
-												<reference key="NSNextKeyView" ref="74072879"/>
 												<array class="NSMutableArray" key="NSTabViewItems">
 													<object class="NSTabViewItem" id="234326074">
 														<string key="NSIdentifier">1</string>
@@ -1792,7 +1790,6 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 																	<string key="NSFrame">{{10, 7}, {187, 196}}</string>
 																	<reference key="NSSuperview" ref="74072879"/>
 																	<reference key="NSWindow"/>
-																	<reference key="NSNextKeyView" ref="20849277"/>
 																	<array class="NSMutableArray" key="NSTabViewItems">
 																		<object class="NSTabViewItem" id="464350627">
 																			<string key="NSIdentifier">1</string>
@@ -1806,7 +1803,6 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 																						<string key="NSFrame">{{-5, 7}, {177, 154}}</string>
 																						<reference key="NSSuperview" ref="20849277"/>
 																						<reference key="NSWindow"/>
-																						<reference key="NSNextKeyView" ref="554334345"/>
 																						<array class="NSMutableArray" key="NSTabViewItems">
 																							<object class="NSTabViewItem" id="645422606">
 																								<string key="NSIdentifier">1</string>
@@ -2062,7 +2058,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 											<string key="NSFrameSize">{238, 76}</string>
 											<reference key="NSSuperview" ref="655671804"/>
 											<reference key="NSWindow"/>
-											<reference key="NSNextKeyView" ref="547999767"/>
+											<reference key="NSNextKeyView" ref="325388295"/>
 											<bool key="NSEnabled">YES</bool>
 											<object class="NSTableHeaderView" key="NSHeaderView" id="47440030">
 												<reference key="NSNextResponder" ref="325388295"/>
@@ -2223,7 +2219,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 							<string key="NSFrame">{{288, 139}, {240, 94}}</string>
 							<reference key="NSSuperview" ref="439893737"/>
 							<reference key="NSWindow"/>
-							<reference key="NSNextKeyView" ref="325388295"/>
+							<reference key="NSNextKeyView" ref="655671804"/>
 							<int key="NSsFlags">133682</int>
 							<reference key="NSVScroller" ref="418778125"/>
 							<reference key="NSHScroller" ref="547999767"/>
@@ -2264,7 +2260,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 											<string key="NSFrameSize">{238, 96}</string>
 											<reference key="NSSuperview" ref="269171468"/>
 											<reference key="NSWindow"/>
-											<reference key="NSNextKeyView" ref="459480411"/>
+											<reference key="NSNextKeyView" ref="165624364"/>
 											<object class="NSTextContainer" key="NSTextContainer" id="987866784">
 												<object class="NSLayoutManager" key="NSLayoutManager">
 													<object class="NSTextStorage" key="NSTextStorage">
@@ -2381,7 +2377,7 @@ AAEAAQAAAT0AAwAAAAEAAgAAAVIAAwAAAAEAAQAAAVMAAwAAAAIAAQABAAAAAA</bytes>
 							<string key="NSFrame">{{288, 20}, {240, 111}}</string>
 							<reference key="NSSuperview" ref="439893737"/>
 							<reference key="NSWindow"/>
-							<reference key="NSNextKeyView" ref="165624364"/>
+							<reference key="NSNextKeyView" ref="269171468"/>
 							<int key="NSsFlags">133138</int>
 							<reference key="NSVScroller" ref="459480411"/>
 							<reference key="NSHScroller" ref="165624364"/>
@@ -3050,6 +3046,14 @@ AAEAAQAAAT0AAwAAAAEAAgAAAVIAAwAAAAEAAQAAAVMAAwAAAAIAAQABAAAAAA</bytes>
 						<reference key="destination" ref="560145579"/>
 					</object>
 					<int key="connectionID">530</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBActionConnection" key="connection">
+						<string key="label">orderFrontPreferencesPanel:</string>
+						<reference key="source" ref="1014"/>
+						<reference key="destination" ref="609285721"/>
+					</object>
+					<int key="connectionID">714</int>
 				</object>
 				<object class="IBConnectionRecord">
 					<object class="IBActionConnection" key="connection">
@@ -6162,24 +6166,27 @@ AAEAAQAAAT0AAwAAAAEAAgAAAVIAAwAAAAEAAQAAAVMAAwAAAAIAAQABAAAAAA</bytes>
 			<nil key="activeLocalization"/>
 			<dictionary class="NSMutableDictionary" key="localizations"/>
 			<nil key="sourceID"/>
-			<int key="maxID">712</int>
+			<int key="maxID">714</int>
 		</object>
 		<object class="IBClassDescriber" key="IBDocument.Classes">
 			<array class="NSMutableArray" key="referencedPartialClassDescriptions">
 				<object class="IBPartialClassDescription">
 					<string key="className">AppDelegate</string>
 					<string key="superclassName">NSObject</string>
-					<object class="NSMutableDictionary" key="actions">
-						<string key="NS.key.0">post_notification:</string>
-						<string key="NS.object.0">id</string>
-					</object>
-					<object class="NSMutableDictionary" key="actionInfosByName">
-						<string key="NS.key.0">post_notification:</string>
-						<object class="IBActionInfo" key="NS.object.0">
+					<dictionary class="NSMutableDictionary" key="actions">
+						<string key="orderFrontPreferencesPanel:">id</string>
+						<string key="post_notification:">id</string>
+					</dictionary>
+					<dictionary class="NSMutableDictionary" key="actionInfosByName">
+						<object class="IBActionInfo" key="orderFrontPreferencesPanel:">
+							<string key="name">orderFrontPreferencesPanel:</string>
+							<string key="candidateClassName">id</string>
+						</object>
+						<object class="IBActionInfo" key="post_notification:">
 							<string key="name">post_notification:</string>
 							<string key="candidateClassName">id</string>
 						</object>
-					</object>
+					</dictionary>
 					<dictionary class="NSMutableDictionary" key="outlets">
 						<string key="array_controller">id</string>
 						<string key="window">id</string>

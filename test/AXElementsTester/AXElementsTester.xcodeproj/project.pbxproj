@@ -15,6 +15,8 @@
 		AF48AEBC13B6E9EE0018BFA6 /* rb_main.rb in Resources */ = {isa = PBXBuildFile; fileRef = AF48AEBB13B6E9EE0018BFA6 /* rb_main.rb */; };
 		AF48AEBE13B6E9EE0018BFA6 /* AppDelegate.rb in Resources */ = {isa = PBXBuildFile; fileRef = AF48AEBD13B6E9EE0018BFA6 /* AppDelegate.rb */; };
 		AF48AECA13B6EE160018BFA6 /* hmmmmm.icns in Resources */ = {isa = PBXBuildFile; fileRef = AF48AEC913B6EE160018BFA6 /* hmmmmm.icns */; };
+		AF83889314F9D13E00B75B9A /* PrefPaneController.rb in Resources */ = {isa = PBXBuildFile; fileRef = AF83889214F9D13E00B75B9A /* PrefPaneController.rb */; };
+		AF8B2D7A14F9C75100E2ECB8 /* PrefPane.xib in Resources */ = {isa = PBXBuildFile; fileRef = AF8B2D7914F9C75100E2ECB8 /* PrefPane.xib */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -39,6 +41,8 @@
 		AF48AEBB13B6E9EE0018BFA6 /* rb_main.rb */ = {isa = PBXFileReference; lastKnownFileType = text.script.ruby; path = rb_main.rb; sourceTree = "<group>"; };
 		AF48AEBD13B6E9EE0018BFA6 /* AppDelegate.rb */ = {isa = PBXFileReference; lastKnownFileType = text.script.ruby; path = AppDelegate.rb; sourceTree = "<group>"; };
 		AF48AEC913B6EE160018BFA6 /* hmmmmm.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = hmmmmm.icns; sourceTree = "<group>"; };
+		AF83889214F9D13E00B75B9A /* PrefPaneController.rb */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.ruby; path = PrefPaneController.rb; sourceTree = "<group>"; };
+		AF8B2D7914F9C75100E2ECB8 /* PrefPane.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = PrefPane.xib; path = ../PrefPane.xib; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -85,6 +89,7 @@
 			isa = PBXGroup;
 			children = (
 				AF48AEBD13B6E9EE0018BFA6 /* AppDelegate.rb */,
+				AF83889214F9D13E00B75B9A /* PrefPaneController.rb */,
 				AF48AEB613B6E9EE0018BFA6 /* Resources */,
 				AF48AEBA13B6E9EE0018BFA6 /* Other Sources */,
 				AF48AEAE13B6E9ED0018BFA6 /* Supporting Files */,
@@ -106,6 +111,7 @@
 		AF48AEB613B6E9EE0018BFA6 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				AF8B2D7914F9C75100E2ECB8 /* PrefPane.xib */,
 				AF48AEB713B6E9EE0018BFA6 /* MainMenu.xib */,
 			);
 			name = Resources;
@@ -162,7 +168,7 @@
 		AF48AE9913B6E9ED0018BFA6 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0420;
+				LastUpgradeCheck = 0430;
 				ORGANIZATIONNAME = "Marketcircle Incorporated";
 			};
 			buildConfigurationList = AF48AE9C13B6E9ED0018BFA6 /* Build configuration list for PBXProject "AXElementsTester" */;
@@ -193,6 +199,8 @@
 				AF48AEBC13B6E9EE0018BFA6 /* rb_main.rb in Resources */,
 				AF48AEBE13B6E9EE0018BFA6 /* AppDelegate.rb in Resources */,
 				AF48AECA13B6EE160018BFA6 /* hmmmmm.icns in Resources */,
+				AF8B2D7A14F9C75100E2ECB8 /* PrefPane.xib in Resources */,
+				AF83889314F9D13E00B75B9A /* PrefPaneController.rb in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

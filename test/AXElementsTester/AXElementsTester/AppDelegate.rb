@@ -35,6 +35,12 @@ class AppDelegate
     array_controller.addObjects objects
   end
 
+  def orderFrontPreferencesPanel sender
+    prefs = PrefPaneController.alloc.initWithWindowNibName 'PrefPane'
+    prefs.loadWindow
+    prefs.showWindow self
+  end
+
   def post_notification sender
     NSAccessibilityPostNotification(yes_button.cell, 'Cheezburger')
   end
