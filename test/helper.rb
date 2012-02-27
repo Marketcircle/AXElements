@@ -15,8 +15,8 @@ if TEST_APP.nil?
   $stderr.puts 'Run `rake fixture`'
   exit 3
 else
-  sleep 2 # I haven't yet figured out a good way of knowing exactly
-          # when the app is ready for accessibility stuff
+  sleep 2 # Instead of using high level features of AXElements that we are
+          # testing, I think it is just safer to sleep
   # Make sure the test app is closed when testing finishes
   at_exit do TEST_APP.terminate end
 end
