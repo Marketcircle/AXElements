@@ -375,7 +375,7 @@ module Accessibility::DSL
   #   @param [Array(Float,Float)]
   def move_mouse_to arg
     if Accessibility.debug? && arg.respond_to?(:bounds)
-      highlight arg, timeout: 1.5, color: NSColor.orangeColor
+      highlight arg, timeout: 0.2, color: NSColor.orangeColor
     end
     Mouse.move_to arg.to_point
   end
