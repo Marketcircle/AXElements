@@ -194,6 +194,15 @@ class Boxed
   end
 
 
+  private
+
+  ##
+  # Return the height of the main screen.
+  #
+  # @return [Float]
+  def screen_height
+    NSMaxY(NSScreen.mainScreen.frame)
+  end
 end
 
 
@@ -244,17 +253,6 @@ class CGRect
   def flip!
     origin.y = screen_height - NSMaxY(self)
     self
-  end
-
-
-  private
-
-  ##
-  # Return the height of the main screen.
-  #
-  # @return [Float]
-  def screen_height
-    NSMaxY(NSScreen.mainScreen.frame)
   end
 end
 
