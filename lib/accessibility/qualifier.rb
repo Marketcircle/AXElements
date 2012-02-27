@@ -103,13 +103,13 @@ class Accessibility::Qualifier
 
   def parameterized_match attr, param, regexp, element
     if element.parameterized_attributes.include? attr
-      element.parameterized_attribute(attr, param).match regexp
+      element.attribute(attr, for_parameter: param).match regexp
     end
   end
 
   def parameterized_equality attr, param, value, element
     if element.parameterized_attributes.include? attr
-      element.parameterized_attribute(attr, param) == regexp
+      element.attribute(attr, for_parameter: param) == value
     end
   end
 
