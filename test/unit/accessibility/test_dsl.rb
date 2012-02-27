@@ -1,5 +1,4 @@
 class TestAccessibilityDSL < MiniTest::Unit::TestCase
-  include Accessibility::Core
 
   # LSP FTW
   class DSL
@@ -18,7 +17,7 @@ class TestAccessibilityDSL < MiniTest::Unit::TestCase
   end
 
   def element
-    @element ||= LanguageTest.new REF, attrs_for(REF)
+    @element ||= LanguageTest.new REF
   end
 
   def test_static_actions

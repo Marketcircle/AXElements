@@ -61,7 +61,7 @@ class TestAccessibilityFactory < MiniTest::Unit::TestCase
     assert_equal [],    process_array([])
     assert_equal [1],   process_array([1])
 
-    expected = [AX::Application.new(REF,attrs_for(REF))]
+    expected = [AX::Application.new(REF)]
     assert_equal expected, process_array([REF])
   end
 

@@ -1,8 +1,7 @@
 class TestAccessibilityQualifier < MiniTest::Unit::TestCase
-  include Accessibility::Core
 
   def app
-    AX::Application.new(REF, attrs_for(REF))
+    AX::Application.new REF
   end
 
   def qualifier klass, criteria

@@ -15,7 +15,7 @@ class AX::SystemWide < AX::Element
   # Overridden since there is only one way to get the element ref.
   def initialize
     ref = system_wide
-    super ref, attrs_for(ref)
+    super ref
   end
 
   ##

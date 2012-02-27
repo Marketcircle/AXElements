@@ -1,8 +1,7 @@
 class TestAccessibilityEnumeratorsBreadthFirst < MiniTest::Unit::TestCase
-  include Accessibility::Core
 
   def app
-    @@app ||= AX::Application.new REF, attrs_for(REF)
+    @@app ||= AX::Application.new REF
   end
 
   def test_each_iterates_in_correct_order
@@ -55,7 +54,7 @@ class TestAccessibilityEnumeratorsDepthFirst < MiniTest::Unit::TestCase
   include Accessibility::Core
 
   def app
-    @@app ||= AX::Application.new REF, attrs_for(REF)
+    @@app ||= AX::Application.new REF
   end
 
   def test_each_iterates_in_correct_order

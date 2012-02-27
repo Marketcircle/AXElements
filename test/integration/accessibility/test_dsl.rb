@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 
 class TestAccessibilityDSL < MiniTest::Unit::TestCase
-  include Accessibility::Core
 
   # LSP FTW
   class DSL
@@ -13,7 +12,7 @@ class TestAccessibilityDSL < MiniTest::Unit::TestCase
   end
 
   def app
-    @@app ||= AX::Application.new REF, attrs_for(REF)
+    @@app ||= AX::Application.new REF
   end
 
   def text_area

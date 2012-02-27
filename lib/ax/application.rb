@@ -9,11 +9,18 @@ require 'accessibility/string_parser'
 class AX::Application < AX::Element
   include Accessibility::StringParser
 
+  ##
+  # Overridden so that we can also cache the `NSRunningApplication`
+  # instance for this object.
+  def init ref, attrs
+    super
+    @app = NSRunningApplication.runningApplicationWithProcessIdentifier pid
+  end
 
   ##
   # Overridden so that we can also cache the `NSRunningApplication`
   # instance for this object.
-  def initialize ref, attrs
+  def initialize ref
     super
     @app = NSRunningApplication.runningApplicationWithProcessIdentifier pid
   end
