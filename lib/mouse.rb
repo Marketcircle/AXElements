@@ -167,22 +167,20 @@ module Mouse
   # Executes a mouse movement animation. It can be a simple cursor
   # move or a drag depending on what is passed to `type`.
   def animate type, button, from, to, duration
-    steps   = FPS * duration
-    xstep   = (to.x - from.x) / steps
-    ystep   = (to.y - from.y) / steps
+    xstep   = (to.x - from.x) / (FPS * duration)
+    ystep   = (to.y - from.y) / (FPS * duration)
     start   = Time.now
-    timeout = false
-    until close_enough?(current_position, to) || timeout do
-      xremaining = (to.x - current_position.x)
-      yremaining = (to.y - current_position.y)
-      x = xstep.abs > xremaining.abs ? xremaining : xstep
-      y = ystep.abs > yremaining.abs ? yremaining : ystep
-      from.x += x
-      from.y += y
+    until close_enough?(current_position, to) do
+      xremaining = to.x - current_position.x
+      yremaining = to.y - current_position.y
+      from.x    += xstep.abs > xremaining.abs ? xremaining : xstep
+      from.y    += ystep.abs > yremaining.abs ? yremaining : ystep
+
       event = CGEventCreateMouseEvent(nil, type, from, button)
       CGEventPost(KCGHIDEventTap, event)
+
       sleep QUANTUM
-      timeout = true if Time.now - start > 5
+      break if Time.now - start > 5
     end
   end
 
