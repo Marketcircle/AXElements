@@ -366,7 +366,7 @@ class AX::Element
     unless notifs.has_key? name
       raise ArgumentError, "You have no registrations for #{name}"
     end
-    _unregister_notification *notifs.delete(name)[0..1]
+    _unregister_notification *notifs.delete(name)
   end
 
   ##
@@ -489,12 +489,13 @@ class AX::Element
   end
 
   ##
-  # @todo What are the implications of not removing the run loop source?
+  # @todo What are the implications of removing the run loop source?
   #       Taking it out would clobber other notifications that are using
   #       the same source, so we would have to check if we can remove it.
   #
-  def _unregister_notification observer, notif
+  def _unregister_notification observer, notif, source
     # @todo remove run loop source?
+    CFRunLoopRemoveSource(CFRunLoopGetCurrent(), source, KCFRunLoopDefaultMode)
     unregister observer, from_receiving: notif, from: @ref
   end
 
