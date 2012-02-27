@@ -60,11 +60,11 @@ module Mouse
   # @param [CGPoint]
   # @param [Float] duration animation duration, in seconds
   def drag_to point, duration = 0.2
-    event = CGEventCreateMouseEvent(nil, KCGEventLeftMouseDown, current_position, KCGMouseButtonLeft)
-    CGEventPost(KCGHIDEventTap, event)
+    post new_event(KCGEventLeftMouseDown, current_position, KCGMouseButtonLeft)
+
     animate KCGEventLeftMouseDragged, KCGMouseButtonLeft, current_position, point, duration
-    event = CGEventCreateMouseEvent(nil, KCGEventLeftMouseUp, current_position, KCGMouseButtonLeft)
-    CGEventPost(KCGHIDEventTap, event)
+
+    post new_event(KCGEventLeftMouseUp, current_position, KCGMouseButtonLeft)
   end
 
   ##
@@ -81,15 +81,12 @@ module Mouse
   # @param [Symbol] units `:line` scrolls by line, `:pixel` scrolls by pixel
   def scroll amount, duration = 0.2, units = :line
     units   = UNIT[units] || raise(ArgumentError, "#{units} is not a valid unit")
-    steps   = (FPS * duration).floor
+    steps   = (FPS * duration).round
     current = 0.0
     steps.times do |step|
       done     = (step+1).to_f / steps
       scroll   = ((done - current)*amount).floor
-      # the fixnum arg represents the number of scroll wheels
-      # on the mouse we are simulating (up to 3)
-      event = CGEventCreateScrollWheelEvent(nil, units, 1, scroll)
-      CGEventPost(KCGHIDEventTap, event)
+      post new_scroll_event(units, 1, scroll)
       sleep QUANTUM
       current += scroll.to_f / amount
     end
@@ -100,11 +97,11 @@ module Mouse
   #
   # @param [CGPoint]
   def click point = current_position, duration = 12
-    event = CGEventCreateMouseEvent(nil, KCGEventLeftMouseDown, point, KCGMouseButtonLeft)
-    CGEventPost(KCGHIDEventTap, event)
-    duration.times do sleep QUANTUM end
-    CGEventSetType(event, KCGEventLeftMouseUp)
-    CGEventPost(KCGHIDEventTap, event)
+    event = new_event KCGEventLeftMouseDown, point, KCGMouseButtonLeft
+    post event
+    duration.times { sleep QUANTUM }
+    set event, to: KCGEventLeftMouseUp
+    post event
   end
 
   ##
@@ -112,11 +109,11 @@ module Mouse
   #
   # @param [CGPoint]
   def secondary_click point = current_position, duration = 12
-    event = CGEventCreateMouseEvent(nil, KCGEventRightMouseDown, point, KCGMouseButtonRight)
-    CGEventPost(KCGHIDEventTap, event)
-    duration.times do sleep QUANTUM end
-    CGEventSetType(event, KCGEventRightMouseUp)
-    CGEventPost(KCGHIDEventTap, event)
+    event = new_event KCGEventRightMouseDown, point, KCGMouseButtonRight
+    post event
+    duration.times { sleep QUANTUM }
+    set event, to: KCGEventRightMouseUp
+    post event
   end
   alias_method :right_click, :secondary_click
 
@@ -125,16 +122,16 @@ module Mouse
   #
   # @param [CGPoint]
   def double_click point = current_position
-    event = CGEventCreateMouseEvent(nil, KCGEventLeftMouseDown, point, KCGMouseButtonLeft)
-    CGEventPost(KCGHIDEventTap, event)
-    CGEventSetType(event,       KCGEventLeftMouseUp)
-    CGEventPost(KCGHIDEventTap, event)
+    event = new_event KCGEventLeftMouseDown, point, KCGMouseButtonLeft
+    post event
+    set  event, to: KCGEventLeftMouseUp
+    post event
 
     CGEventSetIntegerValueField(event, KCGMouseEventClickState, 2)
-    CGEventSetType(event,       KCGEventLeftMouseDown)
-    CGEventPost(KCGHIDEventTap, event)
-    CGEventSetType(event,       KCGEventLeftMouseUp)
-    CGEventPost(KCGHIDEventTap, event)
+    set  event, to: KCGEventLeftMouseDown
+    post event
+    set  event, to: KCGEventLeftMouseUp
+    post event
   end
 
   ##
@@ -179,8 +176,7 @@ module Mouse
       remaining  = to.y - current.y
       current.y += ystep.abs > remaining.abs ? remaining : ystep
 
-      event = CGEventCreateMouseEvent(nil, type, current, button)
-      CGEventPost(KCGHIDEventTap, event);
+      post new_event(type, current, button)
 
       sleep QUANTUM
       break if NSDate.date.timeIntervalSinceDate(start) > 5.0
@@ -193,6 +189,23 @@ module Mouse
     y = current.y - target.y
     delta = Math.sqrt((x**2) + (y**2))
     delta <= 2.0
+  end
+
+  def new_event event, position, button
+    CGEventCreateMouseEvent(nil, event, position, button)
+  end
+
+  # @param [Fixnum] wheel which scroll wheel to use (value between 1-3)
+  def new_scroll_event units, wheel, amount
+    CGEventCreateScrollWheelEvent(nil, units, wheel, amount)
+  end
+
+  def post event
+    CGEventPost(KCGHIDEventTap, event)
+  end
+
+  def set event, to: state
+    CGEventSetType(event, state)
   end
 
 end
