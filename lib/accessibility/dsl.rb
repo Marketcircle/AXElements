@@ -528,7 +528,7 @@ module Accessibility::DSL
     set_focus app
     press app.menu_bar_item(title:(app.title))
     press app.menu_bar.menu_item(title: "About #{app.title}")
-    wait_for :dialog, as_descendant_of: app
+    wait_for :dialog, parent: app
   end
 
   ##
