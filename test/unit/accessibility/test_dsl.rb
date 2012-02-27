@@ -10,6 +10,7 @@ class TestAccessibilityDSL < MiniTest::Unit::TestCase
     attr_reader :called_action
     def actions=  value; @actions       = value;  end
     def perform  action; @called_action = action; end
+    def search    *args; @search_args   = args;   end
   end
 
   def dsl
@@ -60,6 +61,21 @@ class TestAccessibilityDSL < MiniTest::Unit::TestCase
     assert_raises NoMethodError do
       dsl.raise NoMethodError
     end
+  end
+
+  def test_wait_for_searches_properly
+    klass, filters = :cake, {}
+    assert_equal [klass, filters], dsl.wait_for(klass,           parent: element)
+    assert_equal [klass, filters], dsl.wait_for(klass, as_descendant_of: element)
+
+    klass, filters = :pie, { type: 'Strawberry-Rhubarb' }
+    assert_equal [klass, filters], dsl.wait_for(klass, parent: element, filters: filters)
+  end
+
+  def test_wait_for_times_out
+    herp = Object.new
+    def herp.search *args; []; end
+    assert_nil dsl.wait_for(:derp, parent: herp, timeout: 0.1)
   end
 
 end
