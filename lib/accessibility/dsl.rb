@@ -337,13 +337,13 @@ module Accessibility::DSL
   # @return [AX::Element,nil]
   def wait_for element, opts = {}
     timeout = opts.delete(:timeout) || 30
-    filters = opts.delete(:filters)
+    filters = opts.delete(:filters) || {}
     parent  = opts.delete(:as_descendant_of) || opts.delete(:parent)
     raise ArgumentError, 'parent opt required' unless parent
 
     start = Time.now
     until Time.now - start > timeout
-      result = parent.search(element)
+      result = parent.search(element, filters)
       return result unless result.blank?
       sleep 0.25
     end
