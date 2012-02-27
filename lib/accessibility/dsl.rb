@@ -305,6 +305,7 @@ module Accessibility::DSL
   ##
   # Undo _all_ notification registries.
   def unregister_notifications
+    return unless @registered_elements
     @registered_elements.each do |element|
       element.unregister_notifications
     end
