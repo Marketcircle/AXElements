@@ -483,7 +483,7 @@ class AX::Element
     # we are ignoring the context pointer since this is OO
     Proc.new do |observer, sender, notif, _|
       break unless block.call(process sender) if block
-      _unregister_notification observer, notif
+      _unregister_notification observer, notif, run_loop_source_for(observer)
       CFRunLoopStop(CFRunLoopGetCurrent())
     end
   end
