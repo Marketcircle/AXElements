@@ -42,7 +42,7 @@ module Mouse
   #
   # @return [CGPoint]
   def current_position
-    NSEvent.mouseLocation.flip!
+    CGEventGetLocation(CGEventCreate(nil))
   end
 
   ##
