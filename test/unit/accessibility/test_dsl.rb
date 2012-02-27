@@ -82,4 +82,9 @@ class TestAccessibilityDSL < MiniTest::Unit::TestCase
     end
   end
 
+  def test_wait_for_allows_filtering_by_parent
+    result = dsl.wait_for :dude, parent: :hippie, ancestor: element
+    assert_equal [:dude, { parent: :hippie }], result
+  end
+
 end

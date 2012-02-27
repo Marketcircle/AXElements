@@ -343,8 +343,8 @@ module Accessibility::DSL
   # @options opts [AX::Element] :ancestor
   # @return [AX::Element,nil]
   def wait_for element, opts = {}
-    timeout  = opts.delete(:timeout) || 30
-    ancestor = opts.delete(:parent) || opts.delete(:ancestor)
+    timeout  = opts.delete(:timeout)  || 30
+    ancestor = opts.delete(:ancestor) || opts.delete(:parent)
     raise ArgumentError, 'parent/ancestor opt required' unless ancestor
 
     start = Time.now
