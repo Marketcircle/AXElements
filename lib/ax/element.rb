@@ -357,8 +357,8 @@ class AX::Element
     notif    = TRANSLATOR.guess_notification_for name
     observer = observer_for self.pid, &notif_callback_for(&block)
     source   = run_loop_source_for observer
-    CFRunLoopAddSource(CFRunLoopGetCurrent(), source, KCFRunLoopDefaultMode)
     register observer, to_receive: notif, from: @ref
+    CFRunLoopAddSource(CFRunLoopGetCurrent(), source, KCFRunLoopDefaultMode)
     notifs[name] = [observer, notif, source]
   end
 
@@ -494,7 +494,6 @@ class AX::Element
   #       the same source, so we would have to check if we can remove it.
   #
   def _unregister_notification observer, notif, source
-    # @todo remove run loop source?
     CFRunLoopRemoveSource(CFRunLoopGetCurrent(), source, KCFRunLoopDefaultMode)
     unregister observer, from_receiving: notif, from: @ref
   end
