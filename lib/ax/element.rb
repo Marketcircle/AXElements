@@ -464,7 +464,7 @@ class AX::Element
   alias_method :equal?, :==
 
 
-  protected
+  private
 
   def _parameterized_attributes
     @param_attrs ||= param_attrs_for @ref
