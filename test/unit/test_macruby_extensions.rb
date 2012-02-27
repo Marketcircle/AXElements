@@ -175,8 +175,14 @@ class TestCGPointExtensions < MiniTest::Unit::TestCase
     assert_equal point, point.to_point
   end
 
+  def test_flipping
+    size = NSScreen.mainScreen.frame.size
+    assert_equal CGPointMake(  0, size.height    ), CGPointZero.dup.flip!
+    assert_equal CGPointMake(100, size.height-200), CGPointMake(100,200).flip!
   end
 
+  def test_flipping_twice_returns_to_original
+    assert_equal CGPointZero.dup, CGPointZero.dup.flip!.flip!
   end
 
 end

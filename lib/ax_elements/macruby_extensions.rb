@@ -230,6 +230,15 @@ class CGPoint
   # @return [CGPoint]
   alias_method :to_point, :self
 
+  ##
+  # Treats the point as belonging to the flipped co-ordinate system
+  # and then flips it to be using the Cartesian co-ordinate system.
+  #
+  # @return [CGPoint]
+  def flip!
+    self.y = screen_height - self.y
+    self
+  end
 end
 
 
