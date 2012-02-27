@@ -315,10 +315,11 @@ module Accessibility::DSL
   # @todo Perhaps this method shoud raise an exception in failure cases
   #       instead of returning nil
   #
-  # Simply wait around for something to show up. This method takes a block
-  # which should give the path for an element that will eventually exist,
-  # or possibly already exists when you call this method. This method works
-  # by polling until the element appears or a timeout occurs.
+  # Simply wait around for something to show up. This method is similar to
+  # performing an explicit search on an element except that the search filters
+  # take two extra options which can control how long to wait and from where
+  # to start searches from. You __MUST__ supply either the parent or ancestor
+  # options to specify where to search from.
   #
   # This is an alternative to using the notifications system. It is far
   # easier to use than notifications in most cases, but it will perform
@@ -326,24 +327,29 @@ module Accessibility::DSL
   #
   # @example
   #
-  #   # Waiting for a hypothetical email from Mark Rada to appear
-  #   wait_for(5) { mail.main_window.static_text(value: 'Mark Rada') }
-  #
   #   # Waiting for a dialog window to show up
-  #   wait_for { app.dialog }
+  #   wait_for :dialog, parent: app
   #
-  # @param [Number]
-  # @yield
+  #   # Waiting for a hypothetical email from Mark Rada to appear
+  #   wait_for :static_text, value: 'Mark Rada', ancestor: mail.main_window
+  #
+  #   # Waiting for something that will never show up
+  #   wait_for :a_million_dollars, ancestor: fruit_basket, timeout: 1000000
+  #
+  # @param [#to_s]
+  # @param [Hash] opts
+  # @options opts [Number] :timeout (30)
+  # @options opts [AX::Element] :parent
+  # @options opts [AX::Element] :ancestor
   # @return [AX::Element,nil]
   def wait_for element, opts = {}
-    timeout = opts.delete(:timeout) || 30
-    filters = opts.delete(:filters) || {}
-    parent  = opts.delete(:as_descendant_of) || opts.delete(:parent)
-    raise ArgumentError, 'parent opt required' unless parent
+    timeout  = opts.delete(:timeout) || 30
+    ancestor = opts.delete(:parent) || opts.delete(:ancestor)
+    raise ArgumentError, 'parent/ancestor opt required' unless ancestor
 
     start = Time.now
     until Time.now - start > timeout
-      result = parent.search(element, filters)
+      result = ancestor.search(element, opts)
       return result unless result.blank?
       sleep 0.25
     end

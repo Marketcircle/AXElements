@@ -64,18 +64,22 @@ class TestAccessibilityDSL < MiniTest::Unit::TestCase
   end
 
   def test_wait_for_searches_properly
-    klass, filters = :cake, {}
-    assert_equal [klass, filters], dsl.wait_for(klass,           parent: element)
-    assert_equal [klass, filters], dsl.wait_for(klass, as_descendant_of: element)
-
-    klass, filters = :pie, { type: 'Strawberry-Rhubarb' }
-    assert_equal [klass, filters], dsl.wait_for(klass, parent: element, filters: filters)
+    assert_equal [:cake, {}], dsl.wait_for(:cake,   parent: element)
+    assert_equal [:cake, {}], dsl.wait_for(:cake, ancestor: element)
+    assert_equal [:pie, { type: 'Strawberry-Rhubarb' }],
+      dsl.wait_for(:pie, parent: element, type: 'Strawberry-Rhubarb')
   end
 
   def test_wait_for_times_out
     herp = Object.new
     def herp.search *args; []; end
     assert_nil dsl.wait_for(:derp, parent: herp, timeout: 0.1)
+  end
+
+  def test_wait_for_demands_a_parent_or_ancestor
+    assert_raises ArgumentError do
+      dsl.wait_for :bacon
+    end
   end
 
 end
