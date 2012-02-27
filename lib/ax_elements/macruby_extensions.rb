@@ -157,32 +157,6 @@ end
 
 
 ##
-# Extensions to `CGPoint`.
-class CGPoint
-  ##
-  # Find the center of a rectangle, treating `self` as the origin and
-  # the given `size` as the size of the rectangle.
-  #
-  # @param [CGSize] size
-  # @return [CGPoint]
-  def center size
-    x = self.x + (size.width / 2.0)
-    y = self.y + (size.height / 2.0)
-    CGPoint.new(x, y)
-  end
-
-  ##
-  # @note This method does not show up in the documentation with
-  #       YARD 0.7.x
-  #
-  # @return [CGPoint]
-  alias_method :to_point, :self
-
-  @ax_value = KAXValueCGPointType
-end
-
-
-##
 # Extensions to `NSObject`.
 class NSObject
   ##
@@ -218,6 +192,35 @@ class Boxed
   def to_axvalue
     wrap self
   end
+
+
+end
+
+
+##
+# Extensions to `CGPoint`.
+class CGPoint
+  @ax_value = KAXValueCGPointType
+
+  ##
+  # Find the center of a rectangle, treating `self` as the origin and
+  # the given `size` as the size of the rectangle.
+  #
+  # @param [CGSize] size
+  # @return [CGPoint]
+  def center size
+    x = self.x + (size.width / 2.0)
+    y = self.y + (size.height / 2.0)
+    CGPoint.new(x, y)
+  end
+
+  ##
+  # @note This method does not show up in the documentation with
+  #       YARD 0.7.x
+  #
+  # @return [CGPoint]
+  alias_method :to_point, :self
+
 end
 
 
