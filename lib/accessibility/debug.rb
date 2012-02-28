@@ -138,7 +138,9 @@ module Accessibility::Debug
       window.setIgnoresMouseEvents true
       window.setFrame bounds, display: false
       window.makeKeyAndOrderFront NSApp
-      window.send :alias_method, :stop, :close
+      def window.stop
+        close
+      end
       window
     end
 
