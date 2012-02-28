@@ -26,6 +26,8 @@ class AppDelegate
       end
     end
 
+    yes_button.setIdentifier "I'm a little teapot"
+
     def array_controller.selectsInsertedObjects
       false
     end
