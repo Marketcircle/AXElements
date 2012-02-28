@@ -62,6 +62,7 @@ class TestAXApplication < MiniTest::Unit::TestCase
   def test_terminate_kills_app
     skip 'Not sure how to reset state after this test...'
     assert AX::DOCK.terminate
+    assert AX::DOCK.terminated?
   end
 
   def test_overrides_call_super
