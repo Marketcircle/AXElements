@@ -13,14 +13,16 @@ module Accessibility
   ##
   # Error raised when an implicit search fails to return a result.
   class SearchFailure < NoMethodError
-    include Accessibility::Debug
 
     def initialize searcher, searchee, filters
       filters = {} unless filters.kind_of? Hash
       msg  = "Could not find `#{searchee}#{pp_filters(filters)}` "
       msg << "as a child of #{searcher.class}\n"
       msg << "Element Path:\n\t" << path_to(searcher)
-      msg << "\nSubtree:\n\t" << subtree_for(searcher) if Accessibility.debug?
+      # @todo Consider turning this on by default
+      if Accessibility::Debug.on?
+        msg << "\nSubtree:\n\t" << Accessibility::Debug.text_subtree(searcher)
+      end
       super msg
     end
 
@@ -36,7 +38,7 @@ module Accessibility
     end
 
     def path_to element
-      path(element).map! { |x| x.inspect }.join("\n\t")
+      Accessibility::Debug.path(element).map! { |x| x.inspect }.join("\n\t")
     end
   end
 

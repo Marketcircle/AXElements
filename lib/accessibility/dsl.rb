@@ -374,7 +374,7 @@ module Accessibility::DSL
   #   Move the mouse to an arbitrary point given as an two element array
   #   @param [Array(Float,Float)]
   def move_mouse_to arg
-    if Accessibility.debug? && arg.respond_to?(:bounds)
+    if Accessibility::Debug.on? && arg.respond_to?(:bounds)
       highlight arg, timeout: 0.2, color: NSColor.orangeColor
     end
     Mouse.move_to arg.to_point
