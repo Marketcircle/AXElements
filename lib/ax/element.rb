@@ -470,7 +470,7 @@ class AX::Element
   #
   # Like {#respond_to?}, this is overriden to include attribute methods.
   def methods include_super = true, include_objc_super = false
-    attributes << parameterized_attributes << super
+    attributes.concat(parameterized_attributes).concat(super)
   end
 
   ##
