@@ -41,17 +41,15 @@ class Accessibility::Qualifier
   def compile criteria
     @filters = criteria.map do |key, value|
       if value.kind_of? Hash
-        [:subsearch, key, value]
+        [:children, [:subsearch, key, value]]
       elsif key.kind_of? Array
-        if value.kind_of? Regexp
-          [:parameterized_match, *key, value]
-        else
-          [:parameterized_equality, *key, value]
-        end
-      elsif value.kind_of? Regexp
-        [:match, key, value]
+        filter = value.kind_of?(Regexp) ?
+          :parameterized_match : :parameterized_equality
+        [key.first, [filter, *key, value]]
       else
-        [:equality, key, value]
+        filter = value.kind_of?(Regexp) ?
+          :match : :equality
+        [key, [filter, key, value]]
       end
     end
   end
@@ -79,38 +77,30 @@ class Accessibility::Qualifier
   # @param [AX::Element]
   def meets_criteria? element
     @filters.all? do |filter|
-      self.send *filter, element
+      if element.respond_to? filter.first
+        self.send *filter.last, element
+      end
     end
   end
 
   def subsearch klass, criteria, element
-    if element.attributes.include? :children
-      !element.search(klass, criteria).blank?
-    end
+    !element.search(klass, criteria).blank?
   end
 
   def match attr, regexp, element
-    if element.attributes.include? attr
-      element.attribute(attr).match regexp
-    end
+    element.attribute(attr).match regexp
   end
 
   def equality attr, value, element
-    if element.attributes.include? attr
-      element.attribute(attr) == value
-    end
+    element.attribute(attr) == value
   end
 
   def parameterized_match attr, param, regexp, element
-    if element.parameterized_attributes.include? attr
-      element.attribute(attr, for_parameter: param).match regexp
-    end
+    element.attribute(attr, for_parameter: param).match regexp
   end
 
   def parameterized_equality attr, param, value, element
-    if element.parameterized_attributes.include? attr
-      element.attribute(attr, for_parameter: param) == value
-    end
+    element.attribute(attr, for_parameter: param) == value
   end
 
 end
