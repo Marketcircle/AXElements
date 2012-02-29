@@ -107,4 +107,18 @@ class TestAccessibilityQualifier < MiniTest::Unit::TestCase
     end
   end
 
+  # n is the number of filters used
+  def bench_filters
+    skip 'TODO'
+  end
+
+  # n is the number of elements compared
+  def bench_similar_elements
+    skip 'TODO'
+    q = qualifier(:DockItem, title: 'Finder')
+    assert_performance_linear do |n|
+      (items * n).each { |item| q.qualifies? item }
+    end
+  end
+
 end

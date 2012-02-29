@@ -191,8 +191,9 @@ module Accessibility::DSL
   end
 
   ##
-  # Focus an element on the screen, but do not set focus again if
-  # already focused.
+  # Focus an element on the screen if it can be focused. It is safe to
+  # pass any element into this method as nothing will happen if it is
+  # not capable of having focus set on it.
   #
   # @param [AX::Element]
   def set_focus element
@@ -374,7 +375,7 @@ module Accessibility::DSL
   #   Move the mouse to an arbitrary point given as an two element array
   #   @param [Array(Float,Float)]
   def move_mouse_to arg
-    if Accessibility.debug? && arg.respond_to?(:bounds)
+    if Accessibility::Debug.on? && arg.respond_to?(:bounds)
       highlight arg, timeout: 0.2, color: NSColor.orangeColor
     end
     Mouse.move_to arg.to_point

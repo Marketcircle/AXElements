@@ -315,6 +315,10 @@ class AX::Element
   #   window.application # => SearchFailure is raised
   #
   def method_missing method, *args
+    if method[-1] == EQUALS
+      return set(method.chomp(EQUALS), to: args.first)
+    end
+
     attribute = lookup method, with: @attrs
     if attribute
       return process attr(attribute, for: @ref)
@@ -484,6 +488,14 @@ class AX::Element
 
 
   private
+
+  ##
+  # @private
+  #
+  # Performance hack.
+  #
+  # @return [String]
+  EQUALS = '='
 
   def _parameterized_attributes
     @param_attrs ||= param_attrs_for @ref

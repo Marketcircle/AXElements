@@ -60,6 +60,13 @@ class AX::Application < AX::Element
   end
 
   ##
+  # Ask the app whether or not it is still running.
+  def terminated?
+    spin_run_loop
+    @app.terminated?
+  end
+
+  ##
   # Overridden to handle the {Accessibility::Language#set_focus} case.
   #
   # (see AX::Element#set:to:)
@@ -85,9 +92,15 @@ class AX::Application < AX::Element
   # @return [Boolean]
   def perform name
     case name
-    when :terminate then call_app(:terminated?, name)
-    when :hide      then call_app(:hidden?,     name)
-    when :unhide    then call_app(:active?,     :activateWithOptions, NSApplicationActivateIgnoringOtherApps)
+    when :terminate
+      @app.terminate
+      sleep 0.2 and terminated?
+    when :hide
+      @app.hide
+      sleep 0.2 and hidden?
+    when :unhide
+      @app.activateWithOptions NSApplicationActivateIgnoringOtherApps
+      sleep 0.2 and active?
     else
       super
     end
@@ -147,21 +160,6 @@ class AX::Application < AX::Element
   # @return [String]
   def bundle_identifier
     @app.bundleIdentifier
-  end
-
-
-  private
-
-  ##
-  # Call to the underlying `NSRunningApplication` object and wait an
-  # arbitrary amount of time for the action to complete.
-  #
-  # @param [#to_s]
-  def call_app test, *send_args
-    @app.send *send_args
-    sleep 0.2
-    spin_run_loop
-    @app.send test
   end
 
 end

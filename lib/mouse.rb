@@ -188,7 +188,7 @@ module Mouse
     x = current.x - target.x
     y = current.y - target.y
     delta = Math.sqrt((x**2) + (y**2))
-    delta <= 2.0
+    delta <= 1.0
   end
 
   def new_event event, position, button
