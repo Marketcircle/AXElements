@@ -580,8 +580,6 @@ module Accessibility::DSL
   # @return [Boolean]
   def scroll_menu_to element
     menu = element.ancestor :menu
-
-    return if NSContainsRect(menu.bounds, element.bounds)
     move_mouse_to menu
 
     direction = element.position.y > menu.position.y ? -5 : 5
@@ -589,8 +587,16 @@ module Accessibility::DSL
       scroll direction
     end
 
-    until element_under_mouse == element
-      move_mouse_to element
+    start = Time.now
+    while Time.now - start < 5
+      dude = element_under_mouse
+      if dude.kind_of? AX::Menu
+        scroll direction
+      elsif dude != element
+        move_mouse_to element
+      else
+        break
+      end
       sleep 0.2
     end
   end
