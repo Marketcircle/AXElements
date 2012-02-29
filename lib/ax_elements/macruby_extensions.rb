@@ -74,21 +74,13 @@ class NSArray
   private
 
   ##
-  # @private
-  #
-  # Cached the constant value to avoid `#dup` call.
-  #
-  # @return [String]
-  QUESTION_MARK = '?'.freeze
-
-  ##
   # Try to mangle a method name to a singularized form. This will also
   # chomp off a '?' at the end of the symbol in cases of predicates.
   #
   # @param [Symbol]
   # @return [Symbol]
   def singularized sym
-    sym.chomp(QUESTION_MARK).singularize.to_sym
+    sym.chomp('?').singularize.to_sym
   end
 end
 
