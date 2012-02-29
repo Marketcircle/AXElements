@@ -589,11 +589,12 @@ module Accessibility::DSL
     end
 
     start = Time.now
-    while Time.now - start < 5
-      dude = element_under_mouse
-      if dude.kind_of? AX::Menu
+    until Time.now - start > 5
+      # This can happen sometimes with the little arrow bars
+      # in menus covering up the menu item.
+      if element_under_mouse.kind_of? AX::Menu
         scroll direction
-      elsif dude != element
+      elsif element_under_mouse != element
         move_mouse_to element
       else
         break
