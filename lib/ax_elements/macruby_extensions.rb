@@ -109,6 +109,8 @@ class NSString
   # and therefore on Symbol objects...at least until that bug gets
   # fixed.
   #
+  # (see Accessibility::Inflector#singularize)
+  #
   # @return [String]
   def singularize
     Accessibility::Inflector.singularize(self)
@@ -117,6 +119,8 @@ class NSString
   ##
   # Force the `#underscore` method to be defined on NSString objects
   # so that it works on all strings.
+  #
+  # (see Accessibility::Inflector#underscore)
   #
   # @return [String]
   def underscore
