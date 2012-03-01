@@ -20,4 +20,12 @@ class TestAccessibilityErrors < MiniTest::Unit::TestCase
     assert_match /AX::List/, e.message
   end
 
+  def test_search_failure_includes_subtree_in_debug_mode
+    assert Accessibility::Debug.on?, 'Someone turned debugging off'
+    l = AX::DOCK.children.first
+    e = Accessibility::SearchFailure.new(l, :trash_dock_item, nil)
+    assert_match /Subtree:/, e.message
+    assert_match subtree_for(l), e.message
+  end
+
 end
