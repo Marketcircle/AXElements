@@ -128,6 +128,17 @@ class NSString
   end
 
   ##
+  # Force the `#classify` method to be defined on NSString objects
+  # so that it can work on all strings.
+  #
+  # (see Accessibility::Inflector#classify)
+  #
+  # @return [String]
+  def classify
+    Accessibility::Inflector.classify(self)
+  end
+
+  ##
   # Returns the upper camel case version of the string. The string
   # is assumed to be in `snake_case`, but still works on a string that
   # is already in camel case.

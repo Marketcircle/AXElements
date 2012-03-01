@@ -80,6 +80,12 @@ class NSStringExtensions < MiniTest::Unit::TestCase
     assert_equal 'nothing',           'nothing'.underscore
   end
 
+  def test_classify_calls_active_support
+    assert_equal 'Alpha',        'alpha'.classify
+    assert_equal 'BetaGamma',    'beta_gamma'.classify
+    assert_equal 'DeltaEpsilon', 'delta_epsilons'.classify
+  end
+
   def test_camelize
     assert_equal 'AMethodName', 'a_method_name'.camelize
     assert_equal 'MethodName',  'method_name'.camelize
