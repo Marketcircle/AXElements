@@ -20,6 +20,7 @@ class TestAccessibilityDSL < MiniTest::Unit::TestCase
     @element ||= LanguageTest.new REF
   end
 
+
   def test_static_actions
     def static_action action
       dsl.send action, element
@@ -60,19 +61,6 @@ class TestAccessibilityDSL < MiniTest::Unit::TestCase
     assert_raises NoMethodError do
       dsl.raise NoMethodError
     end
-  end
-
-  def test_wait_for_searches_properly
-    assert_equal [:cake, {}], dsl.wait_for(:cake,   parent: element)
-    assert_equal [:cake, {}], dsl.wait_for(:cake, ancestor: element)
-    assert_equal [:pie, { type: 'Strawberry-Rhubarb' }],
-      dsl.wait_for(:pie, parent: element, type: 'Strawberry-Rhubarb')
-  end
-
-  def test_wait_for_times_out
-    herp = Object.new
-    def herp.search *args; []; end
-    assert_nil dsl.wait_for(:derp, parent: herp, timeout: 0.1)
   end
 
   def test_wait_for_demands_a_parent_or_ancestor

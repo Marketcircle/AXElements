@@ -332,11 +332,13 @@ module Accessibility::DSL
   # performing an explicit search on an element except that the search filters
   # take two extra options which can control how long to wait and from where
   # to start searches from. You __MUST__ supply either the parent or ancestor
-  # options to specify where to search from.
+  # options to specify where to search from. Searching from the parent implies
+  # that what you are waiting for is a child of the parent and not a more
+  # distant descendant.
   #
   # This is an alternative to using the notifications system. It is far
   # easier to use than notifications in most cases, but it will perform
-  # more slowly.
+  # more slowly (and without all the fun crashes).
   #
   # @example
   #
@@ -351,23 +353,65 @@ module Accessibility::DSL
   #
   # @param [#to_s]
   # @param [Hash] opts
-  # @options opts [Number] :timeout (30)
+  # @options opts [Number] :timeout (15)
   # @options opts [AX::Element] :parent
   # @options opts [AX::Element] :ancestor
   # @return [AX::Element,nil]
   def wait_for element, opts = {}
-    timeout  = opts.delete(:timeout)  || 30
-    ancestor = opts.delete(:ancestor) || opts.delete(:parent)
-    raise ArgumentError, 'parent/ancestor opt required' unless ancestor
-
-    start = Time.now
-    until Time.now - start > timeout
-      result = ancestor.search(element, opts)
-      return result unless result.blank?
-      sleep 0.25
+    if opts.has_key? :ancestor
+      wait_for_descendant element, opts.delete(:ancestor), opts
+    elsif opts.has_key? :parent
+      wait_for_child element, opts.delete(:parent), opts
+    else
+      raise ArgumentError, 'parent/ancestor opt required'
     end
+  end
 
-    nil # raise Accessibility::SearchFailure ?
+  ##
+  # Wait around for particular element and then return that element.
+  # The options you pass to this method can be any search filter that
+  # you can normally use.
+  #
+  # @param [#to_s]
+  # @param [AX::Element]
+  # @param [Hash]
+  # @return [AX::Element,nil]
+  def wait_for_descendant descendant, ancestor, opts
+    timeout = opts.delete(:timeout) || 15
+    start   = Time.now
+    until Time.now - start > timeout
+      result = ancestor.search(descendant, opts)
+      return result unless result.blank?
+      sleep 0.2
+    end
+    nil
+  end
+
+  ##
+  # @note This is really just an optimized case of
+  #       {wait_for_descendant} when you know what you are waiting
+  #       for is a child of a particular element.
+  #
+  # Wait around for particular element and then return that element.
+  # The parent option must be the parent of the element you are
+  # waiting for, this method will not look further down the hierarchy.
+  # The options you pass to this method can be any search filter that
+  # you can normally use.
+  #
+  # @param [#to_s]
+  # @param [AX::Element]
+  # @param [Hash]
+  # @return [AX::Element,nil]
+  def wait_for_child child, parent, opts
+    timeout = opts.delete(:timeout) || 15
+    start   = Time.now
+    q       = Accessibility::Qualifier.new(child.classify, opts)
+    until Time.now - start > timeout
+      result = parent.children.find { |x| q.qualifies? x }
+      return result unless result.blank?
+      sleep 0.2
+    end
+    nil
   end
 
 

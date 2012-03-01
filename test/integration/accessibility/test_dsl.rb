@@ -69,6 +69,33 @@ class TestAccessibilityDSL < MiniTest::Unit::TestCase
     try_typing "First.\nSecond."
   end
 
+  def test_wait_for_obeys_timeout_option
+    # loop sleeps for 0.2, so we have to wait at least that long
+    start = Time.now
+    wait_for :strawberry_rhubarb, parent: AX::DOCK, timeout: 0.2
+    assert_in_delta Time.now, start, 0.3
+  end
+
+  def test_wait_for_parent_only_looks_at_children
+    result = wait_for :trash_dock_item, parent: AX::DOCK, timeout: 0.5
+    assert_nil result
+
+    result = wait_for :trash_dock_item, parent: AX::DOCK.list
+    assert_equal AX::DOCK.list.trash_dock_item, result
+
+    result = wait_for :button, parent: app.main_window, title: 'Yes'
+    assert_equal 'Yes', result.title
+  end
+
+  def test_wait_for_ancestor_searches
+    result = wait_for :trash_dock_item, ancestor: AX::DOCK
+    assert_equal AX::DOCK.list.trash_dock_item, result
+
+    result = wait_for :nothing, ancestor: AX::DOCK, timeout: 0.5
+    assert_nil result
+
+    result = wait_for :text_field, ancestor: app.main_window, value: 'AXIsNyan'
+    assert_equal 'AXIsNyan', result.value
   end
 
   def test_system_wide
