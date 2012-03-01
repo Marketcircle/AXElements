@@ -108,6 +108,14 @@ class TestNSObjectExtensions < MiniTest::Unit::TestCase
     assert_equal obj.method(:self), obj.method(:to_axvalue)
   end
 
+  def test_inspecting
+    url = NSURL.URLWithString('http://marketcircle.com/')
+    assert_equal url.description, url.inspect
+
+    bundle = CFBundleGetMainBundle()
+    assert_equal bundle.description, bundle.inspect
+  end
+
 end
 
 

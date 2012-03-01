@@ -161,6 +161,16 @@ class NSObject
   #
   # @return [Object]
   alias_method :to_axvalue, :self
+
+  ##
+  # See [MacRuby pull request #60](https://github.com/MacRuby/MacRuby/pulls/60)
+  # for the purpose of this. This is only useful here until the pull request is
+  # merged.
+  #
+  # @return [String]
+  def inspect
+    description
+  end
 end
 
 
