@@ -345,6 +345,7 @@ module Accessibility::Core
       handle_error code, app unless code.zero?
       sleep KEY_RATE
     end
+    sleep 0.1
   end
 
 

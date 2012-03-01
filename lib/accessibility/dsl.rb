@@ -253,7 +253,6 @@ module Accessibility::DSL
   def type string, app = system_wide
     sleep 0.1
     app.type_string string.to_s
-    sleep 0.1
   end
 
 
