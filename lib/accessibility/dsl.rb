@@ -395,6 +395,7 @@ module Accessibility::DSL
   # @param [#to_point]
   def drag_mouse_to arg
     Mouse.drag_to arg.to_point
+    sleep 0.2
   end
 
   ##
@@ -424,6 +425,7 @@ module Accessibility::DSL
   def click obj = nil
     move_mouse_to obj if obj
     Mouse.click
+    sleep 0.2
   end
 
   ##
@@ -436,6 +438,7 @@ module Accessibility::DSL
   def right_click obj = nil
     move_mouse_to obj if obj
     Mouse.right_click
+    sleep 0.2
   end
   alias_method :secondary_click, :right_click
 
@@ -449,6 +452,7 @@ module Accessibility::DSL
   def double_click obj = nil
     move_mouse_to obj if obj
     Mouse.double_click
+    sleep 0.2
   end
 
 
