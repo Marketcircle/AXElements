@@ -104,4 +104,27 @@ class TestAccessibilityDSL < MiniTest::Unit::TestCase
     end
   end
 
+  def test_scroll_menu_to
+    pop_up = app.main_window.pop_up_button
+
+    press pop_up
+    expected = pop_up.menu_item(title: '49')
+    scroll_menu_to expected
+    assert_equal expected, element_under_mouse
+    click
+    assert_equal '49', pop_up.value
+
+    press pop_up
+    expected = pop_up.menu_item(title: 'Togusa')
+    scroll_menu_to expected
+    assert_equal expected, element_under_mouse
+    click
+    assert_equal 'Togusa', pop_up.value
+
+  ensure
+    unless pop_up.children.empty?
+      cancel pop_up.menu_item
+    end if pop_up
+  end
+
 end
