@@ -93,13 +93,13 @@ class AX::Application < AX::Element
   def perform name
     case name
     when :terminate
-      @app.terminate
+      terminated? || @app.terminate
       sleep 0.2 and terminated?
     when :hide
-      @app.hide
+      hidden? || @app.hide
       sleep 0.2 and hidden?
     when :unhide
-      @app.activateWithOptions NSApplicationActivateIgnoringOtherApps
+      active? || @app.activateWithOptions(NSApplicationActivateIgnoringOtherApps)
       sleep 0.2 and active?
     else
       super
