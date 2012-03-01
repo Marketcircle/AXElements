@@ -10,6 +10,7 @@ class AppDelegate
 
   attr_accessor :window
   attr_accessor :yes_button
+  attr_accessor :menu
   attr_accessor :array_controller
 
   def applicationDidFinishLaunching(a_notification)
@@ -35,6 +36,8 @@ class AppDelegate
       TableRow.new name, window.accessibilityAttributeValue(name).inspect
     end
     array_controller.addObjects objects
+
+    populate_menu
   end
 
   def orderFrontPreferencesPanel sender
@@ -45,6 +48,15 @@ class AppDelegate
 
   def post_notification sender
     NSAccessibilityPostNotification(yes_button.cell, 'Cheezburger')
+  end
+
+  def populate_menu
+    100.times do |num|
+      item = NSMenuItem.alloc.initWithTitle num.to_s,
+                                    action: nil,
+                             keyEquivalent: ''
+      menu.addItem item
+    end
   end
 
 end
