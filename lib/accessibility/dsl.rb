@@ -434,6 +434,7 @@ module Accessibility::DSL
       highlight arg, timeout: 0.2, color: NSColor.orangeColor
     end
     Mouse.move_to arg.to_point
+    sleep 0.1
   end
 
   ##
