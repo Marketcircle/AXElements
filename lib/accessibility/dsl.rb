@@ -251,7 +251,9 @@ module Accessibility::DSL
   #   @param [#to_s]
   #   @param [AX::Application]
   def type string, app = system_wide
+    sleep 0.1
     app.type_string string.to_s
+    sleep 0.1
   end
 
 
