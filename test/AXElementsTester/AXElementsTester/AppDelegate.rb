@@ -54,7 +54,7 @@ class AppDelegate
   end
 
   def populate_menu
-    100.times do |num|
+    50.times do |num|
       item = NSMenuItem.alloc.initWithTitle num.to_s,
                                     action: nil,
                              keyEquivalent: ''
