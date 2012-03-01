@@ -28,6 +28,10 @@ class TestAccessibilityDSL < MiniTest::Unit::TestCase
     dsl.type "\\COMMAND+a \b"
   end
 
+  def test_dsl_is_mixed_into_toplevel
+    assert_includes Object.new.class.ancestors, Accessibility::DSL
+  end
+
   def test_typing_human_string
     try_typing(
      "A sentence, with punctuation and num8ers. LOL!\tA 'quoted' string--then some @#*$."
@@ -51,8 +55,6 @@ class TestAccessibilityDSL < MiniTest::Unit::TestCase
     try_typing "First.\nSecond."
   end
 
-  def test_dsl_is_mixed_into_toplevel
-    assert_includes Object.new.class.ancestors, Accessibility::DSL
   end
 
   def test_system_wide
