@@ -65,3 +65,6 @@ end
 class AX::Element
   attr_reader :ref
 end
+
+# Force this to be on for testing
+Accessibility::Debug.on = true
