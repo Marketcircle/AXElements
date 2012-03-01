@@ -154,8 +154,8 @@ module Accessibility::DSL
   def app_with_bundle_identifier id
     Accessibility.application_with_bundle_identifier id
   end
-  alias_method :application_with_bundle_id, :app_with_bundle_identifier
-  alias_method :launch,                     :app_with_bundle_identifier
+  alias_method :app_with_bundle_id, :app_with_bundle_identifier
+  alias_method :launch,             :app_with_bundle_identifier
 
   ##
   # Find the application with the given name.
