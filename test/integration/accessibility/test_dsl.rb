@@ -103,7 +103,6 @@ class TestAccessibilityDSL < MiniTest::Unit::TestCase
   end
 
   def test_show_prefs_for_app
-    skip 'Known bug'
     prefs = dsl.show_preferences_window_for app
     assert_kind_of AX::Window, prefs
     assert_equal 'Preferences', prefs.title
