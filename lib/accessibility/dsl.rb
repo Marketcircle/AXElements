@@ -558,11 +558,13 @@ module Accessibility::DSL
   # @param [AX::Application]
   # @return [AX::Window]
   def show_preferences_window_for app
-    pref_window = nil
-    register_for(:window_created, from: app) { |w| pref_window = w }
+    windows = app.children.select { |x| x.kind_of? AX::Window }
     type "\\COMMAND+,", app
-    wait_for_notification
-    pref_window
+    new_windows = proc { app.children.select { |x| x.kind_of? AX::Window } }
+    while (new_windows.call - windows).empty?
+      sleep 0.1
+    end
+    (new_windows.call - windows).first
   end
 
   ##
