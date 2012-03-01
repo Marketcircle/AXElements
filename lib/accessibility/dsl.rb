@@ -141,37 +141,47 @@ module Accessibility::DSL
   end
 
   ##
-  # Find the app with the given option.
+  # Find the application with the given bundle identifier.
+  # If the application is not already running, it will be
+  # launched.
   #
   # @example
   #
-  #   app_with identifier: 'com.apple.finder'
-  #   app_with name: 'Finder'
-  #   app_with pid: 35843
+  #   app_with_identifier 'com.apple.finder'
   #
-  # @param [Hash{Symbol=>Object}] opt
-  # @option opt [Symbol] :bundle_identifier
-  # @option opt [Symbol] :identifier
-  # @option opt [Symbol] :bundle_id
-  # @option opt [Symbol] :id
-  # @option opt [Symbol] :name
-  # @option opt [Symbol] :process_identifier
-  # @option opt [Symbol] :pid
+  # @param [String]
   # @return [AX::Application]
-  def app_with opt
-    value = opt.values.first
-    case opt.keys.first
-    when :bundle_identifier, :bundle_id, :identifier, :id
-      Accessibility.application_with_bundle_identifier value
-    when :name
-      Accessibility.application_with_name value
-    when :process_identifier, :pid
-      Accessibility.application_with_pid value
-    else
-      raise ArgumentError, "#{key.inspect} is not a valid option"
-    end
+  def app_with_bundle_identifier id
+    Accessibility.application_with_bundle_identifier id
   end
-  alias_method :launch, :app_with
+  alias_method :application_with_bundle_id, :app_with_bundle_identifier
+  alias_method :launch,                     :app_with_bundle_identifier
+
+  ##
+  # Find the application with the given name.
+  #
+  # @example
+  #
+  #   app_with_name 'Finder'
+  #
+  # @param [String]
+  # @return [AX::Application,nil]
+  def app_with_name name
+    Accessibility.application_with_name name
+  end
+
+  ##
+  # Find the application with the given process identifier.
+  #
+  # @example
+  #
+  #   app_with_pid 35843
+  #
+  # @param [Fixnum]
+  # @return [AX::Application]
+  def app_with_pid pid
+    Accessibility.application_with_pid pid
+  end
 
   ##
   # @note This method overrides `Kernel#raise` so we have to check the

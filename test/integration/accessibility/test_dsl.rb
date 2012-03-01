@@ -32,6 +32,20 @@ class TestAccessibilityDSL < MiniTest::Unit::TestCase
     assert_includes Object.new.class.ancestors, Accessibility::DSL
   end
 
+  def test_application_with_bundle_id
+    assert_equal app, dsl.app_with_bundle_identifier(APP_BUNDLE_IDENTIFIER)
+    assert_equal app, dsl.app_with_bundle_id(APP_BUNDLE_IDENTIFIER)
+    assert_equal app, dsl.launch(APP_BUNDLE_IDENTIFIER)
+  end
+
+  def test_application_with_name
+    assert_equal app, dsl.app_with_name('AXElementsTester')
+  end
+
+  def test_application_with_pid
+    assert_equal app, dsl.app_with_pid(PID)
+  end
+
   def test_typing_human_string
     try_typing(
      "A sentence, with punctuation and num8ers. LOL!\tA 'quoted' string--then some @#*$."

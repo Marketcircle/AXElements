@@ -6,7 +6,7 @@ include Accessibility::DSL
 # The Mac OS X dock application.
 #
 # @return [AX::Application]
-AX::DOCK = app_with identifier: 'com.apple.dock'
+AX::DOCK = app_with_bundle_identifier 'com.apple.dock'
 
 require 'ax/button'
 require 'ax/radio_button'
