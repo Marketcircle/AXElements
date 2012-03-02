@@ -32,14 +32,13 @@ module Accessibility
     #   application_with_bundle_identifier 'com.apple.mail' # wait a few seconds
     #
     # @param [String] bundle a bundle identifier
-    # @param [Float] sleep_time how long to wait between polling
     # @return [AX::Application,nil]
-    def application_with_bundle_identifier bundle, sleep_time = 2
+    def application_with_bundle_identifier bundle
       10.times do |count|
         apps = NSRunningApplication.runningApplicationsWithBundleIdentifier bundle
         if apps.empty?
           launch_application bundle
-          sleep sleep_time
+          sleep 2
         else
           return application_with_pid apps.first.processIdentifier
         end
