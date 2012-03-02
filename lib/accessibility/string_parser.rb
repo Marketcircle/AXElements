@@ -164,6 +164,59 @@ module Accessibility::StringParser
   }
 
   ##
+  # Mapping of optioned (characters written when holding option/alt)
+  # characters to keycodes.
+  #
+  # @return [Hash{String=>Fixnum}]
+  OPTIONED = {
+    '¡'               => '1',
+    '™'               => '2',
+    '£'               => '3',
+    '¢'               => '4',
+    '∞'               => '5',
+    '§'               => '6',
+    '¶'               => '7',
+    '•'               => '8',
+    'ª'               => '9',
+    'º'               => '0',
+    '“'               => '[',
+    '‘'               => ']',
+    'æ'               => "'",
+    '≤'               => ',',
+    '≥'               => '.',
+    'π'               => 'p',
+    '¥'               => 'y',
+    'ƒ'               => 'f',
+    '©'               => 'g',
+    '®'               => 'r',
+    '¬'               => 'l',
+    '÷'               => '/',
+    '≠'               => '=',
+    '«'               => "\\",
+    'å'               => 'a',
+    'ø'               => 'o',
+    '´'               => 'e',
+    '¨'               => 'u',
+    'ˆ'               => 'i',
+    '∂'               => 'd',
+    '˙'               => 'h',
+    '†'               => 't',
+    '˜'               => 'n',
+    'ß'               => 's',
+    '–'               => '-',
+    '…'               => ';',
+    'œ'               => 'q',
+    '∆'               => 'j',
+    '˚'               => 'k',
+    '≈'               => 'x',
+    '∫'               => 'b',
+    'µ'               => 'm',
+    '∑'               => 'w',
+    '√'               => 'v',
+    'Ω'               => 'z',
+  }
+
+  ##
   # Map of aliased characters. You can map any one character here to
   # a new string that will be recursively parsed.
   #
