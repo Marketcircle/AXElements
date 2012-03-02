@@ -629,8 +629,9 @@ module Accessibility::DSL
     # calculate direction to scroll
     direction = element.position.y > scroll_area.position.y ? -5 : 5
     until NSContainsRect(scroll_area.bounds, element.bounds)
-      scroll direction
+      Mouse.scroll direction
     end
+    sleep 0.1
   end
 
   ##
@@ -645,7 +646,7 @@ module Accessibility::DSL
 
     direction = element.position.y > menu.position.y ? -5 : 5
     until NSContainsRect(menu.bounds, element.bounds)
-      scroll direction
+      Mouse.scroll direction
     end
 
     start = Time.now
