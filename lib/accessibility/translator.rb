@@ -35,7 +35,8 @@ class Accessibility::Translator
       end
     end
     # preload the table
-    @rubyisms[:id] = KAXIdentifierAttribute
+    @rubyisms[:id]          = KAXIdentifierAttribute
+    @rubyisms[:placeholder] = KAXPlaceholderValueAttribute
   end
 
   ##

@@ -25,8 +25,16 @@ class TestAccessibilityTranslator < MiniTest::Unit::TestCase
     lookup_test :title_ui_element, [KAXTitleUIElementAttribute], KAXTitleUIElementAttribute
     lookup_test :focused?,         [KAXFocusedAttribute],        KAXFocusedAttribute
     lookup_test :flabbergast,      [],                           nil
-    lookup_test :id,               [],                           KAXIdentifierAttribute
     lookup_test :totally_fake,     ['AXTotallyFake'],            'AXTotallyFake'
+  end
+
+  def test_lookup_aliases
+    def lookup_test key, values, expected
+      assert_equal expected, TRANSLATOR.lookup(key, with: values)
+    end
+
+    lookup_test :id,          [], KAXIdentifierAttribute
+    lookup_test :placeholder, [], KAXPlaceholderValueAttribute
   end
 
   def test_rubyize
