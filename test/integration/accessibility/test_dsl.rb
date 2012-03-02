@@ -117,7 +117,7 @@ class TestAccessibilityDSL < MiniTest::Unit::TestCase
       app.main_window.minimize_button,
       app.main_window.increment_arrow
     ].each do |element|
-      assert_equal element, dsl.element_at_point(element.to_point, for: app)
+      assert_equal element, dsl.element_at_point(element, for: app)
     end
   end
 
