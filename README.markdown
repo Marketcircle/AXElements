@@ -104,7 +104,7 @@ The
 is the best place to get started, it includes tutorials to help you get
 started as well the API documentation (API docs are broken right now due
 to incompatabilities between MacRuby and YARD). The starting tutorial is the
-[Inspecting Tutorial](docs/Inspecting.markdown Inspecting).
+[Inspecting Tutorial](docs/Inspecting.markdown).
 
 Documentation is hosted by rdoc.info, but you can also generate it yourself
 using YARD. Documentation is stored in the `docs/` directory, but the
