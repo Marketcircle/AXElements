@@ -469,6 +469,7 @@ module Accessibility::DSL
   def scroll lines, obj = nil
     move_mouse_to obj if obj
     Mouse.scroll lines
+    sleep 0.1
   end
 
   ##
