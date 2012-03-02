@@ -21,6 +21,7 @@ class TestAccessibilityDebug < MiniTest::Unit::TestCase
 
   def test_highlight_can_take_a_timeout
     w = Accessibility::Debug.highlight mock_element, timeout: 0.1
+    assert w.visible?
     sleep 0.15
     refute w.visible? # Not exactly the assertion I want, but close enough
   ensure
