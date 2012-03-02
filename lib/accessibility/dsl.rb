@@ -564,18 +564,15 @@ module Accessibility::DSL
   end
 
   ##
-  # Get the top most object at an arbitrary point on the screen.
+  # Get the top most object at an arbitrary point on the screen. The
+  # given point can be a CGPoint, an Array, or anything else that
+  # responds to `#to_point`.
   #
-  # @overload element_at_point([x, y], from: app)
-  #   @param [Array(Float,Float)] point
-  #
-  # @overload element_at_point(CGPoint.new(x,y), from: app)
-  #   @param [CGPoint] point
-  #
+  # @param [#to_point]
   # @return [AX::Element]
   def element_at_point point, for: app
-    x, y = *point.to_a
-    app.element_at_point x, y
+    point = point.to_point
+    app.element_at_point point.x, point.y
   end
 
   ##
