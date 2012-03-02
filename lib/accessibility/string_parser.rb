@@ -107,8 +107,6 @@ module Accessibility::StringParser
   }
 
   ##
-  # @private
-  #
   # Mapping of shifted (characters written when holding shift) characters
   # to keycodes.
   #
