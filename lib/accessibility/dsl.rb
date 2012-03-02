@@ -659,7 +659,6 @@ module Accessibility::DSL
       else
         break
       end
-      sleep 0.2
     end
   end
 
