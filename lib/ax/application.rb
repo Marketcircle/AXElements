@@ -20,9 +20,28 @@ class AX::Application < AX::Element
   ##
   # Overridden so that we can also cache the `NSRunningApplication`
   # instance for this object.
-  def initialize ref
-    super
-    @app = NSRunningApplication.runningApplicationWithProcessIdentifier pid
+  #
+  # You can initialize an application object with either the process
+  # identifier (pid) of the application, the name of the application,
+  # an `NSRunningApplication` instance for the application, or an
+  # accessibility (`AXUIElementRef`) token.
+  def initialize arg
+    case arg
+    when Fixnum
+      super application_for arg
+      @app = NSRunningApplication.runningApplicationWithProcessIdentifier arg
+    when String
+      spin_run_loop
+      @app = NSWorkspace.sharedWorkspace.runningApplications
+        .find { |app| app.localizedName == arg }
+      super application_for @app.processIdentifier
+    when NSRunningApplication
+      super application_for arg.processIdentifier
+      @app = arg
+    else
+      super arg # assume it is an AXUIElementRef
+      @app = NSRunningApplication.runningApplicationWithProcessIdentifier pid
+    end
   end
 
 

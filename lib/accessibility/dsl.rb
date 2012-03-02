@@ -167,7 +167,7 @@ module Accessibility::DSL
   # @param [String]
   # @return [AX::Application,nil]
   def app_with_name name
-    Accessibility.application_with_name name
+    AX::Application.new name
   end
 
   ##
@@ -180,7 +180,7 @@ module Accessibility::DSL
   # @param [Fixnum]
   # @return [AX::Application]
   def app_with_pid pid
-    Accessibility.application_with_pid pid
+    AX::Application.new pid
   end
 
   ##
