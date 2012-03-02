@@ -20,11 +20,10 @@ from a quick look window:
     require 'rubygems'
     require 'ax_elements'
 
-    finder = Accessibility.application_with_bundle_identifier 'com.apple.finder'
-    set_focus finder
+    finder = app_with_bundle_identifier 'com.apple.finder'
+    set_focus finder # bring to the front so you can see it happening
 
-    press finder.menu_bar_item(title: 'File')
-    press finder.menu_bar_item(title: 'File').menu_item(title: 'New Finder Window')
+    type "\\COMMAND+n"
     sleep 1 # this is so you can see it happen in "slow motion"
 
     window = finder.main_window
@@ -38,23 +37,24 @@ from a quick look window:
     scroll_to activity_monitor
     click activity_monitor
     type " " # type a space, which should bring up quick look
+    sleep 1
 
-    click finder.quick_look.button(identifier: 'QLControlOpen')
+    click finder.quick_look.button(id: 'QLControlOpen')
 ```
 
 A simpler example would be changing the system volume by moving the
-slider in the menu bar:
+slider in the menu bar (unless you've hidden it):
 
 ```ruby
     require 'rubygems'
     require 'ax_elements'
 
-    ui = Accessibility.application_with_bundle_identifier 'com.apple.systemuiserver'
+    ui     = app_with_bundle_id 'com.apple.systemuiserver'
     volume = ui.menu_extra(description: 'system sound volume')
 
     click volume
     15.times { decrement volume.slider }
-    15.times { increment  volume.slider }
+    15.times { increment volume.slider }
 ```
 
 
