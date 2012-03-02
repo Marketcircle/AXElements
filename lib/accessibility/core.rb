@@ -338,7 +338,7 @@ module Accessibility::Core
       handle_error code, app unless code.zero?
       sleep KEY_RATE
     end
-    sleep 0.1
+    sleep 0.1 # in many cases, UI is not done updating right away
   end
 
 
@@ -810,6 +810,9 @@ module Accessibility::Core
   OBSERVER = '^{__AXObserver}'.freeze
 
   ##
+  # @todo Make this runtime configurable. At that point, posting events
+  #       does too much to be in Core and needs to move elsewhere.
+  #
   # The delay between key presses. The default value is `0.01`, which
   # should be about 50 characters per second (down and up are separate
   # events).
@@ -820,9 +823,9 @@ module Accessibility::Core
   #
   # @return [Number]
   KEY_RATE = case ENV['KEY_RATE']
-             when 'VERY_SLOW' then 1.0
-             when 'SLOW'      then 0.1
-             when nil         then 0.01
+             when 'VERY_SLOW' then 0.9
+             when 'SLOW'      then 0.09
+             when nil         then 0.009
              else                  ENV['KEY_RATE'].to_f
              end
 
