@@ -59,10 +59,34 @@ class TestAXApplication < MiniTest::Unit::TestCase
     assert_match /\sfocused\[(?:✔|✘)\]/, app.inspect
   end
 
-  def test_terminate_kills_app
-    skip 'Not sure how to reset state after this test...'
-    assert AX::DOCK.terminate
-    assert AX::DOCK.terminated?
+  def test_terminate
+    got_called = false
+    mock       = Object.new
+    mock.define_singleton_method :terminate do
+      got_called = true
+    end
+    mock.define_singleton_method :terminated? do
+      false
+    end
+    app.instance_variable_set :@app, mock
+
+    app.perform(:terminate)
+    assert got_called
+  end
+
+  def test_force_terminate
+    got_called = false
+    mock       = Object.new
+    mock.define_singleton_method :forceTerminate do
+      got_called = true
+    end
+    mock.define_singleton_method :terminated? do
+      false
+    end
+    app.instance_variable_set :@app, mock
+
+    app.perform(:force_terminate)
+    assert got_called
   end
 
   def test_overrides_call_super

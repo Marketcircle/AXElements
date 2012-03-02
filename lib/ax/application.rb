@@ -95,6 +95,9 @@ class AX::Application < AX::Element
     when :terminate
       terminated? || @app.terminate
       sleep 0.2 and terminated?
+    when :force_terminate
+      terminated? || @app.forceTerminate
+      sleep 0.2 and terminated?
     when :hide
       hidden? || @app.hide
       sleep 0.2 and hidden?
