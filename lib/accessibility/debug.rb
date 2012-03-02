@@ -38,7 +38,7 @@ module Accessibility::Debug
     def path *elements
       element = elements.last
       return path(elements << element.parent) if element.respond_to? :parent
-    return elements
+      return elements
     end
 
     ##
