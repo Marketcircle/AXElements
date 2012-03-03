@@ -7,14 +7,6 @@ class Accessibility::Translator
   include Singleton
 
   ##
-  # @private
-  #
-  # Performance hack.
-  #
-  # @return [String]
-  QUESTION_MARK = '?'.freeze
-
-  ##
   # Initialize the caches.
   def initialize
     @unprefixes     = Hash.new do |hash, key|
@@ -35,8 +27,8 @@ class Accessibility::Translator
       end
     end
     # preload the table
-    @rubyisms[:id]          = KAXIdentifierAttribute
-    @rubyisms[:placeholder] = KAXPlaceholderValueAttribute
+    @rubyisms['id']          = KAXIdentifierAttribute
+    @rubyisms['placeholder'] = KAXPlaceholderValueAttribute
   end
 
   ##
@@ -63,7 +55,7 @@ class Accessibility::Translator
   # @return [String]
   def lookup key, with: values
     @values = values
-    @rubyisms[key]
+    @rubyisms[key.to_s]
   end
 
   # @return [Array<Symbol>]
@@ -82,5 +74,16 @@ class Accessibility::Translator
     const = "KAX#{name.camelize}Notification"
     Object.const_defined?(const) ? Object.const_get(const) : name
   end
+
+
+  private
+
+  ##
+  # @private
+  #
+  # Performance hack.
+  #
+  # @return [String]
+  QUESTION_MARK = '?'
 
 end
