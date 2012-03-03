@@ -75,7 +75,7 @@ class AX::Element
   #
   #   element.attribute :position # => #<CGPoint x=123.0 y=456.0>
   #
-  # @param [Symbol]
+  # @param [#to_s]
   def attribute attr
     real_attr = lookup attr, with: @attrs
     raise Accessibility::LookupFailure.new(self, attr) unless real_attr
@@ -100,7 +100,7 @@ class AX::Element
   #   table.size_of  :rows     # => 111
   #   window.size_of :children # => 16
   #
-  # @param [Symbol]
+  # @param [#to_s]
   # @return [Number]
   def size_of attr
     real_attr = lookup attr, with: @attrs
@@ -129,7 +129,7 @@ class AX::Element
   #   element.writable_attribute? :size  # => true
   #   element.writable_attribute? :value # => false
   #
-  # @param [Symbol] attr
+  # @param [#to_s] attr
   def writable_attribute? attr
     real_attr = lookup attr, with: @attrs
     raise Accessibility::LookupFailure.new(self, attr) unless real_attr
@@ -144,7 +144,7 @@ class AX::Element
   #   element.set :value, to: 'Hello, world!'
   #   element.set :size,  to: [100, 200].to_size
   #
-  # @param [String] attr an attribute constant
+  # @param [#to_s]
   # @return the value that you were setting is returned
   def set attr, to: value
     unless writable_attribute? attr
@@ -179,7 +179,7 @@ class AX::Element
   #
   #  text_field.attribute :string_for_range, for_param: (2..8).relative_to(10)
   #
-  # @param [Symbol]
+  # @param [#to_s]
   def attribute attr, for_parameter: param
     real_attr = lookup attr, with: _parameterized_attributes
     raise Accessibility::LookupFailure.new(self, attr) unless real_attr
@@ -198,7 +198,7 @@ class AX::Element
   #   button.actions  # => [:press]
   #   menu.actions    # => [:open, :cancel]
   #
-  # @return [Array<String>]
+  # @return [Array<Symbol>]
   def actions
     TRANSLATOR.rubyize _actions
   end
@@ -215,7 +215,7 @@ class AX::Element
   #
   #   button.perform :press # => true
   #
-  # @param [String] action an action constant
+  # @param [#to_s] action an action constant
   # @return [Boolean] true if successful
   def perform action
     real_action = lookup action, with: _actions
