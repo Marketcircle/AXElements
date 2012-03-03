@@ -18,4 +18,11 @@ class TestAXElement < MiniTest::Unit::TestCase
     assert element.my_little_pony = :firefly
   end
 
+  def test_respond_to_works_with_dynamic_setters
+    window = element.attribute(:main_window)
+    assert_respond_to window, :position=
+    assert_respond_to window, :size=
+    refute_respond_to window, :pie=
+  end
+
 end

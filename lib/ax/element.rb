@@ -436,7 +436,7 @@ class AX::Element
   # Overriden to respond properly with regards to dynamic attribute
   # lookups, but will return false for potential implicit searches.
   def respond_to? name
-    return true if lookup name, with: @attrs
+    return true if lookup name.chomp(EQUALS).to_sym, with: @attrs
     return true if lookup name, with: _parameterized_attributes
     return @attrs.include? KAXDescriptionAttribute if name == :description
     return super
