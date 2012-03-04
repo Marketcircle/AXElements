@@ -1,5 +1,3 @@
-require 'accessibility/graph'
-
 ##
 # Collection of utility methods helpful when trying to debug issues.
 module Accessibility::Debug
@@ -49,6 +47,7 @@ module Accessibility::Debug
     #
     # @return [String]
     def graph_subtree root
+      require 'accessibility/graph'
       dot = Accessibility::Graph.new(root)
       dot.build!
       dot.to_s
