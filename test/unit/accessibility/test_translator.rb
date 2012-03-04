@@ -48,6 +48,12 @@ class TestAccessibilityTranslator < MiniTest::Unit::TestCase
     rubyize_test [KAXSubroleAttribute, KAXChildrenAttribute], [:subrole, :children]
   end
 
+  def test_rubyize_doesnt_eat_original_data
+    array = [KAXTitleAttribute, KAXMainWindowAttribute]
+    TRANSLATOR.rubyize array
+    assert_equal [KAXTitleAttribute, KAXMainWindowAttribute], array
+  end
+
   def test_guess_notification_for
     def notif_test actual, expected
       assert_equal expected, TRANSLATOR.guess_notification_for(actual)
@@ -59,30 +65,32 @@ class TestAccessibilityTranslator < MiniTest::Unit::TestCase
     notif_test 'Cheezburger',               'Cheezburger'
   end
 
-  def test_values_are_cached
+
+  def test_unprefixes_are_cached
     unprefixes = TRANSLATOR.instance_variable_get :@unprefixes
     unprefixed = unprefixes['AXPieIsTheTruth']
     assert_includes unprefixes.keys, 'AXPieIsTheTruth'
     assert_equal    unprefixed, unprefixes['AXPieIsTheTruth']
+  end
 
+  def test_normalizations_are_cached
     normalizations = TRANSLATOR.instance_variable_get :@normalizations
     normalized     = normalizations['AXTheAnswer']
     assert_includes normalizations.keys, 'AXTheAnswer'
     assert_equal    normalized, normalizations['AXTheAnswer']
+  end
 
+  def test_rubyisms_are_cached
     rubyisms = TRANSLATOR.instance_variable_get :@rubyisms
                TRANSLATOR.instance_variable_set :@values, ['AXChocolatePancake']
     rubyized = rubyisms[:chocolate_pancake]
     assert_includes rubyisms.keys, :chocolate_pancake
     assert_equal    rubyized, rubyisms[:chocolate_pancake]
 
-    # notification guessing does not cache right now
-  end
-
-  def test_rubyize_doesnt_eat_original_data
-    array = [KAXTitleAttribute, KAXMainWindowAttribute]
-    TRANSLATOR.rubyize array
-    assert_equal [KAXTitleAttribute, KAXMainWindowAttribute], array
+    rubyized = rubyisms[:chocolate_pancake?]
+    assert_includes rubyisms.keys, :chocolate_pancake?
+    assert_equal    rubyized, rubyisms[:chocolate_pancake]
+    assert_equal    rubyized, rubyisms[:chocolate_pancake?]
   end
 
 end

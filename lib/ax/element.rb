@@ -75,7 +75,7 @@ class AX::Element
   #
   #   element.attribute :position # => #<CGPoint x=123.0 y=456.0>
   #
-  # @param [#to_s]
+  # @param [#to_sym]
   def attribute attr
     real_attr = lookup attr, with: @attrs
     raise Accessibility::LookupFailure.new(self, attr) unless real_attr
@@ -100,7 +100,7 @@ class AX::Element
   #   table.size_of  :rows     # => 111
   #   window.size_of :children # => 16
   #
-  # @param [#to_s]
+  # @param [#to_sym]
   # @return [Number]
   def size_of attr
     real_attr = lookup attr, with: @attrs
@@ -129,7 +129,7 @@ class AX::Element
   #   element.writable_attribute? :size  # => true
   #   element.writable_attribute? :value # => false
   #
-  # @param [#to_s] attr
+  # @param [#to_sym]
   def writable_attribute? attr
     real_attr = lookup attr, with: @attrs
     raise Accessibility::LookupFailure.new(self, attr) unless real_attr
@@ -144,7 +144,7 @@ class AX::Element
   #   element.set :value, to: 'Hello, world!'
   #   element.set :size,  to: [100, 200].to_size
   #
-  # @param [#to_s]
+  # @param [#to_sym]
   # @return the value that you were setting is returned
   def set attr, to: value
     unless writable_attribute? attr
@@ -167,7 +167,7 @@ class AX::Element
   #   window.param_attributes     # => []
   #   text_field.param_attributes # => [:string_for_range, :attributed_string, ...]
   #
-  # @return [Array<String>]
+  # @return [Array<Symbol>]
   def parameterized_attributes
     TRANSLATOR.rubyize _parameterized_attributes
   end
@@ -179,7 +179,7 @@ class AX::Element
   #
   #  text_field.attribute :string_for_range, for_param: (2..8).relative_to(10)
   #
-  # @param [#to_s]
+  # @param [#to_sym]
   def attribute attr, for_parameter: param
     real_attr = lookup attr, with: _parameterized_attributes
     raise Accessibility::LookupFailure.new(self, attr) unless real_attr
@@ -215,7 +215,7 @@ class AX::Element
   #
   #   button.perform :press # => true
   #
-  # @param [#to_s] action an action constant
+  # @param [#to_sym]
   # @return [Boolean] true if successful
   def perform action
     real_action = lookup action, with: _actions
@@ -436,7 +436,7 @@ class AX::Element
   # Overriden to respond properly with regards to dynamic attribute
   # lookups, but will return false for potential implicit searches.
   def respond_to? name
-    return true if lookup name.chomp(EQUALS).to_sym, with: @attrs
+    return true if lookup name.chomp(EQUALS), with: @attrs
     return true if lookup name, with: _parameterized_attributes
     return @attrs.include? KAXDescriptionAttribute if name == :description
     return super

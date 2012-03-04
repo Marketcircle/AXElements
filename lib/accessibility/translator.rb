@@ -9,26 +9,9 @@ class Accessibility::Translator
   ##
   # Initialize the caches.
   def initialize
-    @unprefixes     = Hash.new do |hash, key|
-      hash[key] = key.sub /^[A-Z]*?AX(?:Is)?|\s+/, ::EMPTY_STRING
-    end
-    @normalizations = Hash.new do |hash, key|
-      hash[key] =  @unprefixes[key].underscore.to_sym
-    end
-    @rubyisms       = Hash.new do |hash, key|
-      @values.each { |value| hash[@normalizations[value]] = value }
-      if hash.has_key? key
-        hash[key]
-      else
-        chomped_key = key.chomp(QUESTION_MARK).to_sym
-        if hash.has_key? chomped_key
-          hash[chomped_key]
-        end
-      end
-    end
-    # preload the table
-    @rubyisms['id']          = KAXIdentifierAttribute
-    @rubyisms['placeholder'] = KAXPlaceholderValueAttribute
+    init_unprefixes
+    init_normalizations
+    init_rubyisms
   end
 
   ##
@@ -52,10 +35,15 @@ class Accessibility::Translator
     @unprefixes[key]
   end
 
+  ##
+  # Given a symbol, return the equivalent accessibility constant.
+  #
+  # @param [#to_sym]
+  # @param [Array<String>]
   # @return [String]
   def lookup key, with: values
     @values = values
-    @rubyisms[key.to_s]
+    @rubyisms[key.to_sym]
   end
 
   # @return [Array<Symbol>]
@@ -85,5 +73,34 @@ class Accessibility::Translator
   #
   # @return [String]
   QUESTION_MARK = '?'
+
+  # @return [Hash{String=>String}]
+  def init_unprefixes
+    @unprefixes = Hash.new do |hash, key|
+      hash[key] = key.sub /^[A-Z]*?AX(?:Is)?|\s+/, ::EMPTY_STRING
+    end
+  end
+
+  # @return [Hash{String=>Symbol}]
+  def init_normalizations
+    @normalizations = Hash.new do |hash, key|
+      hash[key] = @unprefixes[key].underscore.to_sym
+    end
+  end
+
+  # @return [Hash{Symbol=>String}]
+  def init_rubyisms
+    @rubyisms = Hash.new do |hash, key|
+      @values.each do |v| hash[@normalizations[v]] = v end
+      hash.fetch(key) do |k|
+        chomped_key = k.chomp(QUESTION_MARK).to_sym
+        chomped_val = hash.fetch(chomped_key, nil)
+        hash[key]   = chomped_val if chomped_val
+      end
+    end
+    # preload the table
+    @rubyisms[:id]          = KAXIdentifierAttribute
+    @rubyisms[:placeholder] = KAXPlaceholderValueAttribute
+  end
 
 end
