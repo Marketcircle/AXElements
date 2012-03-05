@@ -1,128 +1,255 @@
-class TestAccessibilityStringParser < MiniTest::Unit::TestCase
-  include Accessibility::StringParser
+class TestAccessibilityStringLexer < MiniTest::Unit::TestCase
+
+  def lexer
+    Accessibility::String::Lexer
+  end
+
+  def test_lex_method_chaining
+    l = lexer.new ''
+    assert_kind_of lexer, l.lex
+  end
+
+  def test_lex_single_custom
+    l = lexer.new('\CMD').lex
+    assert_equal [['\CMD']], l.tokens
+  end
+
+  def test_lex_hotkey_custom
+    l = lexer.new('\COMMAND+,').lex
+    assert_equal [['\COMMAND',',']], l.tokens
+  end
+
+  def test_lex_multiple_custom
+    l = lexer.new('\COMMAND+\SHIFT+s').lex
+    assert_equal [['\COMMAND','\SHIFT','s']], l.tokens
+  end
+
+  def test_lex_simple_string
+    l = lexer.new('"It Just Works"™').lex
+    assert_equal ['"','I','t',' ','J','u','s','t',' ','W','o','r','k','s','"','™'], l.tokens
+
+    l = lexer.new('Martini, shaken.').lex
+    assert_equal ['M','a','r','t','i','n','i',',',' ','s','h','a','k','e','n','.'], l.tokens
+
+    l = lexer.new('Aston Martin DB7').lex
+    assert_equal ['A','s','t','o','n',' ','M','a','r','t','i','n',' ','D','B','7'], l.tokens
+  end
+
+  def test_lex_ruby_escapes
+    l = lexer.new("The cake is a lie\b\b\bdelicious").lex
+    assert_equal ['T','h','e',' ','c','a','k','e',' ','i','s',' ','a',' ','l','i','e',"\b","\b","\b",'d','e','l','i','c','i','o','u','s'], l.tokens
+  end
+
+  def test_lex_complex_string
+    l = lexer.new("\\COMMAND+a \bI deleted your text, lol!").lex
+    assert_equal [['\COMMAND','a'],"\b",'I',' ','d','e','l','e','t','e','d',' ','y','o','u','r',' ','t','e','x','t',',',' ','l','o','l','!'], l.tokens
+  end
+
+  def test_lex_backspace
+    l = lexer.new("\\").lex
+    assert_equal ["\\"], l.tokens
+
+    l = lexer.new('\ ').lex
+    assert_equal ["\\",' '], l.tokens
+
+    l = lexer.new('\hmm').lex
+    assert_equal ["\\",'h','m','m'], l.tokens
+
+    # is this the job of the parser or the lexer?
+    l = lexer.new('\HMM').lex
+    assert_equal [["\\HMM"]], l.tokens
+  end
+
+end
+
+
+class TestAccessibilityStringEventGenerator < MiniTest::Unit::TestCase
+
+  def generate *tokens
+    Accessibility::String::EventGenerator.new(tokens).events
+  end
 
   # key code for the left shift key
-  def shift
-    56
+  def shift_down
+    [56,true]
   end
 
-  def dymap
-    @@mapping ||= KeyCodeGenerator.dynamic_mapping
+  def shift_up
+    [56,false]
   end
 
-  def test_dynamic_map_initialized
-    refute_empty Accessibility::StringParser::MAPPING
+  def map
+    @@map ||= KeyCodeGenerator.dynamic_mapping
   end
 
-  def test_parsing_uppercase
-    h = dymap['h']
-    i = dymap['i']
-    expected = [[shift,true],[h,true],[h,false],[shift,false],
-                [shift,true],[i,true],[i,false],[shift,false]]
-    actual   = create_events_for 'HI'
+  def test_generate_lowercase
+    c, a, k, e = map.values_at 'c', 'a', 'k', 'e'
+    expected = [[c,true],[c,false],
+                [a,true],[a,false],
+                [k,true],[k,false],
+                [e,true],[e,false]]
+    actual   = generate 'c', 'a', 'k', 'e'
     assert_equal expected, actual
   end
 
-  def test_parsing_numbers
-    four = dymap['4']
-    two  = dymap['2']
-    expected = [[four,true],[four,false],[two,true],[two,false]]
-    actual   = create_events_for '42'
+  def test_generate_uppercase
+    h, i = map.values_at 'h', 'i'
+    expected = [shift_down,[h,true],[h,false],shift_up,
+                shift_down,[i,true],[i,false],shift_up]
+    actual   = generate 'H', 'I'
     assert_equal expected, actual
   end
 
-  def test_parsing_lowercase
-    c = dymap['c']
-    a = dymap['a']
-    k = dymap['k']
-    e = dymap['e']
-    expected = [[c,true],[c,false],[a,true],[a,false],[k,true],[k,false],[e,true],[e,false]]
-    actual   = create_events_for 'cake'
+  def test_generate_numbers
+    two, four = map.values_at '2', '4'
+    expected  = [[four,true],[four,false],[two,true],[two,false]]
+    actual    = generate '4', '2'
     assert_equal expected, actual
   end
 
-  def test_parsing_ruby_escapes
-    retern = dymap["\r"]
+  def test_generate_ruby_escapes
+    retern, tab, space = map.values_at "\r", "\t", "\s"
+
     expected = [[retern,true],[retern,false]]
-    actual   = create_events_for "\r"
+    actual   = generate "\r"
     assert_equal expected, actual
 
-    actual   = create_events_for "\n"
+    expected = expected
+    actual   = generate "\n"
     assert_equal expected, actual
 
-    tab = dymap["\t"]
     expected = [[tab,true],[tab,false]]
-    actual   = create_events_for "\t"
+    actual   = generate "\t"
     assert_equal expected, actual
 
-    space = dymap["\s"]
     expected = [[space,true],[space,false]]
-    actual = create_events_for "\s"
+    actual   = generate "\s"
     assert_equal expected, actual
 
-    actual = create_events_for ' '
+    expected = expected
+    actual   = generate ' '
     assert_equal expected, actual
   end
 
-  def test_parsing_symbols
-    dash = dymap['-']
+  def test_generate_symbols
+    dash, comma, apostrophe, bang, at, paren, chev =
+     map.values_at '-', ',', "'", '1', '2', '9', '.'
+
     expected = [[dash,true],[dash,false]]
-    actual   = create_events_for '-'
+    actual   = generate '-'
     assert_equal expected, actual
 
-    comma = dymap[',']
     expected = [[comma,true],[comma,false]]
     actual   = create_events_for ","
     assert_equal expected, actual
 
-    apostrophe = dymap["'"]
     expected = [[apostrophe,true],[apostrophe,false]]
-    actual   = create_events_for "'"
+    actual   = generate "'"
     assert_equal expected, actual
 
-    bang  = dymap['1']
-    expected = [[shift,true],[bang,true],[bang,false],[shift,false]]
-    actual   = create_events_for '!'
+    expected = [shift_down,[bang,true],[bang,false],shift_up]
+    actual   = generate '!'
     assert_equal expected, actual
 
-    at    = dymap['2']
-    expected = [[shift,true],[at,true],[at,false],[shift,false]]
-    actual   = create_events_for '@'
+    expected = [shift_down,[at,true],[at,false],shift_up]
+    actual   = generate '@'
     assert_equal expected, actual
 
-    paren = dymap['9']
-    expected = [[shift,true],[paren,true],[paren,false],[shift,false]]
-    actual   = create_events_for '('
+    expected = [shift_down,[paren,true],[paren,false],shift_up]
+    actual   = generate '('
     assert_equal expected, actual
 
-    chev  = dymap[',']
-    expected = [[shift,true],[chev,true],[chev,false],[shift,false]]
-    actual   = create_events_for "<"
+    expected = [[shift,true],[chev,true],[chev,false],shift_up]
+    actual   = generate '>'
     assert_equal expected, actual
   end
 
-  def test_parsing_backslashes
-    backslash = dymap["\\"]
+  def test_generate_unicode # holding option
+    sigma, tm, gbp, omega = map.values_at 'w', '2', '3', 'z'
+
+    expected = [[sigma,true],[sigma,false]]
+    actual   = generate '∑'
+    assert_equal expected, actual
+
+    expected = [[tm,true],[tm,false]]
+    actual   = generate '™'
+    assert_equal expected, actual
+
+    expected = [[gbp,true],[gbp,false]]
+    actual   = generate '£'
+    assert_equal expected, actual
+
+    expected = [[omega,true],[omega,false]]
+    actual   = generate 'Ω'
+    assert_equal expected, actual
+  end
+
+  def test_generate_backslashes
+    backslash, space, h, m =
+      map.values_at "\\", ' ', 'h', 'm'
+
     expected = [[backslash,true],[backslash,false]]
-    actual   = create_events_for "\\"
+    actual   = generate ["\\"]
+    assert_equal expected, actual
+
+    expected = [[backslash,true],[backslash,false],
+                [space,true],[space,false]]
+    actual   = generate ["\\",' ']
+    assert_equal expected, actual
+
+    expected = [[backslash,true],[backslash,false],
+                [h,true],[h,false],
+                [m,true],[m,false],
+                [m,true],[m,false]]
+    actual   = generate "\\",'h','m','m'
+    assert_equal expected, actual
+
+    # is this the job of the parser or the lexer?
+    expected = [[backslash,true],[backslash,false],
+                shift_down,[h,true],[h,false],shift_up,
+                shift_down,[m,true],[h,false],shift_up,
+                shift_down,[m,true],[h,false],shift_up]
+    actual   = generate ["\\HMM"]
     assert_equal expected, actual
   end
 
-  def test_parsing_custom_escapes
-    command = 0x37
+  def test_generate_a_custom_escape
+    command  = 0x37
     expected = [[command,true],[command,false]]
-    actual   = create_events_for "\\COMMAND"
+    actual   = generate ['\COMMAND']
     assert_equal expected, actual
+  end
 
-    rarrow  = 0x7c
+  def test_generate_hotkey
+    right_arrow = 0x7c
     expected = [[command,true],
-                  [shift,true],
-                    [rarrow,true],
-                    [rarrow,false],
-                  [shift,false],
+                  shift_down,
+                    [right_arrow,true],
+                    [right_arrow,false],
+                  shift_up,
                 [command,false]]
-    actual   = create_events_for "\\COMMAND+\\SHIFT+\\->"
+    actual   = generate ['\COMMAND','\SHIFT','\->']
     assert_equal expected, actual
   end
 
 end
+
+
+class TestAccessibilityString < MiniTest::Unit::TestCase
+  include Accessibility::String
+
+  def test_exposed
+    assert_respond_to self, :events_for
+  end
+
+  def test_dynamic_map_initialized
+    refute_empty Accessibility::String::MAPPING
+  end
+
+  def test_alias_is_included
+    map = Accessibility::String::MAPPING
+    assert_equal map["\r"], map["\n"]
+  end
+
+end
+
