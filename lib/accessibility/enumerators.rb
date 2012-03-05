@@ -24,7 +24,7 @@ module Accessibility::Enumerators
       queue = [@root]
       until queue.empty?
         queue.shift.attribute(:children).each do |x|
-          queue << x if x.respond_to? :children
+          queue << x if x.attributes.include? :children
           yield x
         end
       end
@@ -61,7 +61,7 @@ module Accessibility::Enumerators
       until stack.empty?
         current = stack.shift
         yield current
-        if current.respond_to? :children
+        if current.attributes.include? :children
           # need to reverse it since child ordering seems to matter in practice
           stack.unshift *current.attribute(:children)
         end
