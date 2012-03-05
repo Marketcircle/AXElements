@@ -45,6 +45,7 @@ module Accessibility::StringParser
     "\\CAPS"          => 0x39,
     "\\OPTION"        => 0x3A,
     "\\OPT"           => 0x3A,
+    "\\ALT"           => 0x3A,
     "\\CONTROL"       => 0x3B,
     "\\CTRL"          => 0x3B,
     "\\RSHIFT"        => 0x3C,
