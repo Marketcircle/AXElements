@@ -6,7 +6,7 @@ require 'accessibility/key_code_generator'
 #
 # Supports most, if not all, latin keyboard layouts, maybe some
 # international layouts as well.
-module Accessibility::StringParser
+module Accessibility::String
 
   ##
   # Regenerate the portion of the key mapping that is set dynamically based
@@ -217,24 +217,55 @@ module Accessibility::StringParser
   }
 
   ##
+  # Tokenizer for strings. This class will take a string and break
+  # it up into bit sized chunks for the string parser to parse.
+  class Lexer
 
-  ##
-  # @private
-  #
-  # Constant representing the event to set the SHIFT key to the
-  # 'down' state.
-  #
-  # @return [Array<Array(Number, Boolean)>]
-  SHIFT_DOWN = [[56, true]]
+    attr_accessor :tokens
 
-  ##
-  # @private
-  #
-  # Constant representing the event to set the SHIFT key to the
-  # 'up' state.
-  #
-  # @return [Array<Array(Number, Boolean)>]
-  SHIFT_UP   = [[56, false]]
+    def initialize string
+      @chars  = string
+      @tokens = []
+    end
+
+    def lex
+      @index  = 0
+      while @chars[@index]
+        char    = @chars[@index]
+        @tokens << if char == CUSTOM_ESCAPE && real_custom?
+                     lex_custom
+                   else
+                     char
+                   end
+        @index += 1
+      end
+      self
+    end
+
+
+    private
+
+    def lex_custom
+      start_index = @index
+      while (char = @chars[@index]) && char != SPACE
+        @index += 1
+      end
+      @chars[start_index...@index].split(PLUS)
+    end
+
+    # is it a real custom escape?
+    # kind of a lie, there is one case it does not handle
+    def real_custom?
+      (char = @chars[@index+1]) &&
+        char == char.upcase &&
+        char != SPACE
+    end
+
+    SPACE         = ' '
+    PLUS          = '+'
+    CUSTOM_ESCAPE = "\\"
+  end
+
 
   ##
   # Parse a string into a list of keyboard events to be executed in
