@@ -262,5 +262,11 @@ class TestAccessibilityString < MiniTest::Unit::TestCase
     assert_equal map["\r"], map["\n"]
   end
 
+  def test_can_parse_empty_string
+    assert_block do
+      events_for ''
+    end
+  end
+
 end
 
