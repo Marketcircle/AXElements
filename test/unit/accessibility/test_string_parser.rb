@@ -61,6 +61,11 @@ class TestAccessibilityStringLexer < MiniTest::Unit::TestCase
     assert_equal [["\\HMM"]], l.tokens
   end
 
+  def test_lex_bad_custom_seq
+    l = lexer.new('\COMMAND+')
+    assert_equal [['\COMMAND']], l.tokens
+  end
+
 end
 
 
