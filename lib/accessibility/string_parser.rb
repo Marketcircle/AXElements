@@ -360,10 +360,10 @@ end
 # @note This will only work if a run loop is runnig
 #
 # Register to be notified if the keyboard layout changes at runtime
-NSDistributedNotificationCenter.defaultCenter.addObserver Accessibility::StringParser,
+NSDistributedNotificationCenter.defaultCenter.addObserver Accessibility::String,
                                                 selector: 'regenerate_dynamic_mapping',
                                                     name: KTISNotifySelectedKeyboardInputSourceChanged,
                                                   object: nil
 
 # Initialize the table
-Accessibility::StringParser.regenerate_dynamic_mapping
+Accessibility::String.regenerate_dynamic_mapping
