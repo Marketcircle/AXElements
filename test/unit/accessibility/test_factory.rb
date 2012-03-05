@@ -1,3 +1,4 @@
+# arguably not unit tests, they depend on Core working
 class TestAccessibilityFactory < MiniTest::Unit::TestCase
   include Accessibility::Factory
 
