@@ -9,7 +9,7 @@ require 'accessibility/string_parser'
 # of the system wide object when you need to use it (even though they
 # are all the same thing).
 class AX::SystemWide < AX::Element
-  include Accessibility::StringParser
+  include Accessibility::String
 
   ##
   # Overridden since there is only one way to get the element ref.

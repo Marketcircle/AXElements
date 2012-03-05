@@ -7,7 +7,7 @@ require 'accessibility/string_parser'
 # As this class has evolved, it has gathered some functionality from
 # the `NSRunningApplication` class.
 class AX::Application < AX::Element
-  include Accessibility::StringParser
+  include Accessibility::String
 
   ##
   # Overridden so that we can also cache the `NSRunningApplication`
