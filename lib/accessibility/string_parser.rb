@@ -17,6 +17,7 @@ module Accessibility::StringParser
   def self.regenerate_dynamic_mapping
     # KeyCodeGenerator is declared in the Objective-C extension
     MAPPING.merge! KeyCodeGenerator.dynamic_mapping
+    MAPPING["\n"] = MAPPING["\r"]
   end
 
 
@@ -216,13 +217,6 @@ module Accessibility::StringParser
   }
 
   ##
-  # Map of aliased characters. You can map any one character here to
-  # a new string that will be recursively parsed.
-  #
-  # @return [Hash{String=>String}]
-  ALIASES = {
-    "\n"              => "\r"
-  }
 
   ##
   # @private
@@ -257,8 +251,6 @@ module Accessibility::StringParser
       char = chars.shift
       new_events = if SHIFTED[char]
                      SHIFT_DOWN + create_events_for(SHIFTED[char]) + SHIFT_UP
-                   elsif ALIASES[char]
-                     create_events_for ALIASES[char]
                    elsif char == "\\"
                      _parse_escapes chars.unshift char
                    elsif code = MAPPING[char]
