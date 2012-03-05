@@ -16,7 +16,6 @@ class TestAXApplication < MiniTest::Unit::TestCase
   end
 
   def test_caches_running_app
-    # hmm...
     assert_instance_of NSRunningApplication, running_app
   end
 
