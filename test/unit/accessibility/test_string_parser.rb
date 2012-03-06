@@ -1,6 +1,7 @@
 class TestAccessibilityStringLexer < MiniTest::Unit::TestCase
 
   def lexer
+    skip
     Accessibility::String::Lexer
   end
 
@@ -66,6 +67,7 @@ end
 class TestAccessibilityStringEventGenerator < MiniTest::Unit::TestCase
 
   def generate *tokens
+    skip
     Accessibility::String::EventGenerator.new(tokens).events
   end
 
@@ -221,6 +223,7 @@ class TestAccessibilityStringEventGenerator < MiniTest::Unit::TestCase
   end
 
   def test_generate_hotkey
+    skip
     right_arrow = 0x7c
     expected = [[command,true],
                   shift_down,
@@ -239,14 +242,17 @@ class TestAccessibilityString < MiniTest::Unit::TestCase
   #include Accessibility::String
 
   def test_exposed
+    skip
     assert_respond_to self, :events_for
   end
 
   def test_dynamic_map_initialized
+    skip
     refute_empty Accessibility::String::MAPPING
   end
 
   def test_alias_is_included
+    skip
     map = Accessibility::String::MAPPING
     assert_equal map["\r"], map["\n"]
   end
