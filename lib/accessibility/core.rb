@@ -237,12 +237,12 @@ module Accessibility::Core
   # Returns whether or not an attribute is writable for a specific element.
   #
   # @example
-  #   writable_attr? KAXSizeAttribute,  for: window_ref  # => true
-  #   writable_attr? KAXTitleAttribute, for: window_ref  # => false
+  #   attr_writable? KAXSizeAttribute,  for: window_ref  # => true
+  #   attr_writable? KAXTitleAttribute, for: window_ref  # => false
   #
   # @param [String] attr an attribute constant
   # @param [AXUIElementRef]
-  def writable_attr? attr, for: element
+  def attr_writable? attr, for: element
     ptr  = Pointer.new :bool
     code = AXUIElementIsAttributeSettable(element, attr, ptr)
     return ptr[0] if code.zero?

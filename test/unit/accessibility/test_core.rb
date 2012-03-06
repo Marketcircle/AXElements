@@ -165,19 +165,19 @@ class TestAccessibilityCore < MiniTest::Unit::TestCase
 
 
 
-  def test_writable_attr_correct_values
-    assert writable_attr?(KAXMainAttribute, for: window)
-    refute writable_attr?(KAXTitleAttribute, for: REF)
+  def test_attr_writable_correct_values
+    assert attr_writable?(KAXMainAttribute, for: window)
+    refute attr_writable?(KAXTitleAttribute, for: REF)
   end
 
-  def test_writable_attr_false_for_no_value_cases
+  def test_attr_writable_false_for_no_value_cases
     skip 'I am not aware of how to create such a case...'
     # refute writable_attr?(KAXChildrenAttribute, for: REF)
   end
 
-  def test_writable_attr_handles_errors
+  def test_attr_writable_handles_errors
     assert_raises ArgumentError do
-      writable_attr? 'FAKE', for: REF
+      attr_writable? 'FAKE', for: REF
     end
 
     # Not sure how to test other cases...

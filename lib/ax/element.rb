@@ -126,11 +126,11 @@ class AX::Element
   #
   # @example
   #
-  #   element.writable_attribute? :size  # => true
-  #   element.writable_attribute? :value # => false
+  #   element.attribute_writable? :size  # => true
+  #   element.attribute_writable? :value # => false
   #
   # @param [#to_sym]
-  def writable_attribute? attr
+  def attribute_writable? attr
     real_attr = lookup attr, with: @attrs
     raise Accessibility::LookupFailure.new(self, attr) unless real_attr
     writable_attr? real_attr, for: @ref
@@ -147,7 +147,7 @@ class AX::Element
   # @param [#to_sym]
   # @return the value that you were setting is returned
   def set attr, to: value
-    unless writable_attribute? attr
+    unless attribute_writable? attr
       raise NoMethodError, "#{attr} is read-only for #{inspect}"
     end
     real_attr = lookup attr, with: @attrs
