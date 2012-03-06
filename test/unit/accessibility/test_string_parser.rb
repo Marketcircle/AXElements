@@ -236,7 +236,7 @@ end
 
 
 class TestAccessibilityString < MiniTest::Unit::TestCase
-  include Accessibility::String
+  #include Accessibility::String
 
   def test_exposed
     assert_respond_to self, :events_for
