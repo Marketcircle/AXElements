@@ -133,7 +133,7 @@ class AX::Element
   def attribute_writable? attr
     real_attr = lookup attr, with: @attrs
     raise Accessibility::LookupFailure.new(self, attr) unless real_attr
-    writable_attr? real_attr, for: @ref
+    attr_writable? real_attr, for: @ref
   end
 
   ##
