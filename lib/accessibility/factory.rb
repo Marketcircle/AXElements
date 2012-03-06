@@ -84,7 +84,7 @@ module Accessibility::Factory
             else
               class_for TRANSLATOR.unprefix(role_for ref)
             end
-    klass.new ref, with: attrs
+    klass.fast_new ref, attrs
   end
 
   ##

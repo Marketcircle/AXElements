@@ -31,7 +31,7 @@ class AX::Element
   #
   # @param [AXUIElementRef]
   # @param [Array<String>]
-  def self.new ref, with: attrs
+  def self.fast_new ref, attrs
     o = allocate
     o.init ref, attrs
     o
