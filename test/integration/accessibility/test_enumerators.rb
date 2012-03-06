@@ -90,19 +90,22 @@ class TestAccessibilityEnumeratorsDepthFirst < MiniTest::Unit::TestCase
   end
 
   def test_each_with_level_has_correct_height
-    enum = Accessibility::Enumerators::DepthFirst.new app.main_window
+    enum   = Accessibility::Enumerators::DepthFirst.new app.main_window
+    actual = []
     enum.each_with_level do |element, level|
-      # msg = element.inspect
-      case element.class.to_s
-      when 'AX::CloseButton','AX::ZoomButton','AX::Slider','AX::RadioGroup',
-           'AX::ScrollArea','AX::CheckBox','AX::Incrementor','AX::SearchField'
-        assert_equal 1, level
-      when 'AX::WebArea','AX::Table','AX::ScrollBar'
-        assert_equal 2, level
-      when 'AX::SortButton'
-        assert_equal 4, level
-      end
+      actual << [element.class, level]
     end
+
+    assert_includes actual, [AX::Slider,         1]
+    assert_includes actual, [AX::CloseButton,    1]
+    assert_includes actual, [AX::ZoomButton,     1]
+    assert_includes actual, [AX::MinimizeButton, 1]
+    assert_includes actual, [AX::SearchField,    1]
+    assert_includes actual, [AX::CheckBox,       1]
+    assert_includes actual, [AX::WebArea,        2]
+    assert_includes actual, [AX::Table,          2]
+    assert_includes actual, [AX::ScrollBar,      2]
+    assert_includes actual, [AX::SortButton,     4]
   end
 
   def bench_each
