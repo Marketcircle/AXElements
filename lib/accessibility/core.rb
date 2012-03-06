@@ -112,14 +112,14 @@ module Accessibility::Core
   # `AXUIElementRef` objects instead of wrapped {AX::Element} objects.
   #
   # @example
-  #   attr KAXTitleAttribute,   for: window  # => "HotCocoa Demo"
-  #   attr KAXSizeAttribute,    for: window  # => #<AXValueRef>
-  #   attr KAXParentAttribute,  for: window  # => #<AXUIElementRef>
-  #   attr KAXNoValueAttribute, for: window  # => nil
+  #   value_of KAXTitleAttribute,   for: window  # => "HotCocoa Demo"
+  #   value_of KAXSizeAttribute,    for: window  # => #<AXValueRef>
+  #   value_of KAXParentAttribute,  for: window  # => #<AXUIElementRef>
+  #   value_of KAXNoValueAttribute, for: window  # => nil
   #
   # @param [String] attr an attribute constant
   # @param [AXUIElementRef]
-  def attr attr, for: element
+  def value_of attr, for: element
     ptr  = Pointer.new :id
     code = AXUIElementCopyAttributeValue(element, attr, ptr)
     return ptr[0] if code.zero?
@@ -139,16 +139,16 @@ module Accessibility::Core
   # `AXUIElementRef` objects instead of wrapped {AX::Element} objects.
   #
   # @example
-  #   attrs [KAXPositionAttribute, KAXSizeAttribute], for: window
+  #   values_of [KAXPositionAttribute, KAXSizeAttribute], for: window
   #       # => [#<AXValueRefx00000000>, #<AXValueRefx00000000>]
   #
-  #   attrs [KAXParentAttribute],  for: window  # => [#<AXUIElementRef>]
-  #   attrs [KAXNoValueAttribute], for: window  # => [nil]
+  #   values_of [KAXParentAttribute],  for: window  # => [#<AXUIElementRef>]
+  #   values_of [KAXNoValueAttribute], for: window  # => [nil]
   #
   # @param [Array<String>]
   # @param [AXUIElementRef]
   # @return [Array]
-  def attrs attrs, for: element
+  def values_of attrs, for: element
     ptr  = Pointer.new ARRAY
     code = AXUIElementCopyMultipleAttributeValues(element, attrs, 0, ptr)
     return ptr[0].map { |x|
@@ -216,7 +216,7 @@ module Accessibility::Core
   # @param [AXUIElementRef]
   # @return [Array<AX::Element>]
   def children_for element
-    attr KAXChildrenAttribute, for: element
+    value_of KAXChildrenAttribute, for: element
   end
 
   ##
@@ -232,19 +232,19 @@ module Accessibility::Core
   # @param [AXUIElementRef]
   # @return [Array<AX::Element>]
   def value_for element
-    attr KAXValueAttribute, for: element
+    value_of KAXValueAttribute, for: element
   end
 
   ##
   # Returns whether or not an attribute is writable for a specific element.
   #
   # @example
-  #   attr_writable? KAXSizeAttribute,  for: window_ref  # => true
-  #   attr_writable? KAXTitleAttribute, for: window_ref  # => false
+  #   writable? KAXSizeAttribute,  for: window_ref  # => true
+  #   writable? KAXTitleAttribute, for: window_ref  # => false
   #
   # @param [String] attr an attribute constant
   # @param [AXUIElementRef]
-  def attr_writable? attr, for: element
+  def writable? attr, for: element
     ptr  = Pointer.new :bool
     code = AXUIElementIsAttributeSettable(element, attr, ptr)
     return ptr[0] if code.zero?
@@ -259,8 +259,11 @@ module Accessibility::Core
   # Set the given value to the given attribute of the given element.
   #
   # @example
-  #   set KAXValueAttribute, to: 25,   for: slider      # => 25
-  #   set KAXValueAttribute, to: "hi", for: text_field  # => "hi"
+  #   set KAXValueAttribute, to: "hi", for: text_field
+  #     # => "hi"
+  #
+  #   set KAXSizeAttribute, to: wrap([250,250].to_axvalue), for: window
+  #     # => #<AXValueRef>
   #
   # @param [String] attr an attribute constant
   # @param [Object] value the new value to set on the attribute
@@ -328,7 +331,7 @@ module Accessibility::Core
   #
   # @example
   #
-  #   include Accessibility::StringParser
+  #   include Accessibility::String
   #   events = create_events_for "Hello, world!\n"
   #   post events, to: safari_ref
   #
@@ -382,13 +385,13 @@ module Accessibility::Core
   # @example
   #
   #   r = CFRange.new(1, 10).to_axvalue
-  #   param_attr KAXStringForRangeParameterizedAttribute, for_param: r, for: tf
+  #   value_of KAXStringForRangeParameterizedAttribute, for_param: r, for: tf
   #     # => "ello, worl"
   #
   # @param [String] attr an attribute constant
   # @param [Object] param
   # @param [AXUIElementRef]
-  def param_attr attr, for_param: param, for: element
+  def value_of attr, for_param: param, for: element
     ptr  = Pointer.new :id
     code = AXUIElementCopyParameterizedAttributeValue(element,attr,param,ptr)
     return ptr[0] if code.zero?
@@ -414,19 +417,18 @@ module Accessibility::Core
   #
   # @example
   #
-  #   element_at_point 453, 200, for: safari_ref       # web area
-  #   element_at_point 453, 200, for: system_wide_ref  # table
+  #   element_at [453, 200], for: safari_ref       # web area
+  #   element_at [453, 200], for: system_wide_ref  # table
   #
-  # @param [Float]
-  # @param [Float]
+  # @param [#to_point]
   # @param [AXUIElementRef]
   # @return [AXUIElementRef]
-  def element_at_point x, and: y, for: app
-    ptr  = Pointer.new ELEMENT
-    code = AXUIElementCopyElementAtPosition(app, x, y, ptr)
+  def element_at point, for: app
+    ptr   = Pointer.new ELEMENT
+    code  = AXUIElementCopyElementAtPosition(app, *point.to_point, ptr)
     return ptr[0] if code.zero?
     return nil    if code == KAXErrorNoValue
-    handle_error code, app, x, y, nil
+    handle_error code, app, point, nil, nil
   end
 
   ##
@@ -691,7 +693,7 @@ module Accessibility::Core
       "You can't set #{args.second.inspect} to " +
         "#{args.third.inspect} for #{args.first}"
     when 4
-      "The point [#{args.second}, #{args.third}] is not a valid point, " +
+      "The point #{args.second.to_point.inspect} is not a valid point, " +
         "or #{args.first} is not an AXUIElementRef"
     when 5
       "Either the observer #{args.third.inspect}, " +

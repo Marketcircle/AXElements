@@ -7,7 +7,7 @@ class TestAccessibilityCore < MiniTest::Unit::TestCase
   end
 
   def window
-    @@window ||= attr KAXMainWindowAttribute, for: REF
+    @@window ||= value_of KAXMainWindowAttribute, for: REF
   end
 
   def children
@@ -27,7 +27,7 @@ class TestAccessibilityCore < MiniTest::Unit::TestCase
   def yes_button
     @@yes_button ||= children.find do |item|
       if role_for(item) == KAXButtonRole
-        attr(KAXTitleAttribute, for: item) == 'Yes'
+        value_of(KAXTitleAttribute, for: item) == 'Yes'
       end
     end
   end
@@ -35,7 +35,7 @@ class TestAccessibilityCore < MiniTest::Unit::TestCase
   def web_area
     @@web_area ||= children_for(children_for(window).find do |item|
       if role_for(item) == 'AXScrollArea'
-        attr(KAXDescriptionAttribute, for: item) == 'Test Web Area'
+        value_of(KAXDescriptionAttribute, for: item) == 'Test Web Area'
       end
     end).first
   end
@@ -100,44 +100,44 @@ class TestAccessibilityCore < MiniTest::Unit::TestCase
 
 
   def test_attr_value_is_correct
-    assert_equal 'AXElementsTester', attr(KAXTitleAttribute,  for: REF)
-    assert_equal false,              attr(KAXHiddenAttribute, for: REF)
-    assert_equal AXValueGetTypeID(), CFGetTypeID(attr(KAXSizeAttribute, for: window))
+    assert_equal 'AXElementsTester', value_of(KAXTitleAttribute,  for: REF)
+    assert_equal false,              value_of(KAXHiddenAttribute, for: REF)
+    assert_equal AXValueGetTypeID(), CFGetTypeID(value_of(KAXSizeAttribute, for: window))
   end
 
   def test_attr_value_is_nil_when_no_value_error_occurs
-    assert_nil attr(KAXGrowAreaAttribute, for: window)
+    assert_nil value_of(KAXGrowAreaAttribute, for: window)
   end
 
   def test_attr_value_handles_errors
     assert_raises ArgumentError do
-      attr('MADEUPATTRIBUTE', for: REF)
+      value_of('MADEUPATTRIBUTE', for: REF)
     end
   end
 
 
 
   def test_attrs_value_is_correct
-    assert_equal ['AXElementsTester'], attrs([KAXTitleAttribute],  for: REF)
-    assert_equal [false],              attrs([KAXHiddenAttribute], for: REF)
+    assert_equal ['AXElementsTester'], values_of([KAXTitleAttribute],  for: REF)
+    assert_equal [false],              values_of([KAXHiddenAttribute], for: REF)
     assert_equal [CGPoint.ax_value, CGSize.ax_value],
-      attrs([KAXPositionAttribute, KAXSizeAttribute], for: window).map { |x| AXValueGetType(x) }
+      values_of([KAXPositionAttribute, KAXSizeAttribute], for: window).map { |x| AXValueGetType(x) }
   end
 
   def test_attrs_value_fills_in_nils_when_no_value_error_occurs
-    assert_nil attrs([KAXSubroleAttribute, KAXRoleAttribute], for: web_area).first
-    assert_nil attrs([KAXRoleAttribute, KAXSubroleAttribute], for: web_area).second
+    assert_nil values_of([KAXSubroleAttribute, KAXRoleAttribute], for: web_area).first
+    assert_nil values_of([KAXRoleAttribute, KAXSubroleAttribute], for: web_area).second
   end
 
   def test_attrs_value_handles_errors
     assert_raises ArgumentError do
-      attrs(['MADEUPATTRIBUTE'], for: nil)
+      values_of(['MADEUPATTRIBUTE'], for: nil)
     end
     assert_raises ArgumentError do
-      attrs(nil, for: REF)
+      values_of(nil, for: REF)
     end
     assert_raises ArgumentError do
-      attrs([], for: REF)
+      values_of([], for: REF)
     end
   end
 
@@ -154,30 +154,30 @@ class TestAccessibilityCore < MiniTest::Unit::TestCase
   end
 
   def test_children_for_macro
-    assert_equal attr(KAXChildrenAttribute, for: REF), children_for(REF)
-    assert_equal attr(KAXChildrenAttribute, for: slider), children_for(slider)
+    assert_equal value_of(KAXChildrenAttribute, for: REF), children_for(REF)
+    assert_equal value_of(KAXChildrenAttribute, for: slider), children_for(slider)
   end
 
   def test_value_for_macro
-    assert_equal attr(KAXValueAttribute, for: check_box), value_for(check_box)
-    assert_equal attr(KAXValueAttribute, for: slider), value_for(slider)
+    assert_equal value_of(KAXValueAttribute, for: check_box), value_for(check_box)
+    assert_equal value_of(KAXValueAttribute, for: slider), value_for(slider)
   end
 
 
 
   def test_attr_writable_correct_values
-    assert attr_writable?(KAXMainAttribute, for: window)
-    refute attr_writable?(KAXTitleAttribute, for: REF)
+    assert writable?(KAXMainAttribute, for: window)
+    refute writable?(KAXTitleAttribute, for: REF)
   end
 
   def test_attr_writable_false_for_no_value_cases
     skip 'I am not aware of how to create such a case...'
-    # refute writable_attr?(KAXChildrenAttribute, for: REF)
+    # refute writable?(KAXChildrenAttribute, for: REF)
   end
 
   def test_attr_writable_handles_errors
     assert_raises ArgumentError do
-      attr_writable? 'FAKE', for: REF
+      writable? 'FAKE', for: REF
     end
 
     # Not sure how to test other cases...
@@ -309,13 +309,13 @@ class TestAccessibilityCore < MiniTest::Unit::TestCase
 
 
   def test_param_attr_fetching
-    attr = param_attr KAXStringForRangeParameterizedAttribute,
+    attr =   value_of KAXStringForRangeParameterizedAttribute,
            for_param: CFRange.new(0, 5).to_axvalue,
                  for: static_text
 
     assert_equal 'AXEle', attr
 
-    attr = param_attr KAXAttributedStringForRangeParameterizedAttribute,
+    attr =   value_of KAXAttributedStringForRangeParameterizedAttribute,
            for_param: CFRange.new(0, 5).to_axvalue,
                  for: static_text
 
@@ -328,19 +328,19 @@ class TestAccessibilityCore < MiniTest::Unit::TestCase
 
   def test_param_attr_handles_errors
     assert_raises ArgumentError do # has no param attrs
-      param_attr KAXStringForRangeParameterizedAttribute,
+        value_of KAXStringForRangeParameterizedAttribute,
       for_param: CFRange.new(0, 10).to_axvalue,
             for: REF
     end
 
     assert_raises ArgumentError do # invalid element
-      param_attr KAXStringForRangeParameterizedAttribute,
+        value_of KAXStringForRangeParameterizedAttribute,
       for_param: CFRange.new(0, 10).to_axvalue,
             for: nil
     end
 
     assert_raises ArgumentError do # invalid argument
-      param_attr KAXStringForRangeParameterizedAttribute,
+        value_of KAXStringForRangeParameterizedAttribute,
       for_param: CFRange.new(0, 10),
             for: REF
      end
@@ -355,11 +355,11 @@ class TestAccessibilityCore < MiniTest::Unit::TestCase
   # lacks certain functionality that needs to be added...
 
   def test_element_at_point_gets_dude
-    point = attr KAXPositionAttribute, for: button
+    point = value_of KAXPositionAttribute, for: button
     ptr   = Pointer.new CGPoint.type
     AXValueGetValue(point, KAXValueCGPointType, ptr)
     point = ptr[0]
-    element = element_at_point point.x, and: point.y, for: REF
+    element = element_at point, for: REF
     assert_equal button, element
 
     # also check the system object
@@ -367,7 +367,7 @@ class TestAccessibilityCore < MiniTest::Unit::TestCase
 
   def test_element_at_point_handles_errors
     assert_raises ArgumentError do
-      element_at_point 10, and: 10, for: nil
+      element_at [10,10], for: nil
     end
 
     # Should test the other cases as well...
@@ -420,6 +420,7 @@ class TestAccessibilityCore < MiniTest::Unit::TestCase
     assert_equal [observer, yes_button, 'Cheezburger'], @notif_triple
 
   ensure
+    return
     CFRunLoopRemoveSource(CFRunLoopGetCurrent(), source, KCFRunLoopDefaultMode)
   end
 

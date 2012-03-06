@@ -79,7 +79,7 @@ class AX::Element
   def attribute attr
     real_attr = lookup attr, with: @attrs
     raise Accessibility::LookupFailure.new(self, attr) unless real_attr
-    process attr(real_attr, for: @ref)
+    process value_of(real_attr, for: @ref)
   end
 
   ##
@@ -133,7 +133,7 @@ class AX::Element
   def attribute_writable? attr
     real_attr = lookup attr, with: @attrs
     raise Accessibility::LookupFailure.new(self, attr) unless real_attr
-    attr_writable? real_attr, for: @ref
+    writable? real_attr, for: @ref
   end
 
   ##
@@ -164,8 +164,8 @@ class AX::Element
   #
   # @example
   #
-  #   window.param_attributes     # => []
-  #   text_field.param_attributes # => [:string_for_range, :attributed_string, ...]
+  #   window.parameterized_attributes     # => []
+  #   text_field.parameterized_attributes # => [:string_for_range, :attributed_string, ...]
   #
   # @return [Array<Symbol>]
   def parameterized_attributes
@@ -183,7 +183,7 @@ class AX::Element
   def attribute attr, for_parameter: param
     real_attr = lookup attr, with: _parameterized_attributes
     raise Accessibility::LookupFailure.new(self, attr) unless real_attr
-    process param_attr(real_attr, for_param: param.to_axvalue, for: @ref)
+    process value_of(real_attr, for_param: param.to_axvalue, for: @ref)
   end
 
 
@@ -321,12 +321,12 @@ class AX::Element
 
     attribute = lookup method, with: @attrs
     if attribute
-      return process attr(attribute, for: @ref)
+      return process value_of(attribute, for: @ref) if attribute
     end
 
     attribute = lookup method, with: _parameterized_attributes
     if attribute
-      return process param_attr(attribute, for_param: args.first, for: @ref)
+      return process value_of(attribute, for_param: args.first, for: @ref)
     end
 
     if @attrs.include? KAXChildrenAttribute
@@ -447,8 +447,8 @@ class AX::Element
   #
   # @return [CGPoint]
   def to_point
-    point = attr KAXPositionAttribute, for: @ref
-    size  = attr KAXSizeAttribute,     for: @ref
+    point = value_of KAXPositionAttribute, for: @ref
+    size  = value_of KAXSizeAttribute,     for: @ref
     unwrap(point).center unwrap(size)
   end
 
@@ -457,8 +457,8 @@ class AX::Element
   #
   # @return [CGRect]
   def bounds
-    point = attr KAXPositionAttribute, for: @ref
-    size  = attr KAXSizeAttribute,     for: @ref
+    point = value_of KAXPositionAttribute, for: @ref
+    size  = value_of KAXSizeAttribute,     for: @ref
     CGRectMake(*unwrap(point), *unwrap(size))
   end
 

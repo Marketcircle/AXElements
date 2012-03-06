@@ -9,20 +9,18 @@ class TestAccessibilityFactory < MiniTest::Unit::TestCase
   def scroll_area
     children_for(window).find { |x|
       attrs_for(x).include?(KAXDescriptionAttribute) &&
-        attr(KAXDescriptionAttribute, for: x) == 'Test Web Area'
+        value_of(KAXDescriptionAttribute, for: x) == 'Test Web Area'
     }
   end
 
   def web_area
-    children_for(scroll_area).find { |x|
-      role_for(x) == 'AXWebArea'
-    }
+    children_for(scroll_area).find { |x| role_for(x) == 'AXWebArea' }
   end
 
   def close_button
     children_for(window).find { |x|
       attrs_for(x).include?(KAXSubroleAttribute) &&
-        attr(KAXSubroleAttribute, for: x) == KAXCloseButtonSubrole
+        value_of(KAXSubroleAttribute, for: x) == KAXCloseButtonSubrole
     }
   end
 

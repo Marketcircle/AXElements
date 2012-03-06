@@ -167,8 +167,7 @@ class AX::Application < AX::Element
   #
   # @return [AX::Element,nil]
   def element_at_point x, y
-    element = element_at_point x, and: y, for: @ref
-    process element
+    process element_at(CGPointMake(x, y), for: @ref)
   end
 
   ##

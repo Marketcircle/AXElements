@@ -55,8 +55,8 @@ class TestAXSystemWide < MiniTest::Unit::TestCase
     extend Accessibility::Core
 
     [[10,10],[100,100],[500,500],[800,600]].each do |point|
-      expected = element_at_point point.first, and: point.second, for: element.ref
-      actual   = element.element_at_point *point
+      expected = element_at point, for: element.ref
+      actual   = element.element_at *point
       assert_equal expected, actual.ref
     end
   end
