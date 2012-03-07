@@ -75,13 +75,12 @@ class TestAccessibilityStringEventGenerator < MiniTest::Unit::TestCase
   end
 
   # key code for the left shift key
-  def shift_down
-    [56,true]
-  end
+  def shift_down; [56,true];  end
+  def shift_up;   [56,false]; end
 
-  def shift_up
-    [56,false]
-  end
+  # key code for the left option key
+  def option_down; [58,true];  end
+  def option_up;   [58,false]; end
 
   def map
     @@map ||= KeyCodeGenerator.dynamic_mapping
@@ -172,19 +171,19 @@ class TestAccessibilityStringEventGenerator < MiniTest::Unit::TestCase
   def test_generate_unicode # holding option
     sigma, tm, gbp, omega = map.values_at 'w', '2', '3', 'z'
 
-    expected = [[sigma,true],[sigma,false]]
+    expected = [option_down, [sigma,true],[sigma,false], option_up]
     actual   = generate '∑'
     assert_equal expected, actual
 
-    expected = [[tm,true],[tm,false]]
+    expected = [option_down, [tm,true],[tm,false], option_up]
     actual   = generate '™'
     assert_equal expected, actual
 
-    expected = [[gbp,true],[gbp,false]]
+    expected = [option_down, [gbp,true],[gbp,false], option_up]
     actual   = generate '£'
     assert_equal expected, actual
 
-    expected = [[omega,true],[omega,false]]
+    expected = [option_down, [omega,true],[omega,false], option_up]
     actual   = generate 'Ω'
     assert_equal expected, actual
   end
