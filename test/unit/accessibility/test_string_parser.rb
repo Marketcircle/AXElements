@@ -240,6 +240,12 @@ class TestAccessibilityStringEventGenerator < MiniTest::Unit::TestCase
     assert_equal expected, actual
   end
 
+  def test_bails_for_unmapped_token
+    assert_raises ArgumentError do
+      generate '☃'
+    end
+  end
+
 end
 
 
