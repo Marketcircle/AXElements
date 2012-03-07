@@ -317,13 +317,11 @@ module Accessibility::String
     end
 
     def generate_shifted token
-      code = SHIFTED[token]
-      [SHIFT_DOWN, [code,true],[code,false], SHIFT_UP]
+      [SHIFT_DOWN].concat(generate_dynamic(SHIFTED[token])) << SHIFT_UP
     end
 
     def generate_optioned token
-      code = OPTIONED[token]
-      [OPTION_DOWN, [code,true],[code,false], OPTION_UP]
+      [OPTION_DOWN].concat(generate_dynamic(OPTIONED[token])) << OPTION_UP
     end
 
     def generate_dynamic token
