@@ -38,7 +38,7 @@ module Accessibility::String
   # Map of custom escape sequences to their hardcoded keycode value.
   #
   # @return [Hash{String=>Fixnum}]
-  ESCAPES = {
+  CUSTOM = {
     'ESCAPE'          => 0x35,
     'ESC'             => 0x35,
     'COMMAND'         => 0x37,
@@ -109,18 +109,18 @@ module Accessibility::String
     '9'               => 0x5C,
     'Decimal'         => 0x41,
     '.'               => 0x41,
-    'Multiply'        => 0x43,
-    '*'               => 0x43,
     'Plus'            => 0x45,
     '+'               => 0x45,
-    'Clear'           => 0x47,
-    'Divide'          => 0x4B,
-    '/'               => 0x4B,
-    'Enter'           => 0x4C,
+    'Multiply'        => 0x43,
+    '*'               => 0x43,
     'Minus'           => 0x4E,
     '-'               => 0x4E,
+    'Divide'          => 0x4B,
+    '/'               => 0x4B,
     'Equals'          => 0x51,
     '='               => 0x51,
+    'Enter'           => 0x4C,
+    'Clear'           => 0x47,
   }
 
   ##
