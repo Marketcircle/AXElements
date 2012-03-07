@@ -289,10 +289,12 @@ module Accessibility::String
     end
 
     def events
-      # *2 since the output array will be at least *2 the
-      # number of tokens passed in; though a better number
-      # could be derived from analyzing common input...
-      seq = Array.new @tokens.size*2
+      # *4 since the output array will be at least *2 the
+      # number of tokens passed in, but will often be larger
+      # due to shifted/optioned characters and custom escapes
+      # though a better number could be derived from
+      # analyzing common input...
+      seq = Array.new # @tokens.size *4
       @tokens.each do |token|
         events = if token.kind_of? Array
                    generate_custom token
