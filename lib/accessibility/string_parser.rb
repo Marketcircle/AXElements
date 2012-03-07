@@ -281,6 +281,67 @@ module Accessibility::String
     CUSTOM_ESCAPE = "\\"
   end
 
+  ##
+  # Generate a sequence of keyboard events given tokens.
+  class EventGenerator
+    def initialize tokens
+      @tokens = tokens
+    end
+
+    def events
+      # *2 since the output array will be at least *2 the
+      # number of tokens passed in; though a better number
+      # could be derived from analyzing common input...
+      seq = Array.new @tokens.size*2
+      @tokens.each do |token|
+        events = if token.kind_of? Array
+                   generate_custom token
+                 elsif SHIFTED.has_key? token
+                   generate_shifted token
+                 elsif OPTIONED.has_key? token
+                   generate_optioned token
+                 else
+                   generate_dynamic token
+                 end
+        # @todo insert properly
+        seq.concat events
+      end
+      seq
+    end
+
+
+    private
+
+    def generate_custom token
+
+    end
+
+    def generate_shifted token
+      code = SHIFTED[token]
+      [SHIFT_DOWN, [code,true],[code,false], SHIFT_UP]
+    end
+
+    def generate_optioned token
+      code = OPTIONED[token]
+      [OPTION_DOWN, [code,true],[code,false], OPTION_UP]
+    end
+
+    def generate_dynamic token
+      code = MAPPING.fetch token, nil
+      return [code,true],[code,false] if code
+      raise ArgumentError, "#{token} has no mapping, bail!"
+    end
+
+    OPTION_DOWN = [58,true]
+    OPTION_UP   = [58,false]
+    SHIFT_DOWN  = [56,true]
+    SHIFT_UP    = [56,false]
+  end
+
+
+  def events_for string
+    EventGenerator.new(Lexer.new(string).lex.tokens).events
+  end
 
   ##
   # Parse a string into a list of keyboard events to be executed in
