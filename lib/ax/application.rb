@@ -156,6 +156,8 @@ class AX::Application < AX::Element
 
 
   ##
+  # @todo Include bundle identifier?
+  #
   # Override the base class to make sure the pid is included.
   def inspect
     (super).sub! />$/, "#{pp_checkbox(:focused)} pid=#{pid}>"
