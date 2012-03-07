@@ -34,12 +34,12 @@ class AX::SystemWide < AX::Element
   end
 
   def keydown modifier
-    post [[ESCAPES[modifier], true]], to: @ref
+    post [[CUSTOM[modifier], true]], to: @ref
     true
   end
 
   def keyup modifier
-    post [[ESCAPES[modifier], false]], to: @ref
+    post [[CUSTOM[modifier], false]], to: @ref
     true
   end
 

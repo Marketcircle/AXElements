@@ -144,12 +144,12 @@ class AX::Application < AX::Element
   end
 
   def keydown key
-    post [[ESCAPES[key], true]], to: @ref
+    post [[CUSTOM[key], true]], to: @ref
     true
   end
 
   def keyup key
-    post [[ESCAPES[key], false]], to: @ref
+    post [[CUSTOM[key], false]], to: @ref
   end
 
   # @endgroup
