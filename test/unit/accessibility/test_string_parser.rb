@@ -61,7 +61,7 @@ class TestAccessibilityStringLexer < MiniTest::Unit::TestCase
   end
 
   def test_lex_bad_custom_seq
-    l = lexer.new('\COMMAND+')
+    l = lexer.new('\COMMAND+').lex
     assert_equal [['\COMMAND']], l.tokens
   end
 
@@ -145,7 +145,7 @@ class TestAccessibilityStringEventGenerator < MiniTest::Unit::TestCase
     assert_equal expected, actual
 
     expected = [[comma,true],[comma,false]]
-    actual   = create_events_for ","
+    actual   = generate ","
     assert_equal expected, actual
 
     expected = [[apostrophe,true],[apostrophe,false]]
@@ -164,7 +164,7 @@ class TestAccessibilityStringEventGenerator < MiniTest::Unit::TestCase
     actual   = generate '('
     assert_equal expected, actual
 
-    expected = [[shift,true],[chev,true],[chev,false],shift_up]
+    expected = [shift_down,[chev,true],[chev,false],shift_up]
     actual   = generate '>'
     assert_equal expected, actual
   end
@@ -248,7 +248,7 @@ end
 
 
 class TestAccessibilityString < MiniTest::Unit::TestCase
-  #include Accessibility::String
+  include Accessibility::String
 
   def test_exposed
     assert_respond_to self, :events_for
