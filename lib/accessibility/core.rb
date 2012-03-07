@@ -320,7 +320,7 @@ module Accessibility::Core
   # or the system-wide accessibility object.
   #
   # Events could be generated from a string using output from
-  # {Accessibility::StringParser}.
+  # {Accessibility::String}.
   #
   # Events are number/boolean tuples, where the number is a keycode
   # and the boolean is the keypress state (true is keydown, false is
