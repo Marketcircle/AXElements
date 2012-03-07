@@ -315,7 +315,8 @@ module Accessibility::String
     private
 
     def generate_custom token
-
+      code = CUSTOM[token.first]
+      [[code,true],[code,false]]
     end
 
     def generate_shifted token
