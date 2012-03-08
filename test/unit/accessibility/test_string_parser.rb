@@ -71,7 +71,7 @@ end
 class TestAccessibilityStringEventGenerator < MiniTest::Unit::TestCase
 
   def generate *tokens
-    Accessibility::String::EventGenerator.new(tokens).events
+    Accessibility::String::EventGenerator.new(tokens).generate.events
   end
 
   # key code for the left shift key
