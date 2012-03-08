@@ -28,7 +28,7 @@ class AX::SystemWide < AX::Element
   #
   # @return [Boolean]
   def type_string string
-    events = create_events_for string
+    events = events_for string
     post events, to: @ref
     true
   end
