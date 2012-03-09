@@ -5,7 +5,10 @@ class Accessibility::Qualifier
 
   ##
   # Initialize a qualifier with the kind of object that you want to
-  # qualify and a dictionary of filter criteria.
+  # qualify and a dictionary of filter criteria. You can optionally
+  # pass a block if your qualification criteria is too complicated
+  # for key/value pairs and the blocks return value will be used to
+  # determine if an element qualifies.
   #
   # @example
   #
@@ -15,9 +18,9 @@ class Accessibility::Qualifier
   #
   # @param [#to_s] klass
   # @param [Hash]
-  def initialize klass, criteria
-    @sym = klass
-    compile criteria
+  def initialize klass, criteria, &block
+    @sym   = klass
+    compile criteria, block
   end
 
   ##
@@ -38,7 +41,7 @@ class Accessibility::Qualifier
   # Take a hash of search filters and generate an optimized search
   #
   # @param [Hash]
-  def compile criteria
+  def compile criteria, block
     @filters = criteria.map do |key, value|
       if value.kind_of? Hash
         [:children, [:subsearch, key, value]]
@@ -52,6 +55,7 @@ class Accessibility::Qualifier
         [key, [filter, key, value]]
       end
     end
+    @filters << [:self, [:block_check]] if block
   end
 
   ##
@@ -101,6 +105,10 @@ class Accessibility::Qualifier
 
   def parameterized_equality attr, param, value, element
     element.attribute(attr, for_parameter: param) == value
+  end
+
+  def block_check element
+    @block.call element
   end
 
 end
