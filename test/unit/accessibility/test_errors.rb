@@ -2,11 +2,13 @@ class TestAccessibilityErrors < MiniTest::Unit::TestCase
 
   def test_lookup_failure_shows_inspect_output_of_arguments
     e = Accessibility::LookupFailure.new(:element, :name)
+    def e.backtrace; []; end
     assert_match /:name was not found for :element/, e.message
 
     o = Object.new
     def o.inspect; '"I am an object"'; end
     e = Accessibility::LookupFailure.new(o, [1,2,3])
+    def e.backtrace; []; end
     assert_match /\[1, 2, 3\] was not found for "I am an object"/, e.message
   end
 
