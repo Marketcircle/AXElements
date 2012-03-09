@@ -152,6 +152,25 @@ class AX::Application < AX::Element
     post [[CUSTOM[key], false]], to: @ref
   end
 
+  def select_menu *path
+    press navigate_menu(*path)
+  end
+
+  def navigate_menu *path
+    perform :unhide # can't navigate menus unless the app is up front
+    current = attribute(:menu_bar).search(:menu_bar_item, title: path.shift)
+    path.each do |part|
+      press current
+      next_item = current.search(:menu_item, title: part)
+      if next_item.blank?
+        raise Accessibility::SearchFailure.new(current, :menu_item, title: part)
+      else
+        current = next_item
+      end
+    end
+    current
+  end
+
   # @endgroup
 
 
