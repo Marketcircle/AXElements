@@ -407,7 +407,7 @@ module Accessibility::DSL
     start   = Time.now
     q       = Accessibility::Qualifier.new(child.classify, opts)
     until Time.now - start > timeout
-      result = parent.children.find { |x| q.qualifies? x }
+      result = parent.attribute(:children).find { |x| q.qualifies? x }
       return result unless result.blank?
       sleep 0.2
     end
