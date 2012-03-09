@@ -112,16 +112,16 @@ class AX::Application < AX::Element
   def perform name
     case name
     when :terminate
-      return if terminated?
       @app.terminate and sleep 0.2 and terminated?
+      return true if terminated?
     when :force_terminate
-      return if terminated?
       @app.forceTerminate and sleep 0.2 and terminated?
+      return true if terminated?
     when :hide
-      return if hidden?
       @app.hide and sleep 0.2 and hidden?
+      return true if hidden?
     when :unhide
-      return if active?
+      return true if active?
       @app.activateWithOptions(NSApplicationActivateIgnoringOtherApps)
       sleep 0.2 and active?
     else
