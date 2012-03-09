@@ -56,7 +56,7 @@ class TestAXSystemWide < MiniTest::Unit::TestCase
 
     [[10,10],[100,100],[500,500],[800,600]].each do |point|
       expected = element_at point, for: element.ref
-      actual   = element.element_at *point
+      actual   = element.element_at_point *point
       assert_equal expected, actual.ref
     end
   end
