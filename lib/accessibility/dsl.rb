@@ -429,12 +429,12 @@ module Accessibility::DSL
   # @overload move_mouse_to([x,y])
   #   Move the mouse to an arbitrary point given as an two element array
   #   @param [Array(Float,Float)]
-  def move_mouse_to arg
+  def move_mouse_to arg, wait = 0.2
     if Accessibility::Debug.on? && arg.respond_to?(:bounds)
       highlight arg, timeout: 0.2, color: NSColor.orangeColor
     end
     Mouse.move_to arg.to_point
-    sleep 0.2
+    sleep wait
   end
 
   ##
@@ -449,9 +449,9 @@ module Accessibility::DSL
   # but you could pass anything that responds to `#to_point`.
   #
   # @param [#to_point]
-  def drag_mouse_to arg
+  def drag_mouse_to arg, wait = 0.2
     Mouse.drag_to arg.to_point
-    sleep 0.2
+    sleep wait
   end
 
   ##
@@ -467,7 +467,7 @@ module Accessibility::DSL
   # @param [Number]
   # @param [#to_point]
   def scroll lines, obj = nil
-    move_mouse_to obj if obj
+    move_mouse_to obj, 0 if obj
     Mouse.scroll lines
     sleep 0.1
   end
@@ -479,10 +479,10 @@ module Accessibility::DSL
   # first; the argument must respond to `#to_point`.
   #
   # @param [#to_point]
-  def click obj = nil
-    move_mouse_to obj if obj
+  def click obj = nil, wait = 0.2
+    move_mouse_to obj, 0 if obj
     Mouse.click
-    sleep 0.2
+    sleep wait
   end
 
   ##
@@ -492,10 +492,10 @@ module Accessibility::DSL
   # first; the argument must respond to `#to_point`.
   #
   # @param [#to_point]
-  def right_click obj = nil
-    move_mouse_to obj if obj
+  def right_click obj = nil, wait = 0.2
+    move_mouse_to obj, 0 if obj
     Mouse.right_click
-    sleep 0.2
+    sleep wait
   end
   alias_method :secondary_click, :right_click
 
@@ -506,10 +506,10 @@ module Accessibility::DSL
   # first; the argument must respond to `#to_point`.
   #
   # @param [#to_point]
-  def double_click obj = nil
-    move_mouse_to obj if obj
+  def double_click obj = nil, wait = 0.2
+    move_mouse_to obj, 0 if obj
     Mouse.double_click
-    sleep 0.2
+    sleep wait
   end
 
 
