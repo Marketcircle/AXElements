@@ -65,6 +65,13 @@ class TestAccessibilityStringLexer < MiniTest::Unit::TestCase
     assert_equal [['\COMMAND']], l.tokens
   end
 
+  def test_lex_is_idempotent
+    l = lexer.new('hey')
+    tokens       = l.lex.tokens.dup
+    other_tokens = l.lex.tokens
+    assert_equal tokens, other_tokens
+  end
+
 end
 
 

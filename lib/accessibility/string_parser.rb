@@ -241,10 +241,10 @@ module Accessibility::String
     def initialize string
       @chars  = string
       @tokens = []
+      @index  = 0
     end
 
     def lex
-      @index  = 0
       while @chars[@index]
         char    = @chars[@index]
         @tokens << if char == CUSTOM_ESCAPE && real_custom?
