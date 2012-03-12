@@ -265,6 +265,22 @@ module Accessibility::DSL
     app.type_string string.to_s
   end
 
+  ##
+  # Navigate the menu bar menu for an application and select the
+  # given item.
+  #
+  # @example
+  #
+  #   mail = app_with_name 'Mail'
+  #   select_menu_item mail, 'View', 'Sort By', 'Subject'
+  #
+  # @param [AX::Application]
+  # @param [String,Regexp] path
+  # @return [Boolean]
+  def select_menu_item app, *path
+    app.select_menu_item *path
+  end
+
 
   # @group Notifications
 
