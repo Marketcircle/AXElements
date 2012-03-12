@@ -152,7 +152,7 @@ class AX::Application < AX::Element
     post [[CUSTOM[key], false]], to: @ref
   end
 
-  def select_menu *path
+  def select_menu_item *path
     press navigate_menu(*path)
   end
 
