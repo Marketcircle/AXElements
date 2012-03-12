@@ -55,7 +55,10 @@ class Accessibility::Qualifier
         [key, [filter, key, value]]
       end
     end
-    @filters << [:self, [:block_check]] if block
+    if block
+      @block = block
+      @filters << [:self, [:block_check]]
+    end
   end
 
   ##
