@@ -248,6 +248,18 @@ class TestAccessibilityStringEventGenerator < MiniTest::Unit::TestCase
     assert_equal expected, actual
   end
 
+  def test_generate_after_hotkey
+    ctrl, a, space, h, i = 0x3B, *map.values_at('a',' ','h','i')
+    expected = [[ctrl,true],
+                 [a,true],[a,false],
+                [ctrl,false],
+                [space,true],[space,false],
+                [h,true],[h,false],[i,true],[i,false]
+               ]
+    actual   = generate ['\CTRL',['a']], ' ', 'h', 'i'
+    assert_equal expected, actual
+  end
+
   def test_bails_for_unmapped_token
     assert_raises ArgumentError do
       generate '☃'

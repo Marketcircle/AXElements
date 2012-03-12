@@ -337,10 +337,10 @@ module Accessibility::String
         return
       end
 
-      @events[@index]   = [code,true]
+      @events[@index] = [code,true]
       @index += 1
       generate_all token[1..-1]
-      @events[@index+1] = [code,false]
+      @events[@index] = [code,false]
       @index += 1
     end
 
