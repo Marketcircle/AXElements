@@ -302,13 +302,13 @@ module Accessibility::String
       # though a better number could be derived from
       # analyzing common input...
       @events = Array.new tokens.size*4
-      @index  = 0
     end
 
     attr_reader :events
 
     def generate
       @tokens.each do |token|
+      @index = 0
         if token.kind_of? Array
           generate_custom token
         elsif SHIFTED.has_key? token

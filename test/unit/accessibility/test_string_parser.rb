@@ -77,8 +77,12 @@ end
 
 class TestAccessibilityStringEventGenerator < MiniTest::Unit::TestCase
 
+  def generator
+    Accessibility::String::EventGenerator
+  end
+
   def generate *tokens
-    Accessibility::String::EventGenerator.new(tokens).generate.events
+    generator.new(tokens).generate.events
   end
 
   # key code for the left shift key
@@ -248,6 +252,13 @@ class TestAccessibilityStringEventGenerator < MiniTest::Unit::TestCase
     assert_raises ArgumentError do
       generate '☃'
     end
+  end
+
+  def test_generation_is_idempotent
+    g = generator.new(['M'])
+    original_events = g.generate.events.dup
+    new_events      = g.generate.events
+    assert_equal original_events, new_events
   end
 
 end
