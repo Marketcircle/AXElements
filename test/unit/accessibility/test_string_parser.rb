@@ -204,12 +204,12 @@ class TestAccessibilityStringEventGenerator < MiniTest::Unit::TestCase
       map.values_at "\\", ' ', 'h', 'm'
 
     expected = [[backslash,true],[backslash,false]]
-    actual   = generate ["\\"]
+    actual   = generate "\\"
     assert_equal expected, actual
 
     expected = [[backslash,true],[backslash,false],
                 [space,true],[space,false]]
-    actual   = generate ["\\",' ']
+    actual   = generate "\\",' '
     assert_equal expected, actual
 
     expected = [[backslash,true],[backslash,false],
@@ -244,7 +244,7 @@ class TestAccessibilityStringEventGenerator < MiniTest::Unit::TestCase
                     [right_arrow,false],
                   shift_up,
                 [command,false]]
-    actual   = generate ['\COMMAND','\SHIFT','\->']
+    actual   = generate ['\COMMAND',['\SHIFT',['\->']]]
     assert_equal expected, actual
   end
 
