@@ -4,8 +4,8 @@ class TestAccessibilityQualifier < MiniTest::Unit::TestCase
     AX::Application.new REF
   end
 
-  def qualifier klass, criteria
-    Accessibility::Qualifier.new(klass, criteria)
+  def qualifier klass, criteria, &block
+    Accessibility::Qualifier.new(klass, criteria, &block)
   end
 
   def dock
@@ -105,6 +105,17 @@ class TestAccessibilityQualifier < MiniTest::Unit::TestCase
         refute q.qualifies? kid
       end
     end
+  end
+
+  def test_qualifies_based_on_given_block
+    @got_called = 0
+    q = qualifier(:DockItem, {}) do |element|
+      @got_called += 1
+      element.subrole == KAXTrashDockItemSubrole
+    end
+    refute q.qualifies?(items.first), @got_called
+    assert q.qualifies?(items.last), @got_called
+    assert_equal 2, @got_called
   end
 
   # n is the number of filters used
