@@ -222,8 +222,8 @@ class TestAccessibilityStringEventGenerator < MiniTest::Unit::TestCase
     # is this the job of the parser or the lexer?
     expected = [[backslash,true],[backslash,false],
                 shift_down,[h,true],[h,false],shift_up,
-                shift_down,[m,true],[h,false],shift_up,
-                shift_down,[m,true],[h,false],shift_up]
+                shift_down,[m,true],[m,false],shift_up,
+                shift_down,[m,true],[m,false],shift_up]
     actual   = generate ["\\HMM"]
     assert_equal expected, actual
   end
