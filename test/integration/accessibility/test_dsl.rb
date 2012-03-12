@@ -116,29 +116,29 @@ class TestAccessibilityDSL < MiniTest::Unit::TestCase
   def test_wait_for_obeys_timeout_option
     # loop sleeps for 0.2, so we have to wait at least that long
     start = Time.now
-    wait_for :strawberry_rhubarb, parent: AX::DOCK, timeout: 0.2
+    dsl.wait_for :strawberry_rhubarb, parent: AX::DOCK, timeout: 0.2
     assert_in_delta Time.now, start, 0.3
   end
 
   def test_wait_for_parent_only_looks_at_children
-    result = wait_for :trash_dock_item, parent: AX::DOCK, timeout: 0.5
+    result = dsl.wait_for :trash_dock_item, parent: AX::DOCK, timeout: 0.5
     assert_nil result
 
-    result = wait_for :trash_dock_item, parent: AX::DOCK.list
+    result = dsl.wait_for :trash_dock_item, parent: AX::DOCK.list
     assert_equal AX::DOCK.list.trash_dock_item, result
 
-    result = wait_for :button, parent: app.main_window, title: 'Yes'
+    result = dsl.wait_for :button, parent: app.main_window, title: 'Yes'
     assert_equal 'Yes', result.title
   end
 
   def test_wait_for_ancestor_searches
-    result = wait_for :trash_dock_item, ancestor: AX::DOCK
+    result = dsl.wait_for :trash_dock_item, ancestor: AX::DOCK
     assert_equal AX::DOCK.list.trash_dock_item, result
 
-    result = wait_for :nothing, ancestor: AX::DOCK, timeout: 0.5
+    result = dsl.wait_for :nothing, ancestor: AX::DOCK, timeout: 0.5
     assert_nil result
 
-    result = wait_for :text_field, ancestor: app.main_window, value: 'AXIsNyan'
+    result = dsl.wait_for :text_field, ancestor: app.main_window, value: 'AXIsNyan'
     assert_equal 'AXIsNyan', result.value
   end
 
@@ -151,7 +151,7 @@ class TestAccessibilityDSL < MiniTest::Unit::TestCase
       app.main_window.close_button,
       app.main_window.value_indicator
     ].each do |element|
-      move_mouse_to element
+      dsl.move_mouse_to element
       assert_equal element, dsl.element_under_mouse
     end
   end
@@ -170,7 +170,7 @@ class TestAccessibilityDSL < MiniTest::Unit::TestCase
     assert_instance_of AX::Dialog, dialog
     assert_equal 'AXElementsTester icon', dialog.image.description
   ensure
-    press dialog.close_button if dialog
+    dialog.close_button.perform :press if dialog
   end
 
   def test_show_prefs_for_app
@@ -178,7 +178,7 @@ class TestAccessibilityDSL < MiniTest::Unit::TestCase
     assert_kind_of AX::Window, prefs
     assert_equal 'Preferences', prefs.title
   ensure
-    press prefs.close_button if prefs
+    prefs.close_button.perform :press if prefs
   end
 
   def test_scroll_to
@@ -193,23 +193,23 @@ class TestAccessibilityDSL < MiniTest::Unit::TestCase
   def test_scroll_menu_to
     pop_up = app.main_window.pop_up_button
 
-    press pop_up
+    pop_up.perform :press
     expected = pop_up.menu_item(title: '49')
-    scroll_menu_to expected
+    dsl.scroll_menu_to expected
     assert_equal expected, element_under_mouse
-    click
+    dsl.click
     assert_equal '49', pop_up.value
 
-    press pop_up
+    pop_up.perform :press
     expected = pop_up.menu_item(title: 'Togusa')
-    scroll_menu_to expected
+    dsl.scroll_menu_to expected
     assert_equal expected, element_under_mouse
-    click
+    dsl.click
     assert_equal 'Togusa', pop_up.value
 
   ensure
     unless pop_up.children.empty?
-      cancel pop_up.menu_item
+      pop_up.menu_item.perform :cancel
     end if pop_up
   end
 
