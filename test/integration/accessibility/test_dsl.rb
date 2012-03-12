@@ -19,6 +19,18 @@ class TestAccessibilityDSL < MiniTest::Unit::TestCase
     @@text_area ||= app.main_window.text_area
   end
 
+  def pref_window
+    app.children.find { |x|
+      x.attributes.include?(:title) && x.title == 'Preferences'
+    }
+  end
+
+  def spelling_window
+    app.children.find { |x|
+      x.attributes.include?(:title) && x.title.match(/^Spelling/)
+    }
+  end
+
   def try_typing string, expected = nil
     expected = string unless expected
     text_area.set :focused, to: true
@@ -67,6 +79,38 @@ class TestAccessibilityDSL < MiniTest::Unit::TestCase
 
   def test_typing_ruby_escapes
     try_typing "First.\nSecond."
+  end
+
+  def test_select_menu_item_string
+    assert_nil pref_window
+    dsl.select_menu_item app, app.title, 'Preferences…'
+    window = dsl.wait_for :window, parent: app, title: 'Preferences'
+    refute_nil window
+  ensure
+    window.close_button.perform :press if window
+  end
+
+  def test_select_menu_item_regexp
+    assert_nil spelling_window
+    dsl.select_menu_item app, /Edit/, /Spelling/, /show spelling/i
+    window = dsl.wait_for :floating_window, parent: app
+    refute_nil window
+  ensure
+    window.close_button.perform :press if window
+  end
+
+  def test_select_menu_item_raises_if_cannot_find_item
+    assert_raises Accessibility::SearchFailure do
+      dsl.select_menu_item app, 'File', 'NonExistantMenuItem'
+    end
+    # @todo verify that menu is closed
+  end
+
+  def test_select_menu_item_provides_proper_debug_info
+    e = assert_raises Accessibility::SearchFailure do
+      dsl.select_menu_item app, 'Format', 'Front'
+    end
+    assert_match /MenuItem/, e.message
   end
 
   def test_wait_for_obeys_timeout_option
