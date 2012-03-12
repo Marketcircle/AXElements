@@ -163,8 +163,9 @@ class AX::Application < AX::Element
       press current
       next_item = current.search(:menu_item, title: part)
       if next_item.blank?
+        failure = Accessibility::SearchFailure.new(current, :menu_item, title: part)
         current.perform :cancel # close menu
-        raise Accessibility::SearchFailure.new(current, :menu_item, title: part)
+        raise failure
       else
         current = next_item
       end
