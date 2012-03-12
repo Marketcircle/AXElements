@@ -273,6 +273,7 @@ module Accessibility::DSL
   #
   #   mail = app_with_name 'Mail'
   #   select_menu_item mail, 'View', 'Sort By', 'Subject'
+  #   select_menu_item mail, 'Edit', /Spelling/, /show spelling/i
   #
   # @param [AX::Application]
   # @param [String,Regexp] path
