@@ -307,8 +307,17 @@ module Accessibility::String
     attr_reader :events
 
     def generate
-      @tokens.each do |token|
       @index = 0
+      generate_all @tokens
+      @events.compact!
+      self
+    end
+
+
+    private
+
+    def generate_all tokens
+      tokens.each do |token|
         if token.kind_of? Array
           generate_custom token
         elsif SHIFTED.has_key? token
@@ -319,22 +328,20 @@ module Accessibility::String
           generate_dynamic token
         end
       end
-      @events.compact!
-      self
     end
 
-
-    private
-
     def generate_custom token
-      code = CUSTOM.fetch token.first[1..-1] do
-        generate_dynamic token.first
-        nil
+      code = CUSTOM.fetch token.first[1..-1], nil
+      unless code
+        generate_all token.first.split(::EMPTY_STRING)
+        return
       end
-      return unless code
+
       @events[@index]   = [code,true]
+      @index += 1
+      generate_all token[1..-1]
       @events[@index+1] = [code,false]
-      @index += 2
+      @index += 1
     end
 
     def generate_shifted token
