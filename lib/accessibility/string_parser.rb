@@ -262,10 +262,20 @@ module Accessibility::String
 
     def lex_custom
       start_index = @index
-      while (char = @chars[@index]) && char != SPACE
-        @index += 1
+      while true
+        case char = @chars[@index]
+        when SPACE
+          return [@chars[start_index...@index]]
+        when nil
+          return [@chars[start_index...@index]]
+        when PLUS
+          custom = [@chars[start_index...@index]]
+          @index += 1
+          return custom << lex_custom
+        else
+          @index += 1
+        end
       end
-      @chars[start_index...@index].split(PLUS)
     end
 
     # is it a real custom escape?

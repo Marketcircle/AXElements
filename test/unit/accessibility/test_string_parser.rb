@@ -16,12 +16,12 @@ class TestAccessibilityStringLexer < MiniTest::Unit::TestCase
 
   def test_lex_hotkey_custom
     l = lexer.new('\COMMAND+,').lex
-    assert_equal [['\COMMAND',',']], l.tokens
+    assert_equal [['\COMMAND',[',']]], l.tokens
   end
 
   def test_lex_multiple_custom
     l = lexer.new('\COMMAND+\SHIFT+s').lex
-    assert_equal [['\COMMAND','\SHIFT','s']], l.tokens
+    assert_equal [['\COMMAND',['\SHIFT',['s']]]], l.tokens
   end
 
   def test_lex_simple_string
@@ -42,10 +42,10 @@ class TestAccessibilityStringLexer < MiniTest::Unit::TestCase
 
   def test_lex_complex_string
     l = lexer.new("\\COMMAND+a \bI deleted your text, lol!").lex
-    assert_equal [['\COMMAND','a'],"\b",'I',' ','d','e','l','e','t','e','d',' ','y','o','u','r',' ','t','e','x','t',',',' ','l','o','l','!'], l.tokens
+    assert_equal [['\COMMAND',['a']],"\b",'I',' ','d','e','l','e','t','e','d',' ','y','o','u','r',' ','t','e','x','t',',',' ','l','o','l','!'], l.tokens
   end
 
-  def test_lex_backspace
+  def test_lex_backslash
     l = lexer.new("\\").lex
     assert_equal ["\\"], l.tokens
 
@@ -62,7 +62,7 @@ class TestAccessibilityStringLexer < MiniTest::Unit::TestCase
 
   def test_lex_bad_custom_seq
     l = lexer.new('\COMMAND+').lex
-    assert_equal [['\COMMAND']], l.tokens
+    assert_equal [['\COMMAND',['']]], l.tokens
   end
 
   def test_lex_is_idempotent
