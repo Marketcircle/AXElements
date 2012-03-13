@@ -3,11 +3,21 @@ require 'ax_elements/macruby_extensions'
 class MiniTest::Assertions
 
   ##
+  # Test that an element has a specific child. For example, test
+  # that a table has a row with certain contents. You can pass any
+  # filters that you normally would during a search, including a block.
+  #
+  # This is a stronger form of {assert_has_descendent}.
+  #
+  # @example
+  #
+  #   assert_has_child table, :row, static_text: { value: 'Mark' }
+  #
   # @param [AX::Element]
   # @param [#to_s]
   # @param [Hash]
   def assert_has_child parent, kind, filters = {}, &block
-    msg = proc {
+    msg = message {
       child = ax_search_id kind, filters
       "Expected #{parent.inspect} to have #{child} as a child"
     }
@@ -15,11 +25,21 @@ class MiniTest::Assertions
   end
 
   ##
+  # Test that an element has a specifc descendent. For example, test
+  # that a window contains a specific label. You can pass any filters
+  # that you normally would during a search, including a block.
+  #
+  # This is a weaker form of {assert_has_child}.
+  #
+  # @example
+  #
+  #   assert_has_descendent window, :static_text, value: /Cake/
+  #
   # @param [AX::Element]
   # @param [#to_s]
   # @param [Hash]
   def assert_has_descendent ancestor, kind, filters = {}, &block
-    msg = proc {
+    msg = message {
       descendent = ax_search_id kind, filters
       "Expected #{ancestor.inspect} to have #{descendent} as a descendent"
     }
@@ -27,12 +47,21 @@ class MiniTest::Assertions
   end
 
   ##
+  # Test that an element _does not_ have a specific child. For example,
+  # test that a row is no longer in a table. You can pass any filters
+  # that you normally would during a search, including a block.
+  #
+  # This is a stronger form of {refute_has_descendent}.
+  #
+  # @example
+  #
+  #   refute_has_child table, :row, id: 'MyRow'
+  #
   # @param [AX::Element]
   # @param [#to_s]
   # @param [Hash]
   def refute_has_child parent, kind, filters = {}, &block
-    # @todo use the #message method
-    msg = proc {
+    msg = message {
       child = ax_search_id kind, filters
       "Expected #{parent.inspect} not to have #{child} as a child"
     }
@@ -40,11 +69,21 @@ class MiniTest::Assertions
   end
 
   ##
+  # Test that an element _does not_ have a specific descendent. For
+  # example, test that a window does not contain a spinning progress
+  # indicator anymore.
+  #
+  # This is a weaker form of {refute_has_child}.
+  #
+  # @example
+  #
+  #  refute_has_descendent window, :busy_indicator
+  #
   # @param [AX::Element]
   # @param [#to_s]
   # @param [Hash]
   def refute_has_descendent ancestor, kind, filters = {}, &block
-    msg = proc {
+    msg = message {
       descendent = ax_search_id kind, filters
       "Expected #{ancestor.inspect} not to have #{descendent} as a descendent"
     }
