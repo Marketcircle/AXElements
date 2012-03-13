@@ -1,6 +1,6 @@
 require 'ax_elements/macruby_extensions'
 
-class MiniTest::Unit::TestCase
+class MiniTest::Assertions
 
   def assert_has_child parent, kind, filters = {}
     msg = proc {
