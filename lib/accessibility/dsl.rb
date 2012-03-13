@@ -602,9 +602,7 @@ module Accessibility::DSL
   # @param [AX::Application]
   # @return [AX::Window]
   def show_about_window_for app
-    set_focus app
-    press app.menu_bar_item(title:(app.title))
-    press app.menu_bar.menu_item(title: "About #{app.title}")
+    select_menu_item app, app.title, /^About /
     wait_for :dialog, parent: app
   end
 
