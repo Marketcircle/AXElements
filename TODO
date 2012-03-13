@@ -1,9 +1,0 @@
-Caching
-========
-
-One strategy would be to do caching at the Element level. We could cache
-children. Cache is invalidated by 
-
-Another possible strategy is caching in the Core, keyed on arguments, 
-invalidate based on error code.
-
