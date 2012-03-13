@@ -94,7 +94,7 @@ class MiniTest::Assertions
   private
 
   def ax_search_id kind, filters
-    filter = filters.empty? ? ::EMPTY_STRING : "(#{filters.inspect})"
+    filter = filters.empty? ? ::EMPTY_STRING : filters.ax_pp
     "#{kind}#{filter}"
   end
 
