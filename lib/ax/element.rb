@@ -240,15 +240,17 @@ class AX::Element
   # @param [#to_s]
   # @param [Hash{Symbol=>Object}]
   # @return [AX::Element,nil,Array<AX::Element>,Array<>]
-  def search kind, filters = {}
+  def search kind, filters = {}, &block
     kind      = kind.camelize
     klass     = kind.singularize
-    search    = klass == kind ? :find : :find_all
-    block     = block_given? ? Proc.new : nil
     qualifier = Accessibility::Qualifier.new(klass, filters, &block)
     tree      = Accessibility::Enumerators::BreadthFirst.new(self)
 
-    tree.send(search) { |element| qualifier.qualifies? element }
+    if klass == kind
+      tree.find { |element| qualifier.qualifies? element }
+    else
+      tree.find_all { |element| qualifier.qualifies? element }
+    end
   end
 
   ##
@@ -265,8 +267,7 @@ class AX::Element
   # @param [#to_s]
   # @param [Hash{Symbol=>Object}]
   # @return [AX::Element]
-  def ancestor kind, filters = {}
-    block     = block_given? ? Proc.new : nil
+  def ancestor kind, filters = {}, &block
     qualifier = Accessibility::Qualifier.new(kind.camelize, filters, &block)
     element   = attribute :parent
     until qualifier.qualifies? element
@@ -332,8 +333,11 @@ class AX::Element
     end
 
     if @attrs.include? KAXChildrenAttribute
-      block  = block_given? ? Proc.new : nil
-      result = search method, args.last, &block
+      result = if block_given?
+                 search method, *args, &Proc.new
+               else
+                 search method, *args
+               end
       return result unless result.blank?
       raise Accessibility::SearchFailure.new(self, method, args.first)
     end
