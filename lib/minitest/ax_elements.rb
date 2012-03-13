@@ -7,8 +7,6 @@ class MiniTest::Assertions
   # that a table has a row with certain contents. You can pass any
   # filters that you normally would during a search, including a block.
   #
-  # This is a stronger form of {assert_has_descendent}.
-  #
   # @example
   #
   #   assert_has_child table, :row, static_text: { value: 'Mark' }
@@ -28,8 +26,6 @@ class MiniTest::Assertions
   # Test that an element has a specifc descendent. For example, test
   # that a window contains a specific label. You can pass any filters
   # that you normally would during a search, including a block.
-  #
-  # This is a weaker form of {assert_has_child}.
   #
   # @example
   #
@@ -51,8 +47,6 @@ class MiniTest::Assertions
   # test that a row is no longer in a table. You can pass any filters
   # that you normally would during a search, including a block.
   #
-  # This is a stronger form of {refute_has_descendent}.
-  #
   # @example
   #
   #   refute_has_child table, :row, id: 'MyRow'
@@ -72,8 +66,6 @@ class MiniTest::Assertions
   # Test that an element _does not_ have a specific descendent. For
   # example, test that a window does not contain a spinning progress
   # indicator anymore.
-  #
-  # This is a weaker form of {refute_has_child}.
   #
   # @example
   #
