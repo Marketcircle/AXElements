@@ -21,7 +21,7 @@ class MiniTest::Assertions
       child = ax_search_id kind, filters
       "Expected #{parent.inspect} to have #{child} as a child"
     }
-    refute ax_check_children(parent,children,filters,&block).blank?, msg
+    refute ax_check_children(parent,kind,filters,&block).blank?, msg
   end
 
   ##
@@ -99,7 +99,7 @@ class MiniTest::Assertions
   end
 
   def ax_check_children parent, kind, filters, &block
-    q = Accessibility::Qualifier.new(kind, filters, &block)
+    q = Accessibility::Qualifier.new(kind.classify, filters, &block)
     parent.attribute(:children).find { |x| q.qualifies? x }
   end
 
