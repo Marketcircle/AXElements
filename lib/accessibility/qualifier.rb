@@ -15,12 +15,17 @@ class Accessibility::Qualifier
   #   Accessibility::Qualifier.new(:StandardWindow, title: 'Test')
   #   Accessibility::Qualifier.new(:Button, {})
   #   Accessibility::Qualifier.new(:Table, { row: { title: /Price/ } })
+  #   Accessibility::Qualifier.new(:Element) do |element|
+  #     element.children.size > 5 && NSContainsRect(element.bounds, rect)
+  #   end
   #
   # @param [#to_s] klass
   # @param [Hash]
-  def initialize klass, criteria, &block
+  # @yield Optional block that can qualify an element
+  def initialize klass, criteria
     @sym   = klass
-    compile criteria, block
+    @block = Proc.new if block_given?
+    compile criteria
   end
 
   ##
@@ -41,7 +46,7 @@ class Accessibility::Qualifier
   # Take a hash of search filters and generate an optimized search
   #
   # @param [Hash]
-  def compile criteria, block
+  def compile criteria
     @filters = criteria.map do |key, value|
       if value.kind_of? Hash
         [:children, [:subsearch, key, value]]
@@ -55,10 +60,7 @@ class Accessibility::Qualifier
         [key, [filter, key, value]]
       end
     end
-    if block
-      @block = block
-      @filters << [:self, [:block_check]]
-    end
+    @filters << [:role, [:block_check]] if @block
   end
 
   ##
