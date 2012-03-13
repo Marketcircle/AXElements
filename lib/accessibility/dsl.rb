@@ -619,7 +619,7 @@ module Accessibility::DSL
     windows = app.children.select { |x| x.kind_of? AX::Window }
     type "\\COMMAND+,", app
     wait_for :window, parent: app do |window|
-      windows.find { |x| x == window }
+      !windows.include?(window)
     end
   end
 
