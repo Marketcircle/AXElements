@@ -2,6 +2,21 @@ require 'accessibility/core'
 require 'ax_elements/vendor/inflector'
 
 ##
+# Extensions to `NSDictionary`.
+class NSDictionary
+  ##
+  # Format the hash for AXElements pretty printing.
+  #
+  # @return [String]
+  def ax_pp
+    return ::EMPTY_STRING if empty?
+
+    list = map { |k, v| "#{k}: #{v.ax_pp}" }
+    "(#{list.join(', ')})"
+  end
+end
+
+##
 # Extensions to `NSArray`.
 class NSArray
   ##
@@ -168,6 +183,17 @@ end
 class NSObject
   # @return [Object]
   alias_method :to_axvalue, :self
+
+  ##
+  # Used internally by AXElements to pretty print debug info. The
+  # method is not defined as an alias because we want to get the
+  # same output as `#inspect`, even in cases when `#inspect` is
+  # overridden in the subclass.
+  #
+  # @return [String]
+  def ax_pp
+    inspect
+  end
 end
 
 

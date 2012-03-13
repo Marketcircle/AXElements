@@ -16,7 +16,7 @@ module Accessibility
 
     def initialize searcher, searchee, filters
       filters = {} unless filters.kind_of? Hash
-      msg  = "Could not find `#{searchee}#{pp_filters(filters)}` "
+      msg  = "Could not find `#{searchee}#{filters.ax_pp}` "
       msg << "as a child of #{searcher.class}\n"
       msg << "Element Path:\n\t" << path_to(searcher)
       # @todo Consider turning this on by default
@@ -28,14 +28,6 @@ module Accessibility
 
 
     private
-
-    # @return [String]
-    def pp_filters filters
-      return ::EMPTY_STRING if filters.empty?
-
-      list = filters.map { |k, v| "#{k}: #{v.inspect}" }
-      "(#{list.join(', ')})"
-    end
 
     def path_to element
       Accessibility::Debug.path(element).map! { |x| x.inspect }.join("\n\t")
