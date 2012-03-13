@@ -2,6 +2,10 @@ require 'ax_elements/macruby_extensions'
 
 class MiniTest::Assertions
 
+  ##
+  # @param [AX::Element]
+  # @param [#to_s]
+  # @param [Hash]
   def assert_has_child parent, kind, filters = {}, &block
     msg = proc {
       child = ax_search_id kind, filters
@@ -10,6 +14,10 @@ class MiniTest::Assertions
     refute ax_check_children(parent,children,filters,&block).blank?, msg
   end
 
+  ##
+  # @param [AX::Element]
+  # @param [#to_s]
+  # @param [Hash]
   def assert_has_descendent ancestor, kind, filters = {}, &block
     msg = proc {
       descendent = ax_search_id kind, filters
@@ -18,14 +26,23 @@ class MiniTest::Assertions
     refute check_descendent(ancestor,kind,filters,&block).blank?, msg
   end
 
+  ##
+  # @param [AX::Element]
+  # @param [#to_s]
+  # @param [Hash]
   def refute_has_child parent, kind, filters = {}, &block
+    # @todo use the #message method
     msg = proc {
-      child    = ax_search_id kind, filters
+      child = ax_search_id kind, filters
       "Expected #{parent.inspect} not to have #{child} as a child"
     }
     assert ax_check_children(parent,kind,filters,&block).blank?, msg
   end
 
+  ##
+  # @param [AX::Element]
+  # @param [#to_s]
+  # @param [Hash]
   def refute_has_descendent ancestor, kind, filters = {}, &block
     msg = proc {
       descendent = ax_search_id kind, filters
