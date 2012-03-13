@@ -374,11 +374,11 @@ module Accessibility::DSL
   # @options opts [AX::Element] :parent
   # @options opts [AX::Element] :ancestor
   # @return [AX::Element,nil]
-  def wait_for element, opts = {}
+  def wait_for element, opts = {}, &block
     if opts.has_key? :ancestor
-      wait_for_descendant element, opts.delete(:ancestor), opts
+      wait_for_descendant element, opts.delete(:ancestor), opts, &block
     elsif opts.has_key? :parent
-      wait_for_child element, opts.delete(:parent), opts
+      wait_for_child element, opts.delete(:parent), opts, &block
     else
       raise ArgumentError, 'parent/ancestor opt required'
     end
@@ -393,11 +393,11 @@ module Accessibility::DSL
   # @param [AX::Element]
   # @param [Hash]
   # @return [AX::Element,nil]
-  def wait_for_descendant descendant, ancestor, opts
+  def wait_for_descendant descendant, ancestor, opts, &block
     timeout = opts.delete(:timeout) || 15
     start   = Time.now
     until Time.now - start > timeout
-      result = ancestor.search(descendant, opts)
+      result = ancestor.search(descendant, opts, &block)
       return result unless result.blank?
       sleep 0.2
     end
@@ -419,10 +419,10 @@ module Accessibility::DSL
   # @param [AX::Element]
   # @param [Hash]
   # @return [AX::Element,nil]
-  def wait_for_child child, parent, opts
+  def wait_for_child child, parent, opts, &block
     timeout = opts.delete(:timeout) || 15
     start   = Time.now
-    q       = Accessibility::Qualifier.new(child.classify, opts)
+    q       = Accessibility::Qualifier.new(child.classify, opts, &block)
     until Time.now - start > timeout
       result = parent.attribute(:children).find { |x| q.qualifies? x }
       return result unless result.blank?
