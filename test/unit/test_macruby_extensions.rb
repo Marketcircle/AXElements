@@ -1,4 +1,4 @@
-class NSArrayExtensions < MiniTest::Unit::TestCase
+class TestNSArrayExtensions < MiniTest::Unit::TestCase
 
   def test_second_returns_second
     assert_equal :two, NSArray.arrayWithArray([:one, :two]).second
@@ -51,7 +51,7 @@ class NSArrayExtensions < MiniTest::Unit::TestCase
 end
 
 
-class NSStringExtensions < MiniTest::Unit::TestCase
+class TestNSStringExtensions < MiniTest::Unit::TestCase
 
   def test_empty_string_constant
     assert Object.const_get(:EMPTY_STRING)
