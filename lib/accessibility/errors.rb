@@ -20,9 +20,7 @@ module Accessibility
       msg << "as a child of #{searcher.class}\n"
       msg << "Element Path:\n\t" << path_to(searcher)
       # @todo Consider turning this on by default
-      if Accessibility::Debug.on?
-        msg << "\nSubtree:\n\t" << Accessibility::Debug.text_subtree(searcher)
-      end
+      msg << "\nSubtree:\n\t" << debug(searcher) if Accessibility::Debug.on?
       super msg
     end
 
@@ -35,6 +33,10 @@ module Accessibility
 
     def path_to element
       Accessibility::Debug.path(element).map! { |x| x.inspect }.join("\n\t")
+    end
+
+    def debug searcher
+      Accessibility::Debug.text_subtree(searcher)
     end
   end
 
