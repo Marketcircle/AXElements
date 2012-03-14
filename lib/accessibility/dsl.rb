@@ -471,6 +471,8 @@ module Accessibility::DSL
     sleep wait
   end
 
+  # @todo def drag obj, to: obj
+
   ##
   # @todo Need to expose the units option? Would allow scrolling by pixel.
   #
@@ -483,10 +485,10 @@ module Accessibility::DSL
   #
   # @param [Number]
   # @param [#to_point]
-  def scroll lines, obj = nil
+  def scroll lines, obj = nil, wait = 0.1
     move_mouse_to obj, 0 if obj
     Mouse.scroll lines
-    sleep 0.1
+    sleep wait
   end
 
   ##
