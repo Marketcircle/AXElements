@@ -1,10 +1,10 @@
 class TestNSDictionaryExtensions < MiniTest::Unit::TestCase
 
   def test_ax_pp
-    assert_equal ::EMPTY_STRING, {}.ax_pp
+    assert_equal ::EMPTY_STRING,            {}.ax_pp
     assert_equal '(title: "Hey, listen!")', {title: 'Hey, listen!'}.ax_pp
-    assert_equal '(a: 42, b: [3.14])', {a: 42, b: [3.14]}.ax_pp
-    assert_equal '(c: (d: ":("))', {c: {d:':('} }.ax_pp
+    assert_equal '(a: 42, b: [3.14])',      {a: 42, b: [3.14]}.ax_pp
+    assert_equal '(c(d: ":("))',            {c: {d:':('} }.ax_pp
   end
 
 end
@@ -132,16 +132,6 @@ class TestNSObjectExtensions < MiniTest::Unit::TestCase
 
     bundle = CFBundleGetMainBundle()
     assert_equal bundle.description, bundle.inspect
-  end
-
-  def test_ax_pp
-    [
-      'hey',
-      [1,2,3],
-      NSURL.URLWithString('http://marketcircle.com/')
-    ].each do |obj|
-      assert_equal obj.inspect, obj.ax_pp
-    end
   end
 
 end

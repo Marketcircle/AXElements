@@ -11,7 +11,14 @@ class NSDictionary
   def ax_pp
     return ::EMPTY_STRING if empty?
 
-    list = map { |k, v| "#{k}: #{v.ax_pp}" }
+    list = map { |k, v|
+      case v
+      when Hash
+        "#{k}#{v.ax_pp}"
+      else
+        "#{k}: #{v.inspect}"
+      end
+    }
     "(#{list.join(', ')})"
   end
 end
@@ -183,17 +190,6 @@ end
 class NSObject
   # @return [Object]
   alias_method :to_axvalue, :self
-
-  ##
-  # Used internally by AXElements to pretty print debug info. The
-  # method is not defined as an alias because we want to get the
-  # same output as `#inspect`, even in cases when `#inspect` is
-  # overridden in the subclass.
-  #
-  # @return [String]
-  def ax_pp
-    inspect
-  end
 end
 
 
