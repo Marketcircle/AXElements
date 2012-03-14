@@ -60,7 +60,7 @@ class MiniTest::Assertions
   # @param [AX::Element]
   # @param [#to_s]
   # @param [Hash]
-  # @return [AX::Element]
+  # @return [nil]
   def refute_has_child parent, kind, filters = {}, &block
     msg = message {
       child = ax_search_id kind, filters
@@ -83,7 +83,7 @@ class MiniTest::Assertions
   # @param [AX::Element]
   # @param [#to_s]
   # @param [Hash]
-  # @return [AX::Element]
+  # @return [nil,Array()]
   def refute_has_descendent ancestor, kind, filters = {}, &block
     msg = message {
       descendent = ax_search_id kind, filters
