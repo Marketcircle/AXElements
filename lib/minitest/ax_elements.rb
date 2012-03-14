@@ -17,7 +17,7 @@ class MiniTest::Assertions
   # @return [AX::Element]
   def assert_has_child parent, kind, filters = {}, &block
     msg = message {
-      child = ax_search_id kind, filters
+      child = ax_search_id kind, filters, block
       "Expected #{parent.inspect} to have #{child} as a child"
     }
     result = ax_check_children parent, kind, filters, &block
@@ -40,7 +40,7 @@ class MiniTest::Assertions
   # @return [AX::Element]
   def assert_has_descendent ancestor, kind, filters = {}, &block
     msg = message {
-      descendent = ax_search_id kind, filters
+      descendent = ax_search_id kind, filters, block
       "Expected #{ancestor.inspect} to have #{descendent} as a descendent"
     }
     result = ax_check_descendent ancestor, kind, filters, &block
@@ -63,7 +63,7 @@ class MiniTest::Assertions
   # @return [nil]
   def refute_has_child parent, kind, filters = {}, &block
     msg = message {
-      child = ax_search_id kind, filters
+      child = ax_search_id kind, filters, block
       "Expected #{parent.inspect} not to have #{child} as a child"
     }
     result = ax_check_children parent, kind, filters, &block
@@ -86,7 +86,7 @@ class MiniTest::Assertions
   # @return [nil,Array()]
   def refute_has_descendent ancestor, kind, filters = {}, &block
     msg = message {
-      descendent = ax_search_id kind, filters
+      descendent = ax_search_id kind, filters, block
       "Expected #{ancestor.inspect} not to have #{descendent} as a descendent"
     }
     result = ax_check_descendent ancestor, kind, filters, &block
@@ -97,9 +97,8 @@ class MiniTest::Assertions
 
   private
 
-  def ax_search_id kind, filters
-    filter = filters.empty? ? ::EMPTY_STRING : filters.ax_pp
-    "#{kind}#{filter}"
+  def ax_search_id kind, filters, block
+    Accessibility::Qualifier.new(kind, filters, &block).inspect
   end
 
   def ax_check_children parent, kind, filters, &block

@@ -99,6 +99,11 @@ class TestMiniTestAssertions < MiniTest::Unit::TestCase
       refute_has_descendent app, :window
     end
     assert_match /not to have window as a descendent/, e.message
+
+    e = assert_raises MiniTest::Assertion do
+      refute_has_descendent app, :window do |_| true end
+    end
+    assert_match /window\[✔\]/, e.message
   end
 
 end
