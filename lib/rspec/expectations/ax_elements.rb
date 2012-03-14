@@ -23,14 +23,19 @@ class Accessibility::HasChildMatcher
 
   # @return [String]
   def failure_message_for_should
-    "expected #{@parent.inspect} to have #{@qualifier.inspect}"
+    "expected #{@parent.inspect} to have child #{@qualifier.inspect}"
   end
 
-  # def does_not_match? parent
+  # @param [AX::Element]
+  def does_not_match? parent
+    @parent = parent
+    @result = parent.attribute(:children).find { |x| @qualifier.qualifies? x }
+    !@result.blank?
+  end
 
   # @return [String]
   def failure_message_for_should_not
-    "expected #{@parent.inspect} to NOT have #{@qualifier.inspect}"
+    "expected #{@parent.inspect} to NOT have child #{@result.inspect}"
   end
 
   ##
@@ -84,14 +89,19 @@ class Accessibility::HasDescendentMatcher
 
   # @return [String]
   def failure_message_for_should
-    "expected #{@ancestor.inspect} to have #{@qualifier.inspect}"
+    "expected #{@ancestor.inspect} to have descendent #{@qualifier.inspect}"
   end
 
-  # def does_not_match? ancestor
+  # @param [AX::Element]
+  def does_not_match? ancestor
+    @ancestor = ancestor
+    @result   = ancestor.search(@kind, @filters, &@block)
+    !@result.blank?
+  end
 
   # @return [String]
   def failure_message_for_should_not
-    "expected #{@ancestor.inspect} to NOT have #{@qualifier.inspect}"
+    "expected #{@ancestor.inspect} to NOT have descendent #{@result.inspect}"
   end
 
   ##
