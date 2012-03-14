@@ -6,13 +6,6 @@ class TestMiniTestAssertions < MiniTest::Unit::TestCase
     @@app ||= AX::Application.new PID
   end
 
-  def test_methods_are_loaded
-    assert_respond_to self, :assert_has_child
-    assert_respond_to self, :assert_has_descendent
-    assert_respond_to self, :refute_has_child
-    assert_respond_to self, :refute_has_descendent
-  end
-
   def test_assert_has_child
     expected = app.window
 
