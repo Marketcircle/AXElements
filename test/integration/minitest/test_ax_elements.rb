@@ -19,7 +19,6 @@ class TestMiniTestAssertions < MiniTest::Unit::TestCase
     assert_equal expected, assert_has_child(app,:window)
     assert_equal expected, assert_has_child(app,:window,title: 'AXElementsTester')
 
-    @got_called = false
     result = assert_has_child(app,:window) { |x| 
       @got_called = true
       x.title == 'AXElementsTester'
