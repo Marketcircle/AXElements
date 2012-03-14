@@ -23,8 +23,9 @@ class Accessibility::Qualifier
   # @param [Hash]
   # @yield Optional block that can qualify an element
   def initialize klass, criteria
-    @sym   = klass
-    @block = Proc.new if block_given?
+    @sym      = klass
+    @criteria = criteria
+    @block    = Proc.new if block_given?
     compile criteria
   end
 
@@ -37,6 +38,11 @@ class Accessibility::Qualifier
     return false unless the_right_type? element
     return false unless meets_criteria? element
     return true
+  end
+
+  # @return [String]
+  def inspect
+    "#{@sym}#{@criteria.ax_pp}#{@block ? '[✔]' : ::EMPTY_STRING}"
   end
 
 
