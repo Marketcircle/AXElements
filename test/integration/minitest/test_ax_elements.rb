@@ -24,12 +24,12 @@ class TestMiniTestAssertions < MiniTest::Unit::TestCase
     e = assert_raises MiniTest::Assertion do
       assert_has_child app, :button
     end
-    assert_match /to have button as a child/, e.message
+    assert_match /to have Button as a child/, e.message
 
     e = assert_raises MiniTest::Assertion do
       assert_has_child app, :button, title: 'Press Me'
     end
-    assert_match /to have button\(title: "Press Me"\) as a child/, e.message
+    assert_match /to have Button\(title: "Press Me"\) as a child/, e.message
   end
 
   def test_assert_has_descendent
@@ -51,7 +51,7 @@ class TestMiniTestAssertions < MiniTest::Unit::TestCase
     e        = assert_raises MiniTest::Assertion do
       assert_has_descendent ancestor, :window, title: /Cake/
     end
-    assert_match /to have window\(title: \/Cake\/\) as a descendent/, e.message
+    assert_match /to have Window\(title: \/Cake\/\) as a descendent/, e.message
   end
 
   def test_refute_has_child
@@ -70,7 +70,7 @@ class TestMiniTestAssertions < MiniTest::Unit::TestCase
     e = assert_raises MiniTest::Assertion do
       refute_has_child app, :window
     end
-    assert_match /not to have window as a child/, e.message
+    assert_match /not to have Window as a child/, e.message
   end
 
   def test_refute_has_descendent
@@ -91,12 +91,12 @@ class TestMiniTestAssertions < MiniTest::Unit::TestCase
     e = assert_raises MiniTest::Assertion do
       refute_has_descendent app, :window
     end
-    assert_match /not to have window as a descendent/, e.message
+    assert_match /not to have Window as a descendent/, e.message
 
     e = assert_raises MiniTest::Assertion do
       refute_has_descendent app, :window do |_| true end
     end
-    assert_match /window\[✔\]/, e.message
+    assert_match /Window\[✔\]/, e.message
   end
 
 end

@@ -241,12 +241,10 @@ class AX::Element
   # @param [Hash{Symbol=>Object}]
   # @return [AX::Element,nil,Array<AX::Element>,Array<>]
   def search kind, filters = {}, &block
-    kind      = kind.camelize
-    klass     = kind.singularize
-    qualifier = Accessibility::Qualifier.new(klass, filters, &block)
+    qualifier = Accessibility::Qualifier.new(kind, filters, &block)
     tree      = Accessibility::Enumerators::BreadthFirst.new(self)
 
-    if klass == kind
+    unless TRANSLATOR.singularize(kind) == kind
       tree.find { |element| qualifier.qualifies? element }
     else
       tree.find_all { |element| qualifier.qualifies? element }
@@ -268,7 +266,7 @@ class AX::Element
   # @param [Hash{Symbol=>Object}]
   # @return [AX::Element]
   def ancestor kind, filters = {}, &block
-    qualifier = Accessibility::Qualifier.new(kind.camelize, filters, &block)
+    qualifier = Accessibility::Qualifier.new(kind, filters, &block)
     element   = attribute :parent
     until qualifier.qualifies? element
       element = element.attribute :parent

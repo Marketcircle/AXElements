@@ -23,7 +23,7 @@ class Accessibility::Qualifier
   # @param [Hash]
   # @yield Optional block that can qualify an element
   def initialize klass, criteria
-    @sym      = klass
+    @klass    = TRANSLATOR.classify(klass)
     @criteria = criteria
     @block    = Proc.new if block_given?
     compile criteria
@@ -42,11 +42,19 @@ class Accessibility::Qualifier
 
   # @return [String]
   def inspect
-    "#{@sym}#{@criteria.ax_pp}#{@block ? '[✔]' : ::EMPTY_STRING}"
+    "#{@klass}#{@criteria.ax_pp}#{@block ? '[✔]' : ::EMPTY_STRING}"
   end
 
 
   private
+
+  ##
+  # @private
+  #
+  # Local reference to the {Accessibility::Translator}.
+  #
+  # @return [Accessibility::Translator]
+  TRANSLATOR = Accessibility::Translator.instance
 
   ##
   # Take a hash of search filters and generate an optimized search
@@ -75,14 +83,14 @@ class Accessibility::Qualifier
   #
   # @param [AX::Element]
   def the_right_type? element
-    unless @klass
-      if AX.const_defined? @sym
-        @klass = AX.const_get @sym
+    unless @const
+      if AX.const_defined? @klass
+        @const = AX.const_get @klass
       else
         return false
       end
     end
-    return element.kind_of? @klass
+    return element.kind_of? @const
   end
 
   ##

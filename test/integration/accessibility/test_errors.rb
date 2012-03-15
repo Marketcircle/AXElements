@@ -3,17 +3,17 @@ class TestAccessibilityErrors < MiniTest::Unit::TestCase
   def test_search_failure_shows_arguments
     e = Accessibility::SearchFailure.new(AX::DOCK, :list, {herp: :derp})
     def e.backtrace; []; end
-    assert_match /Could not find `list\(herp: :derp\)`/, e.message
+    assert_match /Could not find `List\(herp: :derp\)`/, e.message
     assert_match /as a child of AX::Application/, e.message
     assert_match /Element Path:\n\t\#<AX::Application/, e.message
 
     e = Accessibility::SearchFailure.new(AX::DOCK, :list, {})
     def e.backtrace; []; end
-    assert_match /Could not find `list`/, e.message
+    assert_match /Could not find `List`/, e.message
 
     e = Accessibility::SearchFailure.new(AX::DOCK, :list, nil)
     def e.backtrace; []; end
-    assert_match /Could not find `list`/, e.message
+    assert_match /Could not find `List`/, e.message
   end
 
   def test_search_failure_shows_element_path
