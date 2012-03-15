@@ -10,32 +10,27 @@ class Accessibility::HasChildMatcher
   # @param [Hash]
   # @yield
   def initialize kind, filters, &block
-    kind = kind.classify
-    @kind, @filters = kind, filters
     @qualifier = Accessibility::Qualifier.new(kind, filters, &block)
   end
 
   # @param [AX::Element]
   def matches? parent
-    @parent = parent
-    !parent.attribute(:children).find { |x| @qualifier.qualifies?(x) }.blank?
+    !search(parent).blank?
   end
 
   # @return [String]
   def failure_message_for_should
-    "expected #{@parent.inspect} to have child #{@qualifier.inspect}"
+    "expected #@parent to have child #{@qualifier.inspect}"
   end
 
   # @param [AX::Element]
   def does_not_match? parent
-    @parent = parent
-    @result = parent.attribute(:children).find { |x| @qualifier.qualifies? x }
-    !@result.blank?
+    search(parent).blank?
   end
 
   # @return [String]
   def failure_message_for_should_not
-    "expected #{@parent.inspect} to NOT have child #{@result.inspect}"
+    "expected #@parent to NOT have child #@result"
   end
 
   ##
@@ -44,6 +39,14 @@ class Accessibility::HasChildMatcher
   # @return [String]
   def description
     "should have a child that matches #{@qualifier.inspect}"
+  end
+
+
+  private
+
+  def search parent
+    @parent = parent
+    @result = parent.attribute(:children).find { |x| @qualifier.qualifies? x }
   end
 
 end
@@ -83,25 +86,22 @@ class Accessibility::HasDescendentMatcher
 
   # @param [AX::Element]
   def matches? ancestor
-    @ancestor = ancestor
-    !ancestor.search(@kind, @filters, &@block).blank?
+    !search(ancestor).blank?
   end
 
   # @return [String]
   def failure_message_for_should
-    "expected #{@ancestor.inspect} to have descendent #{@qualifier.inspect}"
+    "expected #@ancestor to have descendent #{@qualifier.inspect}"
   end
 
   # @param [AX::Element]
   def does_not_match? ancestor
-    @ancestor = ancestor
-    @result   = ancestor.search(@kind, @filters, &@block)
-    !@result.blank?
+    search(ancestor).blank?
   end
 
   # @return [String]
   def failure_message_for_should_not
-    "expected #{@ancestor.inspect} to NOT have descendent #{@result.inspect}"
+    "expected #@ancestor to NOT have descendent #@result"
   end
 
   ##
@@ -110,6 +110,14 @@ class Accessibility::HasDescendentMatcher
   # @return [String]
   def description
     "should have a descendent matching #{@qualifier.inspect}"
+  end
+
+
+  private
+
+  def search ancestor
+    @ancestor = ancestor
+    @result   = ancestor.search(@kind, @filters, &@block)
   end
 
 end
