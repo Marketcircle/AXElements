@@ -120,13 +120,6 @@ EMPTY_STRING = ''.freeze
 # Extensions to `NSString`.
 class NSString
   ##
-  # Used to test a symbol/string representing a method name.
-  # Returns `true` if the string ends with a '?".
-  def predicate?
-    self[-1] == '?'
-  end
-
-  ##
   # Force the `#singularize` method to be defined on NSString objects,
   # and therefore on Symbol objects...at least until that bug gets
   # fixed.

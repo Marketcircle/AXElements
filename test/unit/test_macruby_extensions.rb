@@ -69,17 +69,6 @@ class TestNSStringExtensions < MiniTest::Unit::TestCase
     assert Object.const_get(:EMPTY_STRING)
   end
 
-  def test_predicate?
-    assert 'test?'.predicate?
-
-    refute 'tes?t'.predicate?
-    refute 'te?st'.predicate?
-    refute 't?est'.predicate?
-    refute '?test'.predicate?
-
-    refute 'test'.predicate?
-  end
-
   def test_singularize_calls_active_support
     assert_equal 'octopus', NSString.alloc.initWithString('octopi').singularize
     assert_equal 'ox',      NSString.alloc.initWithString('oxen').singularize
