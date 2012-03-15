@@ -87,6 +87,8 @@ class TestNSObjectExtensions < MiniTest::Unit::TestCase
     assert_equal obj.method(:self), obj.method(:to_axvalue)
   end
 
+  # keeping this test just to make sure the version of MacRuby
+  # being used is new enough
   def test_inspecting
     url = NSURL.URLWithString('http://marketcircle.com/')
     assert_equal url.description, url.inspect
