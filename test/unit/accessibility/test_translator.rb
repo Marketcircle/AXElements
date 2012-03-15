@@ -65,6 +65,30 @@ class TestAccessibilityTranslator < MiniTest::Unit::TestCase
     notif_test 'Cheezburger',               'Cheezburger'
   end
 
+  def test_classify
+    def classify_test actual, expected
+      assert_equal expected, TRANSLATOR.classify(actual)
+    end
+
+    classify_test :buttons,          'Button'
+    classify_test :button,           'Button'
+    classify_test :menu_item,        'MenuItem'
+    classify_test 'floating_window', 'FloatingWindow'
+    classify_test 'outline_rows',    'OutlineRow'
+  end
+
+  def test_singularize
+    def singularize_test actual, expected
+      assert_equal expected, TRANSLATOR.singularize(actual)
+    end
+
+    singularize_test :buttons,     'button'
+    singularize_test :button,      'button'
+    singularize_test :windows,     'window'
+    singularize_test :check_boxes, 'check_box'
+    singularize_test 'classes',    'class'
+  end
+
 
   def test_unprefixes_are_cached
     unprefixes = TRANSLATOR.instance_variable_get :@unprefixes
@@ -91,6 +115,22 @@ class TestAccessibilityTranslator < MiniTest::Unit::TestCase
     assert_includes rubyisms.keys, :chocolate_pancake?
     assert_equal    rubyized, rubyisms[:chocolate_pancake]
     assert_equal    rubyized, rubyisms[:chocolate_pancake?]
+  end
+
+  def test_classifications_are_cached
+    classifications = TRANSLATOR.instance_variable_get :@classifications
+
+    classified      = TRANSLATOR.classify :made_up_class_name
+    assert_includes classifications.keys, 'made_up_class_name'
+    assert_equal    classified, classifications['made_up_class_name']
+  end
+
+  def test_singularizations_are_cached
+    singulars = TRANSLATOR.instance_variable_get :@singularizations
+
+    singular  = TRANSLATOR.singularize :buttons
+    assert_includes singulars.keys, 'buttons'
+    assert_equal    singular, singulars['buttons']
   end
 
 end

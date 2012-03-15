@@ -1,4 +1,5 @@
 require 'singleton'
+require 'ax_elements/vendor/inflector'
 
 ##
 # Maintain all the rules for transforming Cocoa constants into something
@@ -12,6 +13,8 @@ class Accessibility::Translator
     init_unprefixes
     init_normalizations
     init_rubyisms
+    init_classifications
+    init_singularizations
   end
 
   ##
@@ -63,6 +66,38 @@ class Accessibility::Translator
     Object.const_defined?(const) ? Object.const_get(const) : name
   end
 
+  ##
+  # Get the class name equivalent for a given symbol or string. This
+  # is just a caching front end to the `#classify` method from the
+  # ActiveSupport inflector.
+  #
+  # @example
+  #
+  #   classify :text_field  # => "TextField"
+  #   classify :buttons     # => "Button"
+  #
+  # @param [#to_s]
+  # @return [String]
+  def classify klass
+    @classifications[klass.to_s]
+  end
+
+  ##
+  # Get the singularized version of the word passed in. This is just
+  # a caching front end to the `#singularize` method from the
+  # ActiveSupport inflector.
+  #
+  # @example
+  #
+  #   singularize :buttons      # => 'button'
+  #   singularize :check_boxes  # => 'check_box'
+  #
+  # @param [#to_s]
+  # @return [String]
+  def singularize klass
+    @singularizations[klass.to_s]
+  end
+
 
   private
 
@@ -101,6 +136,20 @@ class Accessibility::Translator
     # preload the table
     @rubyisms[:id]          = KAXIdentifierAttribute
     @rubyisms[:placeholder] = KAXPlaceholderValueAttribute
+  end
+
+  # @return [Hash{String=>String}]
+  def init_classifications
+    @classifications = Hash.new do |hash, key|
+      hash[key] = Accessibility::Inflector.classify(key)
+    end
+  end
+
+  # @return [Hash{String=>String}]
+  def init_singularizations
+    @singularizations = Hash.new do |hash, key|
+      hash[key] = Accessibility::Inflector.singularize(key)
+    end
   end
 
 end
