@@ -1,4 +1,7 @@
 module Accessibility
+  ##
+  # The Inflector is code borrowed from Active Support.
+  #
   # The Inflector transforms words from singular to plural, class names to table names, modularized class names to ones without,
   # and class names to foreign keys. The default inflections for pluralization, singularization, and uncountable words are kept
   # in inflections.rb.
