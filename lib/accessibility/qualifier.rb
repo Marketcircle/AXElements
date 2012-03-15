@@ -12,10 +12,10 @@ class Accessibility::Qualifier
   #
   # @example
   #
-  #   Accessibility::Qualifier.new(:StandardWindow, title: 'Test')
-  #   Accessibility::Qualifier.new(:Button, {})
+  #   Accessibility::Qualifier.new(:standard_window, title: 'Test')
+  #   Accessibility::Qualifier.new(:buttons, {})
   #   Accessibility::Qualifier.new(:Table, { row: { title: /Price/ } })
-  #   Accessibility::Qualifier.new(:Element) do |element|
+  #   Accessibility::Qualifier.new(:element) do |element|
   #     element.children.size > 5 && NSContainsRect(element.bounds, rect)
   #   end
   #
