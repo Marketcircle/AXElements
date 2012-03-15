@@ -248,10 +248,6 @@ class CGPoint
     CGPoint.new(x, y)
   end
 
-  ##
-  # @note This method does not show up in the documentation with
-  #       YARD 0.7.x
-  #
   # @return [CGPoint]
   alias_method :to_point, :self
 
