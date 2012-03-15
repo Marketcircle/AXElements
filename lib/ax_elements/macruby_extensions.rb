@@ -1,5 +1,5 @@
 require 'accessibility/core'
-require 'ax_elements/vendor/inflector'
+require 'accessibility/translator'
 
 ##
 # Extensions to `NSDictionary`.
@@ -102,8 +102,11 @@ class NSArray
   # @param [Symbol]
   # @return [Symbol]
   def singularized sym
-    sym.chomp('?').singularize.to_sym
+    TRANSLATOR.singularize(sym.chomp('?'))
   end
+
+  # @private
+  TRANSLATOR = Accessibility::Translator.instance
 end
 
 
@@ -119,56 +122,6 @@ EMPTY_STRING = ''.freeze
 ##
 # Extensions to `NSString`.
 class NSString
-  ##
-  # Force the `#singularize` method to be defined on NSString objects,
-  # and therefore on Symbol objects...at least until that bug gets
-  # fixed.
-  #
-  # (see Accessibility::Inflector#singularize)
-  #
-  # @return [String]
-  def singularize
-    Accessibility::Inflector.singularize(self)
-  end
-
-  ##
-  # Force the `#underscore` method to be defined on NSString objects
-  # so that it works on all strings.
-  #
-  # (see Accessibility::Inflector#underscore)
-  #
-  # @return [String]
-  def underscore
-    Accessibility::Inflector.underscore(self)
-  end
-
-  ##
-  # Force the `#classify` method to be defined on NSString objects
-  # so that it can work on all strings.
-  #
-  # (see Accessibility::Inflector#classify)
-  #
-  # @return [String]
-  def classify
-    Accessibility::Inflector.classify(self)
-  end
-
-  ##
-  # Returns the upper camel case version of the string. The string
-  # is assumed to be in `snake_case`, but still works on a string that
-  # is already in camel case.
-  #
-  # I have this method update the string in-place as it is a fairly hot
-  # method and should perform well; by running in-place we save an
-  # allocation (which is slow on MacRuby right now).
-  #
-  # Returns `nil` the string was empty.
-  #
-  # @return [String,nil] returns `self`
-  def camelize
-    gsub /(?:^|_)(.)/ do $1.upcase! || $1 end
-  end
-
   ##
   # @method blank?
   #

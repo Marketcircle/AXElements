@@ -61,8 +61,8 @@ class Accessibility::Translator
   # @param [#to_s]
   # @return [String]
   def guess_notification_for name
-    name  = name.to_s
-    const = "KAX#{name.camelize}Notification"
+    name  = name.to_s.gsub /(?:^|_)(.)/ do $1.upcase! || $1 end
+    const = "KAX#{name}Notification"
     Object.const_defined?(const) ? Object.const_get(const) : name
   end
 
@@ -119,7 +119,7 @@ class Accessibility::Translator
   # @return [Hash{String=>Symbol}]
   def init_normalizations
     @normalizations = Hash.new do |hash, key|
-      hash[key] = @unprefixes[key].underscore.to_sym
+      hash[key] = Accessibility::Inflector.underscore(@unprefixes[key]).to_sym
     end
   end
 

@@ -69,34 +69,6 @@ class TestNSStringExtensions < MiniTest::Unit::TestCase
     assert Object.const_get(:EMPTY_STRING)
   end
 
-  def test_singularize_calls_active_support
-    assert_equal 'octopus', NSString.alloc.initWithString('octopi').singularize
-    assert_equal 'ox',      NSString.alloc.initWithString('oxen').singularize
-    assert_equal 'box',     NSString.alloc.initWithString('boxes').singularize
-    assert_equal 'box',     NSString.alloc.initWithString('box').singularize
-  end
-
-  def test_underscore_calls_active_support
-    assert_equal 'hello_this_is_dog', 'HelloThisIsDog'.underscore
-    assert_equal 'nothing',           'nothing'.underscore
-  end
-
-  def test_classify_calls_active_support
-    assert_equal 'Alpha',        'alpha'.classify
-    assert_equal 'BetaGamma',    'beta_gamma'.classify
-    assert_equal 'DeltaEpsilon', 'delta_epsilons'.classify
-  end
-
-  def test_camelize
-    assert_equal 'AMethodName', 'a_method_name'.camelize
-    assert_equal 'MethodName',  'method_name'.camelize
-    assert_equal 'Name',        'name'.camelize
-
-    assert_equal 'AMethodName', 'AMethodName'.camelize
-    assert_equal 'MethodName',  'MethodName'.camelize
-    assert_equal 'Name',        'Name'.camelize
-  end
-
   def test_blank?
     assert ''.blank?
     refute "\b".blank?
