@@ -98,12 +98,12 @@ class MiniTest::Assertions
   private
 
   def ax_search_id kind, filters, block
-    Accessibility::Qualifier.new(kind, filters, &block).inspect
+    (@q || Accessibility::Qualifier.new(kind, filters, &block)).inspect
   end
 
   def ax_check_children parent, kind, filters, &block
-    q = Accessibility::Qualifier.new(kind.classify, filters, &block)
-    parent.attribute(:children).find { |x| q.qualifies? x }
+    @q = Accessibility::Qualifier.new(kind, filters, &block)
+    parent.attribute(:children).find { |x| @q.qualifies? x }
   end
 
   def ax_check_descendent ancestor, kind, filters, &block
