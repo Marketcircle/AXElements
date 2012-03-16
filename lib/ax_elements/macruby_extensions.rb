@@ -102,9 +102,6 @@ EMPTY_STRING = ''.freeze
 class NSString
   ##
   # @method blank?
-  #
-  # Borrowed from ActiveSupport. Too bad this docstring isn't being
-  # picked up by YARD.
   alias_method :blank?, :empty?
 end
 
