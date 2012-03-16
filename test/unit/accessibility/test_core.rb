@@ -42,15 +42,6 @@ class TestAccessibilityCore < MiniTest::Unit::TestCase
 
 
 
-
-  # trivial but important for backwards compat with Snow Leopard
-  def test_identifier_const
-    assert Object.const_defined? :KAXIdentifierAttribute
-    assert_equal 'AXIdentifier', KAXIdentifierAttribute
-  end
-
-
-
   ##
   # AFAICT every accessibility object **MUST** have attributes, so
   # there are no tests to check what happens when they do not exist;
@@ -661,6 +652,38 @@ class TestAccessibilityCore < MiniTest::Unit::TestCase
     error_handler_test [KAXErrorNotEnoughPrecision],
          should_raise: RuntimeError,
        with_fragments: [/not enough precision/, '¯\(°_o)/¯']
+  end
+
+end
+
+
+class TestCoreExtensionsForCore < MiniTest::Unit::TestCase
+  include Accessibility::Core
+
+  def test_to_axvalue_calls_back
+    point = CGPointMake(1, 2)
+    assert_equal wrap(point), point.to_axvalue
+
+    size  = CGSizeMake(2, 5)
+    assert_equal wrap(size), size.to_axvalue
+
+    rect  = CGRectMake(5, 9, 8, 4)
+    assert_equal wrap(rect), rect.to_axvalue
+
+    range = CFRange.new(5, 4)
+    assert_equal wrap(range), range.to_axvalue
+  end
+
+  def test_to_axvalue_alias
+    obj = Object.new
+    assert_respond_to obj, :to_axvalue
+    assert_equal obj.method(:self), obj.method(:to_axvalue)
+  end
+
+  # trivial but important for backwards compat with Snow Leopard
+  def test_identifier_const
+    assert Object.const_defined? :KAXIdentifierAttribute
+    assert_equal 'AXIdentifier', KAXIdentifierAttribute
   end
 
 end

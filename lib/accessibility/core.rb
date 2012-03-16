@@ -23,8 +23,8 @@ has access to CoreFoundation.
 end
 
 
-require   'ax_elements/version'
-require   'ax_elements/macruby_extensions'
+require 'ax_elements/version'
+require 'ax_elements/macruby_extensions'
 
 ##
 # @todo I feel a bit weird having to instantiate a new pointer every
@@ -861,6 +861,51 @@ module Accessibility::Core
   }
 
 end
+
+
+##
+# AXElements extensions to the `Boxed` class. The `Boxed` class is
+# simply an abstract base class for structs that MacRuby can use
+# via bridge support.
+class Boxed
+  include Accessibility::Core
+
+  ##
+  # Returns the number that AXAPI uses in order to know how to wrap
+  # a struct.
+  #
+  # @return [Number]
+  def ax_value
+    raise NotImplementedError, "#{self.class} cannot be wraped"
+  end
+
+  ##
+  # Create an `AXValue` from the `Boxed` instance. This will only
+  # work if for a few boxed types, you will need to check the AXAPI
+  # documentation for an up to date list.
+  #
+  # @return [AXValueRef]
+  def to_axvalue
+    wrap self
+  end
+end
+
+# AXElements extensions for `CGPoint`.
+class CGPoint; def ax_value; KAXValueCGPointType  end end
+# AXElements extensions for `CGSize`.
+class CGSize;  def ax_value; KAXValueCGSizeType;  end end
+# AXElements extensions for `CGRect`.
+class CGRect;  def ax_value; KAXValueCGRectType;  end end
+# AXElements extensions for `CFRange`.
+class CFRange; def ax_value; KAXValueCFRangeType; end end
+
+##
+# AXElements extensions for `NSObject`.
+class NSObject
+  # @return [Object]
+  alias_method :to_axvalue, :self
+end
+
 
 unless Object.const_defined? :KAXIdentifierAttribute
   ##

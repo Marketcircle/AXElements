@@ -69,12 +69,6 @@ end
 
 class TestNSObjectExtensions < MiniTest::Unit::TestCase
 
-  def test_to_axvalue_alias
-    obj = Object.new
-    assert_respond_to obj, :to_axvalue
-    assert_equal obj.method(:self), obj.method(:to_axvalue)
-  end
-
   # keeping this test just to make sure the version of MacRuby
   # being used is new enough
   def test_inspecting
@@ -83,26 +77,6 @@ class TestNSObjectExtensions < MiniTest::Unit::TestCase
 
     bundle = CFBundleGetMainBundle()
     assert_equal bundle.description, bundle.inspect
-  end
-
-end
-
-
-class TestBoxedExtensions < MiniTest::Unit::TestCase
-  include Accessibility::Core
-
-  def test_to_axvalue_calls_back
-    point = CGPointMake(1, 2)
-    assert_equal wrap(point), point.to_axvalue
-
-    size  = CGSizeMake(2, 5)
-    assert_equal wrap(size), size.to_axvalue
-
-    rect  = CGRectMake(5, 9, 8, 4)
-    assert_equal wrap(rect), rect.to_axvalue
-
-    range = CFRange.new(5, 4)
-    assert_equal wrap(range), range.to_axvalue
   end
 
 end

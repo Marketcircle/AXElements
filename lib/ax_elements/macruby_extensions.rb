@@ -1,4 +1,3 @@
-require 'accessibility/core'
 require 'accessibility/translator'
 
 ##
@@ -107,41 +106,10 @@ end
 
 
 ##
-# Extensions to `NSObject`.
-class NSObject
-  # @return [Object]
-  alias_method :to_axvalue, :self
-end
-
-
-##
 # Extensions to `Boxed` objects. `Boxed` is the superclass for all structs
 # that MacRuby brings over using its BridgeSupport.
 class Boxed
-  include Accessibility::Core
-
-  class << self
-    ##
-    # The `AXValue` constant for the struct type. Not all structs
-    # have a value.
-    #
-    # @return [AXValueType]
-    attr_reader :ax_value
-  end
-
-  ##
-  # Create an `AXValue` from the `Boxed` instance. This will only
-  # work if for a few boxed types, you will need to check the AXAPI
-  # documentation for an up to date list.
-  #
-  # @return [AXValueRef]
-  def to_axvalue
-    wrap self
-  end
-
-
   private
-
   ##
   # Return the height of the main screen.
   #
@@ -155,8 +123,6 @@ end
 ##
 # Extensions to `CGPoint`.
 class CGPoint
-  @ax_value = KAXValueCGPointType
-
   ##
   # Find the center of a rectangle, treating `self` as the origin and
   # the given `size` as the size of the rectangle.
@@ -185,17 +151,8 @@ end
 
 
 ##
-# Extensions to `CGSize`.
-class CGSize
-  @ax_value = KAXValueCGSizeType
-end
-
-
-##
 # Extensions to `CGRect`.
 class CGRect
-  @ax_value = KAXValueCGRectType
-
   ##
   # Treats the rect as belonging to the flipped co-ordinate system
   # and then flips it to be using the Cartesian co-ordinate system.
@@ -205,13 +162,6 @@ class CGRect
     origin.y = screen_height - NSMaxY(self)
     self
   end
-end
-
-
-##
-# Extensions to `CFRange`.
-class CFRange
-  @ax_value = KAXValueCFRangeType
 end
 
 
