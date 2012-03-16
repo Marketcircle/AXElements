@@ -41,3 +41,25 @@ module Accessibility
   end
 
 end
+
+##
+# Extensions to `NSDictionary`.
+class NSDictionary
+  ##
+  # Format the hash for AXElements pretty printing.
+  #
+  # @return [String]
+  def ax_pp
+    return ::EMPTY_STRING if empty?
+
+    list = map { |k, v|
+      case v
+      when Hash
+        "#{k}#{v.ax_pp}"
+      else
+        "#{k}: #{v.inspect}"
+      end
+    }
+    "(#{list.join(', ')})"
+  end
+end
