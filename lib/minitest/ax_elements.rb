@@ -63,8 +63,7 @@ class MiniTest::Assertions
   # @return [nil]
   def refute_has_child parent, kind, filters = {}, &block
     msg = message {
-      child = ax_search_id kind, filters, block
-      "Expected #{parent.inspect} not to have #{child} as a child"
+      "Expected #{parent.inspect} not to have #{result} as a child"
     }
     result = ax_check_children parent, kind, filters, &block
     assert result.blank?, msg
@@ -86,8 +85,7 @@ class MiniTest::Assertions
   # @return [nil,Array()]
   def refute_has_descendent ancestor, kind, filters = {}, &block
     msg = message {
-      descendent = ax_search_id kind, filters, block
-      "Expected #{ancestor.inspect} not to have #{descendent} as a descendent"
+      "Expected #{ancestor.inspect} not to have #{result} as a descendent"
     }
     result = ax_check_descendent ancestor, kind, filters, &block
     assert result.blank?, msg
