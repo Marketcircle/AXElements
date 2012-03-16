@@ -23,17 +23,6 @@ has access to CoreFoundation.
 end
 
 
-unless Object.const_defined? :KAXIdentifierAttribute
-  ##
-  # Added for backwards compatability with Snow Leopard.
-  # This attribute is standard with Lion and newer. AXElements depends
-  # on it being defined.
-  #
-  # @return [String]
-  KAXIdentifierAttribute = 'AXIdentifier'.freeze
-end
-
-
 require   'ax_elements/version'
 require   'ax_elements/macruby_extensions'
 
@@ -871,4 +860,14 @@ module Accessibility::Core
       [RuntimeError,        :handle_not_enough_precision,   0...0]
   }
 
+end
+
+unless Object.const_defined? :KAXIdentifierAttribute
+  ##
+  # Added for backwards compatability with Snow Leopard.
+  # This attribute is standard with Lion and newer. AXElements depends
+  # on it being defined.
+  #
+  # @return [String]
+  KAXIdentifierAttribute = 'AXIdentifier'
 end
