@@ -98,7 +98,7 @@ class MiniTest::Assertions
   private
 
   def ax_search_id kind, filters, block
-    (@q || Accessibility::Qualifier.new(kind, filters, &block)).inspect
+    (@q || Accessibility::Qualifier.new(kind, filters, &block)).describe
   end
 
   def ax_check_children parent, kind, filters, &block

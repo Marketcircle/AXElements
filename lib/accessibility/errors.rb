@@ -28,7 +28,7 @@ module Accessibility
     private
 
     def pp_searchee searchee, filters
-      Accessibility::Qualifier.new(searchee, filters).inspect
+      Accessibility::Qualifier.new(searchee, filters).describe
     end
 
     def path_to element

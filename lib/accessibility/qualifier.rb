@@ -41,7 +41,7 @@ class Accessibility::Qualifier
   end
 
   # @return [String]
-  def inspect
+  def describe
     "#{@klass}#{@criteria.ax_pp}#{@block ? '[✔]' : ::EMPTY_STRING}"
   end
 
