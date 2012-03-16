@@ -20,7 +20,7 @@ class Accessibility::HasChildMatcher
 
   # @return [String]
   def failure_message_for_should
-    "expected #@parent to have child #{@qualifier.describe}"
+    "Expected #@parent to have child #{@qualifier.describe}"
   end
 
   # @param [AX::Element]
@@ -30,7 +30,7 @@ class Accessibility::HasChildMatcher
 
   # @return [String]
   def failure_message_for_should_not
-    "expected #@parent to NOT have child #@result"
+    "Expected #@parent to NOT have child #@result"
   end
 
   ##
@@ -91,7 +91,7 @@ class Accessibility::HasDescendentMatcher
 
   # @return [String]
   def failure_message_for_should
-    "expected #@ancestor to have descendent #{@qualifier.describe}"
+    "Expected #@ancestor to have descendent #{@qualifier.describe}"
   end
 
   # @param [AX::Element]
@@ -101,7 +101,7 @@ class Accessibility::HasDescendentMatcher
 
   # @return [String]
   def failure_message_for_should_not
-    "expected #@ancestor to NOT have descendent #@result"
+    "Expected #@ancestor to NOT have descendent #@result"
   end
 
   ##
