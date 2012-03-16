@@ -87,14 +87,16 @@ class NSArray
 end
 
 
-##
-# @private
-#
-# An empty string, performance hack since using it means you do not
-# have to allocate new empty strings.
-#
-# @return [String]
-EMPTY_STRING = ''.freeze
+unless defined? :EMPTY_STRING
+  ##
+  # @private
+  #
+  # An empty string, performance hack since using it means you do not
+  # have to allocate new empty strings.
+  #
+  # @return [String]
+  EMPTY_STRING = ''
+end
 
 ##
 # Extensions to `NSString`.
