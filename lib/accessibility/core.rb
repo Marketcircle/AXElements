@@ -52,8 +52,8 @@ module Accessibility::Core
   # @group Attributes
 
   ##
-  # @note Invalid values for the argument do not always raise an error.
-  #       This is a "feature" of AXAPI thas is not checked for by AXElements.
+  # @todo Invalid values for the argument do not always raise an error.
+  #       This is a bug that should be logged with Apple.
   #
   # Get the list of attributes for a given element.
   #
