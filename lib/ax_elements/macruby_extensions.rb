@@ -48,6 +48,8 @@ class NSArray
 
   alias_method :nsarray_method_missing, :method_missing
   ##
+  # @note Debatably bad idea. Maintained for backwards compatibility.
+  #
   # If the array contains {AX::Element} objects and the elements respond
   # to the method name then the method will be mapped across the array.
   # In this case, you can artificially pluralize the attribute name and
