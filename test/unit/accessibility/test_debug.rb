@@ -44,3 +44,17 @@ class TestAccessibilityDebug < MiniTest::Unit::TestCase
   end
 
 end
+
+class TestCGRectExtensions < MiniTest::Unit::TestCase
+
+  def test_flipping
+    size = NSScreen.mainScreen.frame.size
+    assert_equal CGRectMake(  0,     size.height,  0,  0), CGRectZero.dup.flip!
+    assert_equal CGRectMake(100, size.height-200,100,100), CGRectMake(100,100,100,100).flip!
+  end
+
+  def test_flipping_twice_returns_to_original
+    assert_equal CGRectZero.dup, CGRectZero.dup.flip!.flip!
+  end
+
+end
