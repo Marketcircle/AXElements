@@ -1,3 +1,5 @@
+require 'accessibility/translator'
+
 ##
 # Used in searches to answer whether or not a given element meets the
 # expected criteria.
@@ -42,7 +44,7 @@ class Accessibility::Qualifier
 
   # @return [String]
   def describe
-    "#{@klass}#{@criteria.ax_pp}#{@block ? '[✔]' : ::EMPTY_STRING}"
+    "#{@klass}#{@criteria.ax_pp}#{@block ? '[✔]' : ''}"
   end
 
 
@@ -130,4 +132,27 @@ class Accessibility::Qualifier
     @block.call element
   end
 
+end
+
+
+##
+# Extensions to `NSDictionary`.
+class NSDictionary
+  ##
+  # Format the hash for AXElements pretty printing.
+  #
+  # @return [String]
+  def ax_pp
+    return '' if empty?
+
+    list = map { |k, v|
+      case v
+      when Hash
+        "#{k}#{v.ax_pp}"
+      else
+        "#{k}: #{v.inspect}"
+      end
+    }
+    "(#{list.join(', ')})"
+  end
 end
