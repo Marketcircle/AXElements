@@ -11,7 +11,7 @@ class TestRSpecMatchers < MiniTest::Unit::TestCase
     e = app.main_window.slider
 
     m.matches? e
-    assert_equal "expected #{e.inspect} to have child Window[✔]",
+    assert_equal "Expected #{e.inspect} to have child Window[✔]",
       m.failure_message_for_should
   end
 
@@ -20,7 +20,7 @@ class TestRSpecMatchers < MiniTest::Unit::TestCase
     e = app.window
 
     m.does_not_match? app
-    assert_equal "expected #{app.inspect} to NOT have child #{e.inspect}",
+    assert_equal "Expected #{app.inspect} to NOT have child #{e.inspect}",
       m.failure_message_for_should_not
   end
 
@@ -35,7 +35,7 @@ class TestRSpecMatchers < MiniTest::Unit::TestCase
     e = app.main_window.slider
 
     m.matches? e
-    assert_equal "expected #{e.inspect} to have descendent Button[✔]",
+    assert_equal "Expected #{e.inspect} to have descendent Button[✔]",
       m.failure_message_for_should
   end
 
@@ -44,7 +44,7 @@ class TestRSpecMatchers < MiniTest::Unit::TestCase
     e = app.window
 
     m.does_not_match? app
-    assert_equal "expected #{app.inspect} to NOT have descendent #{e.inspect}",
+    assert_equal "Expected #{app.inspect} to NOT have descendent #{e.inspect}",
       m.failure_message_for_should_not
   end
 
