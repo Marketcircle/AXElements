@@ -24,7 +24,6 @@ end
 
 
 require 'ax_elements/version'
-require 'ax_elements/macruby_extensions'
 
 ##
 # @todo I feel a bit weird having to instantiate a new pointer every
@@ -875,7 +874,7 @@ class Boxed
   # a struct.
   #
   # @return [Number]
-  def ax_value
+  def self.ax_value
     raise NotImplementedError, "#{self.class} cannot be wraped"
   end
 
@@ -890,20 +889,21 @@ class Boxed
   end
 end
 
-# AXElements extensions for `CGPoint`.
-class CGPoint; def ax_value; KAXValueCGPointType  end end
-# AXElements extensions for `CGSize`.
-class CGSize;  def ax_value; KAXValueCGSizeType;  end end
-# AXElements extensions for `CGRect`.
-class CGRect;  def ax_value; KAXValueCGRectType;  end end
 # AXElements extensions for `CFRange`.
-class CFRange; def ax_value; KAXValueCFRangeType; end end
+class << CFRange; def ax_value; KAXValueCFRangeType; end end
+# AXElements extensions for `CGSize`.
+class << CGSize;  def ax_value; KAXValueCGSizeType;  end end
+# AXElements extensions for `CGRect`.
+class << CGRect;  def ax_value; KAXValueCGRectType;  end end
+# AXElements extensions for `CGPoint`.
+class << CGPoint; def ax_value; KAXValueCGPointType; end end
 
-##
 # AXElements extensions for `NSObject`.
 class NSObject
   # @return [Object]
-  alias_method :to_axvalue, :self
+  def to_axvalue
+    self
+  end
 end
 
 
@@ -915,4 +915,23 @@ unless Object.const_defined? :KAXIdentifierAttribute
   #
   # @return [String]
   KAXIdentifierAttribute = 'AXIdentifier'
+end
+
+
+# AXElements extensions to `NSArray`.
+class NSArray
+  # @return [CGPoint]
+  def to_point; CGPoint.new(first, at(1)) end
+  # @return [CGSize]
+  def to_size;  CGSize.new(first, at(1))  end
+  # @return [CGRect]
+  def to_rect;  CGRectMake(*self[0..3])   end
+end
+
+# AXElements extensions for `CGPoint`.
+class CGPoint
+  # @return [CGPoint]
+  def to_point
+    self
+  end
 end

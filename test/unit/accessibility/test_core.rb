@@ -195,7 +195,7 @@ class TestAccessibilityCore < MiniTest::Unit::TestCase
     result = set KAXValueAttribute, to: string, for: search_box
     assert_equal string, result
 
-    string = ::EMPTY_STRING
+    string = ''
     result = set KAXValueAttribute, to: string, for: search_box
     assert_equal string, result
   end
@@ -677,13 +677,34 @@ class TestCoreExtensionsForCore < MiniTest::Unit::TestCase
   def test_to_axvalue_alias
     obj = Object.new
     assert_respond_to obj, :to_axvalue
-    assert_equal obj.method(:self), obj.method(:to_axvalue)
+    assert_equal obj.self, obj.to_axvalue
   end
 
   # trivial but important for backwards compat with Snow Leopard
   def test_identifier_const
     assert Object.const_defined? :KAXIdentifierAttribute
     assert_equal 'AXIdentifier', KAXIdentifierAttribute
+  end
+
+  def test_to_point
+    assert_equal CGPointZero, CGPointZero.to_point
+    assert_equal CGPointMake(2,3), CGPointMake(2,3).to_point
+
+    assert_instance_of CGPoint, [1, 1].to_point
+    assert_equal [2,3], [2,3].to_point.to_a
+    assert_equal CGPoint.new(1,2), NSArray.arrayWithArray([1, 2, 3]).to_point
+  end
+
+  def test_to_size
+    assert_instance_of CGSize, [1, 1].to_size
+    assert_equal [2,3], [2,3].to_size.to_a
+    assert_equal CGSize.new(1,2), NSArray.arrayWithArray([1, 2, 3]).to_size
+  end
+
+  def test_to_rect
+    assert_instance_of CGRect, [1, 1, 1, 1].to_rect
+    assert_equal [2,3,4,5], [2,3,4,5].to_rect.to_a.map(&:to_a).flatten
+    assert_equal CGRectMake(6,7,8,9), [6,7,8,9,10].to_rect
   end
 
 end
