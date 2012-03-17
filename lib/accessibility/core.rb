@@ -676,18 +676,18 @@ module Accessibility::Core
       "#{args.first} is not an AXUIElementRef"
     when 2
       "Either the element #{args.first} " +
-        "or the attr/action/callback #{args.second.inspect} " +
+        "or the attr/action/callback #{args[1].inspect} " +
         'is not a legal argument'
     when 3
-      "You can't set #{args.second.inspect} to " +
-        "#{args.third.inspect} for #{args.first}"
+      "You can't set #{args[1].inspect} to " +
+        "#{args[2].inspect} for #{args.first}"
     when 4
-      "The point #{args.second.to_point.inspect} is not a valid point, " +
+      "The point #{args[1].to_point.inspect} is not a valid point, " +
         "or #{args.first} is not an AXUIElementRef"
     when 5
-      "Either the observer #{args.third.inspect}, " +
+      "Either the observer #{args[2].inspect}, " +
         "the element #{args.first}, or " +
-        "the notification #{args.second.inspect} " +
+        "the notification #{args[1].inspect} " +
         "is not a legitimate argument"
     end
   end
