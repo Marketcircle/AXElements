@@ -243,7 +243,7 @@ class AX::Element
     qualifier = Accessibility::Qualifier.new(kind, filters, &block)
     tree      = Accessibility::Enumerators::BreadthFirst.new(self)
 
-    unless TRANSLATOR.singularize(kind) == kind
+    if TRANSLATOR.singularize(kind) == kind.to_s
       tree.find { |element| qualifier.qualifies? element }
     else
       tree.find_all { |element| qualifier.qualifies? element }
