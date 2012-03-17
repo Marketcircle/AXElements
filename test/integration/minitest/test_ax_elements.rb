@@ -9,10 +9,10 @@ class TestMiniTestAssertions < MiniTest::Unit::TestCase
   def test_assert_has_child
     expected = app.window
 
-    assert_equal expected, assert_has_child(app,:window)
-    assert_equal expected, assert_has_child(app,:window,title: 'AXElementsTester')
+    assert_equal expected, assert_has_child(app, :window)
+    assert_equal expected, assert_has_child(app, :window, title: 'AXElementsTester')
 
-    result = assert_has_child(app,:window) { |x| 
+    result = assert_has_child(app, :window) { |x|
       @got_called = true
       x.title == 'AXElementsTester'
     }
@@ -70,7 +70,7 @@ class TestMiniTestAssertions < MiniTest::Unit::TestCase
     e = assert_raises MiniTest::Assertion do
       refute_has_child app, :window
     end
-    assert_match /not to have Window as a child/, e.message
+    assert_match /not to have #{Regexp.escape(app.window.inspect)} as a child/, e.message
   end
 
   def test_refute_has_descendent
@@ -91,12 +91,7 @@ class TestMiniTestAssertions < MiniTest::Unit::TestCase
     e = assert_raises MiniTest::Assertion do
       refute_has_descendent app, :window
     end
-    assert_match /not to have Window as a descendent/, e.message
-
-    e = assert_raises MiniTest::Assertion do
-      refute_has_descendent app, :window do |_| true end
-    end
-    assert_match /Window\[✔\]/, e.message
+    assert_match /#{Regexp.escape(app.window.inspect)} as a descendent/, e.message
   end
 
 end
