@@ -118,12 +118,15 @@ class TestAccessibilityQualifier < MiniTest::Unit::TestCase
     assert_equal 2, @got_called
   end
 
-  def test_inspect
-    assert_equal 'DockItem',                                     qualifier(:DockItem,{                                         }               ).inspect
-    assert_equal 'Button(title: "Free Bacon")',                  qualifier(:Button,  { title: 'Free Bacon'                     }               ).inspect
-    assert_equal 'Element[✔]',                                   qualifier(:Element, {                                         }, &proc { |_| }).inspect
-    assert_equal 'Window(id: /FindMe/, button(title: "Press"))', qualifier(:Window,  { id: /FindMe/, button: { title: 'Press' }}               ).inspect
-    assert_equal 'Row(id: "Yo")[✔]',                             qualifier(:Row,       id: 'Yo',                                  &proc { |_| }).inspect
+  def test_describe
+    def describe expected, qualifier
+      assert_equal expected, qualifier.describe
+    end
+    describe 'DockItem',                                     qualifier(:DockItem,{                                         }               )
+    describe 'Button(title: "Free Bacon")',                  qualifier(:Button,  { title: 'Free Bacon'                     }               )
+    describe 'Element[✔]',                                   qualifier(:Element, {                                         }, &proc { |_| })
+    describe 'Window(id: /FindMe/, button(title: "Press"))', qualifier(:Window,  { id: /FindMe/, button: { title: 'Press' }}               )
+    describe 'Row(id: "Yo")[✔]',                             qualifier(:Row,       id: 'Yo',                                  &proc { |_| })
   end
 
   # n is the number of filters used
