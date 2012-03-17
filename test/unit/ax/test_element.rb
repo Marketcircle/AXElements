@@ -52,3 +52,25 @@ class TestAXElement < MiniTest::Unit::TestCase
   end
 
 end
+
+
+class TestSearchResultBlankness < MiniTest::Unit::TestCase
+
+  def test_array_blank
+    [
+      NSArray.array,
+      [true]
+    ].each do |ary|
+      assert_equal ary.empty?, ary.blank?
+    end
+  end
+
+  def test_nil_blank
+    assert_equal true, nil.blank?
+  end
+
+  def test_element_blank
+    assert_equal false, AX::Element.new(REF).blank?
+  end
+
+end

@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 
-require 'ax_elements/macruby_extensions'
 require 'ax_elements/vendor/inflector'
 require 'accessibility/enumerators'
 require 'accessibility/qualifier'
@@ -537,3 +536,8 @@ class AX::Element
   end
 
 end
+
+
+# Extensions so checking #blank? on search result "just works".
+class NSArray;  alias_method :blank?, :empty? end
+class NilClass; def blank?; true end end
