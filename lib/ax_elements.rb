@@ -12,3 +12,6 @@ require 'ax/button'
 require 'ax/radio_button'
 require 'ax/row'
 require 'ax/static_text'
+
+require 'ax_elements/nsarray_compat'
+require 'ax_elements/exception_workaround'
