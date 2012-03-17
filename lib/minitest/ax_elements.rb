@@ -1,4 +1,5 @@
-require 'ax_elements/macruby_extensions'
+require 'ax/element'
+require 'accessibility/qualifier'
 
 ##
 # AXElements assertions for MiniTest.
@@ -23,7 +24,7 @@ class MiniTest::Assertions
       child = ax_search_id kind, filters, block
       "Expected #{parent.inspect} to have #{child} as a child"
     }
-    result = ax_check_children parent, kind, filters, &block
+    result = ax_check_children parent, kind, filters, block
     refute result.blank?, msg
     result
   end
@@ -46,7 +47,7 @@ class MiniTest::Assertions
       descendent = ax_search_id kind, filters, block
       "Expected #{ancestor.inspect} to have #{descendent} as a descendent"
     }
-    result = ax_check_descendent ancestor, kind, filters, &block
+    result = ax_check_descendent ancestor, kind, filters, block
     refute result.blank?, msg
     result
   end
@@ -65,10 +66,10 @@ class MiniTest::Assertions
   # @param [Hash]
   # @return [nil]
   def refute_has_child parent, kind, filters = {}, &block
-    msg = message {
+    result = ax_check_children parent, kind, filters, block
+    msg    = message {
       "Expected #{parent.inspect} not to have #{result} as a child"
     }
-    result = ax_check_children parent, kind, filters, &block
     assert result.blank?, msg
     result
   end
@@ -87,10 +88,10 @@ class MiniTest::Assertions
   # @param [Hash]
   # @return [nil,Array()]
   def refute_has_descendent ancestor, kind, filters = {}, &block
-    msg = message {
+    result = ax_check_descendent ancestor, kind, filters, block
+    msg    = message {
       "Expected #{ancestor.inspect} not to have #{result} as a descendent"
     }
-    result = ax_check_descendent ancestor, kind, filters, &block
     assert result.blank?, msg
     result
   end
@@ -99,15 +100,15 @@ class MiniTest::Assertions
   private
 
   def ax_search_id kind, filters, block
-    (@q || Accessibility::Qualifier.new(kind, filters, &block)).describe
+    Accessibility::Qualifier.new(kind, filters, &block).describe
   end
 
-  def ax_check_children parent, kind, filters, &block
-    @q = Accessibility::Qualifier.new(kind, filters, &block)
-    parent.attribute(:children).find { |x| @q.qualifies? x }
+  def ax_check_children parent, kind, filters, block
+    q = Accessibility::Qualifier.new(kind, filters, &block)
+    parent.attribute(:children).find { |x| q.qualifies? x }
   end
 
-  def ax_check_descendent ancestor, kind, filters, &block
+  def ax_check_descendent ancestor, kind, filters, block
     ancestor.search(kind, filters, &block)
   end
 
