@@ -1,5 +1,8 @@
 require 'ax_elements/macruby_extensions'
 
+##
+# AXElements assertions for MiniTest.
+# [Learn more about minitest.](https://github.com/seattlerb/minitest)
 class MiniTest::Assertions
 
   ##
