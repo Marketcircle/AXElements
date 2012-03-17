@@ -112,7 +112,7 @@ class Accessibility::Translator
   # @return [Hash{String=>String}]
   def init_unprefixes
     @unprefixes = Hash.new do |hash, key|
-      hash[key] = key.sub /^[A-Z]*?AX(?:Is)?|\s+/, ::EMPTY_STRING
+      hash[key] = key.sub /^[A-Z]*?AX(?:Is)?|\s+/, EMPTY_STRING
     end
   end
 
@@ -152,4 +152,11 @@ class Accessibility::Translator
     end
   end
 
+  ##
+  # @private
+  #
+  # Cached for performance.
+  #
+  # @return [String]
+  EMPTY_STRING = ''
 end

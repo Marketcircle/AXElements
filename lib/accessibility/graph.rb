@@ -41,13 +41,13 @@ class Accessibility::Graph
       enabled = if ref.respond_to?(:enabled) && !ref.enabled?
                   '[style = filled] [color = "grey"]'
                 else
-                  ::EMPTY_STRING
+                  EMPTY_STRING
                 end
 
       focus   = if ref.respond_to? :focused
-                  ref.focused? ? '[style = bold]' : ::EMPTY_STRING
+                  ref.focused? ? '[style = bold]' : EMPTY_STRING
                 else
-                  ::EMPTY_STRING
+                  EMPTY_STRING
                 end
 
       shape   = ref.actions.empty? ? '[shape = oval]' : '[shape = box]'
@@ -57,6 +57,8 @@ class Accessibility::Graph
 
 
     private
+
+    EMPTY_STRING = ''
 
     def identifier
       klass = ref.class.to_s.split('::').last

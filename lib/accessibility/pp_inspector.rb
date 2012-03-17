@@ -51,7 +51,7 @@ module Accessibility::PPInspector
     end
 
     # @todo should we have other fallbacks?
-    return ::EMPTY_STRING
+    return EMPTY_STRING
   end
 
   ##
@@ -64,7 +64,7 @@ module Accessibility::PPInspector
     if position
       " (#{position.x}, #{position.y})"
     else
-      ::EMPTY_STRING
+      EMPTY_STRING
     end
   end
 
@@ -80,7 +80,7 @@ module Accessibility::PPInspector
     elsif child_count == 1
       ' 1 child'
     else # there are some odd edge cases
-      ::EMPTY_STRING
+      ''
     end
   end
 
@@ -114,4 +114,12 @@ module Accessibility::PPInspector
   # @return [String]
   CROSS = '✘'
 
+
+  ##
+  # @private
+  #
+  # Constant used all over the place.
+  #
+  # @return [String]
+  EMPTY_STRING = ''
 end

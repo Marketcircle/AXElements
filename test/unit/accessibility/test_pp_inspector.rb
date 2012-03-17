@@ -18,10 +18,10 @@ class TestAccessibilityPPInspector < MiniTest::Unit::TestCase
     assert_match /value=3.14/, pp_identifier
 
     @attribute  = ''
-    assert_match ::EMPTY_STRING, pp_identifier
+    assert_match EMPTY_STRING, pp_identifier
 
     @attribute  = nil
-    assert_match ::EMPTY_STRING, pp_identifier
+    assert_match EMPTY_STRING, pp_identifier
   end
 
   def test_identifier_using_title
@@ -44,7 +44,7 @@ class TestAccessibilityPPInspector < MiniTest::Unit::TestCase
     assert_match /roflcopter/, pp_identifier
 
     @attribute  = NSString.string
-    assert_equal ::EMPTY_STRING, pp_identifier
+    assert_equal EMPTY_STRING, pp_identifier
 
     @attribute  = 26
     assert_match /26/, pp_identifier
@@ -62,7 +62,7 @@ class TestAccessibilityPPInspector < MiniTest::Unit::TestCase
 
   def test_identifier_empty_string_as_final_fallback
     @attributes = NSArray.array
-    assert_equal ::EMPTY_STRING, pp_identifier
+    assert_equal EMPTY_STRING, pp_identifier
   end
 
   def test_position
@@ -76,7 +76,7 @@ class TestAccessibilityPPInspector < MiniTest::Unit::TestCase
   # this sometimes happens, even though it shouldn't
   def test_position_is_nil
     @attribute = nil
-    assert_equal ::EMPTY_STRING, pp_position
+    assert_equal EMPTY_STRING, pp_position
   end
 
   def test_children_pluralizes_properly
@@ -84,7 +84,7 @@ class TestAccessibilityPPInspector < MiniTest::Unit::TestCase
      [9001, /9001 children/],
      [3.14, /3.14 children/],
      [1,    /1 child/      ],
-     [0,    ::EMPTY_STRING ]
+     [0,    EMPTY_STRING   ]
     ].each do |size, matcher|
       @size_of = size
       assert_match matcher, pp_children

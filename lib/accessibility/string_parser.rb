@@ -333,7 +333,7 @@ module Accessibility::String
     def generate_custom token
       code = CUSTOM.fetch token.first[1..-1], nil
       unless code
-        generate_all token.first.split(::EMPTY_STRING)
+        generate_all token.first.split(EMPTY_STRING)
         return
       end
 
@@ -368,6 +368,7 @@ module Accessibility::String
       @index += 2
     end
 
+    EMPTY_STRING  = ''
     CUSTOM_ESCAPE = "\\"
     OPTION_DOWN   = [58,true]
     OPTION_UP     = [58,false]
