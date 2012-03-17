@@ -117,7 +117,7 @@ class TestAccessibilityCore < MiniTest::Unit::TestCase
 
   def test_attrs_value_fills_in_nils_when_no_value_error_occurs
     assert_nil values_of([KAXSubroleAttribute, KAXRoleAttribute], for: web_area).first
-    assert_nil values_of([KAXRoleAttribute, KAXSubroleAttribute], for: web_area).second
+    assert_nil values_of([KAXRoleAttribute, KAXSubroleAttribute], for: web_area)[1]
   end
 
   def test_attrs_value_handles_errors
