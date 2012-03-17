@@ -25,4 +25,30 @@ class TestAXElement < MiniTest::Unit::TestCase
     refute_respond_to window, :pie=
   end
 
+  def test_to_point
+    def center_test position, size, expected
+      element.define_singleton_method :attribute do |attr|
+        case attr
+        when :position then CGPointMake(*position)
+        when :size     then CGSizeMake(*size)
+        else raise ArgumentError
+        end
+      end
+      assert_equal CGPointMake(*expected), element.to_point
+    end
+
+    # the nil case
+    center_test CGPointZero, CGSizeZero, CGPointZero
+    # simple square with origin at zero
+    center_test [0,0], [2,2], [1,1]
+    # simple square in positive positive quadrant
+    center_test [1,1], [6,6], [4,4]
+    # rect in positive positive quadrant
+    center_test [1,2], [6,10], [4,7]
+    # rect in negative positive quadrant
+    center_test [-123.0,25.0], [6.0,10,0], [-120,30]
+    # rect starts in negative positive quadrant but is in positive positive
+    center_test [-10.0,70.0], [20,42], [0,91]
+  end
+
 end

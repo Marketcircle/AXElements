@@ -452,9 +452,11 @@ class AX::Element
   #
   # @return [CGPoint]
   def to_point
-    point = value_of KAXPositionAttribute, for: @ref
-    size  = value_of KAXSizeAttribute,     for: @ref
-    unwrap(point).center unwrap(size)
+    size     = attribute :size
+    point    = attribute :position
+    point.x += size.width  / 2
+    point.y += size.height / 2
+    point
   end
 
   ##
