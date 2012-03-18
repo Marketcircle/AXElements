@@ -18,7 +18,7 @@ class TestAccessibilityTranslator < MiniTest::Unit::TestCase
 
   def test_lookup
     def lookup_test key, values, expected
-      assert_equal expected, TRANSLATOR.lookup(key, with: values)
+      assert_equal expected, TRANSLATOR.lookup(key, values)
     end
 
     lookup_test :children,         [KAXChildrenAttribute],       KAXChildrenAttribute
@@ -30,7 +30,7 @@ class TestAccessibilityTranslator < MiniTest::Unit::TestCase
 
   def test_lookup_aliases
     def lookup_test key, values, expected
-      assert_equal expected, TRANSLATOR.lookup(key, with: values)
+      assert_equal expected, TRANSLATOR.lookup(key, values)
     end
 
     lookup_test :id,          [], KAXIdentifierAttribute
