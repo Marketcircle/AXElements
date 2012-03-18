@@ -76,7 +76,7 @@ class AX::Element
   #
   # @param [#to_sym]
   def attribute attr
-    real_attr = lookup attr, with: @attrs
+    real_attr = lookup attr, @attrs
     raise Accessibility::LookupFailure.new(self, attr) unless real_attr
     process value_of(real_attr, for: @ref)
   end
@@ -102,7 +102,7 @@ class AX::Element
   # @param [#to_sym]
   # @return [Number]
   def size_of attr
-    real_attr = lookup attr, with: @attrs
+    real_attr = lookup attr, @attrs
     raise Accessibility::LookupFailure.new(self, attr) unless real_attr
     size_of real_attr, for: @ref
   end
@@ -130,7 +130,7 @@ class AX::Element
   #
   # @param [#to_sym]
   def attribute_writable? attr
-    real_attr = lookup attr, with: @attrs
+    real_attr = lookup attr, @attrs
     raise Accessibility::LookupFailure.new(self, attr) unless real_attr
     writable? real_attr, for: @ref
   end
@@ -149,7 +149,7 @@ class AX::Element
     unless attribute_writable? attr
       raise NoMethodError, "#{attr} is read-only for #{inspect}"
     end
-    real_attr = lookup attr, with: @attrs
+    real_attr = lookup attr, @attrs
     set real_attr, to: value.to_axvalue, for: @ref
     value
   end
@@ -180,7 +180,7 @@ class AX::Element
   #
   # @param [#to_sym]
   def attribute attr, for_parameter: param
-    real_attr = lookup attr, with: _parameterized_attributes
+    real_attr = lookup attr, _parameterized_attributes
     raise Accessibility::LookupFailure.new(self, attr) unless real_attr
     process value_of(real_attr, for_param: param.to_axvalue, for: @ref)
   end
@@ -217,7 +217,7 @@ class AX::Element
   # @param [#to_sym]
   # @return [Boolean] true if successful
   def perform action
-    real_action = lookup action, with: _actions
+    real_action = lookup action, _actions
     raise Accessibility::LookupFailure.new(self, action) unless real_action
     perform real_action, for: @ref
   end
@@ -320,12 +320,12 @@ class AX::Element
       return set(method.chomp(EQUALS), to: args.first)
     end
 
-    attribute = lookup method, with: @attrs
+    attribute = lookup method, @attrs
     if attribute
       return process value_of(attribute, for: @ref) if attribute
     end
 
-    attribute = lookup method, with: _parameterized_attributes
+    attribute = lookup method, _parameterized_attributes
     if attribute
       return process value_of(attribute, for_param: args.first, for: @ref)
     end
@@ -441,8 +441,8 @@ class AX::Element
   # Overriden to respond properly with regards to dynamic attribute
   # lookups, but will return false for potential implicit searches.
   def respond_to? name
-    return true if lookup name.chomp(EQUALS), with: @attrs
-    return true if lookup name, with: _parameterized_attributes
+    return true if lookup name.chomp(EQUALS), @attrs
+    return true if lookup name, _parameterized_attributes
     return @attrs.include? KAXDescriptionAttribute if name == :description
     return super
   end
@@ -512,8 +512,8 @@ class AX::Element
     @actions ||= actions_for @ref
   end
 
-  def lookup key, with: values
-    value = TRANSLATOR.lookup key, with: values
+  def lookup key, values
+    value = TRANSLATOR.lookup key, values
     return value if values.include? value
   end
 

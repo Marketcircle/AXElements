@@ -44,7 +44,7 @@ class Accessibility::Translator
   # @param [#to_sym]
   # @param [Array<String>]
   # @return [String]
-  def lookup key, with: values
+  def lookup key, values
     @values = values
     @rubyisms[key.to_sym]
   end
