@@ -464,9 +464,9 @@ class AX::Element
   #
   # @return [CGRect]
   def bounds
-    point = value_of KAXPositionAttribute, for: @ref
-    size  = value_of KAXSizeAttribute,     for: @ref
-    CGRectMake(*unwrap(point), *unwrap(size))
+    point = attribute :position
+    size  = attribute :size
+    CGRectMake(*point, *size)
   end
 
   ##
