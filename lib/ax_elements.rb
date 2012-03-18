@@ -8,10 +8,12 @@ include Accessibility::DSL
 # @return [AX::Application]
 AX::DOCK = app_with_bundle_identifier 'com.apple.dock'
 
+# Load explicitly defined elements that are optional
 require 'ax/button'
 require 'ax/radio_button'
 require 'ax/row'
 require 'ax/static_text'
 
+# Misc things that we need to load
 require 'ax_elements/nsarray_compat'
 require 'ax_elements/exception_workaround'
