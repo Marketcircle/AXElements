@@ -150,7 +150,7 @@ class AX::Element
       raise NoMethodError, "#{attr} is read-only for #{inspect}"
     end
     real_attr = lookup attr, @attrs
-    set real_attr, to: value.to_axvalue, for: @ref
+    set real_attr, to: value, for: @ref
     value
   end
 
@@ -182,7 +182,7 @@ class AX::Element
   def attribute attr, for_parameter: param
     real_attr = lookup attr, _parameterized_attributes
     raise Accessibility::LookupFailure.new(self, attr) unless real_attr
-    process value_of(real_attr, for_param: param.to_axvalue, for: @ref)
+    process value_of(real_attr, for_param: param, for: @ref)
   end
 
 

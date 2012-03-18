@@ -125,9 +125,6 @@ class TestAccessibilityCore < MiniTest::Unit::TestCase
       values_of(['MADEUPATTRIBUTE'], for: nil)
     end
     assert_raises ArgumentError do
-      values_of(nil, for: REF)
-    end
-    assert_raises ArgumentError do
       values_of([], for: REF)
     end
   end

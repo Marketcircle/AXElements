@@ -137,8 +137,9 @@ module Accessibility::Core
   # @param [AXUIElementRef]
   # @return [Array]
   def values_of attrs, for: element
-    ptr  = Pointer.new ARRAY
-    code = AXUIElementCopyMultipleAttributeValues(element, attrs, 0, ptr)
+    ptr   = Pointer.new ARRAY
+    attrs = attrs.map(&:to_axvalue)
+    code  = AXUIElementCopyMultipleAttributeValues(element, attrs, 0, ptr)
     return ptr[0].map { |x|
       AXValueGetType(x) == KAXValueAXErrorType ? nil : x
     } if code.zero? || code == KAXErrorNoValue
@@ -250,7 +251,7 @@ module Accessibility::Core
   #   set KAXValueAttribute, to: "hi", for: text_field
   #     # => "hi"
   #
-  #   set KAXSizeAttribute, to: wrap([250,250].to_axvalue), for: window
+  #   set KAXSizeAttribute, to: [250,250], for: window
   #     # => #<AXValueRef>
   #
   # @param [String] attr an attribute constant
@@ -258,7 +259,7 @@ module Accessibility::Core
   # @param [AXUIElementRef]
   # @return [Object] returns the value that was set
   def set attr, to: value, for: element
-    code = AXUIElementSetAttributeValue(element, attr, value)
+    code = AXUIElementSetAttributeValue(element, attr.to_axvalue, value)
     return value if code.zero?
     handle_error code, element, attr
   end
@@ -372,7 +373,7 @@ module Accessibility::Core
   #
   # @example
   #
-  #   r = CFRange.new(1, 10).to_axvalue
+  #   r = CFRange.new(1, 10)
   #   value_of KAXStringForRangeParameterizedAttribute, for_param: r, for: tf
   #     # => "ello, worl"
   #
@@ -380,8 +381,9 @@ module Accessibility::Core
   # @param [Object] param
   # @param [AXUIElementRef]
   def value_of attr, for_param: param, for: element
-    ptr  = Pointer.new :id
-    code = AXUIElementCopyParameterizedAttributeValue(element,attr,param,ptr)
+    ptr   = Pointer.new :id
+    param = param.to_axvalue
+    code  = AXUIElementCopyParameterizedAttributeValue(element,attr,param,ptr)
     return ptr[0] if code.zero?
     return nil    if code == KAXErrorNoValue
     handle_error code, element, attr, param
