@@ -80,7 +80,7 @@ module Accessibility::PPInspector
     elsif child_count == 1
       ONE_CHILD
     else # there are some odd edge cases
-      ''
+      EMPTY_STRING
     end
   end
 
