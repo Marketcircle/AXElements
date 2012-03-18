@@ -240,10 +240,11 @@ class AX::Element
   # @param [Hash{Symbol=>Object}]
   # @return [AX::Element,nil,Array<AX::Element>,Array<>]
   def search kind, filters = {}, &block
+    kind      = kind.to_s
     qualifier = Accessibility::Qualifier.new(kind, filters, &block)
     tree      = Accessibility::Enumerators::BreadthFirst.new(self)
 
-    if TRANSLATOR.singularize(kind) == kind.to_s
+    if TRANSLATOR.singularize(kind) == kind
       tree.find { |element| qualifier.qualifies? element }
     else
       tree.find_all { |element| qualifier.qualifies? element }
