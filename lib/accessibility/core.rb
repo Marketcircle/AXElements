@@ -147,38 +147,24 @@ module Accessibility::Core
   end
 
   ##
-  # @note Error codes are not checked here, you should only call this
-  #       method if you know the element has a subrole.
-  # @note You might get `nil` back as the subrole, so you need to check.
+  # @note You might get `nil` back as the subrole as AXWebArea
+  #       objects are known to do this. You need to check. :(
   #
-  # Quick macro for getting the subrole/role pair for a given
-  # element. This is equivalent to calling `AX.attr:for:`
-  # twice; once to get the role, and a second time to get the subrole.
-  # The pair is ordered with the subrole first.
+  # Quick macro for getting the `KAXSubrole` for a given element.
   #
   # @example
-  #   role_pair_for window_ref    # => ["AXDialog", "AXWindow" ]
-  #   role_pair_for web_area_ref  # => [nil,        "AXWebArea"]
+  #   subrole_for window_ref    # => "AXDialog"
+  #   subrole_for web_area_ref  # => nil
   #
   # @param [AXUIElementRef]
-  # @return [Array(String,String), Array(nil,String)]
-  def role_pair_for element
-    role = role_for element
-    ptr  = Pointer.new :id
-    AXUIElementCopyAttributeValue(element, KAXSubroleAttribute, ptr)
-    [ptr[0], role]
+  # @return [String,nil]
+  def subrole_for element
+    value_of KAXSubroleAttribute, for: element
   end
 
   ##
-  # @todo Determine if the performance gain is worth it.
-  #
-  # @note Currently making an assumption about roles always being valid
-  #       since it is the one requirement of all accessibility objects.
-  #
   # Quick macro for getting the `KAXRoleAttribute` value for a given
-  # element. This is equivalent to calling
-  # `AX.attr_of_element(element, KAXRoleAttribute)` except that it
-  # should be slightly faster.
+  # element.
   #
   # @example
   #
@@ -188,9 +174,7 @@ module Accessibility::Core
   # @param [AXUIElementRef]
   # @return [String]
   def role_for element
-    ptr = Pointer.new :id
-    AXUIElementCopyAttributeValue(element, KAXRoleAttribute, ptr)
-    ptr[0]
+    value_of KAXRoleAttribute, for: element
   end
 
   ##

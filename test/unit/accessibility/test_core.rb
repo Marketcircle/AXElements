@@ -131,9 +131,9 @@ class TestAccessibilityCore < MiniTest::Unit::TestCase
 
 
 
-  def test_role_pair_macro
-    assert_equal [KAXStandardWindowSubrole, KAXWindowRole], role_pair_for(window)
-    assert_equal [nil, 'AXWebArea'],                        role_pair_for(web_area)
+  def test_subrole_macro
+    assert_equal KAXStandardWindowSubrole, subrole_for(window)
+    assert_equal nil,                      subrole_for(web_area)
   end
 
   def test_role_macro
