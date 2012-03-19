@@ -120,7 +120,7 @@ class TestAccessibilityTranslator < MiniTest::Unit::TestCase
   def test_classifications_are_cached
     classifications = TRANSLATOR.instance_variable_get :@classifications
 
-    classified      = TRANSLATOR.classify :made_up_class_name
+    classified      = TRANSLATOR.classify 'made_up_class_name'
     assert_includes classifications.keys, 'made_up_class_name'
     assert_equal    classified, classifications['made_up_class_name']
   end
@@ -128,7 +128,7 @@ class TestAccessibilityTranslator < MiniTest::Unit::TestCase
   def test_singularizations_are_cached
     singulars = TRANSLATOR.instance_variable_get :@singularizations
 
-    singular  = TRANSLATOR.singularize :buttons
+    singular  = TRANSLATOR.singularize 'buttons'
     assert_includes singulars.keys, 'buttons'
     assert_equal    singular, singulars['buttons']
   end
