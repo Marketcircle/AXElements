@@ -99,6 +99,8 @@ module Accessibility::Factory
   end
 
   ##
+  # @todo Consider using {AX.const_missing} instead.
+  #
   # Find the class for a given role. If the class does not exist it will
   # be created on demand.
   #
