@@ -64,20 +64,6 @@ class TestAccessibilityFactory < MiniTest::Unit::TestCase
     assert_equal expected, process_array([REF])
   end
 
-  def test_processing_boxes
-    point = CGPointMake(rand(1000),rand(1000))
-    assert_equal point, process(point.to_axvalue)
-
-    size = CGSizeMake(rand(1000),rand(1000))
-    assert_equal size, process(size.to_axvalue)
-
-    rect = CGRectMake(*point.to_a,*size.to_a)
-    assert_equal rect, process(rect.to_axvalue)
-
-    range = CFRange.new(rand(100),rand(1000))
-    assert_equal range, process(range.to_axvalue)
-  end
-
   def test_processing_arbitrary_objects
     assert_equal 'test', process('test')
     assert_equal 42,     process(42)

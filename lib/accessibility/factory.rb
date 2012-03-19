@@ -18,7 +18,6 @@ module Accessibility::Factory
     case CFGetTypeID(value)
     when ARRAY_TYPE then process_array value
     when REF_TYPE   then process_element value
-    when BOX_TYPE   then unwrap value
     else
       value
     end
@@ -50,14 +49,6 @@ module Accessibility::Factory
   #
   # @return [Number]
   ARRAY_TYPE = CFArrayGetTypeID()
-
-  ##
-  # @private
-  #
-  # Type ID for `AXValueRef` objects.
-  #
-  # @return [Number]
-  BOX_TYPE   = AXValueGetTypeID()
 
   ##
   # @todo Should we handle cases where a subrole has a value of

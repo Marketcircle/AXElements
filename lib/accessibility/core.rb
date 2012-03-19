@@ -110,9 +110,9 @@ module Accessibility::Core
   def value_of attr, for: element
     ptr  = Pointer.new :id
     code = AXUIElementCopyAttributeValue(element, attr, ptr)
-    return ptr[0] if code.zero?
-    return nil    if code == KAXErrorNoValue
-    return []     if code == KAXErrorFailure && attr == KAXChildrenAttribute
+    return ptr[0].to_value if code.zero?
+    return nil             if code == KAXErrorNoValue
+    return []              if code == KAXErrorFailure && attr == KAXChildrenAttribute
     handle_error code, element, attr
   end
 
@@ -141,7 +141,7 @@ module Accessibility::Core
     attrs = attrs.map(&:to_axvalue)
     code  = AXUIElementCopyMultipleAttributeValues(element, attrs, 0, ptr)
     return ptr[0].map { |x|
-      AXValueGetType(x) == KAXValueAXErrorType ? nil : x
+      AXValueGetType(x) == KAXValueAXErrorType ? nil : x.to_value
     } if code.zero? || code == KAXErrorNoValue
     handle_error code, element, attrs
   end
@@ -368,8 +368,8 @@ module Accessibility::Core
     ptr   = Pointer.new :id
     param = param.to_axvalue
     code  = AXUIElementCopyParameterizedAttributeValue(element,attr,param,ptr)
-    return ptr[0] if code.zero?
-    return nil    if code == KAXErrorNoValue
+    return ptr[0].to_value if code.zero?
+    return nil             if code == KAXErrorNoValue
     handle_error code, element, attr, param
   end
 
@@ -454,6 +454,7 @@ module Accessibility::Core
   def observer_for pid, &block
     raise ArgumentError, 'A callback is required' unless block
     ptr  = Pointer.new OBSERVER
+    # @todo Create a proc here and wrap the given callback
     code = AXObserverCreate(pid, block, ptr)
     return ptr[0] if code.zero?
     handle_error code, element, callback
@@ -510,48 +511,6 @@ module Accessibility::Core
     code = AXObserverRemoveNotification(observer, element, notif)
     return true if code.zero?
     handle_error code, element, notif, observer, nil, nil
-  end
-
-
-  # @group Working with AXValueRef's
-
-  ##
-  # Extract the stuct contained in an `AXValueRef`.
-  #
-  # @example
-  #
-  #   unwrap wrapped_point # => #<CGPoint x=44.3 y=99.0>
-  #   unwrap wrapped_range # => #<CFRange begin=7 length=100>
-  #
-  # @param [AXValueRef]
-  # @param [Number]
-  # @return [Boxed]
-  def unwrap value
-    box_type = AXValueGetType(value)
-    ptr      = Pointer.new BOX_TYPES[box_type]
-    if AXValueGetValue(value, box_type, ptr)
-      ptr[0]
-    else
-      raise ArgumentError, "'#{box_type.inspect}' is not a valid box type"
-    end
-  end
-
-  ##
-  # Wrap a `Boxed` object as an `AXValueRef`.
-  #
-  # @example
-  #
-  #   wrap CGPointMake(12, 34) # => #<AXValueRef:0x455678e2>
-  #   wrap CGSizeMake(56, 78)  # => #<AXValueRef:0x555678e2>
-  #
-  # @param [Boxed]
-  # @param [Class]
-  # @return [AXValueRef]
-  def wrap value
-    klass = value.class
-    ptr   = Pointer.new klass.type
-    ptr.assign value
-    AXValueCreate(klass.ax_value, ptr)
   end
 
 
@@ -754,16 +713,6 @@ module Accessibility::Core
 
 
   ##
-  # Map of type encodings used for wrapping structs when coming from
-  # an `AXValueRef`.
-  #
-  # The list is order sensitive, which is why we unshift nil, but
-  # should probably be more rigorously defined at runtime.
-  #
-  # @return [String,nil]
-  BOX_TYPES = [CGPoint, CGSize, CGRect, CFRange].map!(&:type).unshift(nil)
-
-  ##
   # @private
   #
   # `Pointer` type encoding for `CFArrayRef` objects.
@@ -869,11 +818,54 @@ class Boxed
   # work if for a few boxed types, you will need to check the AXAPI
   # documentation for an up to date list.
   #
+  # @example
+  #
+  #   CGPointMake(12, 34).to_axvalue # => #<AXValueRef:0x455678e2>
+  #   CGSizeMake(56, 78).to_axvalue  # => #<AXValueRef:0x555678e2>
+  #
   # @return [AXValueRef]
   def to_axvalue
-    wrap self
+    klass = self.class
+    ptr   = Pointer.new klass.type
+    ptr.assign self
+    AXValueCreate(klass.ax_value, ptr)
   end
 end
+
+
+##
+# Mixin for the special `__NSCFType` class so that `#to_value` works properly.
+module Accessibility::AXValueUnwrapper
+  ##
+  # Map of type encodings used for wrapping structs when coming from
+  # an `AXValueRef`.
+  #
+  # The list is order sensitive, which is why we unshift nil, but
+  # should probably be more rigorously defined at runtime.
+  #
+  # @return [String,nil]
+  BOX_TYPES = [CGPoint, CGSize, CGRect, CFRange].map!(&:type).unshift(nil)
+
+  ##
+  # Unwrap an `AXValue` into the `Boxed` instance that it is supposed
+  # to be. This will only work for a few boxed types, you will need to
+  # check the AXAPI documentation for an up to date list.
+  #
+  # @example
+  #
+  #   wrapped_point.to_value # => #<CGPoint x=44.3 y=99.0>
+  #   wrapped_range.to_value # => #<CFRange begin=7 length=100>
+  #
+  # @return [Boxed]
+  def to_value
+    box_type = AXValueGetType(self)
+    return self if box_type.zero?
+    ptr      = Pointer.new BOX_TYPES[box_type]
+    AXValueGetValue(self, box_type, ptr)
+    ptr[0]
+  end
+end
+AXUIElementCreateSystemWide().class.send(:include, Accessibility::AXValueUnwrapper)
 
 # AXElements extensions for `CFRange`.
 class << CFRange; def ax_value; KAXValueCFRangeType; end end
@@ -888,6 +880,11 @@ class << CGPoint; def ax_value; KAXValueCGPointType; end end
 class NSObject
   # @return [Object]
   def to_axvalue
+    self
+  end
+
+  # @return [Object]
+  def to_value
     self
   end
 end

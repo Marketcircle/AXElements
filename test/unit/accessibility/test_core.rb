@@ -93,7 +93,7 @@ class TestAccessibilityCore < MiniTest::Unit::TestCase
   def test_attr_value_is_correct
     assert_equal 'AXElementsTester', value_of(KAXTitleAttribute,  for: REF)
     assert_equal false,              value_of(KAXHiddenAttribute, for: REF)
-    assert_equal AXValueGetTypeID(), CFGetTypeID(value_of(KAXSizeAttribute, for: window))
+    assert_kind_of CGSize,           value_of(KAXSizeAttribute, for: window)
   end
 
   def test_attr_value_is_nil_when_no_value_error_occurs
@@ -111,8 +111,8 @@ class TestAccessibilityCore < MiniTest::Unit::TestCase
   def test_attrs_value_is_correct
     assert_equal ['AXElementsTester'], values_of([KAXTitleAttribute],  for: REF)
     assert_equal [false],              values_of([KAXHiddenAttribute], for: REF)
-    assert_equal [CGPoint.ax_value, CGSize.ax_value],
-      values_of([KAXPositionAttribute, KAXSizeAttribute], for: window).map { |x| AXValueGetType(x) }
+    assert_equal [CGPoint, CGSize],
+      values_of([KAXPositionAttribute, KAXSizeAttribute], for: window).map(&:class)
   end
 
   def test_attrs_value_fills_in_nils_when_no_value_error_occurs
@@ -343,12 +343,9 @@ class TestAccessibilityCore < MiniTest::Unit::TestCase
   # lacks certain functionality that needs to be added...
 
   def test_element_at_point_gets_dude
-    point = value_of KAXPositionAttribute, for: button
-    ptr   = Pointer.new CGPoint.type
-    AXValueGetValue(point, KAXValueCGPointType, ptr)
-    point = ptr[0]
+    point   = value_of KAXPositionAttribute, for: button
     element = element_at point, for: REF
-    assert_equal button, element
+    assert_equal button, element, "#{button.inspect} and #{element.inspect}"
 
     # also check the system object
   end
@@ -433,40 +430,6 @@ class TestAccessibilityCore < MiniTest::Unit::TestCase
     assert_raises ArgumentError do
       unregister(observer, from_receiving: KAXWindowCreatedNotification, from: nil)
     end
-  end
-
-
-
-  def test_unwrap
-    assert_equal CGPointZero, unwrap(wrap(CGPointZero))
-    assert_equal CGSizeMake(10,10), unwrap(wrap(CGSizeMake(10,10)))
-  end
-
-  def test_wrap
-    # point_makes_a_value
-    value = wrap CGPointZero
-    ptr   = Pointer.new CGPoint.type
-    AXValueGetValue(value, 1, ptr)
-    assert_equal CGPointZero, ptr[0]
-
-    # size_makes_a_value
-    value = wrap CGSizeZero
-    ptr   = Pointer.new CGSize.type
-    AXValueGetValue(value, 2, ptr)
-    assert_equal CGSizeZero, ptr[0]
-
-    # rect_makes_a_value
-    value = wrap CGRectZero
-    ptr   = Pointer.new CGRect.type
-    AXValueGetValue(value, 3, ptr)
-    assert_equal CGRectZero, ptr[0]
-
-    # range_makes_a_value
-    range = CFRange.new(5, 4)
-    value = wrap range
-    ptr   = Pointer.new CFRange.type
-    AXValueGetValue(value, 4, ptr)
-    assert_equal range, ptr[0]
   end
 
 
@@ -657,24 +620,54 @@ end
 class TestCoreExtensionsForCore < MiniTest::Unit::TestCase
   include Accessibility::Core
 
-  def test_to_axvalue_calls_back
-    point = CGPointMake(1, 2)
-    assert_equal wrap(point), point.to_axvalue
+  def test_to_axvalue_wraps_things
+    # point_makes_a_value
+    value = CGPointZero.to_axvalue
+    ptr   = Pointer.new CGPoint.type
+    AXValueGetValue(value, 1, ptr)
+    assert_equal CGPointZero, ptr[0]
 
-    size  = CGSizeMake(2, 5)
-    assert_equal wrap(size), size.to_axvalue
+    # size_makes_a_value
+    value = CGSizeZero.to_axvalue
+    ptr   = Pointer.new CGSize.type
+    AXValueGetValue(value, 2, ptr)
+    assert_equal CGSizeZero, ptr[0]
 
-    rect  = CGRectMake(5, 9, 8, 4)
-    assert_equal wrap(rect), rect.to_axvalue
+    # rect_makes_a_value
+    value = CGRectZero.to_axvalue
+    ptr   = Pointer.new CGRect.type
+    AXValueGetValue(value, 3, ptr)
+    assert_equal CGRectZero, ptr[0]
 
+    # range_makes_a_value
     range = CFRange.new(5, 4)
-    assert_equal wrap(range), range.to_axvalue
+    value = range.to_axvalue
+    ptr   = Pointer.new CFRange.type
+    AXValueGetValue(value, 4, ptr)
+    assert_equal range, ptr[0]
   end
 
-  def test_to_axvalue_alias
+  def test_to_axvalue_on_non_boxes
     obj = Object.new
     assert_respond_to obj, :to_axvalue
     assert_equal obj.self, obj.to_axvalue
+  end
+
+  def test_to_axvalue_raises_for_unsupported_boxes
+    assert_raises NotImplementedError do
+      NSEdgeInsets.new.to_axvalue
+    end
+  end
+
+  def test_to_value
+    assert_equal CGPointZero, CGPointZero.to_axvalue.to_value
+    assert_equal CGSizeMake(10,10), CGSizeMake(10,10).to_axvalue.to_value
+  end
+
+  def test_to_value_on_non_boxes
+    obj = Object.new
+    assert_respond_to obj, :to_value
+    assert_equal obj.self, obj.to_value
   end
 
   # trivial but important for backwards compat with Snow Leopard
