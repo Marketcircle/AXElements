@@ -14,8 +14,9 @@ module Accessibility::Debug
 
     ##
     # Whether or not to turn on DEBUG features in AXElements. The
-    # value is inherited from `$DEBUG` but can be overridden by an
-    # environment variable named `AXDEBUG`.
+    # value is initially inherited from `$DEBUG` but can be overridden
+    # by an environment variable named `AXDEBUG` or changed dynamically
+    # at runtime.
     #
     # @return [Boolean]
     attr_accessor :on
