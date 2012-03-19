@@ -73,13 +73,13 @@ class Accessibility::Translator
   #
   # @example
   #
-  #   classify :text_field  # => "TextField"
-  #   classify :buttons     # => "Button"
+  #   classify 'text_field' # => "TextField"
+  #   classify 'buttons'    # => "Button"
   #
-  # @param [#to_s]
+  # @param [String]
   # @return [String]
   def classify klass
-    @classifications[klass.to_s]
+    @classifications[klass]
   end
 
   ##
@@ -89,13 +89,13 @@ class Accessibility::Translator
   #
   # @example
   #
-  #   singularize :buttons      # => 'button'
-  #   singularize :check_boxes  # => 'check_box'
+  #   singularize 'buttons'     # => 'button'
+  #   singularize 'check_boxes' # => 'check_box'
   #
-  # @param [#to_s]
+  # @param [String]
   # @return [String]
   def singularize klass
-    @singularizations[klass.to_s]
+    @singularizations[klass]
   end
 
 
