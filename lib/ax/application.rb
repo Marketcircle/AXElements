@@ -189,9 +189,10 @@ class AX::Application < AX::Element
   #
   # `nil` will be returned if there was nothing at that point.
   #
+  # @param [#to_point]
   # @return [AX::Element,nil]
-  def element_at_point x, y
-    process element_at(CGPointMake(x, y), for: @ref)
+  def element_at_point point
+    process element_at(point, for: @ref)
   end
 
   ##

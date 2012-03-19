@@ -48,8 +48,7 @@ class TestAXApplication < MiniTest::Unit::TestCase
 
   def test_element_at_point
     button = app.main_window.close_button
-    point  = button.to_point
-    assert_equal button, app.element_at_point(*point.to_a)
+    assert_equal button, app.element_at_point(button)
   end
 
 end
