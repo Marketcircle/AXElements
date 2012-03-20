@@ -384,14 +384,16 @@ module Accessibility::String
 
 end
 
+
 ##
 # @note This will only work if a run loop is running
 #
 # Register to be notified if the keyboard layout changes at runtime
-NSDistributedNotificationCenter.defaultCenter.addObserver Accessibility::String,
-                                                selector: 'regenerate_dynamic_mapping',
-                                                    name: KTISNotifySelectedKeyboardInputSourceChanged,
-                                                  object: nil
+# framework 'Carbon'
+# NSDistributedNotificationCenter.defaultCenter.addObserver Accessibility::String,
+#                                                selector: 'regenerate_dynamic_mapping',
+#                                                    name: KTISNotifySelectedKeyboardInputSourceChanged,
+#                                                  object: nil
 
 # Initialize the table
 Accessibility::String.regenerate_dynamic_mapping
