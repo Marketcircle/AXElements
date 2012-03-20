@@ -3,7 +3,6 @@ require './lib/accessibility/version'
 Gem::Specification.new do |s|
   s.name     = 'AXElements'
   s.version  = Accessibility::VERSION
-  s.platform = Gem::Platform::MACRUBY
 
   s.summary     = 'A DSL for automating GUI manipulation'
   s.description = <<-EOS
