@@ -23,7 +23,7 @@ has access to CoreFoundation.
 end
 
 
-require 'ax_elements/version'
+require 'accessibility/version'
 
 ##
 # @todo I feel a bit weird having to instantiate a new pointer every
