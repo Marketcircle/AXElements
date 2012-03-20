@@ -138,18 +138,21 @@ class AX::Application < AX::Element
   #
   # @return [Boolean]
   def type_string string
-    events = events_for string
+    events = keyboard_events_for string
     post events, to: @ref
     true
   end
 
+  # @todo doc and cleanup
   def keydown key
-    post [[CUSTOM[key], true]], to: @ref
+    post [[EventGenerator::CUSTOM[key], true]], to: @ref
     true
   end
 
+  # @todo doc and cleanup
   def keyup key
-    post [[CUSTOM[key], false]], to: @ref
+    post [[EventGenerator::CUSTOM[key], false]], to: @ref
+    true
   end
 
   def select_menu_item *path

@@ -28,18 +28,20 @@ class AX::SystemWide < AX::Element
   #
   # @return [Boolean]
   def type_string string
-    events = events_for string
+    events = keyboard_events_for string
     post events, to: @ref
     true
   end
 
+  # @todo doc and cleanup
   def keydown modifier
-    post [[CUSTOM[modifier], true]], to: @ref
+    post [[EventGenerator::CUSTOM[modifier], true]], to: @ref
     true
   end
 
+  # @todo doc and cleanup
   def keyup modifier
-    post [[CUSTOM[modifier], false]], to: @ref
+    post [[EventGenerator::CUSTOM[modifier], false]], to: @ref
     true
   end
 

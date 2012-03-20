@@ -12,6 +12,11 @@ module Accessibility::String
 
   private
 
+  # @param [String]
+  # @return [Array<Array(Fixnum,Boolean)>]
+  def keyboard_events_for string
+    EventGenerator.new(Lexer.new(string).lex.tokens).generate.events
+  end
 
   ##
   # Tokenizer for strings. This class will take a string and break
@@ -380,11 +385,6 @@ module Accessibility::String
     OPTION_UP     = [58,false]
     SHIFT_DOWN    = [56,true]
     SHIFT_UP      = [56,false]
-  end
-
-
-  def events_for string
-    EventGenerator.new(Lexer.new(string).lex.tokens).generate.events
   end
 
 end
