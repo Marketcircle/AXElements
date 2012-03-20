@@ -1,6 +1,8 @@
 require 'accessibility/version'
 require 'accessibility/key_code_generator'
 
+framework 'ApplicationServices'
+
 ##
 # Parses strings of human readable text into a series of events meant to
 # be processed by {Accessibility::Core#post:to:}.
@@ -447,7 +449,6 @@ end
 # @note This will only work if a run loop is running
 #
 # Register to be notified if the keyboard layout changes at runtime
-# framework 'Carbon'
 # NSDistributedNotificationCenter.defaultCenter.addObserver Accessibility::String::EventGenerator,
 #                                                selector: 'regenerate_dynamic_mapping',
 #                                                    name: KTISNotifySelectedKeyboardInputSourceChanged,
