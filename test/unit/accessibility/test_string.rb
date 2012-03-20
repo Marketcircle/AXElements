@@ -279,23 +279,27 @@ end
 class TestAccessibilityString < MiniTest::Unit::TestCase
   include Accessibility::String
 
-  def test_events_for
-    skip 'TODO'
+  # hmmmmm....
+  def test_events_for_regular_case
+    events = keyboard_events_for 'cheezburger'
+    assert_kind_of Array, events
+    refute_empty events
+
+    assert_kind_of Array, events.first
+    assert_kind_of Array, events.second
   end
 
   def test_dynamic_map_initialized
-    refute_empty Accessibility::String::MAPPING
+    refute_empty Accessibility::String::EventGenerator::MAPPING
   end
 
   def test_alias_is_included
-    map = Accessibility::String::MAPPING
+    map = Accessibility::String::EventGenerator::MAPPING
     assert_equal map["\r"], map["\n"]
   end
 
   def test_can_parse_empty_string
-    assert_block do
-      events_for ''
-    end
+    assert_equal [], keyboard_events_for('')
   end
 
 end
