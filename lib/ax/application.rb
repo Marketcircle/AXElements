@@ -1,5 +1,5 @@
 require 'ax/element'
-require 'accessibility/string_parser'
+require 'accessibility/string'
 
 ##
 # Some additional constructors and conveniences for Application objects.

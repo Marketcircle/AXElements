@@ -1,3 +1,4 @@
+require 'accessibility/version'
 require 'accessibility/key_code_generator'
 
 ##
@@ -384,7 +385,7 @@ module Accessibility::String
 end
 
 ##
-# @note This will only work if a run loop is runnig
+# @note This will only work if a run loop is running
 #
 # Register to be notified if the keyboard layout changes at runtime
 NSDistributedNotificationCenter.defaultCenter.addObserver Accessibility::String,

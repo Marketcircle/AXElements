@@ -1,5 +1,5 @@
 require 'ax/element'
-require 'accessibility/string_parser'
+require 'accessibility/string'
 
 ##
 # Represents the special `SystemWide` accessibility object.
