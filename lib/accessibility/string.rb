@@ -110,21 +110,13 @@ module Accessibility::String
   # @example
   #
   #   EventGenerator.new(['H','a','i']).generate.events
-  #     # => [
-  #     #     [56,true],[80,true],[80,false],[56,false],
-  #     #     [70,true],[70,false],
-  #     #     [111,true],[111,false]
-  #     #    ]
+  #       # => [[56,true],[80,true],[80,false],[56,false],[70,true],[70,false],[111,true],[111,false]]
   #   EventGenerator.new([['\CAPS']]).generate.events
-  #     # => [[0x39,true],[0x39,false]]
+  #       # => [[0x39,true],[0x39,false]]
   #   EventGenerator.new([['\CMD',['a']]]).generate.events
-  #     # => [[0x37,true],[50,true],[50,false],[0x37,false]]
+  #       # => [[0x37,true],[50,true],[50,false],[0x37,false]]
   #   EventGenerator.new(['O',"\n",'t']).generate.events
-  #     # => [
-  #     #     [56,true],[10,true],[10,false],[56,false],
-  #     #     [45,true],[45,false],
-  #     #     [92,true],[92,false]
-  #     #    ]
+  #       # => [[56,true],[10,true],[10,false],[56,false],[45,true],[45,false],[92,true],[92,false]]
   #
   class EventGenerator
 
