@@ -1,4 +1,4 @@
-require './lib/ax_elements/version'
+require './lib/accessibility/version'
 
 Gem::Specification.new do |s|
   s.name     = 'AXElements'
