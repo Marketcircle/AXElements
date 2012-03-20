@@ -20,21 +20,40 @@ module Accessibility::String
 
   ##
   # Tokenizer for strings. This class will take a string and break
-  # it up into bit sized chunks for the string parser to parse.
+  # it up into chunks for the event generator. The structure generated
+  # here is an array that contains strings and recursively other arrays
+  # of strings and arrays of strings.
+  #
+  # @example
+  #
+  #   Lexer.new('Hai').lex.tokens        # => ['H','a','i']
+  #   Lexer.new('\CAPSLOCK').lex.tokens  # => [['\CAPSLOCK']]
+  #   Lexer.new('\COMMAND+a').lex.tokens # => [['\COMMAND', ['a']]]
+  #   Lexer.new("One\nTwo").lex.tokens   # => ['O','n','e',"\n",'T','w','o']
+  #
   class Lexer
 
+    ##
+    # Once a string is lexed, this contains the tokenized structure.
+    #
+    # @return [Array<String,Array<self>]
     attr_accessor :tokens
 
+    # @param [String]
     def initialize string
       @chars  = string
       @tokens = []
       @index  = 0
     end
 
+    ##
+    # Tokenize the string that the lexer was initialized with.
+    #
+    # @return [self]
     def lex
       while @chars[@index]
-        char    = @chars[@index]
-        @tokens << if char == CUSTOM_ESCAPE && real_custom?
+        char     = @chars[@index]
+        @tokens << if custom? char
                      lex_custom
                    else
                      char
@@ -51,9 +70,7 @@ module Accessibility::String
       start_index = @index
       while true
         case char = @chars[@index]
-        when SPACE
-          return [@chars[start_index...@index]]
-        when nil
+        when SPACE, nil
           return [@chars[start_index...@index]]
         when PLUS
           custom = [@chars[start_index...@index]]
@@ -65,40 +82,67 @@ module Accessibility::String
       end
     end
 
-    # is it a real custom escape?
-    # kind of a lie, there is one case it does not handle
-    def real_custom?
-      (char = @chars[@index+1]) &&
-        char == char.upcase &&
-        char != SPACE
+    ##
+    # Is it a real custom escape? Kind of a lie, there is one
+    # case it does not handle--an upper case letter or symbol
+    # following `"\\"`. Eventually I will need to handle these...
+    def custom? char
+      char == CUSTOM_ESCAPE &&
+        (next_char = @chars[@index+1]) &&
+         next_char == next_char.upcase &&
+         next_char != SPACE
     end
 
+    # @private
     SPACE         = ' '
+    # @private
     PLUS          = '+'
+    # @private
     CUSTOM_ESCAPE = "\\"
   end
 
 
   ##
+  # @todo Add a method to generate just keydown or just keyup events.
+  #
   # Generate a sequence of keyboard events given a sequence of tokens.
+  #
+  # @example
+  #
+  #   EventGenerator.new(['H','a','i']).generate.events
+  #     # => [
+  #     #     [56,true],[80,true],[80,false],[56,false],
+  #     #     [70,true],[70,false],
+  #     #     [111,true],[111,false]
+  #     #    ]
+  #   EventGenerator.new([['\CAPS']]).generate.events
+  #     # => [[0x39,true],[0x39,false]]
+  #   EventGenerator.new([['\CMD',['a']]]).generate.events
+  #     # => [[0x37,true],[50,true],[50,false],[0x37,false]]
+  #   EventGenerator.new(['O',"\n",'t']).generate.events
+  #     # => [
+  #     #     [56,true],[10,true],[10,false],[56,false],
+  #     #     [45,true],[45,false],
+  #     #     [92,true],[92,false]
+  #     #    ]
+  #
   class EventGenerator
 
     ##
-    # Regenerate the portion of the key mapping that is set dynamically based
-    # on keyboard layout (e.g. US, Dvorak, etc.).
+    # Regenerate the portion of the key mapping that is set dynamically
+    # based on keyboard layout (e.g. US, Dvorak, etc.).
     #
-    # This method should be called whenever the keyboard layout changes. This
-    # can be called automatically by registering for a notification in a run
-    # looped environment.
+    # This method should be called whenever the keyboard layout changes.
+    # This can be called automatically by registering for a notification
+    # in a run looped environment.
     def self.regenerate_dynamic_mapping
       # KeyCodeGenerator is declared in the Objective-C extension
       MAPPING.merge! KeyCodeGenerator.dynamic_mapping
+      # Also add an alias to the mapping
       MAPPING["\n"] = MAPPING["\r"]
     end
 
     ##
-    # @private
-    #
     # Dynamic mapping of characters to keycodes. The map is generated at
     # startup time in order to support multiple keyboard layouts.
     #
@@ -305,6 +349,14 @@ module Accessibility::String
     }
 
 
+    ##
+    # Once {generate} is called, this contains the sequence of
+    # events.
+    #
+    # @return [Array<Array(Fixnum,Boolean)>]
+    attr_reader :events
+
+    # @param [Array<String,Array<String,Array...>>]
     def initialize tokens
       @tokens = tokens
       # *4 since the output array will be at least *2 the
@@ -315,8 +367,11 @@ module Accessibility::String
       @events = Array.new tokens.size*4
     end
 
-    attr_reader :events
-
+    ##
+    # Generate the events for the tokens the event generator
+    # was initialized with.
+    #
+    # @return [self]
     def generate
       @index = 0
       generate_all @tokens
@@ -379,11 +434,17 @@ module Accessibility::String
       @index += 2
     end
 
+    # @private
     EMPTY_STRING  = ''
+    # @private
     CUSTOM_ESCAPE = "\\"
+    # @private
     OPTION_DOWN   = [58,true]
+    # @private
     OPTION_UP     = [58,false]
+    # @private
     SHIFT_DOWN    = [56,true]
+    # @private
     SHIFT_UP      = [56,false]
   end
 
