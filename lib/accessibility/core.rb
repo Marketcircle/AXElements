@@ -42,7 +42,7 @@ require 'accessibility/version'
 # to work with pointers and centralize how AXAPI related errors are handled
 # (since CoreFoundation uses a different pattern for that sort of thing).
 #
-# This module is stateless and should therefore be threadsafe.
+# This module is stateless and should be threadsafe.
 module Accessibility::Core
 
 

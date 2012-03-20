@@ -101,14 +101,6 @@ class Accessibility::Translator
 
   private
 
-  ##
-  # @private
-  #
-  # Performance hack.
-  #
-  # @return [String]
-  QUESTION_MARK = '?'
-
   # @return [Hash{String=>String}]
   def init_unprefixes
     @unprefixes = Hash.new do |hash, key|
@@ -159,4 +151,12 @@ class Accessibility::Translator
   #
   # @return [String]
   EMPTY_STRING = ''
+
+  ##
+  # @private
+  #
+  # Performance hack.
+  #
+  # @return [String]
+  QUESTION_MARK = '?'
 end
