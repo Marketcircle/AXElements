@@ -94,7 +94,7 @@ class TestAccessibilityStringEventGenerator < MiniTest::Unit::TestCase
   def option_up;   [58,false]; end
 
   def map
-    @@map ||= KeyCodeGenerator.dynamic_mapping
+    @@map ||= KeyCoder.dynamic_mapping
   end
 
   def test_generate_lowercase

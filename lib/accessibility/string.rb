@@ -132,7 +132,7 @@ module Accessibility::String
     # in a run looped environment.
     def self.regenerate_dynamic_mapping
       # KeyCodeGenerator is declared in the Objective-C extension
-      MAPPING.merge! KeyCodeGenerator.dynamic_mapping
+      MAPPING.merge! KeyCoder.dynamic_mapping
       # Also add an alias to the mapping
       MAPPING["\n"] = MAPPING["\r"]
     end
