@@ -32,8 +32,10 @@ end
 
 ## Compilation
 
-require 'rake/compiletask'
-Rake::CompileTask.new
+if RUBY_ENGINE == 'macruby'
+  require 'rake/compiletask'
+  Rake::CompileTask.new
+end
 
 desc 'Compile C extensions'
 task :ext do
