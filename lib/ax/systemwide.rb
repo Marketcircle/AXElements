@@ -28,8 +28,7 @@ class AX::SystemWide < AX::Element
   #
   # @return [Boolean]
   def type_string string
-    events = keyboard_events_for string
-    post events, to: @ref
+    post keyboard_events_for string
     true
   end
 
