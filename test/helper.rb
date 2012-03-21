@@ -26,17 +26,8 @@ end
 RUNNING_COMPILED =
   $LOADED_FEATURES.find { |file| file.match /ax_elements.rbo/ }
 
-require 'rubygems'
+require 'test_runner'
 require 'ax_elements'
-gem     'minitest'
-require 'minitest/autorun'
-
-# preprocessor powers, assemble!
-if ENV['BENCH']
-  require 'minitest/benchmark'
-else
-  require'minitest/pride'
-end
 
 class MiniTest::Unit::TestCase
 
@@ -44,15 +35,6 @@ class MiniTest::Unit::TestCase
     NSWorkspace.sharedWorkspace.runningApplications.find do |app|
       app.bundleIdentifier == name
     end.processIdentifier
-  end
-
-  # You may need this to help track down an issue if a test is crashing MacRuby
-  # def self.test_order
-  #   :alpha
-  # end
-
-  def self.bench_range
-    bench_exp 100, 100_000
   end
 
   PID = pid_from APP_BUNDLE_IDENTIFIER

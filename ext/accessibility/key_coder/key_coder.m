@@ -72,6 +72,7 @@
     key_coder(key_code);
 
 #ifdef NOT_MACRUBY
+  CFRelease(keyboard);
   }; // Close the autorelease pool
 #else
   CFMakeCollectable(keyboard);

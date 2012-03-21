@@ -1,3 +1,6 @@
+# -*- coding: utf-8 -*-
+require 'accessibility/string'
+
 class TestAccessibilityStringLexer < MiniTest::Unit::TestCase
 
   def lexer
@@ -285,8 +288,8 @@ class TestAccessibilityString < MiniTest::Unit::TestCase
     assert_kind_of Array, events
     refute_empty events
 
-    assert_kind_of Array, events.first
-    assert_kind_of Array, events.second
+    assert_kind_of Array, events[0]
+    assert_kind_of Array, events[1]
   end
 
   def test_dynamic_map_initialized
@@ -303,4 +306,3 @@ class TestAccessibilityString < MiniTest::Unit::TestCase
   end
 
 end
-
