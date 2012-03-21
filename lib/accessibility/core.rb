@@ -319,6 +319,16 @@ module Accessibility::Core
     sleep 0.1 # in many cases, UI is not done updating right away
   end
 
+  ##
+  # Post the list of given keyboard events to the front most app. This
+  # is equivalent to calling {post:to:} and passing {system_wide} as
+  # the application.
+  #
+  # @param [Array<Array(Number,Boolean)>]
+  def post events
+    post events, to: system_wide
+  end
+
 
   # @group Parameterized Attributes
 
