@@ -15,7 +15,7 @@ describes user interactions.
   s.homepage    = 'http://github.com/Marketcircle/AXElements'
   s.licenses    = ['BSD 3-clause']
   s.has_rdoc    = 'yard'
-  s.extensions << 'ext/accessibility/key_code_generator/extconf.rb'
+  s.extensions << 'ext/accessibility/key_coder/extconf.rb'
 
 
   s.files            =

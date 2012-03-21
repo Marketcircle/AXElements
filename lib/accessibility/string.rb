@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 require   'accessibility/version'
-require   'accessibility/key_code_generator'
+require   'accessibility/key_coder'
 framework 'ApplicationServices' if defined? MACRUBY_REVISION
 
 ##

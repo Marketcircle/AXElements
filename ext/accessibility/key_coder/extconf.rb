@@ -7,4 +7,4 @@ unless RUBY_ENGINE == 'macruby'
   $CFLAGS << ' -DNOT_MACRUBY -fblocks'
 end
 
-create_makefile('accessibility/key_code_generator')
+create_makefile('accessibility/key_coder')
