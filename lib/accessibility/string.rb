@@ -12,9 +12,6 @@ framework 'ApplicationServices' if defined? MACRUBY_REVISION
 # international layouts as well.
 module Accessibility::String
 
-
-  private
-
   # @param [String]
   # @return [Array<Array(Fixnum,Boolean)>]
   def keyboard_events_for string
