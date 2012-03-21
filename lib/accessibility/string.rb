@@ -1,7 +1,8 @@
-require 'accessibility/version'
-require 'accessibility/key_code_generator'
+# -*- coding: utf-8 -*-
 
-framework 'ApplicationServices'
+require   'accessibility/version'
+require   'accessibility/key_code_generator'
+framework 'ApplicationServices' if defined? MACRUBY_REVISION
 
 ##
 # Parses strings of human readable text into a series of events meant to
