@@ -16,4 +16,4 @@ require 'ax/static_text'
 
 # Misc things that we need to load
 require 'ax_elements/nsarray_compat'
-require 'ax_elements/exception_workaround'
+# require 'ax_elements/exception_workaround' # disable for now
