@@ -113,6 +113,7 @@ module Accessibility::Factory
   # @param [#to_s]
   # @return [Class]
   def class_for subrole, and: role
+    # @todo it would be nice if we didn't have to lookup twice
     if AX.const_defined? subrole, false
       AX.const_get subrole
     else
