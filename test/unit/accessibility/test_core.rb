@@ -518,7 +518,7 @@ class TestAccessibilityCore < MiniTest::Unit::TestCase
 
 
 
-  def test_set_timeout
+  def test_set_timeout_for
     assert_equal 10, set_timeout_to(10, for: REF)
     assert_equal 0,  set_timeout_to(0, for: REF)
   end
@@ -527,6 +527,11 @@ class TestAccessibilityCore < MiniTest::Unit::TestCase
     assert_raises ArgumentError do
       set_timeout_to 10, for: nil
     end
+  end
+
+  def test_set_timeout
+    assert_equal 10, set_timeout_to(10)
+    assert_equal 0, set_timeout_to(0)
   end
 
 

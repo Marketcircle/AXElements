@@ -599,7 +599,8 @@ module Accessibility::Core
   # @group Debug
 
   ##
-  # Change the timeout value for an element or globally.
+  # Change the timeout value for an element or globally. In cases where
+  # you think an element may be slow to respond this can be helpful.
   #
   # To change the global value, pass the system wide object for
   # the `element` argument.
@@ -611,6 +612,21 @@ module Accessibility::Core
     code = AXUIElementSetMessagingTimeout(element, seconds)
     return seconds if code.zero?
     handle_error code, element, seconds
+  end
+
+  ##
+  # Globally change the timeout value for AXAPI. This is equivalent to
+  # calling {set_timeout_to:for:} and passing {system_wide} as the element.
+  #
+  # Setting the global timeout to `0` seconds will reset the timeout value
+  # to the system default. Apple does not appear to have publicly documented
+  # what the system default is though, so I can't tell you what that value
+  # is.
+  #
+  # @param [Number]
+  # @return [Number]
+  def set_timeout_to seconds
+    set_timeout_to seconds, for: system_wide
   end
 
 

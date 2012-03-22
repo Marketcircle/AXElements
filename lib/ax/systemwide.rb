@@ -71,6 +71,16 @@ class AX::SystemWide < AX::Element
   def element_at_point point
     process element_at point
   end
+
+  ##
+  # Set the global messaging timeout. Searching through another interface
+  # and looking up attributes incurs a lot of IPC calls and sometimes an
+  # app is slow to respond.
+  #
+  # @param [Number]
+  # @return [Number]
+  def set_global_timeout seconds
+    set_timeout_to seconds
   end
 
 end
