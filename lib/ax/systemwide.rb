@@ -69,7 +69,8 @@ class AX::SystemWide < AX::Element
   # @param [#to_point]
   # @return [AX::Element,nil]
   def element_at_point point
-    process element_at(point, for: @ref)
+    process element_at point
+  end
   end
 
 end

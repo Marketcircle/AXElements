@@ -356,7 +356,7 @@ class TestAccessibilityCore < MiniTest::Unit::TestCase
   # Kind of a bad test right now because the method itself
   # lacks certain functionality that needs to be added...
 
-  def test_element_at_point_gets_dude
+  def test_element_at_point_for_gets_dude
     point   = value_of KAXPositionAttribute, for: button
     element = element_at point, for: REF
     assert_equal button, element, "#{button.inspect} and #{element.inspect}"
@@ -364,12 +364,26 @@ class TestAccessibilityCore < MiniTest::Unit::TestCase
     # also check the system object
   end
 
-  def test_element_at_point_handles_errors
+  def test_element_at_point_for_handles_errors
     assert_raises ArgumentError do
       element_at [10,10], for: nil
     end
 
     # Should test the other cases as well...
+  end
+
+  def test_element_at_point_delegates
+    klass = Class.new
+    klass.send :include, Accessibility::Core
+
+    point = element = nil
+    klass.send :define_method, :'element_at:for:' do |arg1,arg2|
+      point, element = arg1, arg2
+    end
+
+    klass.new.send :element_at, :upper_right
+    assert_equal :upper_right, point
+    assert_equal system_wide, element
   end
 
 

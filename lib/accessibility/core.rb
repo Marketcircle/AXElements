@@ -416,6 +416,16 @@ module Accessibility::Core
   end
 
   ##
+  # Find the top most element at a point on the screen. This is
+  # equivalent to calling {element_at:for:} and passing {system_wide} as
+  # the application.
+  #
+  # @param [#to_point]
+  def element_at point
+    element_at point, for: system_wide
+  end
+
+  ##
   # Get the application accessibility object/token for an application
   # given the process identifier (PID) for that application.
   #
