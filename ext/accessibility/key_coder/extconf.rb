@@ -1,9 +1,11 @@
 require 'mkmf'
 
-$CFLAGS << ' -std=c99 -fobjc-gc -Wall -Werror'
-$LIBS   << ' -framework Cocoa -framework CoreServices -framework Carbon'
+$CFLAGS << ' -std=c99 -Wall -Werror -ObjC'
+$LIBS   << ' -framework Cocoa -framework Carbon -framework ApplicationServices'
 
-unless RUBY_ENGINE == 'macruby'
+if RUBY_ENGINE == 'macruby'
+  $CFLAGS << ' -fobjc-gc'
+else
   $CFLAGS << ' -DNOT_MACRUBY -fblocks'
 end
 
