@@ -246,8 +246,9 @@ module Accessibility::DSL
       end
     end
 
-    key, value = change.is_a?(Hash) ? change.first : [:value, change]
-    element.set key, to: value
+    return element.set :value, to: change unless change.kind_of? Hash
+    key, value = change.first
+    return element.set key, to: value
   end
 
   ##
