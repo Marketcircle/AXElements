@@ -207,9 +207,10 @@ module Accessibility::DSL
   # not capable of having focus set on it.
   #
   # @param [AX::Element]
-  def set_focus element
+  def set_focus_to element
     element.set(:focused, to: true) if element.respond_to? :focused?
   end
+  alias_method :set_focus, :set_focus_to
 
   ##
   # Set the value of an attribute on an element.
