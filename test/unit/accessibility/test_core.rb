@@ -693,9 +693,9 @@ class TestCoreExtensionsForCore < MiniTest::Unit::TestCase
   end
 
   def test_to_axvalue_for_ranges
-    assert_equal CFRangeMake(1,10), (1..10  ).to_axvalue
-    assert_equal CFRangeMake(1, 9), (1...10 ).to_axvalue
-    assert_equal CFRangeMake(0, 3), (0..2   ).to_axvalue
+    assert_equal CFRangeMake(1,10).to_axvalue, (1..10  ).to_axvalue
+    assert_equal CFRangeMake(1, 9).to_axvalue, (1...10 ).to_axvalue
+    assert_equal CFRangeMake(0, 3).to_axvalue, (0..2   ).to_axvalue
   end
 
   def test_to_axvalue_for_ranges_raises_for_bad_ranges

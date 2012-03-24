@@ -868,6 +868,14 @@ class Boxed
   end
 end
 
+# AXElements extensions for `CFRange`.
+class << CFRange; def ax_value; KAXValueCFRangeType; end end
+# AXElements extensions for `CGSize`.
+class << CGSize;  def ax_value; KAXValueCGSizeType;  end end
+# AXElements extensions for `CGRect`.
+class << CGRect;  def ax_value; KAXValueCGRectType;  end end
+# AXElements extensions for `CGPoint`.
+class << CGPoint; def ax_value; KAXValueCGPointType; end end
 
 ##
 # Mixin for the special `__NSCFType` class so that `#to_value` works properly.
@@ -902,15 +910,6 @@ module Accessibility::AXValueUnwrapper
   end
 end
 AXUIElementCreateSystemWide().class.send(:include, Accessibility::AXValueUnwrapper)
-
-# AXElements extensions for `CFRange`.
-class << CFRange; def ax_value; KAXValueCFRangeType; end end
-# AXElements extensions for `CGSize`.
-class << CGSize;  def ax_value; KAXValueCGSizeType;  end end
-# AXElements extensions for `CGRect`.
-class << CGRect;  def ax_value; KAXValueCGRectType;  end end
-# AXElements extensions for `CGPoint`.
-class << CGPoint; def ax_value; KAXValueCGPointType; end end
 
 # AXElements extensions for `NSObject`.
 class NSObject
@@ -959,13 +958,14 @@ end
 
 # AXElements extensions for `Range`.
 class Range
-  # @return [CFRange]
+  # @return [AXValueRef]
   def to_axvalue
     raise ArgumentError if last < 0 || first < 0
-    if exclude_end?
-      CFRange.new(first, last-first)
-    else
-      CFRange.new(first, last-first+1)
-    end
+    length = if exclude_end?
+               last - first
+             else
+               last - first + 1
+             end
+    CFRange.new(first, length).to_axvalue
   end
 end
