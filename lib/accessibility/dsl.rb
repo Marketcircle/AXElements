@@ -33,6 +33,7 @@ module Accessibility::DSL
     if arg.kind_of?(AX::Element) && arg.actions.include?(method)
       return arg.perform method
     end
+    # @todo do we still need this? we should just call super
     # should be able to just call super, but there is a bug in MacRuby (#1320)
     # so we just recreate what should be happening
     message = "undefined method `#{method}' for #{self}:#{self.class}"
@@ -211,34 +212,36 @@ module Accessibility::DSL
   end
 
   ##
-  # @todo Handle parameterized attributes
-  #
-  # @note We try to set focus to the element first; this is to avoid false
-  #       positives where developers assumed an element would have to have
-  #       focus before a user could change the value.
-  #
   # Set the value of an attribute on an element.
   #
-  # You would think that the `#set` method should belong to {AX::Element},
-  # but I think taking it out of the class and putting it in front helps
-  # make the difference between performing actions and inspecting UI more
-  # concrete.
+  # This method will try to set focus to the element first; this is
+  # to avoid cases where developers assumed an element would have
+  # to have focus before a user could change the value.
   #
   # @overload set element, attribute_name: new_value
   #   Set a specified attribute to a new value
   #   @param [AX::Element] element
   #   @param [Hash{attribute_name=>new_value}] change
   #
+  # @example
+  #
+  #   set text_field, selected_text_range: CFRangeMake(1,10)
+  #
   # @overload set element, new_value
   #   Set the `value` attribute to a new value
   #   @param [AX::Element] element
   #   @param [Object] change
   #
+  # @example
+  #
+  #   set text_field,   'Mark Rada'
+  #   set radio_button, 1
+  #
   # @return [nil] do not rely on a return value
   def set element, change
     if element.respond_to? :focused
       if element.attribute_writable? :focused
-        set_focus element
+        element.set :focused, to: true
       end
     end
 
@@ -266,8 +269,8 @@ module Accessibility::DSL
   end
 
   ##
-  # Navigate the menu bar menu for an application and select the
-  # given item.
+  # Navigate the menu bar menus for the given application and select
+  # the last item in the chain.
   #
   # @example
   #
@@ -340,6 +343,9 @@ module Accessibility::DSL
     end
     @registered_elements = []
   end
+
+
+  # @group Polling
 
   ##
   # @todo Perhaps this method shoud raise an exception in failure cases
@@ -432,26 +438,28 @@ module Accessibility::DSL
   end
 
 
-  # @group Mouse Input
+  # @group Mouse Interaction
 
   ##
-  # @overload move_mouse_to(element)
-  #   Move the mouse to a UI element
-  #   @param [AX::Element]
+  # Move the mouse cursor to the given point on the screen.
   #
-  # @overload move_mouse_to(point)
-  #   Move the mouse to an arbitrary point
-  #   @param [CGPoint]
+  # @example
   #
-  # @overload move_mouse_to([x,y])
-  #   Move the mouse to an arbitrary point given as an two element array
-  #   @param [Array(Float,Float)]
-  def move_mouse_to arg, wait = 0.2
+  #  move_mouse_to button
+  #  move_mouse_to [344, 516]
+  #  move_mouse_to CGPointMake(100, 100)
+  #
+  # @param [#to_point]
+  # @param [Hash] opts
+  # @option opts [Number] :duration
+  # @option opts [Number] :wait
+  def move_mouse_to arg, opts = {}
+    duration = opts[:duration] || 0.2
     if Accessibility::Debug.on? && arg.respond_to?(:bounds)
-      highlight arg, timeout: 0.2, color: NSColor.orangeColor
+      highlight arg, timeout: duration, color: NSColor.orangeColor
     end
-    Mouse.move_to arg.to_point
-    sleep wait
+    Mouse.move_to arg.to_point, duration
+    sleep(opts[:wait] || 0.2)
   end
 
   ##
@@ -625,8 +633,6 @@ module Accessibility::DSL
   end
 
   ##
-  # @todo Scroll horizontally.
-  #
   # Scroll though a table until the given element is visible.
   #
   # If you need to scroll an unknown ammount of units through a scroll area
