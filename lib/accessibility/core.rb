@@ -961,11 +961,11 @@ end
 class Range
   # @return [CFRange]
   def to_axvalue
-    raise ArgumentError if last.negative? || first.negative?
-    if exculde_end?
-      CFRange.new(first, last-first-1)
-    else
+    raise ArgumentError if last < 0 || first < 0
+    if exclude_end?
       CFRange.new(first, last-first)
+    else
+      CFRange.new(first, last-first+1)
     end
   end
 end
