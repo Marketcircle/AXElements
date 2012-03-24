@@ -149,6 +149,9 @@ class AX::Element
     unless attribute_writable? attr
       raise NoMethodError, "#{attr} is read-only for #{inspect}"
     end
+    if value.kind_of? Range
+      value = value.relative_to attribute(:value).size
+    end
     real_attr = lookup attr, @attrs
     set real_attr, to: value, for: @ref
     value

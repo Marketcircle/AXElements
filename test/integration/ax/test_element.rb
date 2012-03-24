@@ -14,8 +14,27 @@ class TestAXElement < MiniTest::Unit::TestCase
     assert_kind_of NSArray, result
   end
 
-  def test_set_range_with_negative_range
-    skip
+  def test_set_range
+    box = app.window.text_area
+    box.set :value, to: 'okey dokey lemon pokey'
+
+    box.set :selected_text_range, to: 0..5
+    assert_equal CFRangeMake(0,6), box.selected_text_range
+
+    box.set :selected_text_range, to: 1..5
+    assert_equal CFRangeMake(1,5), box.selected_text_range
+
+    box.set :selected_text_range, to: 5...10
+    assert_equal CFRangeMake(5,5), box.selected_text_range
+
+    box.set :selected_text_range, to: 1..-1
+    assert_equal CFRangeMake(1,21), box.selected_text_range
+
+    box.set :selected_text_range, to: 4...-10
+    assert_equal CFRangeMake(4,8), box.selected_text_range
+
+  ensure
+    box.set :value, to: '' if box
   end
 
 end
