@@ -692,6 +692,21 @@ class TestCoreExtensionsForCore < MiniTest::Unit::TestCase
     end
   end
 
+  def test_to_axvalue_for_ranges
+    assert_equal CFRangeMake(1,10), (1..10  ).to_axvalue
+    assert_equal CFRangeMake(1, 9), (1...10 ).to_axvalue
+    assert_equal CFRangeMake(0, 3), (0..2   ).to_axvalue
+  end
+
+  def test_to_axvalue_for_ranges_raises_for_bad_ranges
+    assert_raises ArgumentError do
+      (1..-10).to_axvalue
+    end
+    assert_raises ArgumentError do
+      (-5...10).to_axvalue
+    end
+  end
+
   def test_to_value
     assert_equal CGPointZero, CGPointZero.to_axvalue.to_value
     assert_equal CGSizeMake(10,10), CGSizeMake(10,10).to_axvalue.to_value
@@ -707,6 +722,11 @@ class TestCoreExtensionsForCore < MiniTest::Unit::TestCase
   def test_identifier_const
     assert Object.const_defined? :KAXIdentifierAttribute
     assert_equal 'AXIdentifier', KAXIdentifierAttribute
+  end
+
+  def test_to_range
+    assert_equal CFRange.new(10,11), [10,11].to_range
+    assert_equal [12,13], [12,13].to_range.to_a
   end
 
   def test_to_point

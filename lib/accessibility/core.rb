@@ -939,6 +939,8 @@ end
 
 # AXElements extensions to `NSArray`.
 class NSArray
+  # @return [CFRange]
+  def to_range; CFRange.new(first, at(1)) end
   # @return [CGPoint]
   def to_point; CGPoint.new(first, at(1)) end
   # @return [CGSize]
@@ -952,5 +954,18 @@ class CGPoint
   # @return [CGPoint]
   def to_point
     self
+  end
+end
+
+# AXElements extensions for `Range`.
+class Range
+  # @return [CFRange]
+  def to_axvalue
+    raise ArgumentError if last.negative? || first.negative?
+    if exculde_end?
+      CFRange.new(first, last-first-1)
+    else
+      CFRange.new(first, last-first)
+    end
   end
 end
