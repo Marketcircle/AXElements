@@ -156,12 +156,22 @@ class TestAccessibilityDSL < MiniTest::Unit::TestCase
     end
   end
 
-  def test_element_at_point
+  def test_element_at_point_for_app
     [
       app.main_window.minimize_button,
       app.main_window.increment_arrow
     ].each do |element|
       assert_equal element, dsl.element_at_point(element, for: app)
+    end
+  end
+
+  # @todo We aren't being very thorough here
+  def test_element_at_point
+    [
+      app.main_window.minimize_button,
+      app.main_window.increment_arrow
+    ].each do |element|
+      assert_equal element, dsl.element_at_point(element)
     end
   end
 

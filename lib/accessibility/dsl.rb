@@ -590,7 +590,18 @@ module Accessibility::DSL
   #
   # @return [AX::Element]
   def element_under_mouse
-    element_at_point Mouse.current_position, for: system_wide
+    element_at_point Mouse.current_position
+  end
+
+  ##
+  # Get the top most object at an arbitrary point on the screen for
+  # the given application. The given point can be a CGPoint, an Array,
+  # or anything else that responds to `#to_point`.
+  #
+  # @param [#to_point]
+  # @return [AX::Element]
+  def element_at_point point, for: app
+    app.element_at_point point
   end
 
   ##
@@ -599,9 +610,8 @@ module Accessibility::DSL
   # responds to `#to_point`.
   #
   # @param [#to_point]
-  # @return [AX::Element]
-  def element_at_point point, for: app
-    app.element_at_point point
+  def element_at_point point
+    system_wide.element_at_point point
   end
 
   ##
