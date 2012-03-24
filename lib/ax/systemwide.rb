@@ -83,4 +83,15 @@ class AX::SystemWide < AX::Element
     set_timeout_to seconds
   end
 
+
+  private
+
+  def _parameterized_attributes
+    []
+  end
+
+  def _actions
+    []
+  end
+
 end

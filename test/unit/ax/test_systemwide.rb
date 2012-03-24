@@ -61,4 +61,22 @@ class TestAXSystemWide < MiniTest::Unit::TestCase
     end
   end
 
+  def test_parameterized_attributes_is_empty
+    assert_empty system_wide.parameterized_attributes
+  end
+
+  def test_actions_is_empty
+    assert_empty system_wide.actions
+  end
+
+  # this is a special case because it hits other things, like
+  # parameterized attributes, which do not work with the
+  # system wide object
+  def test_respond_to
+    assert_respond_to system_wide, :role
+    assert_respond_to system_wide, :role=
+    assert_respond_to system_wide, :inspect
+    assert_respond_to system_wide, :object_id
+  end
+
 end
