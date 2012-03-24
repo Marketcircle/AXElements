@@ -243,7 +243,7 @@ module Accessibility::Core
   # @param [AXUIElementRef]
   # @return [Object] returns the value that was set
   def set attr, to: value, for: element
-    code = AXUIElementSetAttributeValue(element, attr.to_axvalue, value)
+    code = AXUIElementSetAttributeValue(element, attr, value.to_axvalue)
     return value if code.zero?
     handle_error code, element, attr
   end

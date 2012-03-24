@@ -35,12 +35,21 @@ class TestAccessibilityCore < MiniTest::Unit::TestCase
 
   def web_area
     @@web_area ||= children_for(children_for(window).find do |item|
-      if role_for(item) == 'AXScrollArea'
+      if role_for(item) == KAXScrollAreaRole
         value_of(KAXDescriptionAttribute, for: item) == 'Test Web Area'
       end
     end).first
   end
 
+  def text_area
+    @@text_area ||= children_for(children_for(window).find do |item|
+      if role_for(item) == KAXScrollAreaRole
+        if attrs_for(item).include? KAXIdentifierAttribute
+          value_of(KAXIdentifierAttribute, for: item) == 'Text Area'
+        end
+      end
+    end).first
+  end
 
 
   ##
@@ -174,18 +183,33 @@ class TestAccessibilityCore < MiniTest::Unit::TestCase
 
 
 
-  def test_set_attr_on_slider
+  def test_set_number_attr_on_slider
     [25, 75, 50].each do |value|
       set KAXValueAttribute, to: value, for: slider
       assert_equal value, value_for(slider)
     end
   end
 
-  def test_set_attr_on_text_field
+  def test_set_string_attr_on_text_field
     [Time.now.to_s, ''].each do |value|
       set KAXValueAttribute, to: value, for: search_box
       assert_equal value, value_for(search_box)
     end
+  end
+
+  def test_set_attr_when_value_needs_to_be_wrapped
+    set KAXValueAttribute, to: 'hey-o', for: text_area
+
+    set KAXSelectedTextRangeAttribute, to: 0..3, for: text_area
+    actual = value_of(KAXSelectedTextRangeAttribute, for: text_area)
+    assert_equal CFRangeMake(0, 4), actual
+
+    set KAXSelectedTextRangeAttribute, to: 1...4, for: text_area
+    actual = value_of(KAXSelectedTextRangeAttribute, for: text_area)
+    assert_equal CFRangeMake(1, 3), actual
+
+  ensure
+    set KAXValueAttribute, to: '', for: text_area
   end
 
   def test_set_attr_returns_setting_value

@@ -10,13 +10,14 @@ class AppDelegate
 
   attr_accessor :window
   attr_accessor :yes_button
+  attr_accessor :scroll_area
   attr_accessor :menu
   attr_accessor :array_controller
 
   def applicationDidFinishLaunching(a_notification)
     add_accessibility_attributes
     populate_table
-    set_button_identifier
+    set_identifiers
     populate_menu
   end
 
@@ -35,8 +36,9 @@ class AppDelegate
     end
   end
 
-  def set_button_identifier
-    yes_button.setIdentifier "I'm a little teapot"
+  def set_identifiers
+    yes_button.setIdentifier  "I'm a little teapot"
+    scroll_area.setIdentifier 'Text Area'
   end
 
   def post_notification sender

@@ -3,11 +3,11 @@
 	<data>
 		<int key="IBDocument.SystemTarget">1070</int>
 		<string key="IBDocument.SystemVersion">11D50</string>
-		<string key="IBDocument.InterfaceBuilderVersion">2177</string>
+		<string key="IBDocument.InterfaceBuilderVersion">2182</string>
 		<string key="IBDocument.AppKitVersion">1138.32</string>
 		<string key="IBDocument.HIToolboxVersion">568.00</string>
 		<dictionary class="NSMutableDictionary" key="IBDocument.PluginVersions">
-			<string key="com.apple.InterfaceBuilder.CocoaPlugin">2177</string>
+			<string key="com.apple.InterfaceBuilder.CocoaPlugin">2182</string>
 			<string key="com.apple.WebKitIBPlugin">1117</string>
 		</dictionary>
 		<array key="IBDocument.IntegratedClassDependencies">
@@ -1766,7 +1766,6 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 							<string key="NSFrame">{{13, 10}, {267, 280}}</string>
 							<reference key="NSSuperview" ref="439893737"/>
 							<reference key="NSWindow"/>
-							<reference key="NSNextKeyView" ref="848062562"/>
 							<array class="NSMutableArray" key="NSTabViewItems">
 								<object class="NSTabViewItem" id="233042657">
 									<string key="NSIdentifier">1</string>
@@ -1780,7 +1779,6 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 												<string key="NSFrame">{{10, 3}, {227, 238}}</string>
 												<reference key="NSSuperview" ref="848062562"/>
 												<reference key="NSWindow"/>
-												<reference key="NSNextKeyView" ref="74072879"/>
 												<array class="NSMutableArray" key="NSTabViewItems">
 													<object class="NSTabViewItem" id="234326074">
 														<string key="NSIdentifier">1</string>
@@ -1794,7 +1792,6 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 																	<string key="NSFrame">{{10, 7}, {187, 196}}</string>
 																	<reference key="NSSuperview" ref="74072879"/>
 																	<reference key="NSWindow"/>
-																	<reference key="NSNextKeyView" ref="20849277"/>
 																	<array class="NSMutableArray" key="NSTabViewItems">
 																		<object class="NSTabViewItem" id="464350627">
 																			<string key="NSIdentifier">1</string>
@@ -1808,7 +1805,6 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 																						<string key="NSFrame">{{-5, 7}, {177, 154}}</string>
 																						<reference key="NSSuperview" ref="20849277"/>
 																						<reference key="NSWindow"/>
-																						<reference key="NSNextKeyView" ref="554334345"/>
 																						<array class="NSMutableArray" key="NSTabViewItems">
 																							<object class="NSTabViewItem" id="645422606">
 																								<string key="NSIdentifier">1</string>
@@ -2065,7 +2061,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 											<string key="NSFrameSize">{238, 76}</string>
 											<reference key="NSSuperview" ref="655671804"/>
 											<reference key="NSWindow"/>
-											<reference key="NSNextKeyView" ref="547999767"/>
+											<reference key="NSNextKeyView" ref="325388295"/>
 											<bool key="NSEnabled">YES</bool>
 											<object class="NSTableHeaderView" key="NSHeaderView" id="47440030">
 												<reference key="NSNextResponder" ref="325388295"/>
@@ -2226,7 +2222,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 							<string key="NSFrame">{{288, 139}, {240, 94}}</string>
 							<reference key="NSSuperview" ref="439893737"/>
 							<reference key="NSWindow"/>
-							<reference key="NSNextKeyView" ref="325388295"/>
+							<reference key="NSNextKeyView" ref="655671804"/>
 							<int key="NSsFlags">133682</int>
 							<reference key="NSVScroller" ref="418778125"/>
 							<reference key="NSHScroller" ref="547999767"/>
@@ -2267,7 +2263,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 											<string key="NSFrameSize">{238, 96}</string>
 											<reference key="NSSuperview" ref="269171468"/>
 											<reference key="NSWindow"/>
-											<reference key="NSNextKeyView" ref="459480411"/>
+											<reference key="NSNextKeyView" ref="165624364"/>
 											<object class="NSTextContainer" key="NSTextContainer" id="987866784">
 												<object class="NSLayoutManager" key="NSLayoutManager">
 													<object class="NSTextStorage" key="NSTextStorage">
@@ -2362,7 +2358,6 @@ AAEAAQAAAT0AAwAAAAEAAgAAAVIAAwAAAAEAAQAAAVMAAwAAAAIAAQABAAAAAA</bytes>
 									<string key="NSFrame">{{224, 1}, {15, 109}}</string>
 									<reference key="NSSuperview" ref="582833558"/>
 									<reference key="NSWindow"/>
-									<reference key="NSNextKeyView"/>
 									<reference key="NSTarget" ref="582833558"/>
 									<string key="NSAction">_doScroller:</string>
 									<double key="NSCurValue">1</double>
@@ -2385,7 +2380,7 @@ AAEAAQAAAT0AAwAAAAEAAgAAAVIAAwAAAAEAAQAAAVMAAwAAAAIAAQABAAAAAA</bytes>
 							<string key="NSFrame">{{288, 20}, {240, 111}}</string>
 							<reference key="NSSuperview" ref="439893737"/>
 							<reference key="NSWindow"/>
-							<reference key="NSNextKeyView" ref="165624364"/>
+							<reference key="NSNextKeyView" ref="269171468"/>
 							<int key="NSsFlags">133138</int>
 							<reference key="NSVScroller" ref="459480411"/>
 							<reference key="NSHScroller" ref="165624364"/>
@@ -3211,6 +3206,14 @@ AAEAAQAAAT0AAwAAAAEAAgAAAVIAAwAAAAEAAQAAAVMAAwAAAAIAAQABAAAAAA</bytes>
 						<reference key="destination" ref="4110532"/>
 					</object>
 					<int key="connectionID">756</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBOutletConnection" key="connection">
+						<string key="label">scroll_area</string>
+						<reference key="source" ref="976324537"/>
+						<reference key="destination" ref="582833558"/>
+					</object>
+					<int key="connectionID">757</int>
 				</object>
 				<object class="IBConnectionRecord">
 					<object class="IBBindingConnection" key="connection">
@@ -6371,7 +6374,7 @@ AAEAAQAAAT0AAwAAAAEAAgAAAVIAAwAAAAEAAQAAAVMAAwAAAAIAAQABAAAAAA</bytes>
 			<nil key="activeLocalization"/>
 			<dictionary class="NSMutableDictionary" key="localizations"/>
 			<nil key="sourceID"/>
-			<int key="maxID">756</int>
+			<int key="maxID">757</int>
 		</object>
 		<object class="IBClassDescriber" key="IBDocument.Classes">
 			<array class="NSMutableArray" key="referencedPartialClassDescriptions">
@@ -6395,6 +6398,7 @@ AAEAAQAAAT0AAwAAAAEAAgAAAVIAAwAAAAEAAQAAAVMAAwAAAAIAAQABAAAAAA</bytes>
 					<dictionary class="NSMutableDictionary" key="outlets">
 						<string key="array_controller">id</string>
 						<string key="menu">id</string>
+						<string key="scroll_area">id</string>
 						<string key="window">id</string>
 						<string key="yes_button">id</string>
 					</dictionary>
@@ -6405,6 +6409,10 @@ AAEAAQAAAT0AAwAAAAEAAgAAAVIAAwAAAAEAAQAAAVMAAwAAAAIAAQABAAAAAA</bytes>
 						</object>
 						<object class="IBToOneOutletInfo" key="menu">
 							<string key="name">menu</string>
+							<string key="candidateClassName">id</string>
+						</object>
+						<object class="IBToOneOutletInfo" key="scroll_area">
+							<string key="name">scroll_area</string>
 							<string key="candidateClassName">id</string>
 						</object>
 						<object class="IBToOneOutletInfo" key="window">
