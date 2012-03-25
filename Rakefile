@@ -4,6 +4,7 @@ task :default => :test
 
 desc 'Remove all generated files'
 task :clean   => :clobber
+desc 'Remove all generated files'
 task :clobber => 'clobber:ext'
 
 desc 'Compile C extensions'
