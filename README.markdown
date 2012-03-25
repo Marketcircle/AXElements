@@ -63,9 +63,8 @@ slider in the menu bar (unless you've hidden it):
 You need to have the OS X developer tools installed in build and
 install AXElements (sorry). Go ahead and install the tools now if you
 haven't done that yet, I'll wait. Once you have the developer tools, 
-you should install MacRuby, the latest release should be sufficient,
-but nightly builds are usually better. If you are on Snow Leopard, you
-will also need to install the
+you should install MacRuby, the latest nightly build is required. If you
+are on Snow Leopard, you will also need to install the
 [Bridge Support Preview](http://www.macruby.org/blog/2010/10/08/bridgesupport-preview.html).
 
 Then you can install AXElements. For the time being, you should install
