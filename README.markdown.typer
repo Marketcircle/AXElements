@@ -25,8 +25,7 @@ Something a bit more advanced:
 
     include Accessibility::String
 
-    string = "\\COMMAND+" + "\\TAB+"*10
-    keyboard_events_for(string).each do |event|
+    keyboard_events_for("\\COMMAND+\t").each do |event|
       KeyCoder.post_event event
     end
 ```
