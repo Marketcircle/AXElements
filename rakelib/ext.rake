@@ -29,7 +29,7 @@ namespace :ext do
     dir = 'ext/accessibility/key_coder'
     ext = "#{dir}/key_coder"
     if needs_regeneration? "#{ext}.c", "#{ext}.bundle"
-      Rake::Task['clobber:key_coder'].execute
+      Rake::Task['clobber_key_coder'].execute
       Dir.chdir(dir) do
         ruby 'extconf.rb'
         sh   'make'
