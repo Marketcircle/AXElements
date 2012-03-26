@@ -72,6 +72,8 @@ rb_keycoder_post_event(VALUE self, VALUE event)
 
   CGEventRef event_ref = CGEventCreateKeyboardEvent(NULL, FIX2LONG(code), state);
   CGEventPost(kCGHIDEventTap, event_ref);
+
+  usleep(9000);
   return Qtrue;
 }
 
