@@ -118,29 +118,6 @@ class TestAccessibilityCore < MiniTest::Unit::TestCase
 
 
 
-  def test_attrs_value_is_correct
-    assert_equal ['AXElementsTester'], values_of([KAXTitleAttribute],  for: REF)
-    assert_equal [false],              values_of([KAXHiddenAttribute], for: REF)
-    assert_equal [CGPoint, CGSize],
-      values_of([KAXPositionAttribute, KAXSizeAttribute], for: window).map(&:class)
-  end
-
-  def test_attrs_value_fills_in_nils_when_no_value_error_occurs
-    assert_nil values_of([KAXSubroleAttribute, KAXRoleAttribute], for: web_area).first
-    assert_nil values_of([KAXRoleAttribute, KAXSubroleAttribute], for: web_area)[1]
-  end
-
-  def test_attrs_value_handles_errors
-    assert_raises ArgumentError do
-      values_of(['MADEUPATTRIBUTE'], for: nil)
-    end
-    assert_raises ArgumentError do
-      values_of([], for: REF)
-    end
-  end
-
-
-
   def test_subrole_macro
     assert_equal KAXStandardWindowSubrole, subrole_for(window)
     assert_equal nil,                      subrole_for(web_area)

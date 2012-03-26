@@ -117,39 +117,6 @@ module Accessibility::Core
   end
 
   ##
-  # @note This method becomes faster than calling {value_of:for:} at ~3
-  #       attributes; complexity of this method is sublinear for
-  #       increasing sizes of `attrs`.
-  #
-  # Fetch multiple attribute values for the given element at once. You will
-  # be given raw data from this method; that is, `Boxed` objects will
-  # still be wrapped in a `AXValueRef`, and elements will be
-  # `AXUIElementRef` objects instead of wrapped {AX::Element} objects.
-  #
-  # @example
-  #   values_of [KAXPositionAttribute, KAXSizeAttribute], for: window
-  #       # => [#<AXValueRefx00000000>, #<AXValueRefx00000000>]
-  #
-  #   values_of [KAXParentAttribute],  for: window  # => [#<AXUIElementRef>]
-  #   values_of [KAXNoValueAttribute], for: window  # => [nil]
-  #
-  # @param [Array<String>]
-  # @param [AXUIElementRef]
-  # @return [Array]
-  def values_of attrs, for: element
-    ptr   = Pointer.new ARRAY
-    attrs = attrs.map(&:to_axvalue)
-    code  = AXUIElementCopyMultipleAttributeValues(element, attrs, 0, ptr)
-    if code.zero? || code == KAXErrorNoValue
-      return ptr[0].map { |x|
-        AXValueGetType(x) == KAXValueAXErrorType ? nil : x.to_value
-      }
-    else
-      handle_error code, element, attrs
-    end
-  end
-
-  ##
   # @note You might get `nil` back as the subrole as AXWebArea
   #       objects are known to do this. You need to check. :(
   #
