@@ -67,7 +67,10 @@ rb_keycoder_dynamic_mapping()
 static VALUE
 rb_keycoder_post_event(VALUE self, VALUE event)
 {
-  CGEventRef event_ref = CGEventCreateKeyboardEvent(NULL, rb_ary_entry(event,0), rb_ary_entry(event,1));
+  VALUE code  = rb_ary_entry(event, 0);
+  VALUE state = rb_ary_entry(event, 1);
+
+  CGEventRef event_ref = CGEventCreateKeyboardEvent(NULL, FIX2LONG(code), state);
   CGEventPost(kCGHIDEventTap, event_ref);
   return Qtrue;
 }
