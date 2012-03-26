@@ -21,7 +21,8 @@ describes user interactions.
   s.files            =
     Dir.glob('lib/**/*.rb*') +
     Dir.glob('ext/**/*{.rb,.m}') +
-    [ 'Rakefile' ]
+    Dir.glob('rakelib/*.rake') +
+    ['Rakefile']
   s.test_files       =
     Dir.glob('test/**/test_*.rb') +
     [ 'test/helper.rb' ]
