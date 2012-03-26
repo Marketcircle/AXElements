@@ -117,7 +117,7 @@ module Accessibility::Core
   end
 
   ##
-  # @note This method becomes faster than calling {attr:for:} at ~3
+  # @note This method becomes faster than calling {value_of:for:} at ~3
   #       attributes; complexity of this method is sublinear for
   #       increasing sizes of `attrs`.
   #
@@ -140,10 +140,13 @@ module Accessibility::Core
     ptr   = Pointer.new ARRAY
     attrs = attrs.map(&:to_axvalue)
     code  = AXUIElementCopyMultipleAttributeValues(element, attrs, 0, ptr)
-    return ptr[0].map { |x|
-      AXValueGetType(x) == KAXValueAXErrorType ? nil : x.to_value
-    } if code.zero? || code == KAXErrorNoValue
-    handle_error code, element, attrs
+    if code.zero? || code == KAXErrorNoValue
+      return ptr[0].map { |x|
+        AXValueGetType(x) == KAXValueAXErrorType ? nil : x.to_value
+      }
+    else
+      handle_error code, element, attrs
+    end
   end
 
   ##
