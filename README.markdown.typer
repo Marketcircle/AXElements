@@ -31,6 +31,15 @@ Something a bit more advanced:
     end
 ```
 
+## Testing
+
+Running the AXElements test suite for only the AXTyper related tests
+can be accomplished with the `test:string` task.
+
+```shell
+    rake test:string
+```
+
 ## TODO
 
 The API for posting events is ad-hoc for the sake of demonstration;
