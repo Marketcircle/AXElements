@@ -1,0 +1,10 @@
+--no-cache
+--no-output
+--verbose
+--markup markdown
+--markup-provider redcarpet
+--readme README.markdown.typer
+lib/**/*.rb
+ext/**/*.m
+-
+docs/KeyboardEvents.markdown
