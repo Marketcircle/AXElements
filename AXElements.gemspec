@@ -20,7 +20,7 @@ describes user interactions.
 
   s.files            =
     Dir.glob('lib/**/*.rb*') +
-    Dir.glob('ext/**/*{.rb,.m}') +
+    Dir.glob('ext/**/*{.rb,.c}') +
     Dir.glob('rakelib/*.rake') +
     ['Rakefile']
   s.test_files       =
