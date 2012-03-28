@@ -45,7 +45,7 @@ namespace :test do
   desc 'Run tests under CRuby (where applicable)'
   task :cruby do
     if ENV['RUBY_VERSION'] # using rvm
-      puts sh 'source $HOME/.rvm/scripts/rvm; rvm 1.9.3 do rake test:string'
+      puts sh 'rvm 1.9.3 do rake test:string'
     else
       sh 'rake test:string'
     end
