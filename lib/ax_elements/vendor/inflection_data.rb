@@ -57,5 +57,9 @@ module Accessibility
     inflect.irregular('zombie', 'zombies')
 
     inflect.uncountable(%w(equipment information rice money species series fish sheep jeans))
+
+    # Related to accessibility
+    inflect.acronym('UI')
+    inflect.acronym('RTF')
   end
 end
