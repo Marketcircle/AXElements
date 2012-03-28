@@ -15,7 +15,7 @@ module Accessibility::String
   # @param [String]
   # @return [Array<Array(Fixnum,Boolean)>]
   def keyboard_events_for string
-    EventGenerator.new(Lexer.new(string).lex.tokens).generate.events
+    EventGenerator.new(Lexer.new(string).lex).generate
   end
 
   ##
@@ -27,8 +27,8 @@ module Accessibility::String
   # @example
   #
   #   Lexer.new('Hai').lex.tokens        # => ['H','a','i']
-  #   Lexer.new('\CAPSLOCK').lex.tokens  # => [['\CAPSLOCK']]
-  #   Lexer.new('\COMMAND+a').lex.tokens # => [['\COMMAND', ['a']]]
+  #   Lexer.new('\CAPSLOCK').lex.tokens  # => ['\CAPSLOCK']
+  #   Lexer.new('\COMMAND+a').lex.tokens # => ['\COMMAND', ['a']]
   #   Lexer.new("One\nTwo").lex.tokens   # => ['O','n','e',"\n",'T','w','o']
   #
   class Lexer
@@ -39,11 +39,10 @@ module Accessibility::String
     # @return [Array<String,Array<self>]
     attr_accessor :tokens
 
-    # @param [String]
+    # @param [#to_s]
     def initialize string
-      @chars  = string
+      @chars  = string.to_s
       @tokens = []
-      @index  = 0
     end
 
     ##
@@ -368,7 +367,7 @@ module Accessibility::String
       @index = 0
       generate_all @tokens
       @events.compact!
-      self
+      @events
     end
 
 
