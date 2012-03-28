@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+
 require 'accessibility/string'
 
 class TestAccessibilityStringLexer < MiniTest::Unit::TestCase
@@ -7,78 +8,61 @@ class TestAccessibilityStringLexer < MiniTest::Unit::TestCase
     Accessibility::String::Lexer
   end
 
-  def test_lex_method_chaining
-    l = lexer.new ''
-    assert_kind_of lexer, l.lex
-  end
-
-  def test_lex_single_custom
-    l = lexer.new('\CMD').lex
-    assert_equal [['\CMD']], l.tokens
-  end
-
-  def test_lex_hotkey_custom
-    l = lexer.new('\COMMAND+,').lex
-    assert_equal [['\COMMAND',[',']]], l.tokens
-  end
-
-  def test_lex_multiple_custom
-    l = lexer.new('\COMMAND+\SHIFT+s').lex
-    assert_equal [['\COMMAND',['\SHIFT',['s']]]], l.tokens
-  end
-
   def test_lex_simple_string
-    l = lexer.new('"It Just Works"™').lex
-    assert_equal ['"','I','t',' ','J','u','s','t',' ','W','o','r','k','s','"','™'], l.tokens
+    assert_equal [],                                                    lexer.new('').lex
+    assert_equal ['"',"J","u","s","t"," ","W","o","r","k","s",'"',"™"], lexer.new('"Just Works"™').lex
+    assert_equal ["M","i","l","k",","," ","s","h","a","k","e","."],     lexer.new("Milk, shake.").lex
+    assert_equal ["D","B","7"],                                         lexer.new("DB7").lex
+  end
 
-    l = lexer.new('Martini, shaken.').lex
-    assert_equal ['M','a','r','t','i','n','i',',',' ','s','h','a','k','e','n','.'], l.tokens
+  def test_lex_single_custom_escape
+    assert_equal ["\\CMD"], lexer.new("\\CMD").lex
+    assert_equal ["\\+"],   lexer.new("\\+").lex
+    assert_equal ["\\1"],   lexer.new("\\1").lex
+    assert_equal ["\\F1"],  lexer.new("\\F1").lex
+  end
 
-    l = lexer.new('Aston Martin DB7').lex
-    assert_equal ['A','s','t','o','n',' ','M','a','r','t','i','n',' ','D','B','7'], l.tokens
+  def test_lex_hotkey_custom_escape
+    assert_equal ["\\COMMAND",[","]],             lexer.new("\\COMMAND+,").lex
+    assert_equal ["\\COMMAND",["\\SHIFT",["s"]]], lexer.new("\\COMMAND+\\SHIFT+s").lex
+    assert_equal ["\\COMMAND",["\\+"]],           lexer.new("\\COMMAND+\\+").lex
+    assert_equal ["\\FN",["\\F10"]],              lexer.new("\\FN+\\F10").lex
   end
 
   def test_lex_ruby_escapes
-    l = lexer.new("The cake is a lie\b\b\bdelicious").lex
-    assert_equal ['T','h','e',' ','c','a','k','e',' ','i','s',' ','a',' ','l','i','e',"\b","\b","\b",'d','e','l','i','c','i','o','u','s'], l.tokens
+    assert_equal ["\n","\r","\t","\b"],                                lexer.new("\n\r\t\b").lex
+    assert_equal ["O","n","e","\n","T","w","o"],                       lexer.new("One\nTwo").lex
+    assert_equal ["L","i","e","\b","\b","\b","d","e","l","i","s","h"], lexer.new("Lie\b\b\bdelish").lex
   end
 
   def test_lex_complex_string
-    l = lexer.new("\\COMMAND+a \bI deleted your text, lol!").lex
-    assert_equal [['\COMMAND',['a']],"\b",'I',' ','d','e','l','e','t','e','d',' ','y','o','u','r',' ','t','e','x','t',',',' ','l','o','l','!'], l.tokens
+    assert_equal ["T","e","s","t","\\CMD",["s"]],                          lexer.new("Test\\CMD+s").lex
+    assert_equal ["Z","O","M","G"," ","1","3","3","7","!","!","1"],        lexer.new("ZOMG 1337!!1").lex
+    assert_equal ["F","u","u","!","@","#","%","\\CMD",["a"],"\b"],         lexer.new("Fuu!@#%\\CMD+a \b").lex
+    assert_equal ["\\CMD",["a"],"\b","A","l","l"," ","g","o","n","e","!"], lexer.new("\\CMD+a \bAll gone!").lex
   end
 
-  def test_lex_backslash
-    l = lexer.new("\\").lex
-    assert_equal ["\\"], l.tokens
-
-    l = lexer.new('\ ').lex
-    assert_equal ["\\",' '], l.tokens
-
-    l = lexer.new('\hmm').lex
-    assert_equal ["\\",'h','m','m'], l.tokens
-
-    # is this the job of the parser or the lexer?
-    l = lexer.new('\HMM').lex
-    assert_equal [["\\HMM"]], l.tokens
+  def test_lex_backslash # make sure we handle these edge cases predictably
+    assert_equal ["\\"],             lexer.new("\\").lex
+    assert_equal ["\\"," "],         lexer.new("\\ ").lex
+    assert_equal ["\\","h","m","m"], lexer.new("\\hmm").lex
+    assert_equal ["\\HMM"],          lexer.new("\\HMM").lex
   end
 
-  def test_lex_bad_custom_seq
-    l = lexer.new('\COMMAND+').lex
-    assert_equal [['\COMMAND',['']]], l.tokens
-  end
-
-  def test_lex_is_idempotent
-    l = lexer.new('hey')
-    tokens       = l.lex.tokens.dup
-    other_tokens = l.lex.tokens
-    assert_equal tokens, other_tokens
+  def test_lex_bad_custom_escape_sequence
+    assert_raises ArgumentError do
+      lexer.new("\\COMMAND+").lex
+    end
   end
 
 end
 
 
 class TestAccessibilityStringEventGenerator < MiniTest::Unit::TestCase
+
+  def setup
+    skip
+  end
 
   def generator
     Accessibility::String::EventGenerator
