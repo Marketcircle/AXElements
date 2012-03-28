@@ -496,7 +496,7 @@ module Accessibility::DSL
   # @param [Number]
   # @param [#to_point]
   def scroll lines, obj = nil, wait = 0.1
-    move_mouse_to obj, 0 if obj
+    move_mouse_to obj, wait: 0 if obj
     Mouse.scroll lines
     sleep wait
   end
@@ -509,7 +509,7 @@ module Accessibility::DSL
   #
   # @param [#to_point]
   def click obj = nil, wait = 0.2
-    move_mouse_to obj, 0 if obj
+    move_mouse_to obj, wait: 0 if obj
     Mouse.click
     sleep wait
   end
@@ -522,7 +522,7 @@ module Accessibility::DSL
   #
   # @param [#to_point]
   def right_click obj = nil, wait = 0.2
-    move_mouse_to obj, 0 if obj
+    move_mouse_to obj, wait: 0 if obj
     Mouse.right_click
     sleep wait
   end
@@ -536,7 +536,7 @@ module Accessibility::DSL
   #
   # @param [#to_point]
   def double_click obj = nil, wait = 0.2
-    move_mouse_to obj, 0 if obj
+    move_mouse_to obj, wait: 0 if obj
     Mouse.double_click
     sleep wait
   end
