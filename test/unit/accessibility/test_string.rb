@@ -263,6 +263,10 @@ class TestAccessibilityStringEventGenerator < MiniTest::Unit::TestCase
 end
 
 
+# NOTE: DO NOT TEST POSTING EVENTS HERE
+# We only want to test posting events if all the tests in this file pass,
+# otherwise the posted events may be unpredictable depending on what fails.
+# Test event posting in the integration tests.
 class TestAccessibilityString < MiniTest::Unit::TestCase
   include Accessibility::String
 
