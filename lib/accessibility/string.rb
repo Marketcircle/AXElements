@@ -6,7 +6,7 @@ framework 'ApplicationServices' if defined? MACRUBY_VERSION
 
 ##
 # Parses strings of human readable text into a series of events meant to
-# be processed by {Accessibility::Core#post:to:}.
+# be processed by {Accessibility::Core#post:to:} or {KeyCoder.post_event}.
 #
 # Supports most, if not all, latin keyboard layouts, maybe some
 # international layouts as well.
