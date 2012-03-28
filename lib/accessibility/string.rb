@@ -2,7 +2,7 @@
 
 require   'accessibility/version'
 require   'accessibility/key_coder'
-framework 'ApplicationServices' if defined? MACRUBY_REVISION
+framework 'ApplicationServices' if defined? MACRUBY_VERSION
 
 ##
 # Parses strings of human readable text into a series of events meant to
