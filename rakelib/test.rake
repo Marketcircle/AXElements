@@ -37,7 +37,7 @@ namespace :test do
   Rake::TestTask.new(:string) do |t|
     t.libs << 'test'
     t.pattern = "test/unit/**/test_string.rb"
-    t.ruby_opts = ['-rtest_runner']
+    t.ruby_opts = ['-rrunner']
     t.verbose = true
   end
   task :string => :ext
