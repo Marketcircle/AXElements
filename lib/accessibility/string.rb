@@ -26,10 +26,10 @@ module Accessibility::String
   #
   # @example
   #
-  #   Lexer.new('Hai').lex.tokens        # => ['H','a','i']
-  #   Lexer.new('\CAPSLOCK').lex.tokens  # => ['\CAPSLOCK']
-  #   Lexer.new('\COMMAND+a').lex.tokens # => ['\COMMAND', ['a']]
-  #   Lexer.new("One\nTwo").lex.tokens   # => ['O','n','e',"\n",'T','w','o']
+  #   Lexer.new("Hai").lex          # => ['H','a','i']
+  #   Lexer.new("\\CAPSLOCK").lex   # => [["\\CAPSLOCK"]]
+  #   Lexer.new("\\COMMAND+a").lex  # => [["\\COMMAND", ['a']]]
+  #   Lexer.new("One\nTwo").lex     # => ['O','n','e',"\n",'T','w','o']
   #
   class Lexer
 
@@ -82,28 +82,31 @@ module Accessibility::String
 
     # @return [Array]
     def lex_custom
-      start_index = @index
+      start = @index
       loop do
-        case char = @chars[@index]
-        when PLUS
+        char = @chars[@index]
+        if char == PLUS
           if @chars[@index-1] == CUSTOM_ESCAPE
-            tokens = [@chars[start_index..@index]]
             @index += 1
+            return custom_subseq start
           else
-            tokens  = [@chars[start_index...@index]]
+            tokens  = custom_subseq start
             @index += 1
-            tokens << lex_custom
+            return tokens << lex_custom
           end
-          return tokens
-        when SPACE
-          return [@chars[start_index...@index]]
-        when nil
-          raise ArgumentError, "Bad escape sequence" if start_index == @index
-          return [@chars[start_index...@index]]
+        elsif char == SPACE
+          return custom_subseq start
+        elsif char == nil
+          raise ArgumentError, "Bad escape sequence" if start == @index
+          return custom_subseq start
         else
           @index += 1
         end
       end
+    end
+
+    def custom_subseq start
+      [@chars[start...@index]]
     end
 
     # @return [String]
