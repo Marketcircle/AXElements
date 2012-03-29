@@ -46,8 +46,6 @@ require 'accessibility/version'
 module Accessibility::Core
 
 
-  private
-
   # @group Attributes
 
   ##
@@ -298,6 +296,26 @@ module Accessibility::Core
   def post events
     post events, to: system_wide
   end
+
+  ##
+  # @todo Make this runtime configurable. At that point, posting events
+  #       does too much to be in Core and needs to move elsewhere.
+  #
+  # The delay between key presses. The default value is `0.01`, which
+  # should be about 50 characters per second (down and up are separate
+  # events).
+  #
+  # This is just a magic number from trial and error. Both the repeat
+  # interval (NXKeyRepeatInterval) and threshold (NXKeyRepeatThreshold),
+  # but both were way too big.
+  #
+  # @return [Number]
+  KEY_RATE = case ENV['KEY_RATE']
+             when 'VERY_SLOW' then 0.9
+             when 'SLOW'      then 0.09
+             when nil         then 0.009
+             else                  ENV['KEY_RATE'].to_f
+             end
 
 
   # @group Parameterized Attributes
@@ -600,6 +618,8 @@ module Accessibility::Core
   end
 
 
+  private
+
   # @group Error Handling
 
   # @param [Number]
@@ -741,26 +761,6 @@ module Accessibility::Core
   #
   # @return [String]
   OBSERVER = '^{__AXObserver}'.freeze
-
-  ##
-  # @todo Make this runtime configurable. At that point, posting events
-  #       does too much to be in Core and needs to move elsewhere.
-  #
-  # The delay between key presses. The default value is `0.01`, which
-  # should be about 50 characters per second (down and up are separate
-  # events).
-  #
-  # This is just a magic number from trial and error. Both the repeat
-  # interval (NXKeyRepeatInterval) and threshold (NXKeyRepeatThreshold),
-  # but both were way too big.
-  #
-  # @return [Number]
-  KEY_RATE = case ENV['KEY_RATE']
-             when 'VERY_SLOW' then 0.9
-             when 'SLOW'      then 0.09
-             when nil         then 0.009
-             else                  ENV['KEY_RATE'].to_f
-             end
 
   ##
   # @private
