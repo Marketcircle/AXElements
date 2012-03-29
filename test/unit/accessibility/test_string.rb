@@ -4,15 +4,15 @@ require 'accessibility/string'
 
 class TestAccessibilityStringLexer < MiniTest::Unit::TestCase
 
-  def lexer
-    Accessibility::String::Lexer
+  def lex string
+    Accessibility::String::Lexer.new(string).lex
   end
 
   def test_lex_simple_string
-    assert_equal [],                                                    lexer.new('').lex
-    assert_equal ['"',"J","u","s","t"," ","W","o","r","k","s",'"',"™"], lexer.new('"Just Works"™').lex
-    assert_equal ["M","i","l","k",","," ","s","h","a","k","e","."],     lexer.new("Milk, shake.").lex
-    assert_equal ["D","B","7"],                                         lexer.new("DB7").lex
+    assert_equal [],                                                    lex('')
+    assert_equal ['"',"J","u","s","t"," ","W","o","r","k","s",'"',"™"], lex('"Just Works"™')
+    assert_equal ["M","i","l","k",","," ","s","h","a","k","e","."],     lex("Milk, shake.")
+    assert_equal ["D","B","7"],                                         lex("DB7")
   end
 
   def test_lex_single_custom_escape
@@ -30,9 +30,9 @@ class TestAccessibilityStringLexer < MiniTest::Unit::TestCase
   end
 
   def test_lex_ruby_escapes
-    assert_equal ["\n","\r","\t","\b"],                                lexer.new("\n\r\t\b").lex
-    assert_equal ["O","n","e","\n","T","w","o"],                       lexer.new("One\nTwo").lex
-    assert_equal ["L","i","e","\b","\b","\b","d","e","l","i","s","h"], lexer.new("Lie\b\b\bdelish").lex
+    assert_equal ["\n","\r","\t","\b"],                                lex("\n\r\t\b")
+    assert_equal ["O","n","e","\n","T","w","o"],                       lex("One\nTwo")
+    assert_equal ["L","i","e","\b","\b","\b","d","e","l","i","s","h"], lex("Lie\b\b\bdelish")
   end
 
   def test_lex_complex_string
@@ -55,7 +55,7 @@ class TestAccessibilityStringLexer < MiniTest::Unit::TestCase
 
   def test_lex_bad_custom_escape_sequence
     assert_raises ArgumentError do
-      lexer.new("\\COMMAND+").lex
+      lex("\\COMMAND+")
     end
   end
 
