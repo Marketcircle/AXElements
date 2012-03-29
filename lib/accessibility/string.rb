@@ -450,8 +450,6 @@ module Accessibility::String
     # @private
     EMPTY_STRING  = ''
     # @private
-    CUSTOM_ESCAPE = "\\"
-    # @private
     OPTION_DOWN   = [58,true]
     # @private
     OPTION_UP     = [58,false]
