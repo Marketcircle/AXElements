@@ -36,7 +36,7 @@ module Accessibility::String
     ##
     # Once a string is lexed, this contains the tokenized structure.
     #
-    # @return [Array<String,Array<self>]
+    # @return [Array<String,Array<String,...>]
     attr_accessor :tokens
 
     # @param [#to_s]
@@ -46,56 +46,75 @@ module Accessibility::String
     end
 
     ##
-    # Tokenize the string that the lexer was initialized with.
+    # Tokenize the string that the lexer was initialized with and
+    # return the sequence of tokens that were lexed.
     #
-    # @return [self]
+    # @return [Array<String,Array<String,...>]
     def lex
-      while @chars[@index]
-        char     = @chars[@index]
-        @tokens << if custom? char
-                     lex_custom
-                   else
-                     char
-                   end
+      length = @chars.length
+      @index = 0
+      while @index < length
+        if custom?
+          @tokens.concat lex_custom
+        else
+          @tokens << lex_char
+        end
         @index += 1
       end
-      self
+      @tokens
     end
 
 
     private
 
+    ##
+    # Is it a real custom escape? Kind of a lie, there is one
+    # case it does not handle--they get handled in the generator,
+    # but maybe they should be handled here?
+    # - An upper case letter or symbol following `"\\"` that is
+    #   not mapped
+    def custom?
+      @chars[@index] == CUSTOM_ESCAPE &&
+        (next_char = @chars[@index+1]) &&
+         next_char == next_char.upcase &&
+         next_char != SPACE
+    end
+
+    # @return [Array]
     def lex_custom
       start_index = @index
-      while true
+      loop do
         case char = @chars[@index]
-        when SPACE, nil
-          return [@chars[start_index...@index]]
         when PLUS
-          custom = [@chars[start_index...@index]]
-          @index += 1
-          return custom << lex_custom
+          if @chars[@index-1] == CUSTOM_ESCAPE
+            tokens = [@chars[start_index..@index]]
+            @index += 1
+          else
+            tokens  = [@chars[start_index...@index]]
+            @index += 1
+            tokens << lex_custom
+          end
+          return tokens
+        when SPACE
+          return [@chars[start_index...@index]]
+        when nil
+          raise ArgumentError, "Bad escape sequence" if start_index == @index
+          return [@chars[start_index...@index]]
         else
           @index += 1
         end
       end
     end
 
-    ##
-    # Is it a real custom escape? Kind of a lie, there is one
-    # case it does not handle--an upper case letter or symbol
-    # following `"\\"`. Eventually I will need to handle these...
-    def custom? char
-      char == CUSTOM_ESCAPE &&
-        (next_char = @chars[@index+1]) &&
-         next_char == next_char.upcase &&
-         next_char != SPACE
+    # @return [String]
+    def lex_char
+      @chars[@index]
     end
 
     # @private
-    SPACE         = ' '
+    SPACE         = " "
     # @private
-    PLUS          = '+'
+    PLUS          = "+"
     # @private
     CUSTOM_ESCAPE = "\\"
   end
