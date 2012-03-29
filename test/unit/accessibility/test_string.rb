@@ -64,12 +64,8 @@ end
 
 class TestAccessibilityStringEventGenerator < MiniTest::Unit::TestCase
 
-  def generator
-    Accessibility::String::EventGenerator
-  end
-
-  def generate tokens
-    generator.new(tokens).generate
+  def gen tokens
+    Accessibility::String::EventGenerator.new(tokens).generate
   end
 
   def map; @@map ||= KeyCoder.dynamic_mapping; end
@@ -95,7 +91,6 @@ class TestAccessibilityStringEventGenerator < MiniTest::Unit::TestCase
   def dash;  @@dash  ||= map["-"]; end
   def comma; @@comma ||= map[","]; end
   def apos;  @@apos  ||= map["'"]; end
-  def bang;  @@bang  ||= map["1"]; end
   def at;    @@at    ||= map["2"]; end
   def paren; @@paren ||= map["9"]; end
   def chev;  @@chev  ||= map["."]; end
@@ -108,12 +103,12 @@ class TestAccessibilityStringEventGenerator < MiniTest::Unit::TestCase
   def bslash; @@blash ||= map["\\"]; end
 
   # key code for the left shift key
-  def sd; [56,true];  end
-  def su; [56,false]; end
+  def sd; [56,t];  end
+  def su; [56,f]; end
 
   # key code for the left option key
-  def od; [58,true];  end
-  def ou; [58,false]; end
+  def od; [58,t];  end
+  def ou; [58,f]; end
 
   # key code for the left command key
   def cd; [0x37,t]; end
@@ -129,84 +124,82 @@ class TestAccessibilityStringEventGenerator < MiniTest::Unit::TestCase
 
 
   def test_generate_lowercase
-    assert_equal [[a,t],[a,f]],                                     generate(['a'])
-    assert_equal [[c,t],[c,f],[k,t],[k,f]],                         generate(['c','k'])
-    assert_equal [[e,t],[e,f],[e,t],[e,f]],                         generate(['e','e'])
-    assert_equal [[c,t],[c,f],[a,t],[a,f],[k,t],[k,f],[e,t],[e,f]], generate(['c','a','k','e'])
+    assert_equal [[a,t],[a,f]],                                     gen(['a'])
+    assert_equal [[c,t],[c,f],[k,t],[k,f]],                         gen(['c','k'])
+    assert_equal [[e,t],[e,f],[e,t],[e,f]],                         gen(['e','e'])
+    assert_equal [[c,t],[c,f],[a,t],[a,f],[k,t],[k,f],[e,t],[e,f]], gen(['c','a','k','e'])
   end
 
   def test_generate_uppercase
-    assert_equal [sd,[a,t],[a,f],su],                                     generate(['A'])
-    assert_equal [sd,[c,t],[c,f],su,sd,[k,t],[k,f],su],                   generate(['C','K'])
-    assert_equal [sd,[e,t],[e,f],su,sd,[e,t],[e,f],su],                   generate(['E','E'])
-    assert_equal [sd,[c,t],[c,f],su,sd,[a,t],[a,f],su,sd,[k,t],[k,f],su], generate(['C','A','K'])
+    assert_equal [sd,[a,t],[a,f],su],                                     gen(['A'])
+    assert_equal [sd,[c,t],[c,f],su,sd,[k,t],[k,f],su],                   gen(['C','K'])
+    assert_equal [sd,[e,t],[e,f],su,sd,[e,t],[e,f],su],                   gen(['E','E'])
+    assert_equal [sd,[c,t],[c,f],su,sd,[a,t],[a,f],su,sd,[k,t],[k,f],su], gen(['C','A','K'])
   end
 
   def test_generate_numbers
-    assert_equal [[two,t],[two,f]],                   generate(['2'])
-    assert_equal [[four,t],[four,f],[two,t],[two,f]], generate(['4','2'])
-    assert_equal [[two,t],[two,f],[two,t],[two,f]],   generate(['2','2'])
+    assert_equal [[two,t],[two,f]],                   gen(['2'])
+    assert_equal [[four,t],[four,f],[two,t],[two,f]], gen(['4','2'])
+    assert_equal [[two,t],[two,f],[two,t],[two,f]],   gen(['2','2'])
   end
 
   def test_generate_ruby_escapes
-    assert_equal [[retern,t],[retern,f]], generate(["\r"])
-    assert_equal [[retern,t],[retern,f]], generate(["\n"])
-    assert_equal [[tab,t],[tab,f]],       generate(["\t"])
-    assert_equal [[space,t],[space,f]],   generate(["\s"])
-    assert_equal [[space,t],[space,f]],   generate([" "])
+    assert_equal [[retern,t],[retern,f]], gen(["\r"])
+    assert_equal [[retern,t],[retern,f]], gen(["\n"])
+    assert_equal [[tab,t],[tab,f]],       gen(["\t"])
+    assert_equal [[space,t],[space,f]],   gen(["\s"])
+    assert_equal [[space,t],[space,f]],   gen([" "])
   end
 
   def test_generate_symbols
-    assert_equal [[dash,t],[dash,f]],         generate(["-"])
-    assert_equal [[comma,t],[comma,f]],       generate([","])
-    assert_equal [[apos,t],[apos,f]],         generate(["'"])
-    assert_equal [sd,[bang,t],[bang,f],su],   generate(["!"])
-    assert_equal [sd,[at,t],[at,f],su],       generate(["@"])
-    assert_equal [sd,[paren,t],[paren,f],su], generate(["("])
-    assert_equal [sd,[chev,t],[chev,f],su],   generate([">"])
+    assert_equal [[dash,t],[dash,f]],         gen(["-"])
+    assert_equal [[comma,t],[comma,f]],       gen([","])
+    assert_equal [[apos,t],[apos,f]],         gen(["'"])
+    assert_equal [sd,[at,t],[at,f],su],       gen(["@"])
+    assert_equal [sd,[paren,t],[paren,f],su], gen(["("])
+    assert_equal [sd,[chev,t],[chev,f],su],   gen([">"])
   end
 
   def test_generate_unicode # holding option
-    assert_equal [od,[sigma,t],[sigma,f],ou], generate(["∑"])
-    assert_equal [od,[tm,t],[tm,f],ou],       generate(["™"])
-    assert_equal [od,[gbp,t],[gbp,f],ou],     generate(["£"])
-    assert_equal [od,[omega,t],[omega,f],ou], generate(["Ω"])
+    assert_equal [od,[sigma,t],[sigma,f],ou], gen(["∑"])
+    assert_equal [od,[tm,t],[tm,f],ou],       gen(["™"])
+    assert_equal [od,[gbp,t],[gbp,f],ou],     gen(["£"])
+    assert_equal [od,[omega,t],[omega,f],ou], gen(["Ω"])
   end
 
   def test_generate_backslashes
-    assert_equal [[bslash,t],[bslash,f]],                                     generate(["\\"])
-    assert_equal [[bslash,t],[bslash,f],[space,t],[space,f]],                 generate(["\\"," "])
-    assert_equal [[bslash,t],[bslash,f],[h,t],[h,f],[m,t],[m,f]],             generate(["\\",'h','m'])
+    assert_equal [[bslash,t],[bslash,f]],                                     gen(["\\"])
+    assert_equal [[bslash,t],[bslash,f],[space,t],[space,f]],                 gen(["\\"," "])
+    assert_equal [[bslash,t],[bslash,f],[h,t],[h,f],[m,t],[m,f]],             gen(["\\",'h','m'])
     # is this the job of the parser or the lexer?
-    assert_equal [[bslash,t],[bslash,f],sd,[h,t],[h,f],su,sd,[m,t],[m,f],su], generate(["\\HM"])
+    assert_equal [[bslash,t],[bslash,f],sd,[h,t],[h,f],su,sd,[m,t],[m,f],su], gen([["\\HM"]])
   end
 
   def test_generate_a_custom_escape
-    assert_equal [cd,cu],       generate(["\\COMMAND"])
-    assert_equal [cd,cu],       generate(["\\CMD"])
-    assert_equal [ctrld,ctrlu], generate(["\\CONTROL"])
-    assert_equal [ctrld,ctrlu], generate(["\\CTRL"])
+    assert_equal [cd,cu],       gen([["\\COMMAND"]])
+    assert_equal [cd,cu],       gen([["\\CMD"]])
+    assert_equal [ctrld,ctrlu], gen([["\\CONTROL"]])
+    assert_equal [ctrld,ctrlu], gen([["\\CTRL"]])
   end
 
   def test_generate_hotkey
-    assert_equal [ctrld,[a,t],[a,f],ctrlu], generate(["\\CONTROL",["u"]])
-    assert_equal [cd,sd,rd,ru,su,cu],       generate(['\COMMAND',['\SHIFT',['\->']]])
+    assert_equal [ctrld,[a,t],[a,f],ctrlu], gen([["\\CONTROL",["u"]]])
+    assert_equal [cd,sd,rd,ru,su,cu],       gen([["\\COMMAND",['\SHIFT',['\->']]]])
   end
 
-  def test_generate_real_use
-    expected = [ctrld,[a,t],[a,f],ctrlu,[space,t],[space,f],[h,t],[h,f],[i,t],[i,f]]
-    assert_equal expected, generate(["\\CONTROL",["a"],"h","i"])
+  def test_generate_real_use # a regression
+    assert_equal [ctrld,[a,t],[a,f],ctrlu,[space,t],[space,f],[h,t],[h,f]], gen([["\\CTRL",["a"]],"h"])
   end
 
   def test_bails_for_unmapped_token
     e = assert_raises ArgumentError do
-      generate(["☃"]) # cannot generate snowmen :(
+      gen(["☃"]) # cannot generate snowmen :(
     end
     assert_match /bail/i, e.message
   end
 
   def test_generate_arbitrary_nested_array_sequence
-    assert_equal [[c,t],[a,t],[k,t],[e,t],[e,f],[k,f],[a,f],[c,f]], generate(["c",["a",["k",["e"]]]])
+    assert_equal [[c,t],[a,t],[k,t],[e,t],[e,f],[k,f],[a,f],[c,f]], gen([["c",["a",["k",["e"]]]]])
   end
 
 end
