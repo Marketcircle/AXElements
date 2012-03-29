@@ -441,10 +441,10 @@ module Accessibility::String
 
     def generate_dynamic token
       code = MAPPING.fetch token, nil
-      raise ArgumentError, "#{token} has no mapping, bail!" unless code
       @events[@index]   = [code,true]
       @events[@index+1] = [code,false]
       @index += 2
+      raise ArgumentError, "#{token.inspect} has no mapping, bail!" unless code
     end
 
     # @private
