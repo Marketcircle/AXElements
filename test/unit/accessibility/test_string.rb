@@ -64,204 +64,149 @@ end
 
 class TestAccessibilityStringEventGenerator < MiniTest::Unit::TestCase
 
-  def setup
-    skip
-  end
-
   def generator
     Accessibility::String::EventGenerator
   end
 
-  def generate *tokens
-    generator.new(tokens).generate.events
+  def generate tokens
+    generator.new(tokens).generate
   end
+
+  def map; @@map ||= KeyCoder.dynamic_mapping; end
+
+  def t; true; end
+  def f; false; end
+
+  def a; @@a ||= map['a']; end
+  def c; @@c ||= map['c']; end
+  def e; @@e ||= map['e']; end
+  def h; @@h ||= map['h']; end
+  def i; @@i ||= map['i']; end
+  def k; @@k ||= map['k']; end
+  def m; @@m ||= map["m"]; end
+
+  def two;  @@two  ||= map['2']; end
+  def four; @@four ||= map['4']; end
+
+  def retern; @@retern ||= map["\r"]; end
+  def tab;    @@tab    ||= map["\t"]; end
+  def space;  @@space  ||= map["\s"]; end
+
+  def dash;  @@dash  ||= map["-"]; end
+  def comma; @@comma ||= map[","]; end
+  def apos;  @@apos  ||= map["'"]; end
+  def bang;  @@bang  ||= map["1"]; end
+  def at;    @@at    ||= map["2"]; end
+  def paren; @@paren ||= map["9"]; end
+  def chev;  @@chev  ||= map["."]; end
+
+  def sigma; @@sigma ||= map["w"]; end
+  def tm;    @@tm    ||= map["2"]; end
+  def gbp;   @@gbp   ||= map["3"]; end
+  def omega; @@omega ||= map["z"]; end
+
+  def bslash; @@blash ||= map["\\"]; end
 
   # key code for the left shift key
-  def shift_down; [56,true];  end
-  def shift_up;   [56,false]; end
+  def sd; [56,true];  end
+  def su; [56,false]; end
 
   # key code for the left option key
-  def option_down; [58,true];  end
-  def option_up;   [58,false]; end
+  def od; [58,true];  end
+  def ou; [58,false]; end
 
-  def map
-    @@map ||= KeyCoder.dynamic_mapping
-  end
+  # key code for the left command key
+  def cd; [0x37,t]; end
+  def cu; [0x37,f]; end
+
+  # key code for right arrow key
+  def rd; [0x7c,t]; end
+  def ru; [0x7c,f]; end
+
+  # key code for left control key
+  def ctrld; [0x3B,t]; end
+  def ctrlu; [0x3B,f]; end
+
 
   def test_generate_lowercase
-    c, a, k, e = map.values_at 'c', 'a', 'k', 'e'
-    expected = [[c,true],[c,false],
-                [a,true],[a,false],
-                [k,true],[k,false],
-                [e,true],[e,false]]
-    actual   = generate 'c', 'a', 'k', 'e'
-    assert_equal expected, actual
+    assert_equal [[a,t],[a,f]],                                     generate(['a'])
+    assert_equal [[c,t],[c,f],[k,t],[k,f]],                         generate(['c','k'])
+    assert_equal [[e,t],[e,f],[e,t],[e,f]],                         generate(['e','e'])
+    assert_equal [[c,t],[c,f],[a,t],[a,f],[k,t],[k,f],[e,t],[e,f]], generate(['c','a','k','e'])
   end
 
   def test_generate_uppercase
-    h, i = map.values_at 'h', 'i'
-    expected = [shift_down,[h,true],[h,false],shift_up,
-                shift_down,[i,true],[i,false],shift_up]
-    actual   = generate 'H', 'I'
-    assert_equal expected, actual
+    assert_equal [sd,[a,t],[a,f],su],                                     generate(['A'])
+    assert_equal [sd,[c,t],[c,f],su,sd,[k,t],[k,f],su],                   generate(['C','K'])
+    assert_equal [sd,[e,t],[e,f],su,sd,[e,t],[e,f],su],                   generate(['E','E'])
+    assert_equal [sd,[c,t],[c,f],su,sd,[a,t],[a,f],su,sd,[k,t],[k,f],su], generate(['C','A','K'])
   end
 
   def test_generate_numbers
-    two, four = map.values_at '2', '4'
-    expected  = [[four,true],[four,false],[two,true],[two,false]]
-    actual    = generate '4', '2'
-    assert_equal expected, actual
+    assert_equal [[two,t],[two,f]],                   generate(['2'])
+    assert_equal [[four,t],[four,f],[two,t],[two,f]], generate(['4','2'])
+    assert_equal [[two,t],[two,f],[two,t],[two,f]],   generate(['2','2'])
   end
 
   def test_generate_ruby_escapes
-    retern, tab, space = map.values_at "\r", "\t", "\s"
-
-    expected = [[retern,true],[retern,false]]
-    actual   = generate "\r"
-    assert_equal expected, actual
-
-    expected = expected
-    actual   = generate "\n"
-    assert_equal expected, actual
-
-    expected = [[tab,true],[tab,false]]
-    actual   = generate "\t"
-    assert_equal expected, actual
-
-    expected = [[space,true],[space,false]]
-    actual   = generate "\s"
-    assert_equal expected, actual
-
-    expected = expected
-    actual   = generate ' '
-    assert_equal expected, actual
+    assert_equal [[retern,t],[retern,f]], generate(["\r"])
+    assert_equal [[retern,t],[retern,f]], generate(["\n"])
+    assert_equal [[tab,t],[tab,f]],       generate(["\t"])
+    assert_equal [[space,t],[space,f]],   generate(["\s"])
+    assert_equal [[space,t],[space,f]],   generate([" "])
   end
 
   def test_generate_symbols
-    dash, comma, apostrophe, bang, at, paren, chev =
-     map.values_at '-', ',', "'", '1', '2', '9', '.'
-
-    expected = [[dash,true],[dash,false]]
-    actual   = generate '-'
-    assert_equal expected, actual
-
-    expected = [[comma,true],[comma,false]]
-    actual   = generate ","
-    assert_equal expected, actual
-
-    expected = [[apostrophe,true],[apostrophe,false]]
-    actual   = generate "'"
-    assert_equal expected, actual
-
-    expected = [shift_down,[bang,true],[bang,false],shift_up]
-    actual   = generate '!'
-    assert_equal expected, actual
-
-    expected = [shift_down,[at,true],[at,false],shift_up]
-    actual   = generate '@'
-    assert_equal expected, actual
-
-    expected = [shift_down,[paren,true],[paren,false],shift_up]
-    actual   = generate '('
-    assert_equal expected, actual
-
-    expected = [shift_down,[chev,true],[chev,false],shift_up]
-    actual   = generate '>'
-    assert_equal expected, actual
+    assert_equal [[dash,t],[dash,f]],         generate(["-"])
+    assert_equal [[comma,t],[comma,f]],       generate([","])
+    assert_equal [[apos,t],[apos,f]],         generate(["'"])
+    assert_equal [sd,[bang,t],[bang,f],su],   generate(["!"])
+    assert_equal [sd,[at,t],[at,f],su],       generate(["@"])
+    assert_equal [sd,[paren,t],[paren,f],su], generate(["("])
+    assert_equal [sd,[chev,t],[chev,f],su],   generate([">"])
   end
 
   def test_generate_unicode # holding option
-    sigma, tm, gbp, omega = map.values_at 'w', '2', '3', 'z'
-
-    expected = [option_down, [sigma,true],[sigma,false], option_up]
-    actual   = generate '∑'
-    assert_equal expected, actual
-
-    expected = [option_down, [tm,true],[tm,false], option_up]
-    actual   = generate '™'
-    assert_equal expected, actual
-
-    expected = [option_down, [gbp,true],[gbp,false], option_up]
-    actual   = generate '£'
-    assert_equal expected, actual
-
-    expected = [option_down, [omega,true],[omega,false], option_up]
-    actual   = generate 'Ω'
-    assert_equal expected, actual
+    assert_equal [od,[sigma,t],[sigma,f],ou], generate(["∑"])
+    assert_equal [od,[tm,t],[tm,f],ou],       generate(["™"])
+    assert_equal [od,[gbp,t],[gbp,f],ou],     generate(["£"])
+    assert_equal [od,[omega,t],[omega,f],ou], generate(["Ω"])
   end
 
   def test_generate_backslashes
-    backslash, space, h, m =
-      map.values_at "\\", ' ', 'h', 'm'
-
-    expected = [[backslash,true],[backslash,false]]
-    actual   = generate "\\"
-    assert_equal expected, actual
-
-    expected = [[backslash,true],[backslash,false],
-                [space,true],[space,false]]
-    actual   = generate "\\",' '
-    assert_equal expected, actual
-
-    expected = [[backslash,true],[backslash,false],
-                [h,true],[h,false],
-                [m,true],[m,false],
-                [m,true],[m,false]]
-    actual   = generate "\\",'h','m','m'
-    assert_equal expected, actual
-
+    assert_equal [[bslash,t],[bslash,f]],                                     generate(["\\"])
+    assert_equal [[bslash,t],[bslash,f],[space,t],[space,f]],                 generate(["\\"," "])
+    assert_equal [[bslash,t],[bslash,f],[h,t],[h,f],[m,t],[m,f]],             generate(["\\",'h','m'])
     # is this the job of the parser or the lexer?
-    expected = [[backslash,true],[backslash,false],
-                shift_down,[h,true],[h,false],shift_up,
-                shift_down,[m,true],[m,false],shift_up,
-                shift_down,[m,true],[m,false],shift_up]
-    actual   = generate ["\\HMM"]
-    assert_equal expected, actual
+    assert_equal [[bslash,t],[bslash,f],sd,[h,t],[h,f],su,sd,[m,t],[m,f],su], generate(["\\HM"])
   end
 
   def test_generate_a_custom_escape
-    command  = 0x37
-    expected = [[command,true],[command,false]]
-    actual   = generate ['\COMMAND']
-    assert_equal expected, actual
+    assert_equal [cd,cu],       generate(["\\COMMAND"])
+    assert_equal [cd,cu],       generate(["\\CMD"])
+    assert_equal [ctrld,ctrlu], generate(["\\CONTROL"])
+    assert_equal [ctrld,ctrlu], generate(["\\CTRL"])
   end
 
   def test_generate_hotkey
-    right_arrow = 0x7c
-    command     = 0x37
-    expected = [[command,true],
-                  shift_down,
-                    [right_arrow,true],
-                    [right_arrow,false],
-                  shift_up,
-                [command,false]]
-    actual   = generate ['\COMMAND',['\SHIFT',['\->']]]
-    assert_equal expected, actual
+    assert_equal [ctrld,[a,t],[a,f],ctrlu], generate(["\\CONTROL",["u"]])
+    assert_equal [cd,sd,rd,ru,su,cu],       generate(['\COMMAND',['\SHIFT',['\->']]])
   end
 
-  def test_generate_after_hotkey
-    ctrl, a, space, h, i = 0x3B, *map.values_at('a',' ','h','i')
-    expected = [[ctrl,true],
-                 [a,true],[a,false],
-                [ctrl,false],
-                [space,true],[space,false],
-                [h,true],[h,false],[i,true],[i,false]
-               ]
-    actual   = generate ['\CTRL',['a']], ' ', 'h', 'i'
-    assert_equal expected, actual
+  def test_generate_real_use
+    expected = [ctrld,[a,t],[a,f],ctrlu,[space,t],[space,f],[h,t],[h,f],[i,t],[i,f]]
+    assert_equal expected, generate(["\\CONTROL",["a"],"h","i"])
   end
 
   def test_bails_for_unmapped_token
-    assert_raises ArgumentError do
-      generate '☃'
+    e = assert_raises ArgumentError do
+      generate(["☃"]) # cannot generate snowmen :(
     end
+    assert_match /bail/i, e.message
   end
 
-  def test_generation_is_idempotent
-    g = generator.new(['M'])
-    original_events = g.generate.events.dup
-    new_events      = g.generate.events
-    assert_equal original_events, new_events
+  def test_generate_arbitrary_nested_array_sequence
+    assert_equal [[c,t],[a,t],[k,t],[e,t],[e,f],[k,f],[a,f],[c,f]], generate(["c",["a",["k",["e"]]]])
   end
 
 end
