@@ -183,12 +183,12 @@ class TestAccessibilityStringEventGenerator < MiniTest::Unit::TestCase
   end
 
   def test_generate_hotkey
-    assert_equal [ctrld,[a,t],[a,f],ctrlu], gen([["\\CONTROL",["u"]]])
+    assert_equal [ctrld,[a,t],[a,f],ctrlu], gen([["\\CONTROL",["a"]]])
     assert_equal [cd,sd,rd,ru,su,cu],       gen([["\\COMMAND",['\SHIFT',['\->']]]])
   end
 
   def test_generate_real_use # a regression
-    assert_equal [ctrld,[a,t],[a,f],ctrlu,[space,t],[space,f],[h,t],[h,f]], gen([["\\CTRL",["a"]],"h"])
+    assert_equal [ctrld,[a,t],[a,f],ctrlu,[h,t],[h,f]], gen([["\\CTRL",["a"]],"h"])
   end
 
   def test_bails_for_unmapped_token
