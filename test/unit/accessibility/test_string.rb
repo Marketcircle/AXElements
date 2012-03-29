@@ -17,9 +17,9 @@ class TestAccessibilityStringLexer < MiniTest::Unit::TestCase
 
   def test_lex_single_custom_escape
     assert_equal ["\\CMD"], lexer.new("\\CMD").lex
-    assert_equal ["\\+"],   lexer.new("\\+").lex
     assert_equal ["\\1"],   lexer.new("\\1").lex
     assert_equal ["\\F1"],  lexer.new("\\F1").lex
+    assert_equal ["\\*"],   lexer.new("\\*").lex
   end
 
   def test_lex_hotkey_custom_escape
@@ -47,6 +47,10 @@ class TestAccessibilityStringLexer < MiniTest::Unit::TestCase
     assert_equal ["\\"," "],         lexer.new("\\ ").lex
     assert_equal ["\\","h","m","m"], lexer.new("\\hmm").lex
     assert_equal ["\\HMM"],          lexer.new("\\HMM").lex
+  end
+
+  def test_lex_plus_escape
+    assert_equal ["\\+"], lexer.new("\\+").lex
   end
 
   def test_lex_bad_custom_escape_sequence
