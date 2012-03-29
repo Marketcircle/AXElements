@@ -116,4 +116,3 @@ possible values. An example of using it would be:
 
     KEY_RATE=SLOW irb -rubygems -rax_elements
     KEY_RATE=0.25 rspec gui_spec.rb
-

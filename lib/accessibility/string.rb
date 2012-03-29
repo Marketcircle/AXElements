@@ -12,6 +12,15 @@ framework 'ApplicationServices' if defined? MACRUBY_VERSION
 # international layouts as well.
 module Accessibility::String
 
+  ##
+  # Generate keyboard events for the given string. Strings should be in a
+  # human readable with a few exceptions. Command key (e.g. control, option,
+  # command) should be written in string as they appear in
+  # {Accessibility::String::EventGenerator::CUSTOM}.
+  #
+  # For more details on event generation, read the
+  # {file:docs/KeyboardEvents.markdown Keyboard Events} documentation.
+  #
   # @param [String]
   # @return [Array<Array(Fixnum,Boolean)>]
   def keyboard_events_for string
