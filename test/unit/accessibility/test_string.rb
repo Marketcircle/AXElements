@@ -219,14 +219,14 @@ end
 class TestAccessibilityString < MiniTest::Unit::TestCase
   include Accessibility::String
 
-  # hmmmmm....
-  def test_events_for_regular_case
+  # basic test to make sure the lexer and generator get along
+  def test_keyboard_events_for
     events = keyboard_events_for 'cheezburger'
     assert_kind_of Array, events
     refute_empty events
 
-    assert_kind_of Array, events[0]
-    assert_kind_of Array, events[1]
+    assert_equal true, events[0][1]
+    assert_equal false, events[1][1]
   end
 
   def test_dynamic_map_initialized
