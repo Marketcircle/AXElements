@@ -233,11 +233,6 @@ class TestAccessibilityString < MiniTest::Unit::TestCase
     refute_empty Accessibility::String::EventGenerator::MAPPING
   end
 
-  def test_alias_is_included
-    map = Accessibility::String::EventGenerator::MAPPING
-    assert_equal map["\r"], map["\n"]
-  end
-
   def test_can_parse_empty_string
     assert_equal [], keyboard_events_for('')
   end
