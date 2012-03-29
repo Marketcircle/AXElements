@@ -105,6 +105,7 @@ module Accessibility::String
       end
     end
 
+    # @return [Array]
     def custom_subseq start
       [@chars[start...@index]]
     end
@@ -125,19 +126,25 @@ module Accessibility::String
 
   ##
   # @todo Add a method to generate just keydown or just keyup events.
+  #       Requires separating code lookup from event creation.
   #
   # Generate a sequence of keyboard events given a sequence of tokens.
+  # The token format is defined by the {Lexer} class output; it is best
+  # to use that class to generate the tokens.
   #
   # @example
   #
-  #   EventGenerator.new(['H','a','i']).generate.events
-  #       # => [[56,true],[80,true],[80,false],[56,false],[70,true],[70,false],[111,true],[111,false]]
-  #   EventGenerator.new([['\CAPS']]).generate.events
-  #       # => [[0x39,true],[0x39,false]]
-  #   EventGenerator.new([['\CMD',['a']]]).generate.events
-  #       # => [[0x37,true],[50,true],[50,false],[0x37,false]]
-  #   EventGenerator.new(['O',"\n",'t']).generate.events
-  #       # => [[56,true],[10,true],[10,false],[56,false],[45,true],[45,false],[92,true],[92,false]]
+  #   # Upper case 'A'
+  #   EventGenerator.new(["A"]).generate  # => [[56,true],[70,true],[70,false],[56,false]]
+  #
+  #   # Press the caps lock button, turn it on
+  #   EventGenerator.new([["\\CAPS"]]).generate # => [[0x39,true],[0x39,false]]
+  #
+  #   # Hotkey, press and hold command key and then 'a', then release both
+  #   EventGenerator.new([["\\CMD",["a"]]]).generate # => [[55,true],[70,true],[70,false],[55,false]]
+  #
+  #   # Press the return/enter key
+  #   EventGenerator.new(["\n"]).generate # => [[10,true],[10,false]]
   #
   class EventGenerator
 
@@ -161,6 +168,9 @@ module Accessibility::String
     #
     # @return [Hash{String=>Fixnum}]
     MAPPING = {}
+
+    # Initialize the table
+    regenerate_dynamic_mapping
 
     ##
     # @note These mappings are all static and come from `/System/Library/Frameworks/Carbon.framework/Versions/A/Frameworks/HIToolbox.framework/Versions/A/Headers/Events.h`
@@ -372,12 +382,12 @@ module Accessibility::String
     # @param [Array<String,Array<String,Array...>>]
     def initialize tokens
       @tokens = tokens
-      # *4 since the output array will be at least *2 the
+      # *3 since the output array will be at least *2 the
       # number of tokens passed in, but will often be larger
-      # due to shifted/optioned characters and custom escapes
+      # due to shifted/optioned characters and custom escapes;
       # though a better number could be derived from
       # analyzing common input...
-      @events = Array.new tokens.size*4
+      @events = Array.new tokens.size*3
     end
 
     ##
@@ -387,7 +397,7 @@ module Accessibility::String
     # @return [self]
     def generate
       @index = 0
-      generate_all @tokens
+      gen_all @tokens
       @events.compact!
       @events
     end
@@ -395,68 +405,65 @@ module Accessibility::String
 
     private
 
-    def generate_all tokens
+    def add event
+      @events[@index] = event
+      @index += 1
+    end
+
+    def gen_all tokens
       tokens.each do |token|
         if token.kind_of? Array
-          generate_custom token
-        elsif SHIFTED.has_key? token
-          generate_shifted token
-        elsif OPTIONED.has_key? token
-          generate_optioned token
+          gen_nested token.first, token[1..-1]
         else
-          generate_dynamic token
+          gen_single token
         end
       end
     end
 
-    def generate_custom token
-      code = CUSTOM.fetch token.first[1..-1], nil
-      unless code
-        generate_all token.first.split(EMPTY_STRING)
-        return
+    def gen_nested head, tail
+      if code = CUSTOM[head] || SHIFTED[head] || OPTIONED[head] || MAPPING[head]
+        add [code, true]
+        gen_all tail
+        add [code, false]
+      else # handling a special case
+        gen_all head.split(EMPTY_STRING)
       end
-
-      @events[@index] = [code,true]
-      @index += 1
-      generate_all token[1..-1]
-      @events[@index] = [code,false]
-      @index += 1
     end
 
-    def generate_shifted token
-      @events[@index] = SHIFT_DOWN
-      @index += 1
-      generate_dynamic SHIFTED[token]
-      @events[@index] = SHIFT_UP
-      @index += 1
+    def gen_single token
+      ((code =  MAPPING[token]) &&  gen_dynamic(code)) ||
+      ((code =  SHIFTED[token]) &&  gen_shifted(code)) ||
+      ((code = OPTIONED[token]) && gen_optioned(code)) ||
+      raise(ArgumentError, "#{token.inspect} has no mapping, bail!")
     end
 
-    def generate_optioned token
-      @events[@index] = OPTION_DOWN
-      @index += 1
-      generate_dynamic OPTIONED[token]
-      @events[@index] = OPTION_UP
-      @index += 1
+    def gen_shifted code
+      add SHIFT_DOWN
+      gen_dynamic MAPPING[code]
+      add SHIFT_UP
     end
 
-    def generate_dynamic token
-      code = MAPPING.fetch token, nil
-      @events[@index]   = [code,true]
-      @events[@index+1] = [code,false]
-      @index += 2
-      raise ArgumentError, "#{token.inspect} has no mapping, bail!" unless code
+    def gen_optioned code
+      add OPTION_DOWN
+      gen_dynamic MAPPING[code]
+      add OPTION_UP
+    end
+
+    def gen_dynamic code
+      add [code,  true]
+      add [code, false]
     end
 
     # @private
-    EMPTY_STRING  = ''
+    EMPTY_STRING = ''
     # @private
-    OPTION_DOWN   = [58,true]
+    OPTION_DOWN  = [58, true]
     # @private
-    OPTION_UP     = [58,false]
+    OPTION_UP    = [58, false]
     # @private
-    SHIFT_DOWN    = [56,true]
+    SHIFT_DOWN   = [56, true]
     # @private
-    SHIFT_UP      = [56,false]
+    SHIFT_UP     = [56, false]
   end
 
 end
@@ -470,6 +477,3 @@ end
 #                                                selector: 'regenerate_dynamic_mapping',
 #                                                    name: KTISNotifySelectedKeyboardInputSourceChanged,
 #                                                  object: nil
-
-# Initialize the table
-Accessibility::String::EventGenerator.regenerate_dynamic_mapping
