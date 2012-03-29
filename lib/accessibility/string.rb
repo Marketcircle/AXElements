@@ -392,9 +392,9 @@ module Accessibility::String
 
     ##
     # Generate the events for the tokens the event generator
-    # was initialized with.
+    # was initialized with. Returns the generated events.
     #
-    # @return [self]
+    # @return [Array<Array(Fixnum,Boolean)>]
     def generate
       @index = 0
       gen_all @tokens
