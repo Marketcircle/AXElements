@@ -16,17 +16,17 @@ class TestAccessibilityStringLexer < MiniTest::Unit::TestCase
   end
 
   def test_lex_single_custom_escape
-    assert_equal ["\\CMD"], lexer.new("\\CMD").lex
-    assert_equal ["\\1"],   lexer.new("\\1").lex
-    assert_equal ["\\F1"],  lexer.new("\\F1").lex
-    assert_equal ["\\*"],   lexer.new("\\*").lex
+    assert_equal [["\\CMD"]], lex("\\CMD")
+    assert_equal [["\\1"]],   lex("\\1")
+    assert_equal [["\\F1"]],  lex("\\F1")
+    assert_equal [["\\*"]],   lex("\\*")
   end
 
   def test_lex_hotkey_custom_escape
-    assert_equal ["\\COMMAND",[","]],             lexer.new("\\COMMAND+,").lex
-    assert_equal ["\\COMMAND",["\\SHIFT",["s"]]], lexer.new("\\COMMAND+\\SHIFT+s").lex
-    assert_equal ["\\COMMAND",["\\+"]],           lexer.new("\\COMMAND+\\+").lex
-    assert_equal ["\\FN",["\\F10"]],              lexer.new("\\FN+\\F10").lex
+    assert_equal [["\\COMMAND",[","]]],             lex("\\COMMAND+,")
+    assert_equal [["\\COMMAND",["\\SHIFT",["s"]]]], lex("\\COMMAND+\\SHIFT+s")
+    assert_equal [["\\COMMAND",["\\+"]]],           lex("\\COMMAND+\\+")
+    assert_equal [["\\FN",["\\F10"]]],              lex("\\FN+\\F10")
   end
 
   def test_lex_ruby_escapes
@@ -36,21 +36,21 @@ class TestAccessibilityStringLexer < MiniTest::Unit::TestCase
   end
 
   def test_lex_complex_string
-    assert_equal ["T","e","s","t","\\CMD",["s"]],                          lexer.new("Test\\CMD+s").lex
-    assert_equal ["Z","O","M","G"," ","1","3","3","7","!","!","1"],        lexer.new("ZOMG 1337!!1").lex
-    assert_equal ["F","u","u","!","@","#","%","\\CMD",["a"],"\b"],         lexer.new("Fuu!@#%\\CMD+a \b").lex
-    assert_equal ["\\CMD",["a"],"\b","A","l","l"," ","g","o","n","e","!"], lexer.new("\\CMD+a \bAll gone!").lex
+    assert_equal ["T","e","s","t",["\\CMD",["s"]]],                          lex("Test\\CMD+s")
+    assert_equal ["Z","O","M","G"," ","1","3","3","7","!","!","1"],          lex("ZOMG 1337!!1")
+    assert_equal ["F","u","u","!","@","#","%",["\\CMD",["a"]],"\b"],         lex("Fuu!@#%\\CMD+a \b")
+    assert_equal [["\\CMD",["a"]],"\b","A","l","l"," ","g","o","n","e","!"], lex("\\CMD+a \bAll gone!")
   end
 
   def test_lex_backslash # make sure we handle these edge cases predictably
-    assert_equal ["\\"],             lexer.new("\\").lex
-    assert_equal ["\\"," "],         lexer.new("\\ ").lex
-    assert_equal ["\\","h","m","m"], lexer.new("\\hmm").lex
-    assert_equal ["\\HMM"],          lexer.new("\\HMM").lex
+    assert_equal ["\\"],             lex("\\")
+    assert_equal ["\\"," "],         lex("\\ ")
+    assert_equal ["\\","h","m","m"], lex("\\hmm")
+    assert_equal [["\\HMM"]],        lex("\\HMM") # the one missed case
   end
 
   def test_lex_plus_escape
-    assert_equal ["\\+"], lexer.new("\\+").lex
+    assert_equal [["\\+"]], lex("\\+")
   end
 
   def test_lex_bad_custom_escape_sequence

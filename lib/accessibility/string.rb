@@ -54,11 +54,11 @@ module Accessibility::String
       length = @chars.length
       @index = 0
       while @index < length
-        if custom?
-          @tokens.concat lex_custom
-        else
-          @tokens << lex_char
-        end
+        @tokens << if custom?
+                     lex_custom
+                   else
+                     lex_char
+                   end
         @index += 1
       end
       @tokens
