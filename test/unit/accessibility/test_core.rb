@@ -179,11 +179,11 @@ class TestAccessibilityCore < MiniTest::Unit::TestCase
 
     set KAXSelectedTextRangeAttribute, to: 0..3, for: text_area
     actual = value_of(KAXSelectedTextRangeAttribute, for: text_area)
-    assert_equal CFRangeMake(0, 4), actual
+    assert_equal 0..3, actual
 
     set KAXSelectedTextRangeAttribute, to: 1...4, for: text_area
     actual = value_of(KAXSelectedTextRangeAttribute, for: text_area)
-    assert_equal CFRangeMake(1, 3), actual
+    assert_equal 1..3, actual
 
   ensure
     set KAXValueAttribute, to: '', for: text_area
@@ -708,14 +708,14 @@ class TestCoreExtensionsForCore < MiniTest::Unit::TestCase
     end
   end
 
-  def test_to_value
-    assert_equal CGPointZero, CGPointZero.to_axvalue.to_value
+  def test_to_value_on_boxes
+    assert_equal CGPointZero,       CGPointZero.to_axvalue.to_value
     assert_equal CGSizeMake(10,10), CGSizeMake(10,10).to_axvalue.to_value
+    assert_equal Range.new(1,10),   CFRange.new(1,10).to_value
   end
 
   def test_to_value_on_non_boxes
     obj = Object.new
-    assert_respond_to obj, :to_value
     assert_equal obj.self, obj.to_value
   end
 

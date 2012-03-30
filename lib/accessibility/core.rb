@@ -839,7 +839,17 @@ class Boxed
 end
 
 # AXElements extensions for `CFRange`.
-class << CFRange; def ax_value; KAXValueCFRangeType; end end
+class CFRange
+  def self.ax_value
+    KAXValueCFRangeType
+  end
+
+  # @return [Range]
+  def to_value
+    Range.new location, (location + length - 1)
+  end
+end
+
 # AXElements extensions for `CGSize`.
 class << CGSize;  def ax_value; KAXValueCGSizeType;  end end
 # AXElements extensions for `CGRect`.
@@ -876,7 +886,7 @@ module Accessibility::AXValueUnwrapper
     return self if box_type.zero?
     ptr      = Pointer.new BOX_TYPES[box_type]
     AXValueGetValue(self, box_type, ptr)
-    ptr[0]
+    ptr[0].to_value
   end
 end
 AXUIElementCreateSystemWide().class.send(:include, Accessibility::AXValueUnwrapper)
