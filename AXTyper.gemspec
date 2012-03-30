@@ -28,8 +28,8 @@ gem is a component of AXElements.
     'test/runner.rb'
   ]
   s.extra_rdoc_files = [
-    'README.markdown.typer',
-    '.yardopts.typer',
+    'README.typer.markdown',
+    '.typer.yardopts',
     'docs/KeyboardEvents.markdown'
   ]
 

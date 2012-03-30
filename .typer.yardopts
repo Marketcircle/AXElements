@@ -3,7 +3,7 @@
 --verbose
 --markup markdown
 --markup-provider redcarpet
---readme README.markdown.typer
+--readme README.typer.markdown
 lib/**/*.rb
 ext/**/*.m
 -
