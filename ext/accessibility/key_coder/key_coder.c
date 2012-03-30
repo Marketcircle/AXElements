@@ -60,7 +60,7 @@ keycoder_dynamic_mapping()
   };
 
   // skip 65-92 since they are hard coded and do not change
-  for (int key_code = 0; key_code < 65; key_code++)
+  for (int key_code = 0;  key_code < 65;  key_code++)
     key_coder(key_code);
   for (int key_code = 93; key_code < 127; key_code++)
     key_coder(key_code);
