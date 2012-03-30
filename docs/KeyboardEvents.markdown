@@ -93,6 +93,10 @@ You might also note that `CMD+SHIFT+s` could also be:
 
 Since a capital `S` will cause the shift key to be held down.
 
+One caveat with hot keys is that you cannot use `"\\COMMAND+ "` to
+represent command and space combination, you will need to use
+`"\\COMMAND+\s"` instead.
+
 ## Protips
 
 In order make sure that certain sequences of characters are properly
