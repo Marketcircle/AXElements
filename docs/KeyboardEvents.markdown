@@ -76,12 +76,12 @@ such as the right arrow key which can be escaped as `"\\RIGHT"` or as
 
 ### Hot Keys
 
-To support pressing multiple keys at the same time, also known as hot
-keys, you must start with the custom escape sequence for the
-combination and instead of ending with a space you should put a `+`
-character to chain the next key. The entire sequence should be ended
-with a space or nil. Some common examples are opening a file or
-quitting an application:
+To support pressing multiple keys at the same time (i.e. hotkeys), you
+must start with the custom escape sequence for the combination and
+instead of ending with a space you should put a `+` character to chain
+the next key. The entire sequence should be ended with a space or
+nil. Some common examples are opening a file or quitting an
+application:
 
     type "\\COMMAND+o"
     type "\\CONTROL+a Typing at the start of the line"
