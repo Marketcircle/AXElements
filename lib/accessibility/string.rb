@@ -134,9 +134,6 @@ module Accessibility::String
 
 
   ##
-  # @todo Add a method to generate just keydown or just keyup events.
-  #       Requires separating code lookup from event creation.
-  #
   # Generate a sequence of keyboard events given a sequence of tokens.
   # The token format is defined by the {Lexer} class output; it is best
   # to use that class to generate the tokens.
