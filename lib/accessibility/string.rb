@@ -379,7 +379,7 @@ module Accessibility::String
 
 
     ##
-    # Once {generate} is called, this contains the sequence of
+    # Once {#generate} is called, this contains the sequence of
     # events.
     #
     # @return [Array<Array(Fixnum,Boolean)>]
@@ -398,7 +398,8 @@ module Accessibility::String
 
     ##
     # Generate the events for the tokens the event generator
-    # was initialized with. Returns the generated events.
+    # was initialized with. Returns the generated events, though
+    # you can also use {#events} to get the events later.
     #
     # @return [Array<Array(Fixnum,Boolean)>]
     def generate
