@@ -14,12 +14,15 @@
 
 
 /*
- *  call-seq:
- *     KeyCoder.dynamic_mapping  -> { "a" => 0, "b" => 24, ... }
- *
  *  Generate the mapping of characters to key codes for keys that can be
  *  remapped based on keyboard layout. Changing the keyboard layout at
  *  runtime will cause the returned hash to be different.
+ *
+ *  @example
+ *
+ *    KeyCoder.dynamic_mapping  => { "a" => 0, "b" => 24, ... }
+ *
+ *  @return [Hash{String=>Number}]
  */
 
 static VALUE
@@ -75,12 +78,16 @@ keycoder_dynamic_mapping()
 
 
 /*
- *  call-seq:
- *     KeyCoder.post_event [0, true]  -> true
- *
  *  Post the given event to the system and return `true`. This method
  *  will also add a small (9000 microsecond) delay after posting to
  *  ensure that keyboard actions do not go too fast.
+ *
+ *  @example
+ *
+ *    KeyCoder.post_event [0, true]  -> true
+ *
+ *  @param [Array(Number, Boolean)]
+ *  @return [true]
  */
 
 static VALUE
