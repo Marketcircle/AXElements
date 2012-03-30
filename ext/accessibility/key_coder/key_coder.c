@@ -12,8 +12,18 @@
 #import <ApplicationServices/ApplicationServices.h>
 #include "ruby.h"
 
+
+/*
+ *  call-seq:
+ *     KeyCoder.dynamic_mapping  -> { "a" => 0, "b" => 24, ... }
+ *
+ *  Generate the mapping of characters to key codes for keys that can be
+ *  remapped based on keyboard layout. Changing the keyboard layout at
+ *  runtime will cause the returned hash to be different.
+ */
+
 static VALUE
-rb_keycoder_dynamic_mapping()
+keycoder_dynamic_mapping()
 {
 
   VALUE map = rb_hash_new();
@@ -64,8 +74,17 @@ rb_keycoder_dynamic_mapping()
 }
 
 
+/*
+ *  call-seq:
+ *     KeyCoder.post_event [0, true]  -> true
+ *
+ *  Post the given event to the system and return `true`. This method
+ *  will also add a small (9000 microsecond) delay after posting to
+ *  ensure that keyboard actions do not go too fast.
+ */
+
 static VALUE
-rb_keycoder_post_event(VALUE self, VALUE event)
+keycoder_post_event(VALUE self, VALUE event)
 {
   VALUE code  = rb_ary_entry(event, 0);
   VALUE state = rb_ary_entry(event, 1);
@@ -81,7 +100,7 @@ rb_keycoder_post_event(VALUE self, VALUE event)
 void
 Init_key_coder()
 {
-  VALUE rb_cKeyCoder = rb_define_class("KeyCoder", rb_cObject);
-  rb_define_singleton_method(rb_cKeyCoder, "dynamic_mapping", rb_keycoder_dynamic_mapping, 0);
-  rb_define_singleton_method(rb_cKeyCoder, "post_event", rb_keycoder_post_event, 1);
+  VALUE cKeyCoder = rb_define_class("KeyCoder", rb_cObject);
+  rb_define_singleton_method(cKeyCoder, "dynamic_mapping", keycoder_dynamic_mapping, 0);
+  rb_define_singleton_method(cKeyCoder, "post_event", keycoder_post_event, 1);
 }
