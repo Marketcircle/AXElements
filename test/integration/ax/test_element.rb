@@ -19,19 +19,19 @@ class TestAXElement < MiniTest::Unit::TestCase
     box.set :value, to: 'okey dokey lemon pokey'
 
     box.set :selected_text_range, to: 0..5
-    assert_equal CFRangeMake(0,6), box.selected_text_range
+    assert_equal 0..5, box.selected_text_range
 
     box.set :selected_text_range, to: 1..5
-    assert_equal CFRangeMake(1,5), box.selected_text_range
+    assert_equal 1..5, box.selected_text_range
 
     box.set :selected_text_range, to: 5...10
-    assert_equal CFRangeMake(5,5), box.selected_text_range
+    assert_equal 5..9, box.selected_text_range
 
     box.set :selected_text_range, to: 1..-1
-    assert_equal CFRangeMake(1,21), box.selected_text_range
+    assert_equal 1..21, box.selected_text_range
 
     box.set :selected_text_range, to: 4...-10
-    assert_equal CFRangeMake(4,8), box.selected_text_range
+    assert_equal 4..11, box.selected_text_range
 
   ensure
     box.set :value, to: '' if box
