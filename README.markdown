@@ -62,7 +62,7 @@ slider in the menu bar (unless you've hidden it):
 
 You need to have the OS X developer tools installed in build and
 install AXElements (sorry). Go ahead and install the tools now if you
-haven't done that yet, I'll wait. Once you have the developer tools, 
+haven't done that yet, I'll wait. Once you have the developer tools,
 you should install MacRuby, the latest nightly build is required. If you
 are on Snow Leopard, you will also need to install the
 [Bridge Support Preview](http://www.macruby.org/blog/2010/10/08/bridgesupport-preview.html).
@@ -185,14 +185,15 @@ All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are met:
-    * Redistributions of source code must retain the above copyright
-      notice, this list of conditions and the following disclaimer.
-    * Redistributions in binary form must reproduce the above copyright
-      notice, this list of conditions and the following disclaimer in the
-      documentation and/or other materials provided with the distribution.
-    * Neither the name of Marketcircle Inc. nor the names of its
-      contributors may be used to endorse or promote products derived
-      from this software without specific prior written permission.
+
+* Redistributions of source code must retain the above copyright
+  notice, this list of conditions and the following disclaimer.
+* Redistributions in binary form must reproduce the above copyright
+  notice, this list of conditions and the following disclaimer in the
+  documentation and/or other materials provided with the distribution.
+* Neither the name of Marketcircle Inc. nor the names of its
+  contributors may be used to endorse or promote products derived
+  from this software without specific prior written permission.
 
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
 ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
