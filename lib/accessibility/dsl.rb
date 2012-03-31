@@ -411,10 +411,11 @@ module Accessibility::DSL
     end
     nil
   end
+  alias_method :wait_for_descendent, :wait_for_descendant
 
   ##
   # @note This is really just an optimized case of
-  #       {wait_for_descendant} when you know what you are waiting
+  #       {#wait_for_descendant} when you know what you are waiting
   #       for is a child of a particular element.
   #
   # Wait around for particular element and then return that element.

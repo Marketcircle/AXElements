@@ -51,6 +51,7 @@ class MiniTest::Assertions
     refute result.blank?, msg
     result
   end
+  alias_method :assert_has_descendant, :assert_has_descendent
 
   ##
   # Test that an element _does not_ have a specific child. For example,
@@ -95,6 +96,7 @@ class MiniTest::Assertions
     assert result.blank?, msg
     result
   end
+  alias_method :refute_has_descendant, :refute_has_descendent
 
 
   private
