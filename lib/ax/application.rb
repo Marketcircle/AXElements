@@ -184,9 +184,7 @@ class AX::Application < AX::Element
   def show_about_window
     windows = self.children.select { |x| x.kind_of? AX::Window }
     select_menu_item app.title, /^About /
-    wait_for :window, parent: self do |window|
-      !windows.include?(window)
-    end
+    wait_for(:window, parent: self) { |window| !windows.include?(window) }
   end
 
   ##
@@ -200,9 +198,7 @@ class AX::Application < AX::Element
   def show_preferences_window
     windows = self.children.select { |x| x.kind_of? AX::Window }
     type_string "\\COMMAND+,"
-    wait_for :window, parent: self do |window|
-      !windows.include?(window)
-    end
+    wait_for(:window, parent: self) { |window| !windows.include?(window) }
   end
 
 
