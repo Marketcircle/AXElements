@@ -95,7 +95,7 @@ module Accessibility::String
       loop do
         char = @chars[@index]
         if char == PLUS
-          if @chars[@index-1] == CUSTOM_ESCAPE
+          if @chars[@index-1] == CUSTOM_ESCAPE # \\+ case
             @index += 1
             return custom_subseq start
           else
