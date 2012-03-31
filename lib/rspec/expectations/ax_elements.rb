@@ -139,4 +139,4 @@ end
 def have_descendent kind, filters = {}, &block
   Accessibility::HasDescendentMatcher.new kind, filters, &block
 end
-alias_method :have_descendant, :have_descendent
+alias :have_descendant :have_descendent
