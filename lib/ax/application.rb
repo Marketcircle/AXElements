@@ -176,6 +176,36 @@ class AX::Application < AX::Element
     current
   end
 
+  ##
+  # Show the "About" window for the app. Returns the window that is
+  # opened.
+  #
+  # @return [AX::Window]
+  def show_about_window
+    windows = self.children.select { |x| x.kind_of? AX::Window }
+    select_menu_item app.title, /^About /
+    wait_for :window, parent: self do |window|
+      !windows.include?(window)
+    end
+  end
+
+  ##
+  # @note This method assumes that the app has setup the standard
+  #       CMD+, hotkey to open the pref window
+  #
+  # Try to open the preferences for the app. Returns the window that
+  # is opened.
+  #
+  # @return [AX::Window]
+  def show_preferences_window
+    windows = self.children.select { |x| x.kind_of? AX::Window }
+    type_string "\\COMMAND+,"
+    wait_for :window, parent: self do |window|
+      !windows.include?(window)
+    end
+  end
+
+
   # @endgroup
 
 
