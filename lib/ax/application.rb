@@ -183,7 +183,7 @@ class AX::Application < AX::Element
   # @return [AX::Window]
   def show_about_window
     windows = self.children.select { |x| x.kind_of? AX::Window }
-    select_menu_item app.title, /^About /
+    select_menu_item self.title, /^About /
     wait_for(:window, parent: self) { |window| !windows.include?(window) }
   end
 
