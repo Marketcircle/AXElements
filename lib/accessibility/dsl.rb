@@ -350,9 +350,6 @@ module Accessibility::DSL
   # @group Polling
 
   ##
-  # @todo Perhaps this method shoud raise an exception in failure cases
-  #       instead of returning nil
-  #
   # Simply wait around for something to show up. This method is similar to
   # performing an explicit search on an element except that the search filters
   # take two extra options which can control how long to wait and from where
