@@ -33,7 +33,8 @@ require 'accessibility/version'
 #
 # Core abstraction layer that that interacts with OS X Accessibility
 # APIs (AXAPI). You can just mix this module in wherever you want to add
-# some accessibility calls.
+# some accessibility calls. The class that this is mixed into needs to
+# have an attribute named `@ref` which is an `AXUIElementRef` object.
 #
 # This module is responsible for handling pointers and dealing with error
 # codes for functions that make use of them. The methods in this module
@@ -42,7 +43,22 @@ require 'accessibility/version'
 # to work with pointers and centralize how AXAPI related errors are handled
 # (since CoreFoundation uses a different pattern for that sort of thing).
 #
-# This module is stateless and should be threadsafe.
+# This module is stateless and so the methods inside should be threadsafe.
+#
+# @example
+#
+#   class Element
+#     include Accessibility::Core
+#
+#     def initialize ref
+#       @ref = ref
+#     end
+#   end
+#
+#   Element.new AXUIElementCreateSystemWide()
+#   Element.attr_names # => ["AXRole", "AXChildren", ...]
+#   Element.size_of "AXChildren" # => 12
+#
 module Accessibility::Core
 
 
