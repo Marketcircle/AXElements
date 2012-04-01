@@ -10,6 +10,7 @@ class AppDelegate
 
   attr_accessor :window
   attr_accessor :yes_button
+  attr_accessor :bye_button
   attr_accessor :scroll_area
   attr_accessor :menu
   attr_accessor :array_controller
@@ -23,11 +24,12 @@ class AppDelegate
 
   def add_accessibility_attributes
     def window.accessibilityAttributeNames
-      super + ['AXLol', 'AXIsNyan', KAXURLAttribute, KAXDescriptionAttribute]
+      super + ['AXLol', 'AXPie', 'AXIsNyan', KAXURLAttribute, KAXDescriptionAttribute]
     end
     def window.accessibilityAttributeValue name
       case name
       when 'AXLol' then NSValue.valueWithRect(CGRectZero)
+      when 'AXPie' then NSValue.valueWithRange(NSRange.new(10,10))
       when 'AXIsNyan' then false
       when KAXURLAttribute then NSURL.URLWithString('http://macruby.org/')
       when KAXDescriptionAttribute then 'Test Fixture'
@@ -62,6 +64,10 @@ class AppDelegate
                              keyEquivalent: ''
       menu.addItem item
     end
+  end
+
+  def remove_bye_button sender
+    bye_button.removeFromSuperview
   end
 
   def orderFrontPreferencesPanel sender
