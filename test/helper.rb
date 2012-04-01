@@ -21,13 +21,8 @@ else
   at_exit do TEST_APP.terminate end
 end
 
-# Figure out if we are testing a compiled version of AXElements, since some
-# tests will fail due to incomplete MacRuby features.
-RUNNING_COMPILED =
-  $LOADED_FEATURES.find { |file| file.match /ax_elements.rbo/ }
 
-require 'runner'
-require 'ax_elements'
+require 'test/runner'
 
 class MiniTest::Unit::TestCase
 
