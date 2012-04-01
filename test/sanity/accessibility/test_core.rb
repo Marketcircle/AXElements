@@ -39,13 +39,9 @@ class TestAccessibilityCore < MiniTest::Unit::TestCase
   def search_box; @@search_box ||= child KAXTextFieldRole;   end
   # def static_text; @@static_text ||= child KAXStaticTextRole; end
 
-  # def yes_button
-  #   @@yes_button ||= children.find do |item|
-  #     if role_for(item) == KAXButtonRole
-  #       value_of(KAXTitleAttribute, for: item) == 'Yes'
-  #     end
-  #   end
-  # end
+  def yes_button
+    @@yes_button ||= child(KAXButtonRole) { attr(KAXTitleAttribute) == 'Yes' }
+  end
 
   def bye_button
     @@bye_button ||= child(KAXButtonRole) { attr(KAXTitleAttribute) == 'Bye!' }
@@ -206,52 +202,45 @@ class TestAccessibilityCore < MiniTest::Unit::TestCase
   end
 
 
-#   def test_actions_is_an_array
-#     assert_empty                                           actions_for(REF)
-#     assert_equal [KAXPressAction],                         actions_for(yes_button)
-#     assert_equal [KAXIncrementAction, KAXDecrementAction], actions_for(slider)
-#   end
+  def test_action_names
+    assert_empty                                           action_names
+    @ref = yes_button
+    assert_equal [KAXPressAction],                         action_names
+    @ref = slider
+    assert_equal [KAXIncrementAction, KAXDecrementAction], action_names
+  end
 
-#   def test_actions_handles_errors
-#     assert_raises ArgumentError do
-#       actions_for nil
-#     end
+  def test_actions_handles_errors
+    @ref = nil
+    assert_raises(ArgumentError) { action_names }
+  end
 
-#     # Not sure how to test other failure cases...
-#   end
+  def test_perform_action
+    @ref = check_box
+    2.times do # twice so it should be back where it started
+      val = value
+      perform KAXPressAction
+      refute_equal val, value
+    end
 
-#   def test_action_triggers_checking_a_check_box
-#     2.times do # twice so it should be back where it started
-#       value = value_for check_box
-#       perform KAXPressAction, for: check_box
-#       refute_equal value, value_for(check_box)
-#     end
-#   end
+    @ref = slider
+    val  = value
+    perform KAXIncrementAction
+    assert value > val
 
-#   def test_action_triggers_sliding_the_slider
-#     value = value_for slider
-#     perform KAXIncrementAction, for: slider
-#     assert value_for(slider) > value
+    val  = value
+    perform KAXDecrementAction
+    assert value < val
+  end
 
-#     value = value_for slider
-#     perform KAXDecrementAction, for: slider
-#     assert value_for(slider) < value
-#   end
+  def test_action_handles_errors
+    assert_raises(ArgumentError) { perform nil }
+    @ref = nil
+    assert_raises(ArgumentError) { perform KAXPressAction }
+  end
 
-#   def test_action_handles_errors
-#     assert_raises ArgumentError do
-#       perform KAXPressAction, for: nil
-#     end
-
-#     assert_raises ArgumentError do
-#       perform nil, for: REF
-#     end
-#   end
-
-
-
-#   ##
-#   # The keyboard simulation stuff is a bit weird...
+  ##
+  # The keyboard simulation stuff is a bit weird...
 
 #   def test_post_events_to
 #     events = [[0x56,true], [0x56,false], [0x54,true], [0x54,false]]

@@ -236,40 +236,44 @@ module Accessibility::Core
   # @group Actions
 
   ##
-  # Get the list of actions that the given element can perform. If an
-  # element does not have actions, then an empty list will be returned.
+  # Get the list of actions that the element can perform. If an element
+  # does not have actions, then an empty list will be returned.
+  # Dead elements will also return an empty array.
   #
   # @example
   #
-  #   actions_for button_ref  # => ["AXPress"]
-  #   actions_for menu_ref    # => ["AXOpen", "AXCancel"]
-  #   actions_for window_ref  # => []
+  #   action_names  # => ["AXPress"]
+  #   action_names  # => ["AXOpen", "AXCancel"]
+  #   action_names  # => []
   #
-  # @param [AXUIElementRef]
   # @return [Array<String>]
-  def actions_for element
+  def action_names
     ptr  = Pointer.new ARRAY
-    code = AXUIElementCopyActionNames(element, ptr)
-    return ptr[0] if code.zero?
-    handle_error code, element
+    case code = AXUIElementCopyActionNames(@ref, ptr)
+    when 0                        then ptr.value
+    when KAXErrorInvalidUIElement then []
+    else handle_error code
+    end
   end
 
   ##
-  # Tell an element to perform the given action. This method will always
+  # Ask an element to perform the given action. This method will always
   # return true or raise an exception. Actions should never fail.
+  #
+  # Unlike when reading attributes, performing an action on a dead element
+  # will raise an exception.
   #
   # @example
   #
-  #   perform KAXPressAction, for: button_ref  # => true
-  #   perform KAXOpenAction,  for: menu_ref    # => true
+  #   perform KAXPressAction  # => true
+  #   perform KAXOpenAction   # => true
   #
   # @param [String] action an action constant
-  # @param [AXUIElementRef]
   # @return [Boolean]
-  def perform action, for: element
-    code = AXUIElementPerformAction(element, action)
+  def perform action
+    code = AXUIElementPerformAction(@ref, action)
     return true if code.zero?
-    handle_error code, element, action
+    handle_error code, action
   end
 
   ##
