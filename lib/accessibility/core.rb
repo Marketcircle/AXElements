@@ -43,8 +43,6 @@ require 'accessibility/version'
 # to work with pointers and centralize how AXAPI related errors are handled
 # (since CoreFoundation uses a different pattern for that sort of thing).
 #
-# This module is stateless and so the methods inside should be threadsafe.
-#
 # @example
 #
 #   class Element
