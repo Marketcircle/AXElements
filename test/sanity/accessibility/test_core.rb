@@ -29,10 +29,10 @@ class TestAccessibilityCore < MiniTest::Unit::TestCase
     children.find { |item| @ref = item; role == name }
   end
 
-  def slider;      @@slider      ||= child KAXSliderRole;     end
-  def check_box;   @@check_box   ||= child KAXCheckBoxRole;   end
+  def slider;    @@slider    ||= child KAXSliderRole;      end
+  def check_box; @@check_box ||= child KAXCheckBoxRole;    end
+  def pop_up;    @@pop_up    ||= child KAXPopUpButtonRole; end
   # def search_box;  @@search_box  ||= child KAXTextFieldRole;  end
-  # def button;      @@button      ||= child KAXButtonRole;     end
   # def static_text; @@static_text ||= child KAXStaticTextRole; end
 
   # def yes_button
@@ -98,7 +98,6 @@ class TestAccessibilityCore < MiniTest::Unit::TestCase
     assert_raises(ArgumentError) { attr_names }
   end
 
-
   def test_attr_correctness
     @ref = window
     assert_equal 'AXElementsTester',  attr(KAXTitleAttribute  )
@@ -118,7 +117,6 @@ class TestAccessibilityCore < MiniTest::Unit::TestCase
   def test_attr_value_handles_errors
     assert_raises(ArgumentError) { attr 'MADEUPATTRIBUTE' }
   end
-
 
   def test_role
     assert_equal KAXApplicationRole, role
@@ -144,26 +142,21 @@ class TestAccessibilityCore < MiniTest::Unit::TestCase
     assert_equal attr(KAXValueAttribute), value
   end
 
+  def test_size_of
+    assert_equal children.size, size_of(KAXChildrenAttribute)
+    @ref = pop_up
+    assert_equal 0,             size_of(KAXChildrenAttribute)
+  end
 
-#   def test_size_of
-#     assert_equal children_for(REF).size, size_of(KAXChildrenAttribute, for: REF)
-#     assert_equal 0,                      size_of(KAXChildrenAttribute, for: button)
-#   end
+  def test_size_of_0_for_dead_element
+    set_invalid_ref
+    assert_equal 0, size_of(KAXChildrenAttribute)
+  end
 
-#   def test_attr_count_handles_errors
-#     assert_raises ArgumentError do
-#       size_of 'pie', for: REF
-#     end
-
-#     assert_raises ArgumentError do
-#       size_of KAXChildrenAttribute, for: nil
-#     end
-
-#     # Not sure how to trigger other failure cases reliably...
-#   end
-
-
-
+  def test_size_of_handles_errors
+    @ref = nil
+    assert_raises(ArgumentError) { size_of 'pie' }
+  end
 
 
 

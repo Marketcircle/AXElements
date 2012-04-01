@@ -167,19 +167,28 @@ module Accessibility::Core
   end
 
   ##
-  # Equivalent to calling {attr:for:} with the first argument being
-  # `KAXValueAttribute` and the second argument being what you
-  # passed to this method.
+  # Get the size of the array for attributes that would return an array.
+  # When performance matters, this is much faster than getting the array
+  # and asking for the size.
+  #
+  # If there is a failure or the backing element is no longer alive, this
+  # method will return `0`.
   #
   # @example
   #
-  #   value_for text_field_ref # => "Mark Rada"
-  #   value_for slider_ref     # => 42
+  #   size_of KAXChildrenAttribute  # => 19
+  #   size_of KAXRowsAttribute      # => 100
   #
-  # @param [AXUIElementRef]
-  # @return [Array<AX::Element>]
-  def value_for element
-    value_of KAXValueAttribute, for: element
+  # @param [String] name an attribute constant
+  # @return [Number]
+  def size_of name
+    ptr = Pointer.new :long_long
+    case code = AXUIElementGetAttributeValueCount(@ref, name, ptr)
+    when 0                                             then ptr[0]
+    when KAXErrorFailure, KAXErrorAttributeUnsupported then 0
+    when KAXErrorInvalidUIElement                      then 0
+    else handle_error code, name
+    end
   end
 
   ##
