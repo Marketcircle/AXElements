@@ -39,4 +39,4 @@ end
 
 
 # Force this to be on for testing
-Accessibility::Debug.on = true
+# Accessibility::Debug.on = true
