@@ -65,24 +65,25 @@ module Accessibility::Core
   # @group Attributes
 
   ##
-  # @todo Invalid values for the argument do not always raise an error.
+  # @todo Invalid elements do not always raise an error.
   #       This is a bug that should be logged with Apple.
   #
-  # Get the list of attributes for a given element.
+  # Get the list of attributes for the element. As a convention, this
+  # method will return an empty array if the backing element is no longer
+  # alive.
   #
   # @example
   #
-  #   attrs_for AXUIElementCreateSystemWide()
-  #     # => ["AXRole", "AXRoleDescription",
-  #     #     "AXFocusedUIElement", "AXFocusedApplication"]
+  #   attr_names # => ["AXRole", "AXRoleDescription", ...]
   #
-  # @param [AXUIElementRef]
   # @return [Array<String>]
-  def attrs_for element
-    ptr  = Pointer.new ARRAY
-    code = AXUIElementCopyAttributeNames(element, ptr)
-    return ptr[0] if code.zero?
-    handle_error code, element
+  def attr_names
+    ptr = Pointer.new ARRAY
+    case code = AXUIElementCopyAttributeNames(@ref, ptr)
+    when 0                        then ptr[0]
+    when KAXErrorInvalidUIElement then []
+    else handle_error code
+    end
   end
 
   ##
