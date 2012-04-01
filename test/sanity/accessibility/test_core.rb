@@ -33,10 +33,10 @@ class TestAccessibilityCore < MiniTest::Unit::TestCase
     }
   end
 
-  def slider;    @@slider    ||= child KAXSliderRole;      end
-  def check_box; @@check_box ||= child KAXCheckBoxRole;    end
-  def pop_up;    @@pop_up    ||= child KAXPopUpButtonRole; end
-  # def search_box;  @@search_box  ||= child KAXTextFieldRole;  end
+  def slider;     @@slider     ||= child KAXSliderRole;      end
+  def check_box;  @@check_box  ||= child KAXCheckBoxRole;    end
+  def pop_up;     @@pop_up     ||= child KAXPopUpButtonRole; end
+  def search_box; @@search_box ||= child KAXTextFieldRole;   end
   # def static_text; @@static_text ||= child KAXStaticTextRole; end
 
   # def yes_button
@@ -62,15 +62,13 @@ class TestAccessibilityCore < MiniTest::Unit::TestCase
     )
   end
 
-  # def text_area
-  #   @@text_area ||= children_for(children_for(window).find do |item|
-  #     if role_for(item) == KAXScrollAreaRole
-  #       if attrs_for(item).include? KAXIdentifierAttribute
-  #         value_of(KAXIdentifierAttribute, for: item) == 'Text Area'
-  #       end
-  #     end
-  #   end).first
-  # end
+  def text_area
+    @@text_area ||= (child("AXScrollArea") do
+        attr_names.include?(KAXIdentifierAttribute) &&
+          attr(KAXIdentifierAttribute) == 'Text Area'
+      end
+      children.first)
+  end
 
 
 
@@ -159,75 +157,53 @@ class TestAccessibilityCore < MiniTest::Unit::TestCase
     assert_raises(ArgumentError) { size_of 'pie' }
   end
 
+  def test_attr_writable
+    refute writable? KAXTitleAttribute
+    @ref = window
+    assert writable? KAXMainAttribute
+  end
 
+  def test_attr_writable_false_for_dead_cases
+    set_invalid_ref
+    refute writable? KAXRoleAttribute
+  end
 
-#   def test_attr_writable_correct_values
-#     assert writable?(KAXMainAttribute, for: window)
-#     refute writable?(KAXTitleAttribute, for: REF)
-#   end
+  def test_attr_writable_handles_errors
+    assert_raises(ArgumentError) { writable? 'FAKE' }
+  end
 
-#   def test_attr_writable_false_for_no_value_cases
-#     skip 'I am not aware of how to create such a case...'
-#     # refute writable?(KAXChildrenAttribute, for: REF)
-#   end
+  def test_set_number
+    @ref = slider
+    [25, 75, 50].each do |number|
+      assert_equal number, set(KAXValueAttribute, number)
+      assert_equal number, value
+    end
+  end
 
-#   def test_attr_writable_handles_errors
-#     assert_raises ArgumentError do
-#       writable? 'FAKE', for: REF
-#     end
+  def test_set_string
+    @ref = search_box
+    [Time.now.to_s, ''].each do |string|
+      assert_equal string, set(KAXValueAttribute, string)
+      assert_equal string, value
+    end
+  end
 
-#     # Not sure how to test other cases...
-#   end
+  def test_set_wrapped
+    @ref = text_area
+    set KAXValueAttribute, 'hey-o'
 
+    set KAXSelectedTextRangeAttribute, 0..3
+    assert_equal 0..3, attr(KAXSelectedTextRangeAttribute)
 
+    set KAXSelectedTextRangeAttribute, 1...4
+    assert_equal 1..3, attr(KAXSelectedTextRangeAttribute)
+  ensure
+    set KAXValueAttribute, ''
+  end
 
-#   def test_set_number_attr_on_slider
-#     [25, 75, 50].each do |value|
-#       set KAXValueAttribute, to: value, for: slider
-#       assert_equal value, value_for(slider)
-#     end
-#   end
-
-#   def test_set_string_attr_on_text_field
-#     [Time.now.to_s, ''].each do |value|
-#       set KAXValueAttribute, to: value, for: search_box
-#       assert_equal value, value_for(search_box)
-#     end
-#   end
-
-#   def test_set_attr_when_value_needs_to_be_wrapped
-#     set KAXValueAttribute, to: 'hey-o', for: text_area
-
-#     set KAXSelectedTextRangeAttribute, to: 0..3, for: text_area
-#     actual = value_of(KAXSelectedTextRangeAttribute, for: text_area)
-#     assert_equal 0..3, actual
-
-#     set KAXSelectedTextRangeAttribute, to: 1...4, for: text_area
-#     actual = value_of(KAXSelectedTextRangeAttribute, for: text_area)
-#     assert_equal 1..3, actual
-
-#   ensure
-#     set KAXValueAttribute, to: '', for: text_area
-#   end
-
-#   def test_set_attr_returns_setting_value
-#     string = 'The answer to life, the universe, and everything...'
-#     result = set KAXValueAttribute, to: string, for: search_box
-#     assert_equal string, result
-
-#     string = ''
-#     result = set KAXValueAttribute, to: string, for: search_box
-#     assert_equal string, result
-#   end
-
-#   def test_set_attr_handles_errors
-#     assert_raises ArgumentError do
-#       set 'FAKE', to: true, for: REF
-#     end
-
-#     # Not sure how to test other failure cases...
-#   end
-
+  def test_set_attr_handles_errors
+    assert_raises(ArgumentError) { set 'FAKE', true }
+  end
 
 
 #   def test_actions_is_an_array

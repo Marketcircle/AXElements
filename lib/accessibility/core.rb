@@ -190,43 +190,46 @@ module Accessibility::Core
   end
 
   ##
-  # Returns whether or not an attribute is writable for a specific element.
+  # Returns whether or not an attribute is writable.
   #
   # @example
-  #   writable? KAXSizeAttribute,  for: window_ref  # => true
-  #   writable? KAXTitleAttribute, for: window_ref  # => false
   #
-  # @param [String] attr an attribute constant
-  # @param [AXUIElementRef]
-  def writable? attr, for: element
-    ptr  = Pointer.new :bool
-    code = AXUIElementIsAttributeSettable(element, attr, ptr)
-    return ptr[0] if code.zero?
-    return false  if code == KAXErrorNoValue
-    handle_error code, element, attr
+  #   writable? KAXSizeAttribute  # => true
+  #   writable? KAXTitleAttribute # => false
+  #
+  # @param [String] name an attribute constant
+  def writable? name
+    ptr = Pointer.new :bool
+    case code = AXUIElementIsAttributeSettable(@ref, name, ptr)
+    when 0                        then ptr.value
+    when KAXErrorInvalidUIElement then false
+    else handle_error code, name
+    end
   end
 
   ##
   # @note This method does not check writability of the attribute
-  #       you are setting.
+  #       you are setting. If you need to check, use {#writable?}
+  #       first.
   #
-  # Set the given value to the given attribute of the given element.
+  # Set the given value to the given attribute. You do not need to
+  # worry about wrapping objects first, `Range` objects will also
+  # be automatically converted into `CFRange` objects and then
+  # wrapped.
+  #
+  # Unlike when reading attributes, writing to a dead element will
+  # raise an exception.
   #
   # @example
-  #   set KAXValueAttribute, to: "hi", for: text_field
-  #     # => "hi"
+  #   set KAXValueAttribute,        "hi"       # => "hi"
+  #   set KAXSizeAttribute,         [250,250]  # => [250,250]
+  #   set KAXVisibleRangeAttribute, 0..-3      # => 0..-3
   #
-  #   set KAXSizeAttribute, to: [250,250], for: window
-  #     # => #<AXValueRef>
-  #
-  # @param [String] attr an attribute constant
-  # @param [Object] value the new value to set on the attribute
-  # @param [AXUIElementRef]
-  # @return [Object] returns the value that was set
-  def set attr, to: value, for: element
-    code = AXUIElementSetAttributeValue(element, attr, value.to_axvalue)
+  # @param [String] name an attribute constant
+  def set name, value
+    code = AXUIElementSetAttributeValue(@ref, name, value.to_ax)
     return value if code.zero?
-    handle_error code, element, attr
+    handle_error code, name, value
   end
 
 
