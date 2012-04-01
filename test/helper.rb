@@ -37,11 +37,6 @@ class MiniTest::Unit::TestCase
 
 end
 
-##
-# Just pretend that you didn't see this hack
-class AX::Element
-  attr_reader :ref
-end
 
 # Force this to be on for testing
 Accessibility::Debug.on = true
