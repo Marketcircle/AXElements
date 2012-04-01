@@ -78,7 +78,7 @@ module Accessibility::Core
   def attr_names
     ptr = Pointer.new ARRAY
     case code = AXUIElementCopyAttributeNames(@ref, ptr)
-    when 0                        then ptr[0]
+    when 0                        then ptr.value
     when KAXErrorInvalidUIElement then []
     else handle_error code
     end
@@ -102,7 +102,7 @@ module Accessibility::Core
   def attr name
     ptr = Pointer.new :id
     case code = AXUIElementCopyAttributeValue(@ref, name, ptr)
-    when 0                                         then ptr[0].to_ruby
+    when 0                                         then ptr.value.to_ruby
     when KAXErrorNoValue, KAXErrorInvalidUIElement then nil
     when KAXErrorFailure
       if name == KAXChildrenAttribute then []
@@ -182,7 +182,7 @@ module Accessibility::Core
   def size_of name
     ptr = Pointer.new :long_long
     case code = AXUIElementGetAttributeValueCount(@ref, name, ptr)
-    when 0                                             then ptr[0]
+    when 0                                             then ptr.value
     when KAXErrorFailure, KAXErrorAttributeUnsupported then 0
     when KAXErrorInvalidUIElement                      then 0
     else handle_error code, name
