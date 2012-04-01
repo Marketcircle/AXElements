@@ -16,20 +16,21 @@ class TestAccessibilityCore < MiniTest::Unit::TestCase
     @@dead ||= perform KAXPressAction
   end
 
-  def app_description
-    @@app_description ||= Regexp.new(Regexp.escape(REF.description))
-  end
+  # def app_description
+  #   @@app_description ||= Regexp.new(Regexp.escape(REF.description))
+  # end
 
   def window
     @@window ||= (@ref = REF && attr(KAXMainWindowAttribute))
   end
 
-  # def child name
-  #   children.find { |item| role_for(item) == name }
-  # end
+  def child name
+    @ref = window
+    children.find { |item| @ref = item; role == name }
+  end
 
-  # def slider;      @@slider      ||= child KAXSliderRole;     end
-  # def check_box;   @@check_box   ||= child KAXCheckBoxRole;   end
+  def slider;      @@slider      ||= child KAXSliderRole;     end
+  def check_box;   @@check_box   ||= child KAXCheckBoxRole;   end
   # def search_box;  @@search_box  ||= child KAXTextFieldRole;  end
   # def button;      @@button      ||= child KAXButtonRole;     end
   # def static_text; @@static_text ||= child KAXStaticTextRole; end
@@ -49,13 +50,16 @@ class TestAccessibilityCore < MiniTest::Unit::TestCase
     end)
   end
 
-  # def web_area
-  #   @@web_area ||= children_for(children_for(window).find do |item|
-  #     if role_for(item) == KAXScrollAreaRole
-  #       value_of(KAXDescriptionAttribute, for: item) == 'Test Web Area'
-  #     end
-  #   end).first
-  # end
+  def web_area
+    @@web_area ||= (
+      @ref = window
+      @ref = children.find { |item|
+        @ref = item
+        role == "AXScrollArea" && attr("AXDescription") == 'Test Web Area'
+      }
+      children.first
+    )
+  end
 
   # def text_area
   #   @@text_area ||= children_for(children_for(window).find do |item|
@@ -116,6 +120,31 @@ class TestAccessibilityCore < MiniTest::Unit::TestCase
   end
 
 
+  def test_role
+    assert_equal KAXApplicationRole, role
+  end
+
+  def test_subrole
+    @ref = window
+    assert_equal KAXStandardWindowSubrole, subrole
+    @ref = web_area
+    assert_nil   subrole
+  end
+
+  def test_children
+    assert_equal attr(KAXChildrenAttribute), children
+    @ref = slider
+    assert_equal attr(KAXChildrenAttribute), children
+  end
+
+  def test_value
+    @ref = check_box
+    assert_equal attr(KAXValueAttribute), value
+    @ref = slider
+    assert_equal attr(KAXValueAttribute), value
+  end
+
+
 #   def test_size_of
 #     assert_equal children_for(REF).size, size_of(KAXChildrenAttribute, for: REF)
 #     assert_equal 0,                      size_of(KAXChildrenAttribute, for: button)
@@ -135,25 +164,6 @@ class TestAccessibilityCore < MiniTest::Unit::TestCase
 
 
 
-#   def test_subrole_macro
-#     assert_equal KAXStandardWindowSubrole, subrole_for(window)
-#     assert_equal nil,                      subrole_for(web_area)
-#   end
-
-#   def test_role_macro
-#     assert_equal KAXApplicationRole, role_for(REF)
-#     assert_equal KAXWindowRole,      role_for(window)
-#   end
-
-#   def test_children_for_macro
-#     assert_equal value_of(KAXChildrenAttribute, for: REF), children_for(REF)
-#     assert_equal value_of(KAXChildrenAttribute, for: slider), children_for(slider)
-#   end
-
-#   def test_value_for_macro
-#     assert_equal value_of(KAXValueAttribute, for: check_box), value_for(check_box)
-#     assert_equal value_of(KAXValueAttribute, for: slider), value_for(slider)
-#   end
 
 
 

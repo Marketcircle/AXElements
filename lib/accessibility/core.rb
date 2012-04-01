@@ -87,94 +87,83 @@ module Accessibility::Core
   end
 
   ##
-  # Get the size of the array for attributes that would return an array.
-  # When performance matters, this is much faster than getting the array
-  # and asking for the size; at least until memory allocations are not so
-  # slow in MacRuby.
+  # Fetch the value for an attribute. CoreFoundation wrapped objects
+  # will be unwrapped for you, if you expect to get a {CFRange} you
+  # will be given a {Range} instead.
+  #
+  # As a convention, if the backing element is no longer alive then
+  # you will receive `nil` for any attribute.
   #
   # @example
+  #   attr KAXTitleAttribute   # => "HotCocoa Demo"
+  #   attr KAXSizeAttribute    # => #<CGSize width=10.0 height=88>
+  #   attr KAXParentAttribute  # => #<AXUIElementRef>
+  #   attr KAXNoValueAttribute # => nil
   #
-  #   size_of KAXChildrenAttribute, for: window  # => 19
-  #   size_of KAXChildrenAttribute, for: button  # => 0
-  #
-  # @param [String] attr an attribute constant
-  # @param [AXUIElementRef]
-  # @return [Fixnum]
-  def size_of attr, for: element
-    ptr  = Pointer.new :long_long
-    code = AXUIElementGetAttributeValueCount(element, attr, ptr)
-    return ptr[0] if code.zero?
-    return 0      if code == KAXErrorFailure
-    handle_error code, element, attr
+  # @param [String] name an attribute constant
+  def attr name
+    ptr = Pointer.new :id
+    case code = AXUIElementCopyAttributeValue(@ref, name, ptr)
+    when 0                                         then ptr[0].to_ruby
+    when KAXErrorNoValue, KAXErrorInvalidUIElement then nil
+    when KAXErrorFailure
+      if name == KAXChildrenAttribute then []
+      else handle_error code, name
+      end
+    else handle_error code, name
+    end
   end
 
   ##
-  # Fetch the value for a given attribute of a given element. You will
-  # be given raw data from this method; that is, `Boxed` objects will
-  # still be wrapped in a `AXValueRef`, and elements will be
-  # `AXUIElementRef` objects instead of wrapped {AX::Element} objects.
+  # Shortcut for getting the `KAXRoleAttribute`.
   #
   # @example
-  #   value_of KAXTitleAttribute,   for: window  # => "HotCocoa Demo"
-  #   value_of KAXSizeAttribute,    for: window  # => #<AXValueRef>
-  #   value_of KAXParentAttribute,  for: window  # => #<AXUIElementRef>
-  #   value_of KAXNoValueAttribute, for: window  # => nil
   #
-  # @param [String] attr an attribute constant
-  # @param [AXUIElementRef]
-  def value_of attr, for: element
-    ptr  = Pointer.new :id
-    code = AXUIElementCopyAttributeValue(element, attr, ptr)
-    return ptr[0].to_value if code.zero?
-    return nil             if code == KAXErrorNoValue
-    return []              if code == KAXErrorFailure && attr == KAXChildrenAttribute
-    handle_error code, element, attr
+  #   role  # => KAXWindowRole
+  #   role  # => KAXButtonRole
+  #
+  # @return [String]
+  def role
+    attr KAXRoleAttribute
   end
 
   ##
   # @note You might get `nil` back as the subrole as AXWebArea
   #       objects are known to do this. You need to check. :(
   #
-  # Quick macro for getting the `KAXSubrole` for a given element.
+  # Shortcut for getting the `KAXSubroleAttribute`.
   #
   # @example
-  #   subrole_for window_ref    # => "AXDialog"
-  #   subrole_for web_area_ref  # => nil
+  #   subrole  # => "AXDialog"
+  #   subrole  # => nil
   #
-  # @param [AXUIElementRef]
   # @return [String,nil]
-  def subrole_for element
-    value_of KAXSubroleAttribute, for: element
+  def subrole
+    attr KAXSubroleAttribute
   end
 
   ##
-  # Quick macro for getting the `KAXRoleAttribute` value for a given
-  # element.
+  # Shortcut for getting the `KAXChildrenAttribute`.
   #
   # @example
   #
-  #   role_for window_ref  # => KAXWindowRole
-  #   role_for button_ref  # => KAXButtonRole
+  #   children # => [MenuBar, Window, ...]
   #
-  # @param [AXUIElementRef]
-  # @return [String]
-  def role_for element
-    value_of KAXRoleAttribute, for: element
-  end
-
-  ##
-  # Equivalent to calling {attr:for:} with the first argument being
-  # `KAXChildrenAttribute` and the second argument being what you
-  # passed to this method.
-  #
-  # @example
-  #
-  #   children_for application_ref # => [MenuBar, Window, ...]
-  #
-  # @param [AXUIElementRef]
   # @return [Array<AX::Element>]
-  def children_for element
-    value_of KAXChildrenAttribute, for: element
+  def children
+    attr KAXChildrenAttribute
+  end
+
+  ##
+  # Shortcut for getting the `KAXValueAttribute`.
+  #
+  # @example
+  #
+  #   value  # => "Mark Rada"
+  #   value  # => 42
+  #
+  def value
+    attr KAXValueAttribute
   end
 
   ##
