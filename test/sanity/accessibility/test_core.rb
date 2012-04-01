@@ -12,8 +12,9 @@ class TestAccessibilityCore < MiniTest::Unit::TestCase
   end
 
   def set_invalid_ref
+    bye_button # guarantee that it is cached
+    @@dead ||= (@ref = no_button; perform KAXPressAction)
     @ref     = bye_button
-    @@dead ||= perform KAXPressAction
   end
 
   # def app_description
@@ -21,12 +22,15 @@ class TestAccessibilityCore < MiniTest::Unit::TestCase
   # end
 
   def window
-    @@window ||= (@ref = REF && attr(KAXMainWindowAttribute))
+    @@window ||= (@ref = REF; attr(KAXMainWindowAttribute))
   end
 
   def child name
     @ref = window
-    children.find { |item| @ref = item; role == name }
+    children.find { |item|
+      @ref = item
+      (block_given? ? yield : true) if role == name
+    }
   end
 
   def slider;    @@slider    ||= child KAXSliderRole;      end
@@ -44,19 +48,16 @@ class TestAccessibilityCore < MiniTest::Unit::TestCase
   # end
 
   def bye_button
-    @@bye_button ||= (@ref = window && children.find do |item|
-      @ref = item
-      role == KAXButtonRole && attr(KAXTitleAttribute) == 'Bye!'
-    end)
+    @@bye_button ||= child(KAXButtonRole) { attr(KAXTitleAttribute) == 'Bye!' }
+  end
+
+  def no_button
+    @@no_button ||= child(KAXButtonRole) { attr(KAXTitleAttribute) == 'No' }
   end
 
   def web_area
     @@web_area ||= (
-      @ref = window
-      @ref = children.find { |item|
-        @ref = item
-        role == "AXScrollArea" && attr("AXDescription") == 'Test Web Area'
-      }
+      child("AXScrollArea") { attr("AXDescription") == 'Test Web Area' }
       children.first
     )
   end
