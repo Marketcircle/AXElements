@@ -621,7 +621,7 @@ module Accessibility::Core
         "or the attr/action/callback #{args.first.inspect} " +
         "is not a legal argument"
     when 2
-      "You can't set #{args.first.inspect} to " +
+      "You can't get/set #{args.first.inspect} with/to " +
         "#{args[1].inspect} for #{@ref.inspect}"
     when 3
       "The point #{args.first.to_point.inspect} is not a valid point, " +
