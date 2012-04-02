@@ -351,28 +351,21 @@ class TestAccessibilityCore < MiniTest::Unit::TestCase
     assert_raises(ArgumentError) { application_for 0 }
   end
 
-#   def test_observer_for
-#     assert_equal AXObserverGetTypeID(), CFGetTypeID(observer_for(PID) { })
-#   end
+  def test_observer
+    @ref = REF
+    assert_equal AXObserverGetTypeID(), CFGetTypeID(observer { })
+  end
 
-#   def test_observer_for_handles_errors
-#     assert_raises TypeError do
-#       observer_for nil do end
-#     end
-#     assert_raises ArgumentError do
-#       observer_for PID
-#     end
-#   end
+  def test_observer_handles_errors
+    @ref = REF
+    assert_raises(ArgumentError) { observer }
+  end
 
-
-
-#   def test_run_loop_source
-#     observer = observer_for(PID) { |_,_,_,_| }
-#     assert_equal CFRunLoopSourceGetTypeID(),
-#       CFGetTypeID(run_loop_source_for(observer))
-#   end
-
-
+  def test_run_loop_source_for
+    @ref = REF
+    obsrvr = observer { |_,_,_,_| }
+    assert_equal CFRunLoopSourceGetTypeID(), CFGetTypeID(run_loop_source_for(obsrvr))
+  end
 
 #   def test_notification_registration_and_unregistration
 #     observer = observer_for(PID) { |_,_,_,_| }

@@ -745,7 +745,6 @@ module Accessibility::Core
     KAXErrorParameterizedAttributeUnsupported => [ArgumentError,       :handle_param_attr_unsupported],
     KAXErrorNotEnoughPrecision                => [RuntimeError,        :handle_not_enough_precision  ]
   }
-
 end
 
 
