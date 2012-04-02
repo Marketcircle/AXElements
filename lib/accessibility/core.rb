@@ -794,7 +794,7 @@ class << CGPoint; def ax_value; KAXValueCGPointType; end end
 
 ##
 # Mixin for the special `__NSCFType` class so that `#to_ruby` works properly.
-module Accessibility::AXValueUnwrapper
+module Accessibility::ValueUnwrapper
   ##
   # Map of type encodings used for wrapping structs when coming from
   # an `AXValueRef`.
@@ -819,26 +819,19 @@ module Accessibility::AXValueUnwrapper
   def to_ruby
     box_type = AXValueGetType(self)
     return self if box_type.zero?
-    ptr      = Pointer.new BOX_TYPES[box_type]
+    ptr = Pointer.new BOX_TYPES[box_type]
     AXValueGetValue(self, box_type, ptr)
     ptr.value.to_ruby
   end
 end
 # hack to find the proper class
-AXUIElementCreateSystemWide().class.send(:include, Accessibility::AXValueUnwrapper)
+AXUIElementCreateSystemWide().class.send(:include, Accessibility::ValueUnwrapper)
 
 
 # AXElements extensions for `NSObject`.
 class NSObject
-  # @return [Object]
-  def to_ax
-    self
-  end
-
-  # @return [Object]
-  def to_ruby
-    self
-  end
+  def to_ax;   self end
+  def to_ruby; self end
 end
 
 # AXElements extensions for `Range`.
@@ -855,6 +848,7 @@ class Range
   end
 end
 
+# AXElements extensions for `CFRange`.
 class CFRange
   # @return [Range]
   def to_ruby
@@ -889,7 +883,5 @@ end
 # AXElements extensions for `CGPoint`.
 class CGPoint
   # @return [CGPoint]
-  def to_point
-    self
-  end
+  def to_point; self end
 end
