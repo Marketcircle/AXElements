@@ -54,7 +54,7 @@ require 'accessibility/version'
 #   end
 #
 #   Element.new AXUIElementCreateSystemWide()
-#   Element.attr_names # => ["AXRole", "AXChildren", ...]
+#   Element.attributes           # => ["AXRole", "AXChildren", ...]
 #   Element.size_of "AXChildren" # => 12
 #
 module Accessibility::Core
@@ -72,10 +72,10 @@ module Accessibility::Core
   #
   # @example
   #
-  #   attr_names # => ["AXRole", "AXRoleDescription", ...]
+  #   attributes # => ["AXRole", "AXRoleDescription", ...]
   #
   # @return [Array<String>]
-  def attr_names
+  def attributes
     ptr = Pointer.new ARRAY
     case code = AXUIElementCopyAttributeNames(@ref, ptr)
     when 0                        then ptr.value
@@ -93,21 +93,19 @@ module Accessibility::Core
   # you will receive `nil` for any attribute.
   #
   # @example
-  #   attr KAXTitleAttribute   # => "HotCocoa Demo"
-  #   attr KAXSizeAttribute    # => #<CGSize width=10.0 height=88>
-  #   attr KAXParentAttribute  # => #<AXUIElementRef>
-  #   attr KAXNoValueAttribute # => nil
+  #   attribute KAXTitleAttribute   # => "HotCocoa Demo"
+  #   attribute KAXSizeAttribute    # => #<CGSize width=10.0 height=88>
+  #   attribute KAXParentAttribute  # => #<AXUIElementRef>
+  #   attribute KAXNoValueAttribute # => nil
   #
   # @param [String] name an attribute constant
-  def attr name
+  def attribute name
     ptr = Pointer.new :id
     case code = AXUIElementCopyAttributeValue(@ref, name, ptr)
     when 0                                         then ptr.value.to_ruby
     when KAXErrorNoValue, KAXErrorInvalidUIElement then nil
     when KAXErrorFailure
-      if name == KAXChildrenAttribute then []
-      else handle_error code, name
-      end
+      name == KAXChildrenAttribute ? [] : handle_error(code, name)
     else handle_error code, name
     end
   end
@@ -118,7 +116,6 @@ module Accessibility::Core
   # @example
   #
   #   role  # => KAXWindowRole
-  #   role  # => KAXButtonRole
   #
   # @return [String]
   def role
@@ -182,9 +179,9 @@ module Accessibility::Core
   def size_of name
     ptr = Pointer.new :long_long
     case code = AXUIElementGetAttributeValueCount(@ref, name, ptr)
-    when 0                                             then ptr.value
-    when KAXErrorFailure, KAXErrorAttributeUnsupported then 0
-    when KAXErrorInvalidUIElement                      then 0
+    when 0                                                  then ptr.value
+    when KAXErrorFailure, KAXErrorAttributeUnsupported,
+      KAXErrorInvalidUIElement                              then 0
     else handle_error code, name
     end
   end
@@ -243,12 +240,10 @@ module Accessibility::Core
   # @example
   #
   #   action_names  # => ["AXPress"]
-  #   action_names  # => ["AXOpen", "AXCancel"]
-  #   action_names  # => []
   #
   # @return [Array<String>]
-  def action_names
-    ptr  = Pointer.new ARRAY
+  def actions
+    ptr = Pointer.new ARRAY
     case code = AXUIElementCopyActionNames(@ref, ptr)
     when 0                        then ptr.value
     when KAXErrorInvalidUIElement then []
@@ -266,7 +261,6 @@ module Accessibility::Core
   # @example
   #
   #   perform KAXPressAction  # => true
-  #   perform KAXOpenAction   # => true
   #
   # @param [String] action an action constant
   # @return [Boolean]
@@ -277,11 +271,10 @@ module Accessibility::Core
   end
 
   ##
-  # Post the list of given keyboard events to the given application,
-  # or the system-wide accessibility object.
+  # Post the list of given keyboard events to the element.
   #
   # Events could be generated from a string using output from
-  # {Accessibility::String}.
+  # {Accessibility::String#keyboard_events_for}.
   #
   # Events are number/boolean tuples, where the number is a keycode
   # and the boolean is the keypress state (true is keydown, false is

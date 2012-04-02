@@ -7,10 +7,6 @@ require 'accessibility/core'
 class TestAccessibilityCore < MiniTest::Unit::TestCase
   include Accessibility::Core
 
-  def setup
-    @ref = REF
-  end
-
   def set_invalid_ref
     bye_button # guarantee that it is cached
     @@dead ||= (@ref = no_button; perform KAXPressAction)
@@ -22,7 +18,7 @@ class TestAccessibilityCore < MiniTest::Unit::TestCase
   # end
 
   def window
-    @@window ||= (@ref = REF; attr(KAXMainWindowAttribute))
+    @@window ||= (@ref = REF; attribute(KAXMainWindowAttribute))
   end
 
   def child name
@@ -40,28 +36,28 @@ class TestAccessibilityCore < MiniTest::Unit::TestCase
   # def static_text; @@static_text ||= child KAXStaticTextRole; end
 
   def yes_button
-    @@yes_button ||= child(KAXButtonRole) { attr(KAXTitleAttribute) == 'Yes' }
+    @@yes_button ||= child(KAXButtonRole) { attribute(KAXTitleAttribute) == 'Yes' }
   end
 
   def bye_button
-    @@bye_button ||= child(KAXButtonRole) { attr(KAXTitleAttribute) == 'Bye!' }
+    @@bye_button ||= child(KAXButtonRole) { attribute(KAXTitleAttribute) == 'Bye!' }
   end
 
   def no_button
-    @@no_button ||= child(KAXButtonRole) { attr(KAXTitleAttribute) == 'No' }
+    @@no_button ||= child(KAXButtonRole) { attribute(KAXTitleAttribute) == 'No' }
   end
 
   def web_area
     @@web_area ||= (
-      child("AXScrollArea") { attr("AXDescription") == 'Test Web Area' }
+      child("AXScrollArea") { attribute("AXDescription") == 'Test Web Area' }
       children.first
     )
   end
 
   def text_area
     @@text_area ||= (child("AXScrollArea") do
-        attr_names.include?(KAXIdentifierAttribute) &&
-          attr(KAXIdentifierAttribute) == 'Text Area'
+        attributes.include?(KAXIdentifierAttribute) &&
+          attribute(KAXIdentifierAttribute) == 'Text Area'
       end
       children.first)
   end
@@ -74,7 +70,8 @@ class TestAccessibilityCore < MiniTest::Unit::TestCase
   # though I am quite sure that AXElements will raise an exception.
 
   def test_attr_names_is_strings
-    attrs = attr_names
+    @ref = REF
+    attrs = attributes
 
     refute_empty attrs
     assert_includes attrs, KAXRoleAttribute
@@ -85,35 +82,37 @@ class TestAccessibilityCore < MiniTest::Unit::TestCase
 
   def test_attr_names_is_empty_for_dead_elements
     set_invalid_ref
-    assert_empty attr_names
+    assert_empty attributes
   end
 
   def test_attrs_handles_errors
     @ref = nil
-    assert_raises(ArgumentError) { attr_names }
+    assert_raises(ArgumentError) { attributes }
   end
 
   def test_attr_correctness
     @ref = window
-    assert_equal 'AXElementsTester',  attr(KAXTitleAttribute  )
-    assert_equal false,               attr(KAXFocusedAttribute)
-    assert_equal CGSizeMake(555,483), attr(KAXSizeAttribute   )
-    assert_equal REF,                 attr(KAXParentAttribute )
-    assert_equal 10..19,              attr("AXPie"            )
+    assert_equal 'AXElementsTester',  attribute(KAXTitleAttribute  )
+    assert_equal false,               attribute(KAXFocusedAttribute)
+    assert_equal CGSizeMake(555,483), attribute(KAXSizeAttribute   )
+    assert_equal REF,                 attribute(KAXParentAttribute )
+    assert_equal 10..19,              attribute("AXPie"            )
   end
 
   def test_attr_is_nil_when_no_value_or_dead
     @ref = window
-    assert_nil attr(KAXGrowAreaAttribute)
+    assert_nil attribute(KAXGrowAreaAttribute)
     set_invalid_ref
-    assert_nil attr(KAXRoleAttribute)
+    assert_nil attribute(KAXRoleAttribute)
   end
 
   def test_attr_value_handles_errors
-    assert_raises(ArgumentError) { attr 'MADEUPATTRIBUTE' }
+    @ref = REF
+    assert_raises(ArgumentError) { attribute 'MADEUPATTRIBUTE' }
   end
 
   def test_role
+    @ref = REF
     assert_equal KAXApplicationRole, role
   end
 
@@ -125,19 +124,21 @@ class TestAccessibilityCore < MiniTest::Unit::TestCase
   end
 
   def test_children
-    assert_equal attr(KAXChildrenAttribute), children
+    @ref = REF
+    assert_equal attribute(KAXChildrenAttribute), children
     @ref = slider
-    assert_equal attr(KAXChildrenAttribute), children
+    assert_equal attribute(KAXChildrenAttribute), children
   end
 
   def test_value
     @ref = check_box
-    assert_equal attr(KAXValueAttribute), value
+    assert_equal attribute(KAXValueAttribute), value
     @ref = slider
-    assert_equal attr(KAXValueAttribute), value
+    assert_equal attribute(KAXValueAttribute), value
   end
 
   def test_size_of
+    @ref = REF
     assert_equal children.size, size_of(KAXChildrenAttribute)
     @ref = pop_up
     assert_equal 0,             size_of(KAXChildrenAttribute)
@@ -154,6 +155,7 @@ class TestAccessibilityCore < MiniTest::Unit::TestCase
   end
 
   def test_attr_writable
+    @ref = REF
     refute writable? KAXTitleAttribute
     @ref = window
     assert writable? KAXMainAttribute
@@ -165,6 +167,7 @@ class TestAccessibilityCore < MiniTest::Unit::TestCase
   end
 
   def test_attr_writable_handles_errors
+    @ref = REF
     assert_raises(ArgumentError) { writable? 'FAKE' }
   end
 
@@ -189,30 +192,32 @@ class TestAccessibilityCore < MiniTest::Unit::TestCase
     set KAXValueAttribute, 'hey-o'
 
     set KAXSelectedTextRangeAttribute, 0..3
-    assert_equal 0..3, attr(KAXSelectedTextRangeAttribute)
+    assert_equal 0..3, attribute(KAXSelectedTextRangeAttribute)
 
     set KAXSelectedTextRangeAttribute, 1...4
-    assert_equal 1..3, attr(KAXSelectedTextRangeAttribute)
+    assert_equal 1..3, attribute(KAXSelectedTextRangeAttribute)
   ensure
     set KAXValueAttribute, ''
   end
 
   def test_set_attr_handles_errors
+    @ref = REF
     assert_raises(ArgumentError) { set 'FAKE', true }
   end
 
 
   def test_action_names
-    assert_empty                                           action_names
+    @ref = REF
+    assert_empty                                           actions
     @ref = yes_button
-    assert_equal [KAXPressAction],                         action_names
+    assert_equal [KAXPressAction],                         actions
     @ref = slider
-    assert_equal [KAXIncrementAction, KAXDecrementAction], action_names
+    assert_equal [KAXIncrementAction, KAXDecrementAction], actions
   end
 
   def test_actions_handles_errors
     @ref = nil
-    assert_raises(ArgumentError) { action_names }
+    assert_raises(ArgumentError) { actions }
   end
 
   def test_perform_action
@@ -234,6 +239,7 @@ class TestAccessibilityCore < MiniTest::Unit::TestCase
   end
 
   def test_action_handles_errors
+    @ref = REF
     assert_raises(ArgumentError) { perform nil }
     @ref = nil
     assert_raises(ArgumentError) { perform KAXPressAction }
