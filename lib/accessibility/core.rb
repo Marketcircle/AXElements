@@ -32,9 +32,8 @@ require 'accessibility/version'
 #       it would pay off to have a pool of pointers...
 #
 # Core abstraction layer that that interacts with OS X Accessibility
-# APIs (AXAPI). You can just mix this module in wherever you want to add
-# some accessibility calls. The class that this is mixed into needs to
-# have an attribute named `@ref` which is an `AXUIElementRef` object.
+# APIs (AXAPI). This is actually just a mixin for `AXUIElementRef` objects
+# so that they become more object oriented.
 #
 # This module is responsible for handling pointers and dealing with error
 # codes for functions that make use of them. The methods in this module
@@ -45,17 +44,9 @@ require 'accessibility/version'
 #
 # @example
 #
-#   class Element
-#     include Accessibility::Core
-#
-#     def initialize ref
-#       @ref = ref
-#     end
-#   end
-#
-#   Element.new AXUIElementCreateSystemWide()
-#   Element.attributes           # => ["AXRole", "AXChildren", ...]
-#   Element.size_of "AXChildren" # => 12
+#   element = AXUIElementCreateSystemWide()
+#   element.attributes                      # => ["AXRole", "AXChildren", ...]
+#   element.size_of "AXChildren"            # => 12
 #
 module Accessibility::Core
 
@@ -800,8 +791,6 @@ class << CGPoint; def ax_value; KAXValueCGPointType; end end
 ##
 # Mixin for the special `__NSCFType` class so that `#to_ruby` works properly.
 module Accessibility::ValueUnwrapper
-  include Accessibility::Core
-
   ##
   # Map of type encodings used for wrapping structs when coming from
   # an `AXValueRef`.
@@ -821,18 +810,24 @@ module Accessibility::ValueUnwrapper
   #
   #   wrapped_point.to_ruby # => #<CGPoint x=44.3 y=99.0>
   #   wrapped_range.to_ruby # => #<CFRange begin=7 length=100>
+  #   wrapped_thing.to_ruby # => wrapped_thing
   #
   # @return [Boxed]
   def to_ruby
     box_type = AXValueGetType(self)
-    return @ref = self if box_type.zero?
+    return self if box_type.zero?
     ptr = Pointer.new BOX_TYPES[box_type]
     AXValueGetValue(self, box_type, ptr)
     ptr.value.to_ruby
   end
 end
+
 # hack to find the proper class
-AXUIElementCreateSystemWide().class.send(:include, Accessibility::ValueUnwrapper)
+class AXUIElementCreateSystemWide.class
+  include Accessibility::Core
+  include Accessibility::ValueUnwrapper
+  def ref; self end
+end
 
 
 # AXElements extensions for `NSObject`.
