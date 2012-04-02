@@ -618,7 +618,7 @@ module Accessibility::Core
       "#{@ref.inspect} is not an AXUIElementRef"
     when 1
       "Either the element #{@ref.inspect} " +
-        "or the attr/action/callback #{args.first.inspect} " +
+        "or the attribute/action/callback #{args.first.inspect} " +
         "is not a legal argument"
     when 2
       "You can't get/set #{args.first.inspect} with/to " +
@@ -629,7 +629,7 @@ module Accessibility::Core
     when 4
       "Either the observer #{args[1].inspect}, " +
         "the element #{@ref.inspect}, or " +
-        "the notification #{args[0].inspect} " +
+        "the notification #{args.first.inspect} " +
         "is not a legitimate argument"
     end
   end
