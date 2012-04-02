@@ -230,6 +230,56 @@ module Accessibility::Core
   end
 
 
+  # @group Parameterized Attributes
+
+  ##
+  # Get the list of parameterized attributes for the element. If the
+  # element does not have parameterized attributes, then an empty
+  # list will be returned.
+  #
+  # Most elements do not have parameterized attributes, but the ones
+  # that do, have many.
+  #
+  # @example
+  #
+  #   parameterized_attributes  # => ["AXStringForRange", ...]
+  #   parameterized_attributes  # => []
+  #
+  # @return [Array<String>]
+  def parameterized_attributes
+    ptr = Pointer.new ARRAY
+    case code = AXUIElementCopyParameterizedAttributeNames(@ref, ptr)
+    when 0                        then ptr.value
+    when KAXErrorInvalidUIElement then []
+    else handle_error code
+    end
+  end
+
+  ##
+  # Fetch the given pramaeterized attribute value using the given parameter.
+  # Only `AXUIElementRef` objects will be given raw, `Boxed` objects will be
+  # unwrapped for you automatically and `CFRange` objects will be turned into
+  # `Range` objects. Similarly, you do not need to worry about wrapping the
+  # parameter as that will be done for you.
+  #
+  # @example
+  #
+  #   attribute KAXStringForRangeParameterizedAttribute, for_param: 1..10
+  #     # => "ello, worl"
+  #
+  # @param [String] attr an attribute constant
+  # @param [Object] param
+  def attribute name, for_parameter: param
+    ptr   = Pointer.new :id
+    param = param.to_ax
+    case code = AXUIElementCopyParameterizedAttributeValue(@ref,name,param,ptr)
+    when 0                                         then ptr.value.to_ruby
+    when KAXErrorNoValue, KAXErrorInvalidUIElement then nil
+    else handle_error code, name, param
+    end
+  end
+
+
   # @group Actions
 
   ##
@@ -320,60 +370,6 @@ module Accessibility::Core
              when nil         then 0.009
              else                  ENV['KEY_RATE'].to_f
              end
-
-
-  # @group Parameterized Attributes
-
-  ##
-  # Get the list of parameterized attributes for the given element. If an
-  # element does not have parameterized attributes, then an empty
-  # list will be returned.
-  #
-  # Most elements do not have parameterized attributes, but the ones
-  # that do, have many.
-  #
-  # @example
-  #
-  #   param_attrs_for text_field_ref  # => ["AXStringForRange", ...]
-  #   param_attrs_for window_ref      # => []
-  #
-  # @param [AXUIElementRef]
-  # @return [Array<String>]
-  def param_attrs_for element
-    ptr  = Pointer.new ARRAY
-    code = AXUIElementCopyParameterizedAttributeNames(element, ptr)
-    return ptr[0] if code.zero?
-    handle_error code, element
-  end
-
-  ##
-  # Fetch the given pramaeterized attribute value of a given a given element
-  # using the given parameter. You will be given raw data from this method;
-  # that is, `Boxed` objects will still be wrapped in a `AXValueRef`, and
-  # elements will be `AXUIElementRef` objects instead of wrapped
-  # {AX::Element} objects.
-  #
-  # If the parameter needs to be a range or some other C struct, then you
-  # will need to wrap it in an `AXValueRef` before passing it to this
-  # method.
-  #
-  # @example
-  #
-  #   r = CFRange.new(1, 10)
-  #   value_of KAXStringForRangeParameterizedAttribute, for_param: r, for: tf
-  #     # => "ello, worl"
-  #
-  # @param [String] attr an attribute constant
-  # @param [Object] param
-  # @param [AXUIElementRef]
-  def value_of attr, for_param: param, for: element
-    ptr   = Pointer.new :id
-    param = param.to_axvalue
-    code  = AXUIElementCopyParameterizedAttributeValue(element,attr,param,ptr)
-    return ptr[0].to_value if code.zero?
-    return nil             if code == KAXErrorNoValue
-    handle_error code, element, attr, param
-  end
 
 
   # @group Element Hierarchy Entry Points
