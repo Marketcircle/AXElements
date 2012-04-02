@@ -363,67 +363,73 @@ class TestAccessibilityCore < MiniTest::Unit::TestCase
 
   def test_run_loop_source_for
     @ref = REF
-    obsrvr = observer { |_,_,_,_| }
+    obsrvr = observer { |_,_,_| }
     assert_equal CFRunLoopSourceGetTypeID(), CFGetTypeID(run_loop_source_for(obsrvr))
   end
 
-#   def test_notification_registration_and_unregistration
-#     observer = observer_for(PID) { |_,_,_,_| }
-#     assert   register(observer,     to_receive: KAXWindowCreatedNotification, from: REF)
-#     assert unregister(observer, from_receiving: KAXWindowCreatedNotification, from: REF)
-#   end
+  # more than meets the eye
+  def test_notification_registration_and_unregistration
+    @ref = REF
+    obsrvr = observer { |_,_,_| }
+    assert   register(obsrvr,     to_receive: KAXWindowCreatedNotification)
+    assert unregister(obsrvr, from_receiving: KAXWindowCreatedNotification)
+  end
 
-#   def test_notification_registers_everything_correctly # integration
-#     callback = Proc.new do |observer, element, notif, ctx|
-#       @notif_triple = [observer, element, notif]
-#     end
-#     observer = observer_for PID, &callback
-#     register observer, to_receive: 'Cheezburger', from: yes_button
+  # integration-y
+  def test_notification_registers_everything_correctly
+    @ref = REF
 
-#     source = run_loop_source_for observer
-#     CFRunLoopAddSource(CFRunLoopGetCurrent(), source, KCFRunLoopDefaultMode)
+    obsrvr = observer do |observer, element, notif|
+      @notif_triple = [observer, element, notif]
+    end
+    register observer, to_receive: 'Cheezburger'
+    source = run_loop_source_for observer
+    CFRunLoopAddSource(CFRunLoopGetCurrent(), source, KCFRunLoopDefaultMode)
 
-#     perform KAXPressAction, for: yes_button
-#     spin_run_loop
+    @ref = yes_button
+    perform KAXPressAction
+    spin_run_loop
 
-#     assert_equal [observer, yes_button, 'Cheezburger'], @notif_triple
+    assert_equal [obsrvr, yes_button, 'Cheezburger'], @notif_triple
 
-#   ensure
-#     return
-#     CFRunLoopRemoveSource(CFRunLoopGetCurrent(), source, KCFRunLoopDefaultMode)
-#   end
+  ensure
+    return unless source
+    CFRunLoopRemoveSource(CFRunLoopGetCurrent(), source, KCFRunLoopDefaultMode)
+  end
 
-#   def test_notification_registrations_handle_errors
-#     observer = observer_for(PID) { |_,_,_,_| }
+  def test_register_handles_errors
+    @ref = REF
+    obsrvr = observer { |_,_,_| }
+    assert_raises(ArgumentError) {
+      register(nil, to_receive: KAXWindowCreatedNotification)
+    }
+    assert_raises(ArgumentError) {
+      register(observer, to_receive: nil)
+    }
+    @ref = nil
+    assert_raises(ArgumentError) {
+      register(observer, to_receive: KAXWindowCreatedNotification)
+    }
+  end
 
-#     assert_raises ArgumentError do
-#       register(nil, to_receive: KAXWindowCreatedNotification, from: REF)
-#     end
-#     assert_raises ArgumentError do
-#       register(observer, to_receive: nil, from: REF)
-#     end
-#     assert_raises ArgumentError do
-#       register(observer, to_receive: KAXWindowCreatedNotification, from: nil)
-#     end
-#     assert_raises ArgumentError do
-#       unregister(nil, from_receiving: KAXWindowCreatedNotification, from: REF)
-#     end
-#     assert_raises ArgumentError do
-#       unregister(observer, from_receiving: nil, from: REF)
-#     end
-#     assert_raises ArgumentError do
-#       unregister(observer, from_receiving: KAXWindowCreatedNotification, from: nil)
-#     end
-#   end
-
-
+  def test_unregister_handles_errors
+    @ref = REF
+    assert_raises(ArgumentError) {
+      unregister(nil, from_receiving: KAXWindowCreatedNotification)
+    }
+    assert_raises(ArgumentError) {
+      unregister(observer, from_receiving: nil)
+    }
+    @ref = nil
+    assert_raises ArgumentError do
+      unregister(observer, from_receiving: KAXWindowCreatedNotification)
+    end
+  end
 
   def test_enabled?
     assert enabled?
     # @todo I guess that's good enough?
   end
-
-
 
 #   def test_pid_for_gets_pid
 #     assert_equal PID, pid_for(REF)
