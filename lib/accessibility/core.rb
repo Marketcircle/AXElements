@@ -600,12 +600,12 @@ module Accessibility::Core
   # @param [Number]
   def handle_error code, *args
     klass, handler = AXERROR.fetch code, [RuntimeError, :handle_unknown]
-    msg            = self.send handler, *args
+    msg            = if handler == :handle_unknown
+                       "You should never reach this line [#{code}]:#{@ref.inspect}"
+                     else
+                       self.send handler, *args
+                     end
     raise klass, msg, caller(1)
-  end
-
-  def handle_unknown *args
-    "You should never reach this line [#{code}]:#{@ref.inspect}"
   end
 
   def handle_failure *args
