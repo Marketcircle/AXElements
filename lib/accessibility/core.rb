@@ -286,28 +286,18 @@ module Accessibility::Core
   # @example
   #
   #   include Accessibility::String
-  #   events = create_events_for "Hello, world!\n"
-  #   post events, to: safari_ref
+  #   events = keyboard_events_for "Hello, world!\n"
+  #   post events, safari_ref
   #
   # @param [Array<Array(Number,Boolean)>]
   # @param [AXUIElementRef]
-  def post events, to: app
+  def post events
     events.each do |event|
-      code = AXUIElementPostKeyboardEvent(app, 0, *event)
-      handle_error code, app unless code.zero?
+      code = AXUIElementPostKeyboardEvent(@ref, 0, *event)
+      handle_error code, @ref unless code.zero?
       sleep KEY_RATE
     end
     sleep 0.1 # in many cases, UI is not done updating right away
-  end
-
-  ##
-  # Post the list of given keyboard events to the front most app. This
-  # is equivalent to calling {post:to:} and passing {system_wide} as
-  # the application.
-  #
-  # @param [Array<Array(Number,Boolean)>]
-  def post events
-    post events, to: system_wide
   end
 
   ##

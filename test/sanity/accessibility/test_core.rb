@@ -248,40 +248,26 @@ class TestAccessibilityCore < MiniTest::Unit::TestCase
   ##
   # The keyboard simulation stuff is a bit weird...
 
-#   def test_post_events_to
-#     events = [[0x56,true], [0x56,false], [0x54,true], [0x54,false]]
-#     string = '42'
+  def test_post_events_to
+    events = [[0x56,true], [0x56,false], [0x54,true], [0x54,false]]
+    string = '42'
 
-#     set KAXFocusedAttribute, to: true, for: search_box
-#     post events, to: REF
-#     assert_equal string, value_for(search_box)
+    @ref = search_box
+    set KAXFocusedAttribute, true
+    @ref = REF
+    post events
 
-#   ensure # reset for next test
-#     button = children_for(search_box).find { |x|
-#       role_for(x) == KAXButtonRole
-#     }
-#     perform KAXPressAction, for: button
-#   end
+    @ref = search_box
+    assert_equal string, value
 
-#   def test_post_events_to_handles_errors
-#     assert_raises ArgumentError do
-#       post [[56, true], [56, false]], to: nil
-#     end
-#   end
+  ensure # reset for next test
+    set KAXValueAttribute, ''
+  end
 
-#   def test_post_events_calls_post_events_to
-#     klass = Class.new
-#     klass.send :include, Accessibility::Core
-
-#     events = element = nil
-#     klass.send :define_method, :'post:to:' do |arg1,arg2|
-#       events, element = arg1, arg2
-#     end
-
-#     klass.new.send :post, [:herp, :derp]
-#     assert_equal [:herp, :derp], events
-#     assert_equal system_wide, element
-#   end
+  def test_post_handles_errors
+    @ref = nil
+    assert_raises(ArgumentError) { post [[56,true],[56,false]] }
+  end
 
 
 #   def test_param_attrs
