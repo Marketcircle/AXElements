@@ -431,55 +431,32 @@ class TestAccessibilityCore < MiniTest::Unit::TestCase
     # @todo I guess that's good enough?
   end
 
-#   def test_pid_for_gets_pid
-#     assert_equal PID, pid_for(REF)
-#     assert_equal PID, pid_for(window)
-#   end
+  def test_pid_for_gets_pid
+    @ref = REF
+    assert_equal PID, pid
+    @ref = window
+    assert_equal PID, pid
+  end
 
-#   def test_pid_for_handles_errors
-#     assert_raises ArgumentError do
-#       pid_for nil
-#     end
-#   end
+  def test_pid_handles_errors
+    @ref = nil
+    assert_raises(ArgumentError) { pid }
+  end
 
+  def test_system_wide
+    assert_equal AXUIElementCreateSystemWide(), system_wide
+  end
 
+  def test_set_timeout_for
+    @ref = REF
+    assert_equal 10, set_timeout_to(10)
+    assert_equal 0,  set_timeout_to(0)
+  end
 
-#   def test_system_wide
-#     assert_equal AXUIElementCreateSystemWide(), system_wide
-#   end
-
-
-
-#   def test_spin_runloop
-#     @run_loop_ran = false
-#     def run_loop_test
-#       @run_loop_ran = true
-#     end
-
-#     performSelector 'run_loop_test', afterDelay: 0
-
-#     assert @run_loop_ran
-#   end
-
-
-
-#   def test_set_timeout_for
-#     assert_equal 10, set_timeout_to(10, for: REF)
-#     assert_equal 0,  set_timeout_to(0, for: REF)
-#   end
-
-#   def test_set_timeout_handles_errors
-#     assert_raises ArgumentError do
-#       set_timeout_to 10, for: nil
-#     end
-#   end
-
-#   def test_set_timeout
-#     assert_equal 10, set_timeout_to(10)
-#     assert_equal 0, set_timeout_to(0)
-#   end
-
-
+  def test_set_timeout_handles_errors
+    @ref = nil
+    assert_raises(ArgumentError) { set_timeout_to(10) }
+  end
 
 #   def error_handler_test args, should_raise: klass, with_fragments: msgs
 #     @@meth ||= Regexp.new "`#{__method__}'$"
