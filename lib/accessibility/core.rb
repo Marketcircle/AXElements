@@ -76,12 +76,14 @@ module Accessibility::Core
   #
   # @return [Array<String>]
   def attributes
-    ptr = Pointer.new ARRAY
-    case code = AXUIElementCopyAttributeNames(@ref, ptr)
-    when 0                        then ptr.value
-    when KAXErrorInvalidUIElement then []
-    else handle_error code
-    end
+    @attributes ||= (
+      ptr = Pointer.new ARRAY
+      case code = AXUIElementCopyAttributeNames(ref, ptr)
+      when 0                        then ptr.value
+      when KAXErrorInvalidUIElement then []
+      else handle_error code
+      end
+      )
   end
 
   ##
@@ -247,12 +249,14 @@ module Accessibility::Core
   #
   # @return [Array<String>]
   def parameterized_attributes
-    ptr = Pointer.new ARRAY
-    case code = AXUIElementCopyParameterizedAttributeNames(@ref, ptr)
-    when 0                                         then ptr.value
-    when KAXErrorNoValue, KAXErrorInvalidUIElement then []
-    else handle_error code
-    end
+    @parameterized_attributes ||= (
+      ptr = Pointer.new ARRAY
+      case code = AXUIElementCopyParameterizedAttributeNames(@ref, ptr)
+      when 0                                         then ptr.value
+      when KAXErrorNoValue, KAXErrorInvalidUIElement then []
+      else handle_error code
+      end
+      )
   end
 
   ##
@@ -293,12 +297,14 @@ module Accessibility::Core
   #
   # @return [Array<String>]
   def actions
-    ptr = Pointer.new ARRAY
-    case code = AXUIElementCopyActionNames(@ref, ptr)
-    when 0                        then ptr.value
-    when KAXErrorInvalidUIElement then []
-    else handle_error code
-    end
+    @actions ||= (
+      ptr = Pointer.new ARRAY
+      case code = AXUIElementCopyActionNames(@ref, ptr)
+      when 0                        then ptr.value
+      when KAXErrorInvalidUIElement then []
+      else handle_error code
+      end
+      )
   end
 
   ##
