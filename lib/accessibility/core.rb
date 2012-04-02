@@ -853,7 +853,9 @@ class Range
              end
     CFRange.new(first, length).to_ax
   end
+end
 
+class CFRange
   # @return [Range]
   def to_ruby
     Range.new location, (location + length - 1)
