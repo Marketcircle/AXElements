@@ -315,42 +315,41 @@ class TestAccessibilityCore < MiniTest::Unit::TestCase
     assert_raises(ArgumentError) { post [[56,true],[56,false]] }
   end
 
+  ##
+  # Kind of a bad test right now because the method itself
+  # lacks certain functionality that needs to be added...
 
-#   ##
-#   # Kind of a bad test right now because the method itself
-#   # lacks certain functionality that needs to be added...
+  def test_element_at
+    @ref    = no_button
+    point   = attribute(KAXPositionAttribute)
 
-#   def test_element_at_point_for_gets_dude
-#     point   = value_of KAXPositionAttribute, for: button
-#     element = element_at point, for: REF
-#     assert_equal button, element, "#{button.inspect} and #{element.inspect}"
+    @ref    = REF
+    element = element_at point
+    assert_equal no_button, element, "#{no_button.inspect} and #{element.inspect}"
 
-#     # also check the system object
-#   end
+    @ref    = system_wide
+    element = element_at point
+    assert_equal no_button, element, "#{no_button.inspect} and #{element.inspect}"
+  end
 
-#   def test_element_at_point_for_handles_errors
-#     assert_raises ArgumentError do
-#       element_at [10,10], for: nil
-#     end
+  def test_element_at_returns_nil_on_empty_space
+    skip 'How do I guarantee an empty space on screen?'
+    # btw, [0,0] returns something
+  end
 
-#     # Should test the other cases as well...
-#   end
+  def test_element_at_handles_errors
+    @ref = nil
+    assert_raises(ArgumentError) { element_at [1,1] }
+  end
 
-#   def test_element_at_point_delegates
-#     klass = Class.new
-#     klass.send :include, Accessibility::Core
+  def test_application_for
+    # @note Should call CFEqual() under the hood, which is what we want
+    assert_equal REF, application_for(PID)
+  end
 
-#     point = element = nil
-#     klass.send :define_method, :'element_at:for:' do |arg1,arg2|
-#       point, element = arg1, arg2
-#     end
-
-#     klass.new.send :element_at, :upper_right
-#     assert_equal :upper_right, point
-#     assert_equal system_wide, element
-#   end
-
-
+  def test_application_for_raises_for_bad_pid
+    assert_raises(ArgumentError) { application_for 0 }
+  end
 
 #   def test_observer_for
 #     assert_equal AXObserverGetTypeID(), CFGetTypeID(observer_for(PID) { })
@@ -429,23 +428,6 @@ class TestAccessibilityCore < MiniTest::Unit::TestCase
 #   def test_enabled?
 #     assert enabled?
 #     # @todo I guess that's good enough?
-#   end
-
-
-
-#   def test_app_for_pid
-#     # @note Should call CFEqual() under the hood, which is what we want
-#     assert_equal REF, application_for(PID)
-#   end
-
-#   def test_app_for_pid_raises_for_bad_pid
-#     assert_raises ArgumentError do
-#       application_for 0
-#     end
-
-#     assert_raises ArgumentError do
-#       application_for 2
-#     end
 #   end
 
 

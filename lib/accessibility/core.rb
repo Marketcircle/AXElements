@@ -375,8 +375,9 @@ module Accessibility::Core
   # @group Element Hierarchy Entry Points
 
   ##
-  # Find the top most element at a point on the screen that belongs to
-  # a given application.
+  # Find the top most element at a point on the screen that belongs to the
+  # backing application. If the backing element is the system wide object
+  # then the return is the top most element regardless of application.
   #
   # The coordinates should be specified using the flipped coordinate
   # system (origin is in the top-left, increasing downward and to the right
@@ -384,33 +385,21 @@ module Accessibility::Core
   #
   # If more than one element is at the position then the
   # z-order of the elements will be used to determine which is
-  # "on top". To get the absolute top element, regardless of application,
-  # then pass system-wide element for the `app`.
+  # "on top".
   #
   # @example
   #
-  #   element_at [453, 200], for: safari_ref       # web area
-  #   element_at [453, 200], for: system_wide_ref  # table
+  #   element_at [453, 200]  # table
   #
   # @param [#to_point]
-  # @param [AXUIElementRef]
-  # @return [AXUIElementRef]
-  def element_at point, for: app
-    ptr   = Pointer.new ELEMENT
-    code  = AXUIElementCopyElementAtPosition(app, *point.to_point, ptr)
-    return ptr[0] if code.zero?
-    return nil    if code == KAXErrorNoValue
-    handle_error code, app, point, nil, nil
-  end
-
-  ##
-  # Find the top most element at a point on the screen. This is
-  # equivalent to calling {element_at:for:} and passing {system_wide} as
-  # the application.
-  #
-  # @param [#to_point]
+  # @return [AXUIElementRef,nil]
   def element_at point
-    element_at point, for: system_wide
+    ptr = Pointer.new ELEMENT
+    case code = AXUIElementCopyElementAtPosition(@ref, *point.to_point, ptr)
+    when 0                                  then ptr.value
+    when KAXErrorNoValue                    then nil
+    else handle_error code, point, nil, nil
+    end
   end
 
   ##
