@@ -69,7 +69,7 @@ module Accessibility::Core
   def attributes
     @attributes ||= (
       ptr = Pointer.new ARRAY
-      case code = AXUIElementCopyAttributeNames(ref, ptr)
+      case code = AXUIElementCopyAttributeNames(self, ptr)
       when 0                        then ptr.value
       when KAXErrorInvalidUIElement then []
       else handle_error code
@@ -94,7 +94,7 @@ module Accessibility::Core
   # @param [String] name an attribute constant
   def attribute name
     ptr = Pointer.new :id
-    case code = AXUIElementCopyAttributeValue(@ref, name, ptr)
+    case code = AXUIElementCopyAttributeValue(self, name, ptr)
     when 0                                         then ptr.value.to_ruby
     when KAXErrorNoValue, KAXErrorInvalidUIElement then nil
     when KAXErrorFailure
@@ -171,7 +171,7 @@ module Accessibility::Core
   # @return [Number]
   def size_of name
     ptr = Pointer.new :long_long
-    case code = AXUIElementGetAttributeValueCount(@ref, name, ptr)
+    case code = AXUIElementGetAttributeValueCount(self, name, ptr)
     when 0                                                  then ptr.value
     when KAXErrorFailure, KAXErrorAttributeUnsupported,
       KAXErrorInvalidUIElement                              then 0
@@ -190,7 +190,7 @@ module Accessibility::Core
   # @param [String] name an attribute constant
   def writable? name
     ptr = Pointer.new :bool
-    case code = AXUIElementIsAttributeSettable(@ref, name, ptr)
+    case code = AXUIElementIsAttributeSettable(self, name, ptr)
     when 0                        then ptr.value
     when KAXErrorInvalidUIElement then false
     else handle_error code, name
@@ -217,7 +217,7 @@ module Accessibility::Core
   #
   # @param [String] name an attribute constant
   def set name, value
-    code = AXUIElementSetAttributeValue(@ref, name, value.to_ax)
+    code = AXUIElementSetAttributeValue(self, name, value.to_ax)
     return value if code.zero?
     handle_error code, name, value
   end
@@ -242,7 +242,7 @@ module Accessibility::Core
   def parameterized_attributes
     @parameterized_attributes ||= (
       ptr = Pointer.new ARRAY
-      case code = AXUIElementCopyParameterizedAttributeNames(@ref, ptr)
+      case code = AXUIElementCopyParameterizedAttributeNames(self, ptr)
       when 0                                         then ptr.value
       when KAXErrorNoValue, KAXErrorInvalidUIElement then []
       else handle_error code
@@ -267,7 +267,7 @@ module Accessibility::Core
   def attribute name, for_parameter: param
     ptr   = Pointer.new :id
     param = param.to_ax
-    case code = AXUIElementCopyParameterizedAttributeValue(@ref,name,param,ptr)
+    case code = AXUIElementCopyParameterizedAttributeValue(self,name,param,ptr)
     when 0                                         then ptr.value.to_ruby
     when KAXErrorNoValue, KAXErrorInvalidUIElement then nil
     else handle_error code, name, param
@@ -290,7 +290,7 @@ module Accessibility::Core
   def actions
     @actions ||= (
       ptr = Pointer.new ARRAY
-      case code = AXUIElementCopyActionNames(@ref, ptr)
+      case code = AXUIElementCopyActionNames(self, ptr)
       when 0                        then ptr.value
       when KAXErrorInvalidUIElement then []
       else handle_error code
@@ -312,7 +312,7 @@ module Accessibility::Core
   # @param [String] action an action constant
   # @return [Boolean]
   def perform action
-    code = AXUIElementPerformAction(@ref, action)
+    code = AXUIElementPerformAction(self, action)
     return true if code.zero?
     handle_error code, action
   end
@@ -336,14 +336,14 @@ module Accessibility::Core
   #
   #   include Accessibility::String
   #   events = keyboard_events_for "Hello, world!\n"
-  #   post events, safari_ref
+  #   post events
   #
   # @param [Array<Array(Number,Boolean)>]
   # @param [AXUIElementRef]
   def post events
     events.each do |event|
-      code = AXUIElementPostKeyboardEvent(@ref, 0, *event)
-      handle_error code, @ref unless code.zero?
+      code = AXUIElementPostKeyboardEvent(self, 0, *event)
+      handle_error code unless code.zero?
       sleep KEY_RATE
     end
     sleep 0.1 # in many cases, UI is not done updating right away
@@ -392,7 +392,7 @@ module Accessibility::Core
   # @return [AXUIElementRef,nil]
   def element_at point
     ptr = Pointer.new ELEMENT
-    case code = AXUIElementCopyElementAtPosition(@ref, *point.to_point, ptr)
+    case code = AXUIElementCopyElementAtPosition(self, *point.to_point, ptr)
     when 0                                  then ptr.value
     when KAXErrorNoValue                    then nil
     else handle_error code, point, nil, nil
@@ -488,7 +488,7 @@ module Accessibility::Core
   # @param [String]
   # @return [Boolean]
   def register observer, to_receive: notif
-    case code = AXObserverAddNotification(observer, @ref, notif, nil)
+    case code = AXObserverAddNotification(observer, self, notif, nil)
     when 0 then true
     else handle_error code, notif, observer, nil, nil
     end
@@ -501,7 +501,7 @@ module Accessibility::Core
   # @param [String]
   # @return [Boolean]
   def unregister observer, from_receiving: notif
-    case code = AXObserverRemoveNotification(observer, @ref, notif)
+    case code = AXObserverRemoveNotification(observer, self, notif)
     when 0 then true
     else handle_error code, notif, observer, nil, nil
     end
@@ -535,7 +535,7 @@ module Accessibility::Core
   # @return [Fixnum]
   def pid
     ptr  = Pointer.new :int
-    case code = AXUIElementGetPid(@ref, ptr)
+    case code = AXUIElementGetPid(self, ptr)
     when 0 then ptr.value
     else handle_error code
     end
@@ -553,6 +553,14 @@ module Accessibility::Core
   # @return [AXUIElementRef]
   def system_wide
     AXUIElementCreateSystemWide()
+  end
+
+  ##
+  # Returns the application reference that the element belongs to.
+  #
+  # @return [AXUIElementRef]
+  def application
+    application_for pid
   end
 
   ##
@@ -583,7 +591,7 @@ module Accessibility::Core
   # @param [Number]
   # @return [Number]
   def set_timeout_to seconds
-    case code = AXUIElementSetMessagingTimeout(@ref, seconds)
+    case code = AXUIElementSetMessagingTimeout(self, seconds)
     when 0 then seconds
     else handle_error code, seconds
     end
@@ -598,7 +606,7 @@ module Accessibility::Core
   def handle_error code, *args
     klass, handler = AXERROR.fetch code, [RuntimeError, :handle_unknown]
     msg            = if handler == :handle_unknown
-                       "You should never reach this line [#{code}]:#{@ref.inspect}"
+                       "You should never reach this line [#{code}]:#{inspect}"
                      else
                        self.send handler, *args
                      end
@@ -606,38 +614,38 @@ module Accessibility::Core
   end
 
   def handle_failure *args
-    "A system failure occurred with #{@ref.inspect}, stopping to be safe"
+    "A system failure occurred with #{inspect}, stopping to be safe"
   end
 
   def handle_illegal_argument *args
     case args.size
     when 0
-      "#{@ref.inspect} is not an AXUIElementRef"
+      "#{inspect} is not an AXUIElementRef"
     when 1
-      "Either the element #{@ref.inspect} " +
+      "Either the element #{inspect} " +
         "or the attribute/action/callback #{args.first.inspect} " +
         "is not a legal argument"
     when 2
       "You can't get/set #{args.first.inspect} with/to " +
-        "#{args[1].inspect} for #{@ref.inspect}"
+        "#{args[1].inspect} for #{inspect}"
     when 3
       "The point #{args.first.to_point.inspect} is not a valid point, " +
-        "or #{@ref.inspect} is not an AXUIElementRef"
+        "or #{inspect} is not an AXUIElementRef"
     when 4
       "Either the observer #{args[1].inspect}, " +
-        "the element #{@ref.inspect}, or " +
+        "the element #{inspect}, or " +
         "the notification #{args.first.inspect} " +
         "is not a legitimate argument"
     end
   end
 
   def handle_invalid_element *args
-    "#{@ref.inspect} is no longer a valid reference"
+    "#{inspect} is no longer a valid reference"
   end
 
   def handle_invalid_observer *args
     "#{args[1].inspect} is no longer a valid observer for " +
-      "#{@ref.inspect} or was never valid"
+      "#{inspect} or was never valid"
   end
 
   # @param [AXUIElementRef]
@@ -645,7 +653,7 @@ module Accessibility::Core
     spin_run_loop
     app = NSRunningApplication.runningApplicationWithProcessIdentifier pid
     if app
-      "An unspecified error occurred using #{@ref.inspect} with AXAPI" +
+      "An unspecified error occurred using #{inspect} with AXAPI" +
         ", maybe a timeout :("
     else
       "Application for pid=#{pid} is no longer running. Maybe it crashed?"
@@ -653,31 +661,31 @@ module Accessibility::Core
   end
 
   def handle_attr_unsupported *args
-    "#{@ref.inspect} does not have a #{args.first.inspect} attribute"
+    "#{inspect} does not have a #{args.first.inspect} attribute"
   end
 
   def handle_action_unsupported *args
-    "#{@ref.inspect} does not have a #{args.first.inspect} action"
+    "#{inspect} does not have a #{args.first.inspect} action"
   end
 
   def handle_notif_unsupported *args
-    "#{@ref.inspect} does not support the #{args.first.inspect} notification"
+    "#{inspect} does not support the #{args.first.inspect} notification"
   end
 
   def handle_not_implemented *args
-    "The program that owns #{@ref.inspect} does not work with AXAPI properly"
+    "The program that owns #{inspect} does not work with AXAPI properly"
   end
 
   # @todo Does this really neeed to raise an exception? Seems
   #       like a warning would be sufficient.
   def handle_notif_registered *args
     "You have already registered to hear about #{args[0].inspect} " +
-      "from #{@ref.inspect}"
+      "from #{inspect}"
   end
 
   def handle_notif_not_registered *args
     "You have not registered to hear about #{args[0].inspect} " +
-      "from #{@ref.inspect}"
+      "from #{inspect}"
   end
 
   def handle_api_disabled *args
@@ -685,7 +693,7 @@ module Accessibility::Core
   end
 
   def handle_param_attr_unsupported *args
-    "#{@ref.inspect} does not have a #{args[0].inspect} parameterized attribute"
+    "#{inspect} does not have a #{args[0].inspect} parameterized attribute"
   end
 
   def handle_not_enough_precision
@@ -746,6 +754,46 @@ end
 
 
 ##
+# Mixin for the special `__NSCFType` class so that `#to_ruby` works properly.
+module Accessibility::ValueUnwrapper
+  ##
+  # Map of type encodings used for wrapping structs when coming from
+  # an `AXValueRef`.
+  #
+  # The list is order sensitive, which is why we unshift nil, but
+  # should probably be more rigorously defined at runtime.
+  #
+  # @return [String,nil]
+  BOX_TYPES = [CGPoint, CGSize, CGRect, CFRange].map!(&:type).unshift(nil)
+
+  ##
+  # Unwrap an `AXValue` into the `Boxed` instance that it is supposed
+  # to be. This will only work for the most common boxed types, you will
+  # need to check the AXAPI documentation for an up to date list.
+  #
+  # @example
+  #
+  #   wrapped_point.to_ruby # => #<CGPoint x=44.3 y=99.0>
+  #   wrapped_range.to_ruby # => #<CFRange begin=7 length=100>
+  #   wrapped_thing.to_ruby # => wrapped_thing
+  #
+  # @return [Boxed]
+  def to_ruby
+    box_type = AXValueGetType(self)
+    return self if box_type.zero?
+    ptr = Pointer.new BOX_TYPES[box_type]
+    AXValueGetValue(self, box_type, ptr)
+    ptr.value.to_ruby
+  end
+end
+
+# hack to find the proper class
+klass = AXUIElementCreateSystemWide().class
+klass.send :include, Accessibility::Core
+klass.send :include, Accessibility::ValueUnwrapper
+
+
+##
 # AXElements extensions to the `Boxed` class. The `Boxed` class is
 # simply an abstract base class for structs that MacRuby can use
 # via bridge support.
@@ -786,48 +834,6 @@ class << CGSize;  def ax_value; KAXValueCGSizeType;  end end
 class << CGRect;  def ax_value; KAXValueCGRectType;  end end
 # AXElements extensions for `CGPoint`.
 class << CGPoint; def ax_value; KAXValueCGPointType; end end
-
-
-##
-# Mixin for the special `__NSCFType` class so that `#to_ruby` works properly.
-module Accessibility::ValueUnwrapper
-  ##
-  # Map of type encodings used for wrapping structs when coming from
-  # an `AXValueRef`.
-  #
-  # The list is order sensitive, which is why we unshift nil, but
-  # should probably be more rigorously defined at runtime.
-  #
-  # @return [String,nil]
-  BOX_TYPES = [CGPoint, CGSize, CGRect, CFRange].map!(&:type).unshift(nil)
-
-  ##
-  # Unwrap an `AXValue` into the `Boxed` instance that it is supposed
-  # to be. This will only work for the most common boxed types, you will
-  # need to check the AXAPI documentation for an up to date list.
-  #
-  # @example
-  #
-  #   wrapped_point.to_ruby # => #<CGPoint x=44.3 y=99.0>
-  #   wrapped_range.to_ruby # => #<CFRange begin=7 length=100>
-  #   wrapped_thing.to_ruby # => wrapped_thing
-  #
-  # @return [Boxed]
-  def to_ruby
-    box_type = AXValueGetType(self)
-    return self if box_type.zero?
-    ptr = Pointer.new BOX_TYPES[box_type]
-    AXValueGetValue(self, box_type, ptr)
-    ptr.value.to_ruby
-  end
-end
-
-# hack to find the proper class
-class AXUIElementCreateSystemWide.class
-  include Accessibility::Core
-  include Accessibility::ValueUnwrapper
-  def ref; self end
-end
 
 
 # AXElements extensions for `NSObject`.

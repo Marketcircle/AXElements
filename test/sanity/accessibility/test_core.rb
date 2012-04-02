@@ -5,17 +5,14 @@ require 'accessibility/core'
 
 
 class TestAccessibilityCore < MiniTest::Unit::TestCase
-  include Accessibility::Core
 
   def window
-    @@window ||= (@ref = REF; attribute(KAXMainWindowAttribute))
+    @@window ||= REF.attribute(KAXMainWindowAttribute)
   end
 
   def child name
-    @ref = window
-    children.find { |item|
-      @ref = item
-      (block_given? ? yield : true) if role == name
+    window.children.find { |item|
+      (block_given? ? yield(item) : true) if item.role == name
     }
   end
 
@@ -23,28 +20,17 @@ class TestAccessibilityCore < MiniTest::Unit::TestCase
   def check_box;   @@check_box   ||= child KAXCheckBoxRole;    end
   def pop_up;      @@pop_up      ||= child KAXPopUpButtonRole; end
   def search_box;  @@search_box  ||= child KAXTextFieldRole;   end
-  def static_text; @@static_text ||= child(KAXStaticTextRole) { value.match /My Little Pony/           } end
-  def yes_button;  @@yes_button  ||= child(KAXButtonRole)     { attribute(KAXTitleAttribute) == 'Yes'  } end
-  def bye_button;  @@bye_button  ||= child(KAXButtonRole)     { attribute(KAXTitleAttribute) == 'Bye!' } end
-  def no_button;   @@no_button   ||= child(KAXButtonRole)     { attribute(KAXTitleAttribute) == 'No'   } end
-  def web_area
-    @@web_area ||= (
-      child("AXScrollArea") { attribute("AXDescription") == 'Test Web Area' }
-      children.first
-    )
-  end
-  def text_area
-    @@text_area ||= (child("AXScrollArea") {
-        attributes.include?(KAXIdentifierAttribute) &&
-        attribute(KAXIdentifierAttribute) == 'Text Area'
-      }
-      children.first)
-  end
+  def static_text; @@static_text ||= child(KAXStaticTextRole) { |x| x.value.match /My Little Pony/           } end
+  def yes_button;  @@yes_button  ||= child(KAXButtonRole)     { |x| x.attribute(KAXTitleAttribute) == 'Yes'  } end
+  def bye_button;  @@bye_button  ||= child(KAXButtonRole)     { |x| x.attribute(KAXTitleAttribute) == 'Bye!' } end
+  def no_button;   @@no_button   ||= child(KAXButtonRole)     { |x| x.attribute(KAXTitleAttribute) == 'No'   } end
+  def web_area;    @@web_area    ||= child("AXScrollArea")    { |x| x.attribute("AXDescription"  ) == 'Test Web Area' }.children.first end
+  def text_area;   @@text_area   ||= child("AXScrollArea")    { |x| x.attributes.include?(KAXIdentifierAttribute) && x.attribute(KAXIdentifierAttribute) == 'Text Area' }.children.first end
 
-  def set_invalid_ref
+  def invalid_ref
     bye_button # guarantee that it is cached
-    @@dead ||= (@ref = no_button; perform KAXPressAction)
-    @ref     = bye_button
+    @@dead ||= no_button.perform KAXPressAction
+    bye_button
   end
 
   def app
@@ -52,9 +38,8 @@ class TestAccessibilityCore < MiniTest::Unit::TestCase
   end
 
   def assert_error args, should_raise: klass, with_fragments: msgs
-    @ref = REF
-    e = assert_raises(klass) { handle_error *args }
-    assert_match /test_core.rb:56/, e.backtrace.first unless RUNNING_COMPILED
+    e = assert_raises(klass) { (@derp || REF).handle_error *args }
+    assert_match /test_core.rb:41/, e.backtrace.first unless RUNNING_COMPILED
     msgs.each { |msg| assert_match msg, e.message }
   end
 
@@ -66,10 +51,7 @@ class TestAccessibilityCore < MiniTest::Unit::TestCase
   # though I am quite sure that AXElements will raise an exception.
 
   def test_attributes
-    @ref = REF
-    attrs = attributes
-
-    refute_empty attrs
+    attrs = REF.attributes
     assert_includes attrs, KAXRoleAttribute
     assert_includes attrs, KAXChildrenAttribute
     assert_includes attrs, KAXTitleAttribute
@@ -77,213 +59,158 @@ class TestAccessibilityCore < MiniTest::Unit::TestCase
   end
 
   def test_attributes_is_empty_for_dead_elements
-    set_invalid_ref
-    assert_empty attributes
-  end
-
-  def test_attrs_handles_errors
-    @ref = nil
-    assert_raises(ArgumentError) { attributes }
+    assert_empty invalid_ref.attributes
   end
 
   def test_attribute
-    @ref = window
-    assert_equal 'AXElementsTester',  attribute(KAXTitleAttribute  )
-    assert_equal false,               attribute(KAXFocusedAttribute)
-    assert_equal CGSizeMake(555,483), attribute(KAXSizeAttribute   )
-    assert_equal REF,                 attribute(KAXParentAttribute )
-    assert_equal 10..19,              attribute("AXPie"            )
+    assert_equal 'AXElementsTester',  window.attribute(KAXTitleAttribute  )
+    assert_equal false,               window.attribute(KAXFocusedAttribute)
+    assert_equal CGSizeMake(555,483), window.attribute(KAXSizeAttribute   )
+    assert_equal REF,                 window.attribute(KAXParentAttribute )
+    assert_equal 10..19,              window.attribute("AXPie"            )
   end
 
   def test_attribute_is_nil_when_no_value_or_dead
-    @ref = window
-    assert_nil attribute(KAXGrowAreaAttribute)
-    set_invalid_ref
-    assert_nil attribute(KAXRoleAttribute)
-  end
+    assert_nil window.attribute(KAXGrowAreaAttribute)
+    assert_nil invalid_ref.attribute(KAXRoleAttribute)
+   end
 
   def test_attribute_handles_errors
-    @ref = REF
-    assert_raises(ArgumentError) { attribute 'MADEUPATTRIBUTE' }
+    assert_raises(ArgumentError) { REF.attribute 'MADEUPATTRIBUTE' }
   end
 
   def test_role
-    @ref = REF
-    assert_equal KAXApplicationRole, role
+    assert_equal KAXApplicationRole, REF.role
   end
 
   def test_subrole
-    @ref = window
-    assert_equal KAXStandardWindowSubrole, subrole
-    @ref = web_area
-    assert_nil   subrole
+    assert_equal KAXStandardWindowSubrole, window.subrole
+    assert_nil   web_area.subrole
   end
 
   def test_children
-    @ref = REF
-    assert_equal attribute(KAXChildrenAttribute), children
-    @ref = slider
-    assert_equal attribute(KAXChildrenAttribute), children
+    assert_equal    REF.attribute(KAXChildrenAttribute), REF.children
+    assert_equal slider.attribute(KAXChildrenAttribute), slider.children
   end
 
   def test_value
-    @ref = check_box
-    assert_equal attribute(KAXValueAttribute), value
-    @ref = slider
-    assert_equal attribute(KAXValueAttribute), value
+    assert_equal check_box.attribute(KAXValueAttribute), check_box.value
+    assert_equal    slider.attribute(KAXValueAttribute), slider.value
   end
 
   def test_size_of
-    @ref = REF
-    assert_equal children.size, size_of(KAXChildrenAttribute)
-    @ref = pop_up
-    assert_equal 0,             size_of(KAXChildrenAttribute)
+    assert_equal REF.children.size, REF.size_of(KAXChildrenAttribute)
+    assert_equal 0,                 pop_up.size_of(KAXChildrenAttribute)
   end
 
   def test_size_of_0_for_dead_element
-    set_invalid_ref
-    assert_equal 0, size_of(KAXChildrenAttribute)
-  end
-
-  def test_size_of_handles_errors
-    @ref = nil
-    assert_raises(ArgumentError) { size_of 'pie' }
+    assert_equal 0, invalid_ref.size_of(KAXChildrenAttribute)
   end
 
   def test_writable
-    @ref = REF
-    refute writable? KAXTitleAttribute
-    @ref = window
-    assert writable? KAXMainAttribute
+    refute REF.writable?    KAXTitleAttribute
+    assert window.writable? KAXMainAttribute
   end
 
   def test_writable_false_for_dead_cases
-    set_invalid_ref
-    refute writable? KAXRoleAttribute
+    refute invalid_ref.writable? KAXRoleAttribute
   end
 
   def test_writable_handles_errors
-    @ref = REF
-    assert_raises(ArgumentError) { writable? 'FAKE' }
+    assert_raises(ArgumentError) { REF.writable? 'FAKE' }
   end
 
   def test_set_number
-    @ref = slider
     [25, 75, 50].each do |number|
-      assert_equal number, set(KAXValueAttribute, number)
-      assert_equal number, value
+      assert_equal number, slider.set(KAXValueAttribute, number)
+      assert_equal number, slider.value
     end
   end
 
   def test_set_string
-    @ref = search_box
     [Time.now.to_s, ''].each do |string|
-      assert_equal string, set(KAXValueAttribute, string)
-      assert_equal string, value
+      assert_equal string, search_box.set(KAXValueAttribute, string)
+      assert_equal string, search_box.value
     end
   end
 
   def test_set_wrapped
-    @ref = text_area
-    set KAXValueAttribute, 'hey-o'
+    text_area.set KAXValueAttribute, 'hey-o'
 
-    set KAXSelectedTextRangeAttribute, 0..3
-    assert_equal 0..3, attribute(KAXSelectedTextRangeAttribute)
+    text_area.set KAXSelectedTextRangeAttribute, 0..3
+    assert_equal 0..3, text_area.attribute(KAXSelectedTextRangeAttribute)
 
-    set KAXSelectedTextRangeAttribute, 1...4
-    assert_equal 1..3, attribute(KAXSelectedTextRangeAttribute)
+    text_area.set KAXSelectedTextRangeAttribute, 1...4
+    assert_equal 1..3, text_area.attribute(KAXSelectedTextRangeAttribute)
   ensure
-    set KAXValueAttribute, ''
+    text_area.set KAXValueAttribute, ''
   end
 
   def test_set_attr_handles_errors
-    @ref = REF
-    assert_raises(ArgumentError) { set 'FAKE', true }
+    assert_raises(ArgumentError) { REF.set 'FAKE', true }
   end
 
   def test_parameterized_attributes
-    @ref = REF
-    assert_empty parameterized_attributes
+    assert_empty REF.parameterized_attributes
 
-    @ref  = static_text
-    attrs = parameterized_attributes
+    attrs = static_text.parameterized_attributes
     assert_includes attrs, KAXStringForRangeParameterizedAttribute
     assert_includes attrs, KAXLineForIndexParameterizedAttribute
     assert_includes attrs, KAXBoundsForRangeParameterizedAttribute
   end
 
   def test_parameterized_attributes_empty_for_dead_elements
-    set_invalid_ref
-    assert_empty parameterized_attributes
-  end
-
-  def test_parameterized_attributes_handles_errors
-    @ref = nil
-    assert_raises(ArgumentError) { parameterized_attributes }
+    assert_empty invalid_ref.parameterized_attributes
   end
 
   def test_attribute_for_parameter
-    @ref     = static_text
     expected = 'My Li'
 
-    attr = attribute KAXStringForRangeParameterizedAttribute, for_parameter: 0..4
+    attr = static_text.attribute KAXStringForRangeParameterizedAttribute,
+                  for_parameter: 0..4
     assert_equal expected, attr
-    attr = attribute KAXAttributedStringForRangeParameterizedAttribute, for_parameter: 0..4
+
+    attr = static_text.attribute KAXAttributedStringForRangeParameterizedAttribute,
+                  for_parameter: 0..4
     assert_equal expected, attr.string
   end
 
   def test_attribute_for_parameter_handles_dead_elements_and_no_value
-    set_invalid_ref
-    assert_nil attribute(KAXStringForRangeParameterizedAttribute, for_parameter: 0..0)
+    assert_nil invalid_ref.attribute(KAXStringForRangeParameterizedAttribute, for_parameter: 0..0)
 
     # Should add a test case to test the no value case, but it will have
     # to be fabricated in the test app.
   end
 
   def test_attribute_for_parameter_handles_errors
-    @ref = REF
     assert_raises(ArgumentError) {
-      attribute(KAXStringForRangeParameterizedAttribute, for_parameter: 0..1)
+      REF.attribute(KAXStringForRangeParameterizedAttribute, for_parameter: 0..1)
     }
   end
 
   def test_action_names
-    @ref = REF
-    assert_empty                                           actions
-    @ref = yes_button
-    assert_equal [KAXPressAction],                         actions
-    @ref = slider
-    assert_equal [KAXIncrementAction, KAXDecrementAction], actions
-  end
-
-  def test_actions_handles_errors
-    @ref = nil
-    assert_raises(ArgumentError) { actions }
+    assert_empty                   REF.actions
+    assert_equal [KAXPressAction], yes_button.actions
   end
 
   def test_perform_action
-    @ref = check_box
     2.times do # twice so it should be back where it started
-      val = value
-      perform KAXPressAction
-      refute_equal val, value
+      val = check_box.value
+      check_box.perform KAXPressAction
+      refute_equal val, check_box.value
     end
 
-    @ref = slider
-    val  = value
-    perform KAXIncrementAction
-    assert value > val
+    val  = slider.value
+    slider.perform KAXIncrementAction
+    assert slider.value > val
 
-    val  = value
-    perform KAXDecrementAction
-    assert value < val
+    val  = slider.value
+    slider.perform KAXDecrementAction
+    assert slider.value < val
   end
 
   def test_action_handles_errors
-    @ref = REF
-    assert_raises(ArgumentError) { perform nil }
-    @ref = nil
-    assert_raises(ArgumentError) { perform KAXPressAction }
+    assert_raises(ArgumentError) { REF.perform nil }
   end
 
   ##
@@ -293,21 +220,13 @@ class TestAccessibilityCore < MiniTest::Unit::TestCase
     events = [[0x56,true], [0x56,false], [0x54,true], [0x54,false]]
     string = '42'
 
-    @ref = search_box
-    set KAXFocusedAttribute, true
-    @ref = REF
-    post events
+    search_box.set KAXFocusedAttribute, true
+    REF.post events
 
-    @ref = search_box
-    assert_equal string, value
+    assert_equal string, search_box.value
 
   ensure # reset for next test
-    set KAXValueAttribute, ''
-  end
-
-  def test_post_handles_errors
-    @ref = nil
-    assert_raises(ArgumentError) { post [[56,true],[56,false]] }
+    search_box.set KAXValueAttribute, ''
   end
 
   ##
@@ -315,75 +234,62 @@ class TestAccessibilityCore < MiniTest::Unit::TestCase
   # lacks certain functionality that needs to be added...
 
   def test_element_at
-    @ref    = no_button
-    point   = attribute(KAXPositionAttribute)
+    point   = no_button.attribute(KAXPositionAttribute)
 
-    @ref    = REF
-    element = element_at point
+    element = REF.element_at point
     assert_equal no_button, element, "#{no_button.inspect} and #{element.inspect}"
 
-    @ref    = system_wide
-    element = element_at point
+    element = REF.system_wide.element_at point
     assert_equal no_button, element, "#{no_button.inspect} and #{element.inspect}"
+
+    assert_respond_to element, :role
   end
 
-  def test_element_at_returns_nil_on_empty_space
-    skip 'How do I guarantee an empty space on screen?'
-    # btw, [0,0] returns something
-  end
-
-  def test_element_at_handles_errors
-    @ref = nil
-    assert_raises(ArgumentError) { element_at [1,1] }
-  end
+  # def test_element_at_returns_nil_on_empty_space
+  #   skip 'How do I guarantee an empty space on screen?'
+  #   # btw, [0,0] returns something
+  # end
 
   def test_application_for
     # @note Should call CFEqual() under the hood, which is what we want
-    assert_equal REF, application_for(PID)
+    assert_equal REF, REF.application_for(PID)
   end
 
   def test_application_for_raises_for_bad_pid
-    assert_raises(ArgumentError) { application_for 0 }
+    assert_raises(ArgumentError) { REF.application_for 0 }
   end
 
   def test_observer
-    @ref = REF
-    assert_equal AXObserverGetTypeID(), CFGetTypeID(observer { })
+    assert_equal AXObserverGetTypeID(), CFGetTypeID(REF.observer { })
   end
 
   def test_observer_handles_errors
-    @ref = REF
-    assert_raises(ArgumentError) { observer }
+    assert_raises(ArgumentError) { REF.observer }
   end
 
   def test_run_loop_source_for
-    @ref = REF
-    obsrvr = observer { |_,_,_| }
-    assert_equal CFRunLoopSourceGetTypeID(), CFGetTypeID(run_loop_source_for(obsrvr))
+    obsrvr = REF.observer { |_,_,_| }
+    assert_equal CFRunLoopSourceGetTypeID(), CFGetTypeID(REF.run_loop_source_for(obsrvr))
   end
 
-  # more than meets the eye
+  # # more than meets the eye
   def test_notification_registration_and_unregistration
-    @ref = REF
-    obsrvr = observer { |_,_,_| }
-    assert   register(obsrvr,     to_receive: KAXWindowCreatedNotification)
-    assert unregister(obsrvr, from_receiving: KAXWindowCreatedNotification)
+    obsrvr = REF.observer { |_,_,_| }
+    assert   REF.register(obsrvr,     to_receive: KAXWindowCreatedNotification)
+    assert REF.unregister(obsrvr, from_receiving: KAXWindowCreatedNotification)
   end
 
   # integration-y
   def test_notification_registers_everything_correctly
-    @ref = REF
-
-    obsrvr = observer do |observer, element, notif|
+    obsrvr = REF.observer do |observer, element, notif|
       @notif_triple = [observer, element, notif]
     end
-    register observer, to_receive: 'Cheezburger'
-    source = run_loop_source_for observer
+    REF.register observer, to_receive: 'Cheezburger'
+    source = REF.run_loop_source_for observer
     CFRunLoopAddSource(CFRunLoopGetCurrent(), source, KCFRunLoopDefaultMode)
 
-    @ref = yes_button
-    perform KAXPressAction
-    spin_run_loop
+    yes_button.perform KAXPressAction
+    yes_button.spin_run_loop
 
     assert_equal [obsrvr, yes_button, 'Cheezburger'], @notif_triple
 
@@ -393,64 +299,47 @@ class TestAccessibilityCore < MiniTest::Unit::TestCase
   end
 
   def test_register_handles_errors
-    @ref = REF
-    obsrvr = observer { |_,_,_| }
     assert_raises(ArgumentError) {
-      register(nil, to_receive: KAXWindowCreatedNotification)
+      REF.register(nil, to_receive: KAXWindowCreatedNotification)
     }
     assert_raises(ArgumentError) {
-      register(observer, to_receive: nil)
-    }
-    @ref = nil
-    assert_raises(ArgumentError) {
-      register(observer, to_receive: KAXWindowCreatedNotification)
+      obsrvr = REF.observer { |_,_,_| }
+      REF.register(obsrvr, to_receive: nil)
     }
   end
 
   def test_unregister_handles_errors
-    @ref = REF
     assert_raises(ArgumentError) {
-      unregister(nil, from_receiving: KAXWindowCreatedNotification)
+      REF.unregister(nil, from_receiving: KAXWindowCreatedNotification)
     }
     assert_raises(ArgumentError) {
-      unregister(observer, from_receiving: nil)
+      obsrvr = REF.observer { |_,_,_| }
+      REF.unregister(obsrvr, from_receiving: nil)
     }
-    @ref = nil
-    assert_raises ArgumentError do
-      unregister(observer, from_receiving: KAXWindowCreatedNotification)
-    end
   end
 
   def test_enabled?
-    assert enabled?
+    assert REF.enabled?
     # @todo I guess that's good enough?
   end
 
   def test_pid_for_gets_pid
-    @ref = REF
-    assert_equal PID, pid
-    @ref = window
-    assert_equal PID, pid
-  end
-
-  def test_pid_handles_errors
-    @ref = nil
-    assert_raises(ArgumentError) { pid }
+    assert_equal PID, REF.pid
+    assert_equal PID, window.pid
   end
 
   def test_system_wide
-    assert_equal AXUIElementCreateSystemWide(), system_wide
+    assert_equal AXUIElementCreateSystemWide(), REF.system_wide
+  end
+
+  def test_application
+    assert_equal REF, REF.application
+    assert_equal REF, window.application
   end
 
   def test_set_timeout_for
-    @ref = REF
-    assert_equal 10, set_timeout_to(10)
-    assert_equal 0,  set_timeout_to(0)
-  end
-
-  def test_set_timeout_handles_errors
-    @ref = nil
-    assert_raises(ArgumentError) { set_timeout_to(10) }
+    assert_equal 10, REF.set_timeout_to(10)
+    assert_equal 0,  REF.set_timeout_to(0)
   end
 
   def test_handle_error_failsafe
@@ -501,16 +390,12 @@ class TestAccessibilityCore < MiniTest::Unit::TestCase
   end
 
   def test_handle_cannot_complete
-    def self.pid
-      NSRunningApplication
-        .runningApplicationsWithBundleIdentifier('com.apple.finder')
-        .first.processIdentifier
-    end
        assert_error [KAXErrorCannotComplete],
       should_raise: RuntimeError,
     with_fragments: [/An unspecified error/, app, /:\(/]
 
-    def self.pid; false end
+    @derp = REF.application_for pid_for 'com.apple.finder'
+    def @derp.pid; false end
        assert_error [KAXErrorCannotComplete],
       should_raise: RuntimeError,
     with_fragments: [/Application for pid/, /Maybe it crashed\?/]
