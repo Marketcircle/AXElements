@@ -794,6 +794,8 @@ class << CGPoint; def ax_value; KAXValueCGPointType; end end
 ##
 # Mixin for the special `__NSCFType` class so that `#to_ruby` works properly.
 module Accessibility::ValueUnwrapper
+  include Accessibility::Core
+
   ##
   # Map of type encodings used for wrapping structs when coming from
   # an `AXValueRef`.
@@ -817,7 +819,7 @@ module Accessibility::ValueUnwrapper
   # @return [Boxed]
   def to_ruby
     box_type = AXValueGetType(self)
-    return self if box_type.zero?
+    return @ref = self if box_type.zero?
     ptr = Pointer.new BOX_TYPES[box_type]
     AXValueGetValue(self, box_type, ptr)
     ptr.value.to_ruby
