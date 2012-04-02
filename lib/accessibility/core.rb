@@ -869,8 +869,6 @@ end
 
 # AXElements extensions to `NSArray`.
 class NSArray
-  # @return [CFRange]
-  def to_range; CFRange.new(first, at(1)) end
   # @return [CGPoint]
   def to_point; CGPoint.new(first, at(1)) end
   # @return [CGSize]
