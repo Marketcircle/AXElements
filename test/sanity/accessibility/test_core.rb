@@ -7,16 +7,6 @@ require 'accessibility/core'
 class TestAccessibilityCore < MiniTest::Unit::TestCase
   include Accessibility::Core
 
-  def set_invalid_ref
-    bye_button # guarantee that it is cached
-    @@dead ||= (@ref = no_button; perform KAXPressAction)
-    @ref     = bye_button
-  end
-
-  # def app_description
-  #   @@app_description ||= Regexp.new(Regexp.escape(REF.description))
-  # end
-
   def window
     @@window ||= (@ref = REF; attribute(KAXMainWindowAttribute))
   end
@@ -29,37 +19,43 @@ class TestAccessibilityCore < MiniTest::Unit::TestCase
     }
   end
 
-  def slider;     @@slider       ||= child KAXSliderRole;      end
-  def check_box;  @@check_box    ||= child KAXCheckBoxRole;    end
-  def pop_up;     @@pop_up       ||= child KAXPopUpButtonRole; end
-  def search_box; @@search_box   ||= child KAXTextFieldRole;   end
-  def static_text; @@static_text ||= child KAXStaticTextRole;  end
-
-  def yes_button
-    @@yes_button ||= child(KAXButtonRole) { attribute(KAXTitleAttribute) == 'Yes' }
-  end
-
-  def bye_button
-    @@bye_button ||= child(KAXButtonRole) { attribute(KAXTitleAttribute) == 'Bye!' }
-  end
-
-  def no_button
-    @@no_button ||= child(KAXButtonRole) { attribute(KAXTitleAttribute) == 'No' }
-  end
-
+  def slider;      @@slider      ||= child KAXSliderRole;      end
+  def check_box;   @@check_box   ||= child KAXCheckBoxRole;    end
+  def pop_up;      @@pop_up      ||= child KAXPopUpButtonRole; end
+  def search_box;  @@search_box  ||= child KAXTextFieldRole;   end
+  def static_text; @@static_text ||= child(KAXStaticTextRole) { value.match /My Little Pony/           } end
+  def yes_button;  @@yes_button  ||= child(KAXButtonRole)     { attribute(KAXTitleAttribute) == 'Yes'  } end
+  def bye_button;  @@bye_button  ||= child(KAXButtonRole)     { attribute(KAXTitleAttribute) == 'Bye!' } end
+  def no_button;   @@no_button   ||= child(KAXButtonRole)     { attribute(KAXTitleAttribute) == 'No'   } end
   def web_area
     @@web_area ||= (
       child("AXScrollArea") { attribute("AXDescription") == 'Test Web Area' }
       children.first
     )
   end
-
   def text_area
     @@text_area ||= (child("AXScrollArea") {
         attributes.include?(KAXIdentifierAttribute) &&
         attribute(KAXIdentifierAttribute) == 'Text Area'
       }
       children.first)
+  end
+
+  def set_invalid_ref
+    bye_button # guarantee that it is cached
+    @@dead ||= (@ref = no_button; perform KAXPressAction)
+    @ref     = bye_button
+  end
+
+  def app
+    @@app ||= Regexp.new(Regexp.escape(REF.inspect))
+  end
+
+  def assert_error args, should_raise: klass, with_fragments: msgs
+    @ref = REF
+    e = assert_raises(klass) { handle_error *args }
+    assert_match /test_core.rb:56/, e.backtrace.first unless RUNNING_COMPILED
+    msgs.each { |msg| assert_match msg, e.message }
   end
 
 
@@ -209,7 +205,7 @@ class TestAccessibilityCore < MiniTest::Unit::TestCase
     @ref = REF
     assert_empty parameterized_attributes
 
-    @ref = static_text
+    @ref  = static_text
     attrs = parameterized_attributes
     assert_includes attrs, KAXStringForRangeParameterizedAttribute
     assert_includes attrs, KAXLineForIndexParameterizedAttribute
@@ -227,14 +223,13 @@ class TestAccessibilityCore < MiniTest::Unit::TestCase
   end
 
   def test_attribute_for_parameter
-    @ref = static_text
+    @ref     = static_text
+    expected = 'My Li'
 
     attr = attribute KAXStringForRangeParameterizedAttribute, for_parameter: 0..4
-    assert_equal 'AXEle', attr
-
-
+    assert_equal expected, attr
     attr = attribute KAXAttributedStringForRangeParameterizedAttribute, for_parameter: 0..4
-    assert_equal 'AXEle', attr.string
+    assert_equal expected, attr.string
   end
 
   def test_attribute_for_parameter_handles_dead_elements_and_no_value
@@ -458,219 +453,213 @@ class TestAccessibilityCore < MiniTest::Unit::TestCase
     assert_raises(ArgumentError) { set_timeout_to(10) }
   end
 
-#   def error_handler_test args, should_raise: klass, with_fragments: msgs
-#     @@meth ||= Regexp.new "`#{__method__}'$"
-#     handle_error *args
-#   rescue Exception => e
-#     assert_instance_of klass, e, e.inspect
-#     unless RUNNING_COMPILED
-#       assert_match @@meth, e.backtrace.first, e.backtrace
-#     end
-#     msgs.each do |msg|
-#       assert_match msg, e.message
-#     end
-#   end
+  def test_handle_error_failsafe
+       assert_error [99],
+      should_raise: RuntimeError,
+    with_fragments: [/never reach this line/, /99/]
+  end
 
-#   def test_has_failsafe_exception
-#     error_handler_test [99],
-#          should_raise: RuntimeError,
-#        with_fragments: [/never reach this line/, /99/]
-#   end
+  def test_handle_failure
+       assert_error [KAXErrorFailure],
+      should_raise: RuntimeError,
+    with_fragments: [/system failure/, app]
+  end
 
-#   def test_failure
-#     error_handler_test [KAXErrorFailure, REF],
-#          should_raise: RuntimeError,
-#        with_fragments: [/system failure/, ref]
-#   end
+  def test_handle_illegal_argument
+       assert_error [KAXErrorIllegalArgument],
+      should_raise: ArgumentError,
+    with_fragments: [/is not an AXUIElementRef/, app]
 
-#   def test_illegal_argument
-#     skip 'OMG, PLEASE NO'
-#   end
+       assert_error [KAXErrorIllegalArgument, :cake],
+      should_raise: ArgumentError,
+    with_fragments: [/is not a legal argument/, /the element/, app, /cake/]
 
-#   def test_invalid_element
-#     error_handler_test [KAXErrorInvalidUIElement, REF],
-#          should_raise: ArgumentError,
-#        with_fragments: [/no longer a valid reference/, ref]
-#   end
+       assert_error [KAXErrorIllegalArgument, 'cake', 'chocolate'],
+      should_raise: ArgumentError,
+    with_fragments: [/can't get\/set "cake" with\/to "chocolate"/, app]
 
-#   def test_invalid_observer
-#     error_handler_test [KAXErrorInvalidUIElementObserver, REF, :pie, :cake],
-#          should_raise: ArgumentError,
-#        with_fragments: [/no longer a valid observer/, /or was never valid/, ref, /cake/]
-#   end
+    p = CGPointMake(1,3)
+    assert_error [KAXErrorIllegalArgument, p, nil, nil],
+      should_raise: ArgumentError,
+    with_fragments: [/The point #{p.inspect}/, app]
 
-#   def test_cannot_complete
-#     def self.pid_for lol
-#       NSRunningApplication
-#         .runningApplicationsWithBundleIdentifier('com.apple.finder')
-#         .first.processIdentifier
-#     end
-#     error_handler_test [KAXErrorCannotComplete, REF],
-#          should_raise: RuntimeError,
-#        with_fragments: [/An unspecified error/, ref, /:\(/]
+       assert_error [KAXErrorIllegalArgument, 'cheezburger', 'cake', nil, nil],
+      should_raise: ArgumentError,
+    with_fragments: [/the observer "cake"/,app,/the notification "cheezburger"/]
+  end
 
-#     def self.pid_for lol; false; end
-#     error_handler_test [KAXErrorCannotComplete, nil],
-#          should_raise: RuntimeError,
-#        with_fragments: [/Application for pid/, /Maybe it crashed\?/]
-#   end
+  def test_handle_invalid_element
+       assert_error [KAXErrorInvalidUIElement],
+      should_raise: ArgumentError,
+    with_fragments: [/no longer a valid reference/, app]
+  end
 
-#   def test_attr_unsupported
-#     error_handler_test [KAXErrorAttributeUnsupported, REF, :cake],
-#          should_raise: ArgumentError,
-#        with_fragments: [/does not have/, /:cake attribute/, ref]
-#   end
+  def test_handle_invalid_observer
+       assert_error [KAXErrorInvalidUIElementObserver, :pie, :cake],
+      should_raise: ArgumentError,
+    with_fragments: [/no longer a valid observer/, /or was never valid/, app, /cake/]
+  end
 
-#   def test_action_unsupported
-#     error_handler_test [KAXErrorActionUnsupported, REF, :pie],
-#          should_raise: ArgumentError,
-#        with_fragments: [/does not have/, /:pie action/, ref]
-#   end
+  def test_handle_cannot_complete
+    def self.pid
+      NSRunningApplication
+        .runningApplicationsWithBundleIdentifier('com.apple.finder')
+        .first.processIdentifier
+    end
+       assert_error [KAXErrorCannotComplete],
+      should_raise: RuntimeError,
+    with_fragments: [/An unspecified error/, app, /:\(/]
 
-#   def test_notif_unsupported
-#     error_handler_test [KAXErrorNotificationUnsupported, REF, :cheese],
-#          should_raise: ArgumentError,
-#        with_fragments: [/does not support/, /:cheese notification/, ref]
-#   end
+    def self.pid; false end
+       assert_error [KAXErrorCannotComplete],
+      should_raise: RuntimeError,
+    with_fragments: [/Application for pid/, /Maybe it crashed\?/]
+  end
 
-#   def test_not_implemented
-#     error_handler_test [KAXErrorNotImplemented, REF],
-#          should_raise: NotImplementedError,
-#        with_fragments: [/does not work with AXAPI/, ref]
-#   end
+  def test_attr_unsupported
+       assert_error [KAXErrorAttributeUnsupported, :cake],
+      should_raise: ArgumentError,
+    with_fragments: [/does not have/, /:cake attribute/, app]
+  end
 
-#   def test_notif_registered
-#     error_handler_test [KAXErrorNotificationAlreadyRegistered, REF, :lamp],
-#          should_raise: ArgumentError,
-#        with_fragments: [/already registered/, /:lamp/, ref]
-#   end
+  def test_action_unsupported
+       assert_error [KAXErrorActionUnsupported, :pie],
+      should_raise: ArgumentError,
+    with_fragments: [/does not have/, /:pie action/, app]
+  end
 
-#   def test_notif_not_registered
-#     error_handler_test [KAXErrorNotificationNotRegistered, REF, :peas],
-#          should_raise: RuntimeError,
-#        with_fragments: [/not registered/, /:peas/, ref]
-#   end
+  def test_notif_unsupported
+       assert_error [KAXErrorNotificationUnsupported, :cheese],
+      should_raise: ArgumentError,
+    with_fragments: [/does not support/, /:cheese notification/, app]
+  end
 
-#   def test_api_disabled
-#     error_handler_test [KAXErrorAPIDisabled],
-#          should_raise: RuntimeError,
-#        with_fragments: [/AXAPI has been disabled/]
-#   end
+  def test_not_implemented
+       assert_error [KAXErrorNotImplemented],
+      should_raise: NotImplementedError,
+    with_fragments: [/does not work with AXAPI/, app]
+  end
 
-#   def test_param_attr_unsupported
-#     error_handler_test [KAXErrorParameterizedAttributeUnsupported, REF, :oscar],
-#          should_raise: ArgumentError,
-#        with_fragments: [/does not have/, /:oscar parameterized attribute/, ref]
-#   end
+  def test_notif_registered
+       assert_error [KAXErrorNotificationAlreadyRegistered, :lamp],
+      should_raise: ArgumentError,
+    with_fragments: [/already registered/, /:lamp/, app]
+  end
 
-#   def test_not_enough_precision
-#     error_handler_test [KAXErrorNotEnoughPrecision],
-#          should_raise: RuntimeError,
-#        with_fragments: [/not enough precision/, '¯\(°_o)/¯']
-#   end
+  def test_notif_not_registered
+       assert_error [KAXErrorNotificationNotRegistered, :peas],
+      should_raise: RuntimeError,
+    with_fragments: [/not registered/, /:peas/, app]
+  end
 
-# end
+  def test_api_disabled
+       assert_error [KAXErrorAPIDisabled],
+      should_raise: RuntimeError,
+    with_fragments: [/AXAPI has been disabled/]
+  end
+
+  def test_param_attr_unsupported
+       assert_error [KAXErrorParameterizedAttributeUnsupported, :oscar],
+      should_raise: ArgumentError,
+    with_fragments: [/does not have/, /:oscar parameterized attribute/, app]
+  end
+
+  def test_not_enough_precision
+       assert_error [KAXErrorNotEnoughPrecision],
+      should_raise: RuntimeError,
+    with_fragments: [/not enough precision/, '¯\(°_o)/¯']
+  end
+
+end
 
 
-# class TestCoreExtensionsForCore < MiniTest::Unit::TestCase
-#   include Accessibility::Core
+class TestToAXToRubyHooks < MiniTest::Unit::TestCase
 
-#   def test_to_axvalue_wraps_things
-#     # point_makes_a_value
-#     value = CGPointZero.to_axvalue
-#     ptr   = Pointer.new CGPoint.type
-#     AXValueGetValue(value, 1, ptr)
-#     assert_equal CGPointZero, ptr[0]
+  def test_to_ax
+    # point_makes_a_value
+    value = CGPointZero.to_ax
+    ptr   = Pointer.new CGPoint.type
+    AXValueGetValue(value, 1, ptr)
+    assert_equal CGPointZero, ptr.value
 
-#     # size_makes_a_value
-#     value = CGSizeZero.to_axvalue
-#     ptr   = Pointer.new CGSize.type
-#     AXValueGetValue(value, 2, ptr)
-#     assert_equal CGSizeZero, ptr[0]
+    # size_makes_a_value
+    value = CGSizeZero.to_ax
+    ptr   = Pointer.new CGSize.type
+    AXValueGetValue(value, 2, ptr)
+    assert_equal CGSizeZero, ptr.value
 
-#     # rect_makes_a_value
-#     value = CGRectZero.to_axvalue
-#     ptr   = Pointer.new CGRect.type
-#     AXValueGetValue(value, 3, ptr)
-#     assert_equal CGRectZero, ptr[0]
+    # rect_makes_a_value
+    value = CGRectZero.to_ax
+    ptr   = Pointer.new CGRect.type
+    AXValueGetValue(value, 3, ptr)
+    assert_equal CGRectZero, ptr.value
 
-#     # range_makes_a_value
-#     range = CFRange.new(5, 4)
-#     value = range.to_axvalue
-#     ptr   = Pointer.new CFRange.type
-#     AXValueGetValue(value, 4, ptr)
-#     assert_equal range, ptr[0]
-#   end
+    # range_makes_a_value
+    range = CFRange.new(5, 4)
+    value = range.to_ax
+    ptr   = Pointer.new CFRange.type
+    AXValueGetValue(value, 4, ptr)
+    assert_equal range, ptr.value
+  end
 
-#   def test_to_axvalue_on_non_boxes
-#     obj = Object.new
-#     assert_respond_to obj, :to_axvalue
-#     assert_equal obj.self, obj.to_axvalue
-#   end
+  def test_to_axvalue_raises_for_unsupported_boxes
+    assert_raises(NotImplementedError) { NSEdgeInsets.new.to_ax }
+  end
 
-#   def test_to_axvalue_raises_for_unsupported_boxes
-#     assert_raises NotImplementedError do
-#       NSEdgeInsets.new.to_axvalue
-#     end
-#   end
+  def test_to_ax_for_ranges
+    assert_equal CFRangeMake(1,10).to_ax, (1..10  ).to_ax
+    assert_equal CFRangeMake(1, 9).to_ax, (1...10 ).to_ax
+    assert_equal CFRangeMake(0, 3).to_ax, (0..2   ).to_ax
+  end
 
-#   def test_to_axvalue_for_ranges
-#     assert_equal CFRangeMake(1,10).to_axvalue, (1..10  ).to_axvalue
-#     assert_equal CFRangeMake(1, 9).to_axvalue, (1...10 ).to_axvalue
-#     assert_equal CFRangeMake(0, 3).to_axvalue, (0..2   ).to_axvalue
-#   end
+  def test_to_axvalue_for_ranges_raises_for_bad_ranges
+    assert_raises(ArgumentError) { (1..-10).to_ax  }
+    assert_raises(ArgumentError) { (-5...10).to_ax }
+  end
 
-#   def test_to_axvalue_for_ranges_raises_for_bad_ranges
-#     assert_raises ArgumentError do
-#       (1..-10).to_axvalue
-#     end
-#     assert_raises ArgumentError do
-#       (-5...10).to_axvalue
-#     end
-#   end
+  def test_to_ax_on_other_objects
+    obj = Object.new
+    assert_equal obj.self, obj.to_ax
+  end
 
-#   def test_to_value_on_boxes
-#     assert_equal CGPointZero,       CGPointZero.to_axvalue.to_value
-#     assert_equal CGSizeMake(10,10), CGSizeMake(10,10).to_axvalue.to_value
-#     assert_equal Range.new(1,10),   CFRange.new(1,10).to_value
-#   end
 
-#   def test_to_value_on_non_boxes
-#     obj = Object.new
-#     assert_equal obj.self, obj.to_value
-#   end
+  def test_to_ruby
+    assert_equal CGPointZero,       CGPointZero      .to_ax.to_ruby
+    assert_equal CGSizeMake(10,10), CGSizeMake(10,10).to_ax.to_ruby
+    assert_equal Range.new(1,10),   CFRange.new(1,10).to_ax.to_ruby
+  end
 
-#   # trivial but important for backwards compat with Snow Leopard
-#   def test_identifier_const
-#     assert Object.const_defined? :KAXIdentifierAttribute
-#     assert_equal 'AXIdentifier', KAXIdentifierAttribute
-#   end
+  def test_to_ruby_on_non_boxes
+    obj = Object.new
+    assert_equal obj.self, obj.to_ruby
+  end
 
-#   def test_to_range
-#     assert_equal CFRange.new(10,11), [10,11].to_range
-#     assert_equal [12,13], [12,13].to_range.to_a
-#   end
+end
 
-#   def test_to_point
-#     assert_equal CGPointZero, CGPointZero.to_point
-#     assert_equal CGPointMake(2,3), CGPointMake(2,3).to_point
 
-#     assert_instance_of CGPoint, [1, 1].to_point
-#     assert_equal [2,3], [2,3].to_point.to_a
-#     assert_equal CGPoint.new(1,2), NSArray.arrayWithArray([1, 2, 3]).to_point
-#   end
+class TestMiscCoreExtensions < MiniTest::Unit::TestCase
 
-#   def test_to_size
-#     assert_instance_of CGSize, [1, 1].to_size
-#     assert_equal [2,3], [2,3].to_size.to_a
-#     assert_equal CGSize.new(1,2), NSArray.arrayWithArray([1, 2, 3]).to_size
-#   end
+  # trivial but important for backwards compat with Snow Leopard
+  def test_identifier_const
+    assert_equal 'AXIdentifier', KAXIdentifierAttribute
+  end
 
-#   def test_to_rect
-#     assert_instance_of CGRect, [1, 1, 1, 1].to_rect
-#     assert_equal [2,3,4,5], [2,3,4,5].to_rect.to_a.map(&:to_a).flatten
-#     assert_equal CGRectMake(6,7,8,9), [6,7,8,9,10].to_rect
-#   end
+  def test_to_point
+    p = CGPointMake(2,3)
+    assert_equal p, p.to_point
 
-# end
+    p = CGPointMake(1,3)
+    assert_equal p, p.to_a.to_point
+  end
+
+  def test_to_size
+    s = CGSizeMake(2,4)
+    assert_equal s, s.to_a.to_size
+  end
+
+  def test_to_rect
+    r = CGRectMake(6,7,8,9)
+    assert_equal r, r.to_a.map(&:to_a).flatten.to_rect
+  end
+
 end
