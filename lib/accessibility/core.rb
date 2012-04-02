@@ -812,8 +812,6 @@ end
 # simply an abstract base class for structs that MacRuby can use
 # via bridge support.
 class Boxed
-  include Accessibility::Core
-
   ##
   # Returns the number that AXAPI uses in order to know how to wrap
   # a struct.
