@@ -425,10 +425,10 @@ class TestAccessibilityCore < MiniTest::Unit::TestCase
 
 
 
-#   def test_enabled?
-#     assert enabled?
-#     # @todo I guess that's good enough?
-#   end
+  def test_enabled?
+    assert enabled?
+    # @todo I guess that's good enough?
+  end
 
 
 
