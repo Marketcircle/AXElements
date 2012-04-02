@@ -492,7 +492,7 @@ module Accessibility::Core
   # @return [Boolean]
   def register observer, to_receive: notif
     case code = AXObserverAddNotification(observer, @ref, notif, nil)
-    when 0 return true
+    when 0 then true
     else handle_error code, notif, observer, nil, nil
     end
   end
