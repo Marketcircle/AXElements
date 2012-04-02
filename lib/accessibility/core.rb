@@ -430,31 +430,31 @@ module Accessibility::Core
   #       is fixed.
   #
   # Create and return a notification observer for the given object's
-  # application. You can either pass a method reference, proc, or just
-  # attach a regular block to this method, but you must choose one.
+  # application. You should give a block to this method that accepts three
+  # parameters: the observer, the notification sender, and the notification
+  # name.
   #
   # Observer's belong to an application, so you can cache a particular
   # observer and use it for many different notification registrations.
   #
   # @example
   #
-  #   observer_for pid_for(window_ref) do |observer, element, notif, context|
+  #   observer do |obsrvr, sender, notif|
   #     # do stuff...
   #   end
   #
-  # @param [Number]
   # @yieldparam [AXObserverRef]
   # @yieldparam [AXUIElementRef]
   # @yieldparam [String]
-  # @yieldparam [Object]
   # @return [AXObserverRef]
-  def observer_for pid, &block
-    raise ArgumentError, 'A callback is required' unless block
-    ptr  = Pointer.new OBSERVER
-    # @todo Create a proc here and wrap the given callback
-    code = AXObserverCreate(pid, block, ptr)
-    return ptr[0] if code.zero?
-    handle_error code, element, callback
+  def observer
+    raise ArgumentError, 'A callback is required' unless block_given?
+    ptr      = Pointer.new OBSERVER
+    callback = proc { |obsrvr, sender, notif, ctx| yield obsrvr, sender, notif }
+    case code = AXObserverCreate(pid, callback, ptr)
+    when 0 then ptr.value
+    else handle_error code, callback
+    end
   end
 
   ##
@@ -485,16 +485,16 @@ module Accessibility::Core
   #
   # @example
   #
-  #   register observer, to_receive: KAXWindowCreatedNotification, from: window
+  #   register observer, to_receive: KAXWindowCreatedNotification
   #
   # @param [AXObserverRef]
   # @param [String]
-  # @param [AX::Element]
   # @return [Boolean]
-  def register observer, to_receive: notif, from: element
-    code = AXObserverAddNotification(observer, element, notif, nil)
-    return true if code.zero?
-    handle_error code, element, notif, observer, nil, nil
+  def register observer, to_receive: notif
+    case code = AXObserverAddNotification(observer, @ref, notif, nil)
+    when 0 return true
+    else handle_error code, notif, observer, nil, nil
+    end
   end
 
   ##
@@ -502,12 +502,12 @@ module Accessibility::Core
   #
   # @param [AXObserverRef]
   # @param [String]
-  # @param [AX::Element]
   # @return [Boolean]
-  def unregister observer, from_receiving: notif, from: element
-    code = AXObserverRemoveNotification(observer, element, notif)
-    return true if code.zero?
-    handle_error code, element, notif, observer, nil, nil
+  def unregister observer, from_receiving: notif
+    case code = AXObserverRemoveNotification(observer, @ref, notif)
+    when 0 then true
+    else handle_error code, notif, observer, nil, nil
+    end
   end
 
 
@@ -528,27 +528,26 @@ module Accessibility::Core
   end
 
   ##
-  # Get the process identifier (PID) of the application that the given
-  # element belongs to.
+  # Get the process identifier (PID) of the application that the element
+  # belongs to.
   #
   # @example
   #
-  #   pid_for safari_ref      # => 12345
-  #   pid_for text_field_ref  # => 12345
+  #   pid   # => 12345
   #
-  # @param [AXUIElementRef]
   # @return [Fixnum]
-  def pid_for element
+  def pid
     ptr  = Pointer.new :int
-    code = AXUIElementGetPid(element, ptr)
-    return ptr[0] if code.zero?
-    handle_error code, element
+    case code = AXUIElementGetPid(@ref, ptr)
+    when 0 then ptr.value
+    else handle_error code
+    end
   end
 
   ##
   # Create a new reference to the system wide object. This is very useful when
-  # working with the system wide object as you cannot cache the system wide
-  # reference and need to keep creating new instances all the time.
+  # working with the system wide object as caching the system wide reference
+  # does not seem to work often.
   #
   # @example
   #
@@ -561,7 +560,7 @@ module Accessibility::Core
 
   ##
   # Spin the run loop once. For the purpose of receiving notification
-  # callbacks.
+  # callbacks and other Cocoa methods that depend on a run loop.
   #
   # @example
   #
@@ -576,24 +575,8 @@ module Accessibility::Core
   # @group Debug
 
   ##
-  # Change the timeout value for an element or globally. In cases where
-  # you think an element may be slow to respond this can be helpful.
-  #
-  # To change the global value, pass the system wide object for
-  # the `element` argument.
-  #
-  # @param [Number]
-  # @param [AXUIElementRef]
-  # @return [Number]
-  def set_timeout_to seconds, for: element
-    code = AXUIElementSetMessagingTimeout(element, seconds)
-    return seconds if code.zero?
-    handle_error code, element, seconds
-  end
-
-  ##
-  # Globally change the timeout value for AXAPI. This is equivalent to
-  # calling {set_timeout_to:for:} and passing {system_wide} as the element.
+  # Change the timeout value for the element. If you change the timeout
+  # on the system wide object, it affets all timeouts.
   #
   # Setting the global timeout to `0` seconds will reset the timeout value
   # to the system default. Apple does not appear to have publicly documented
@@ -603,7 +586,10 @@ module Accessibility::Core
   # @param [Number]
   # @return [Number]
   def set_timeout_to seconds
-    set_timeout_to seconds, for: system_wide
+    case code = AXUIElementSetMessagingTimeout(@ref, seconds)
+    when 0 then seconds
+    else handle_error code, seconds
+    end
   end
 
 
@@ -613,113 +599,98 @@ module Accessibility::Core
 
   # @param [Number]
   def handle_error code, *args
-    args[0]              = args[0].inspect if args[0]
-    klass, handler, argc = AXERROR[code] || [RuntimeError]
-    msg                  = if handler
-                             self.send handler, *args[argc]
-                           else
-                             "You should never reach this line [#{code}]"
-                           end
+    klass, handler = AXERROR.fetch code, [RuntimeError, :handle_unknown]
+    msg            = self.send handler, *args
     raise klass, msg, caller(1)
   end
 
-  # @private
-  def handle_failure ref
-    "A system failure occurred with #{ref}, stopping to be safe"
+  def handle_unknown *args
+    "You should never reach this line [#{code}]:#{@ref.inspect}"
   end
 
-  # @private
+  def handle_failure *args
+    "A system failure occurred with #{@ref.inspect}, stopping to be safe"
+  end
+
   def handle_illegal_argument *args
     case args.size
+    when 0
+      "#{@ref.inspect} is not an AXUIElementRef"
     when 1
-      "#{args.first} is not an AXUIElementRef"
+      "Either the element #{@ref.inspect} " +
+        "or the attr/action/callback #{args.first.inspect} " +
+        "is not a legal argument"
     when 2
-      "Either the element #{args.first} " +
-        "or the attr/action/callback #{args[1].inspect} " +
-        'is not a legal argument'
+      "You can't set #{args.first.inspect} to " +
+        "#{args[1].inspect} for #{@ref.inspect}"
     when 3
-      "You can't set #{args[1].inspect} to " +
-        "#{args[2].inspect} for #{args.first}"
+      "The point #{args.first.to_point.inspect} is not a valid point, " +
+        "or #{@ref.inspect} is not an AXUIElementRef"
     when 4
-      "The point #{args[1].to_point.inspect} is not a valid point, " +
-        "or #{args.first} is not an AXUIElementRef"
-    when 5
-      "Either the observer #{args[2].inspect}, " +
-        "the element #{args.first}, or " +
-        "the notification #{args[1].inspect} " +
+      "Either the observer #{args[1].inspect}, " +
+        "the element #{@ref.inspect}, or " +
+        "the notification #{args[0].inspect} " +
         "is not a legitimate argument"
     end
   end
 
-  # @private
-  def handle_invalid_element ref
-    "#{ref} is no longer a valid reference"
+  def handle_invalid_element *args
+    "#{@ref.inspect} is no longer a valid reference"
   end
 
-  # @private
-  def handle_invalid_observer ref, lol, obsrvr
-    "#{obsrvr.inspect} is no longer a valid observer for #{ref}" +
-      'or was never valid'
+  def handle_invalid_observer *args
+    "#{args[1].inspect} is no longer a valid observer for " +
+      "#{@ref.inspect} or was never valid"
   end
 
-  # @private
   # @param [AXUIElementRef]
-  def handle_cannot_complete ref
+  def handle_cannot_complete *args
     spin_run_loop
-    pid = pid_for ref
     app = NSRunningApplication.runningApplicationWithProcessIdentifier pid
     if app
-      "An unspecified error occurred using #{ref} with AXAPI" +
-        ', maybe a timeout :('
+      "An unspecified error occurred using #{@ref.inspect} with AXAPI" +
+        ", maybe a timeout :("
     else
       "Application for pid=#{pid} is no longer running. Maybe it crashed?"
     end
   end
 
-  # @private
-  def handle_attr_unsupported ref, attr
-    "#{ref} does not have a #{attr.inspect} attribute"
+  def handle_attr_unsupported *args
+    "#{@ref.inspect} does not have a #{args.first.inspect} attribute"
   end
 
-  # @private
-  def handle_action_unsupported ref, action
-    "#{ref} does not have a #{action.inspect} action"
+  def handle_action_unsupported *args
+    "#{@ref.inspect} does not have a #{args.first.inspect} action"
   end
 
-  # @private
-  def handle_notif_unsupported ref, notif
-    "#{ref} does not support the #{notif.inspect} notification"
+  def handle_notif_unsupported *args
+    "#{@ref.inspect} does not support the #{args.first.inspect} notification"
   end
 
-  # @private
-  def handle_not_implemented ref
-    "The program that owns #{ref} does not work with AXAPI properly"
+  def handle_not_implemented *args
+    "The program that owns #{@ref.inspect} does not work with AXAPI properly"
   end
 
-  ##
-  # @private
   # @todo Does this really neeed to raise an exception? Seems
   #       like a warning would be sufficient.
-  def handle_notif_registered ref, notif
-    "You have already registered to hear about #{notif.inspect} from #{ref}"
+  def handle_notif_registered *args
+    "You have already registered to hear about #{args[0].inspect} " +
+      "from #{@ref.inspect}"
   end
 
-  # @private
-  def handle_notif_not_registered ref, notif
-    "You have not registered to hear about #{notif.inspect} from #{ref}"
+  def handle_notif_not_registered *args
+    "You have not registered to hear about #{args[0].inspect} " +
+      "from #{@ref.inspect}"
   end
 
-  # @private
-  def handle_api_disabled
+  def handle_api_disabled *args
     'AXAPI has been disabled'
   end
 
-  # @private
-  def handle_param_attr_unsupported ref, attr
-    "#{ref} does not have a #{attr.inspect} parameterized attribute"
+  def handle_param_attr_unsupported *args
+    "#{@ref.inspect} does not have a #{args[0].inspect} parameterized attribute"
   end
 
-  # @private
   def handle_not_enough_precision
     'AXAPI said there was not enough precision ¯\(°_o)/¯'
   end
@@ -733,7 +704,7 @@ module Accessibility::Core
   # `Pointer` type encoding for `CFArrayRef` objects.
   #
   # @return [String]
-  ARRAY    = '^{__CFArray}'.freeze
+  ARRAY    = '^{__CFArray}'
 
   ##
   # @private
@@ -741,7 +712,7 @@ module Accessibility::Core
   # `Pointer` type encoding for `AXUIElementRef` objects.
   #
   # @return [String]
-  ELEMENT  = '^{__AXUIElement}'.freeze
+  ELEMENT  = '^{__AXUIElement}'
 
   ##
   # @private
@@ -749,7 +720,7 @@ module Accessibility::Core
   # `Pointer` type encoding for `AXObserverRef` objects.
   #
   # @return [String]
-  OBSERVER = '^{__AXObserver}'.freeze
+  OBSERVER = '^{__AXObserver}'
 
   ##
   # @private
@@ -759,34 +730,20 @@ module Accessibility::Core
   #
   # @return [Hash{Number=>Array(Symbol,Range)}]
   AXERROR = {
-    KAXErrorFailure                           =>
-      [RuntimeError,        :handle_failure,                0...1],
-    KAXErrorIllegalArgument                   =>
-      [ArgumentError,       :handle_illegal_argument,       0..-1],
-    KAXErrorInvalidUIElement                  =>
-      [ArgumentError,       :handle_invalid_element,        0...1],
-    KAXErrorInvalidUIElementObserver          =>
-      [ArgumentError,       :handle_invalid_observer,       0...3],
-    KAXErrorCannotComplete                    =>
-      [RuntimeError,        :handle_cannot_complete,        0...1],
-    KAXErrorAttributeUnsupported              =>
-      [ArgumentError,       :handle_attr_unsupported,       0...2],
-    KAXErrorActionUnsupported                 =>
-      [ArgumentError,       :handle_action_unsupported,     0...2],
-    KAXErrorNotificationUnsupported           =>
-      [ArgumentError,       :handle_notif_unsupported,      0...2],
-    KAXErrorNotImplemented                    =>
-      [NotImplementedError, :handle_not_implemented,        0...1],
-    KAXErrorNotificationAlreadyRegistered     =>
-      [ArgumentError,       :handle_notif_registered,       0...2],
-    KAXErrorNotificationNotRegistered         =>
-      [RuntimeError,        :handle_notif_not_registered,   0...2],
-    KAXErrorAPIDisabled                       =>
-      [RuntimeError,        :handle_api_disabled,           0...0],
-    KAXErrorParameterizedAttributeUnsupported =>
-      [ArgumentError,       :handle_param_attr_unsupported, 0...2],
-    KAXErrorNotEnoughPrecision                =>
-      [RuntimeError,        :handle_not_enough_precision,   0...0]
+    KAXErrorFailure                           => [RuntimeError,        :handle_failure               ],
+    KAXErrorIllegalArgument                   => [ArgumentError,       :handle_illegal_argument      ],
+    KAXErrorInvalidUIElement                  => [ArgumentError,       :handle_invalid_element       ],
+    KAXErrorInvalidUIElementObserver          => [ArgumentError,       :handle_invalid_observer      ],
+    KAXErrorCannotComplete                    => [RuntimeError,        :handle_cannot_complete       ],
+    KAXErrorAttributeUnsupported              => [ArgumentError,       :handle_attr_unsupported      ],
+    KAXErrorActionUnsupported                 => [ArgumentError,       :handle_action_unsupported    ],
+    KAXErrorNotificationUnsupported           => [ArgumentError,       :handle_notif_unsupported     ],
+    KAXErrorNotImplemented                    => [NotImplementedError, :handle_not_implemented       ],
+    KAXErrorNotificationAlreadyRegistered     => [ArgumentError,       :handle_notif_registered      ],
+    KAXErrorNotificationNotRegistered         => [RuntimeError,        :handle_notif_not_registered  ],
+    KAXErrorAPIDisabled                       => [RuntimeError,        :handle_api_disabled          ],
+    KAXErrorParameterizedAttributeUnsupported => [ArgumentError,       :handle_param_attr_unsupported],
+    KAXErrorNotEnoughPrecision                => [RuntimeError,        :handle_not_enough_precision  ]
   }
 
 end
@@ -807,17 +764,17 @@ class Boxed
   end
 
   ##
-  # Create an `AXValue` from the `Boxed` instance. This will only
-  # work if for a few boxed types, you will need to check the AXAPI
-  # documentation for an up to date list.
+  # Create an `AXValueRef` from the `Boxed` instance. This will only
+  # work if for the most common boxed types, you will need to check
+  # the AXAPI documentation for an up to date list.
   #
   # @example
   #
-  #   CGPointMake(12, 34).to_axvalue # => #<AXValueRef:0x455678e2>
-  #   CGSizeMake(56, 78).to_axvalue  # => #<AXValueRef:0x555678e2>
+  #   CGPointMake(12, 34).to_ax # => #<AXValueRef:0x455678e2>
+  #   CGSizeMake(56, 78).to_ax  # => #<AXValueRef:0x555678e2>
   #
   # @return [AXValueRef]
-  def to_axvalue
+  def to_ax
     klass = self.class
     ptr   = Pointer.new klass.type
     ptr.assign self
@@ -826,17 +783,7 @@ class Boxed
 end
 
 # AXElements extensions for `CFRange`.
-class CFRange
-  def self.ax_value
-    KAXValueCFRangeType
-  end
-
-  # @return [Range]
-  def to_value
-    Range.new location, (location + length - 1)
-  end
-end
-
+class << CFRange; def ax_value; KAXValueCFRangeType; end end
 # AXElements extensions for `CGSize`.
 class << CGSize;  def ax_value; KAXValueCGSizeType;  end end
 # AXElements extensions for `CGRect`.
@@ -844,8 +791,9 @@ class << CGRect;  def ax_value; KAXValueCGRectType;  end end
 # AXElements extensions for `CGPoint`.
 class << CGPoint; def ax_value; KAXValueCGPointType; end end
 
+
 ##
-# Mixin for the special `__NSCFType` class so that `#to_value` works properly.
+# Mixin for the special `__NSCFType` class so that `#to_ruby` works properly.
 module Accessibility::AXValueUnwrapper
   ##
   # Map of type encodings used for wrapping structs when coming from
@@ -859,35 +807,56 @@ module Accessibility::AXValueUnwrapper
 
   ##
   # Unwrap an `AXValue` into the `Boxed` instance that it is supposed
-  # to be. This will only work for a few boxed types, you will need to
-  # check the AXAPI documentation for an up to date list.
+  # to be. This will only work for the most common boxed types, you will
+  # need to check the AXAPI documentation for an up to date list.
   #
   # @example
   #
-  #   wrapped_point.to_value # => #<CGPoint x=44.3 y=99.0>
-  #   wrapped_range.to_value # => #<CFRange begin=7 length=100>
+  #   wrapped_point.to_ruby # => #<CGPoint x=44.3 y=99.0>
+  #   wrapped_range.to_ruby # => #<CFRange begin=7 length=100>
   #
   # @return [Boxed]
-  def to_value
+  def to_ruby
     box_type = AXValueGetType(self)
     return self if box_type.zero?
     ptr      = Pointer.new BOX_TYPES[box_type]
     AXValueGetValue(self, box_type, ptr)
-    ptr[0].to_value
+    ptr.value.to_ruby
   end
 end
+# hack to find the proper class
 AXUIElementCreateSystemWide().class.send(:include, Accessibility::AXValueUnwrapper)
+
 
 # AXElements extensions for `NSObject`.
 class NSObject
   # @return [Object]
-  def to_axvalue
+  def to_ax
     self
   end
 
   # @return [Object]
-  def to_value
+  def to_ruby
     self
+  end
+end
+
+# AXElements extensions for `Range`.
+class Range
+  # @return [AXValueRef]
+  def to_ax
+    raise ArgumentError if last < 0 || first < 0
+    length = if exclude_end?
+               last - first
+             else
+               last - first + 1
+             end
+    CFRange.new(first, length).to_ax
+  end
+
+  # @return [Range]
+  def to_ruby
+    Range.new location, (location + length - 1)
   end
 end
 
@@ -920,19 +889,5 @@ class CGPoint
   # @return [CGPoint]
   def to_point
     self
-  end
-end
-
-# AXElements extensions for `Range`.
-class Range
-  # @return [AXValueRef]
-  def to_axvalue
-    raise ArgumentError if last < 0 || first < 0
-    length = if exclude_end?
-               last - first
-             else
-               last - first + 1
-             end
-    CFRange.new(first, length).to_axvalue
   end
 end
