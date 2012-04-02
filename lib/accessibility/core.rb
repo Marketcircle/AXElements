@@ -119,7 +119,7 @@ module Accessibility::Core
   #
   # @return [String]
   def role
-    attr KAXRoleAttribute
+    attribute KAXRoleAttribute
   end
 
   ##
@@ -134,7 +134,7 @@ module Accessibility::Core
   #
   # @return [String,nil]
   def subrole
-    attr KAXSubroleAttribute
+    attribute KAXSubroleAttribute
   end
 
   ##
@@ -146,7 +146,7 @@ module Accessibility::Core
   #
   # @return [Array<AX::Element>]
   def children
-    attr KAXChildrenAttribute
+    attribute KAXChildrenAttribute
   end
 
   ##
@@ -158,7 +158,7 @@ module Accessibility::Core
   #   value  # => 42
   #
   def value
-    attr KAXValueAttribute
+    attribute KAXValueAttribute
   end
 
   ##
@@ -271,7 +271,9 @@ module Accessibility::Core
   end
 
   ##
-  # Post the list of given keyboard events to the element.
+  # Post the list of given keyboard events to the element. This only
+  # applies if the given element is an application object or the
+  # system wide object.
   #
   # Events could be generated from a string using output from
   # {Accessibility::String#keyboard_events_for}.
@@ -301,8 +303,7 @@ module Accessibility::Core
   end
 
   ##
-  # @todo Make this runtime configurable. At that point, posting events
-  #       does too much to be in Core and needs to move elsewhere.
+  # @todo Make this runtime configurable.
   #
   # The delay between key presses. The default value is `0.01`, which
   # should be about 50 characters per second (down and up are separate
