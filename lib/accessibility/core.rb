@@ -249,8 +249,8 @@ module Accessibility::Core
   def parameterized_attributes
     ptr = Pointer.new ARRAY
     case code = AXUIElementCopyParameterizedAttributeNames(@ref, ptr)
-    when 0                        then ptr.value
-    when KAXErrorInvalidUIElement then []
+    when 0                                         then ptr.value
+    when KAXErrorNoValue, KAXErrorInvalidUIElement then []
     else handle_error code
     end
   end
