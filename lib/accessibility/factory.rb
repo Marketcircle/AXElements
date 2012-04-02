@@ -2,9 +2,12 @@ require 'accessibility/core'
 require 'accessibility/translator'
 
 ##
+# Namespace container for all the accessibility objects.
+module AX; end
+
+##
 # Mixin made for processing low level data from AXAPI methods.
 module Accessibility::Factory
-  include Accessibility::Core
 
   ##
   # Processes any given data from an AXAPI method and wraps it if
@@ -63,10 +66,10 @@ module Accessibility::Factory
   # @param [AXUIElementRef]
   # @return [AX::Element]
   def process_element ref
-    role  = TRANSLATOR.unprefix role_for ref
-    attrs = attrs_for ref
+    role  = TRANSLATOR.unprefix ref.role
+    attrs = ref.attributes
     klass = if attrs.include? KAXSubroleAttribute
-              subrole = subrole_for ref
+              subrole = ref.subrole
               # Some objects claim to have a subrole but return nil
               if subrole
                 class_for TRANSLATOR.unprefix(subrole), and: role

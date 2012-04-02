@@ -1,64 +1,66 @@
-# arguably not unit tests, they depend on Core working
+require 'test/helper'
+require 'accessibility/factory'
+require 'ax/element'
+require 'ax/application'
+
+# Just pretend that you didn't see this
+class AX::Element
+  attr_reader :ref
+end
+
 class TestAccessibilityFactory < MiniTest::Unit::TestCase
   include Accessibility::Factory
 
   def window
-    children_for(REF).find { |x| role_for(x) == KAXWindowRole }
+    REF.children.find { |x| x.role == KAXWindowRole }
   end
 
   def scroll_area
-    children_for(window).find { |x|
-      attrs_for(x).include?(KAXDescriptionAttribute) &&
-        value_of(KAXDescriptionAttribute, for: x) == 'Test Web Area'
+    window.children.find { |x|
+      x.attributes.include?(KAXDescriptionAttribute) &&
+        x.attribute(KAXDescriptionAttribute) == 'Test Web Area'
     }
   end
 
   def web_area
-    children_for(scroll_area).find { |x| role_for(x) == 'AXWebArea' }
+    scroll_area.children.find { |x| x.role == 'AXWebArea' }
   end
 
   def close_button
-    children_for(window).find { |x|
-      attrs_for(x).include?(KAXSubroleAttribute) &&
-        value_of(KAXSubroleAttribute, for: x) == KAXCloseButtonSubrole
+    window.children.find { |x|
+      x.attributes.include?(KAXSubroleAttribute) &&
+        x.attribute(KAXSubroleAttribute) == KAXCloseButtonSubrole
     }
   end
 
   def test_processing_element_refs
     assert_equal REF, process(REF).ref
 
-    web_view = process web_area
-    assert_instance_of AX::WebArea, web_view
-
-    main_window = process window
-    assert_instance_of AX::StandardWindow, main_window
-    button = process close_button
-    assert_instance_of AX::CloseButton, button
+    o = process(web_area)
+    assert_instance_of AX::WebArea, o
 
     # intentionally done a second time to see if the
     # created class is used again; this guarantees
     # that the class can be created properly and then
     # used again when needed
-    main_window = process window
-    assert_instance_of AX::StandardWindow, main_window
-    button = process close_button
-    assert_instance_of AX::CloseButton, button
+    2.times do
+      o = process window
+      assert_instance_of AX::StandardWindow, o
+      o = process close_button
+      assert_instance_of AX::CloseButton, o
+    end
 
-    application = process REF
-    assert_instance_of AX::Application, application
-    scroll_view = process scroll_area
-    assert_instance_of AX::ScrollArea, scroll_view
-
-    # again, we do it a second time
-    application = process REF
-    assert_instance_of AX::Application, application
-    scroll_view = process scroll_area
-    assert_instance_of AX::ScrollArea, scroll_view
+    2.times do
+      o = process REF
+      assert_instance_of AX::Application, o
+      o = process scroll_area
+      assert_instance_of AX::ScrollArea, o
+    end
   end
 
   def test_processing_arrays
-    assert_equal [],    process_array([])
-    assert_equal [1],   process_array([1])
+    assert_equal [],  process_array([])
+    assert_equal [1], process_array([1])
 
     expected = [AX::Application.new(REF)]
     assert_equal expected, process_array([REF])

@@ -24,9 +24,21 @@ class MiniTest::Unit::TestCase
 end
 
 
-$LOAD_PATH << 'lib'
-
 # Figure out if we are testing a compiled version of AXElements, since some
 # tests will fail due to incomplete MacRuby features.
 RUNNING_COMPILED =
   $LOADED_FEATURES.find { |file| file.match /ax_elements.rbo/ }
+
+def pid_for name # sneaky naming
+  NSWorkspace.sharedWorkspace.runningApplications.find do |app|
+    app.bundleIdentifier == name
+  end.processIdentifier
+end
+
+class MiniTest::Unit::TestCase
+  # needs to be defined in the class, there is a TOPLEVEL::PID
+  PID = pid_for APP_BUNDLE_IDENTIFIER
+  REF = AXUIElementCreateApplication(PID)
+end
+
+$LOAD_PATH << 'lib'

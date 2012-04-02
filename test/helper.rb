@@ -11,8 +11,8 @@ TEST_APP = NSWorkspace.sharedWorkspace.launchApplicationAtURL APP_BUNDLE_URL,
                                                configuration: {},
                                                        error: error
 if TEST_APP.nil?
-  $stderr.puts 'You need to build AND run the fixture app before running tests'
-  $stderr.puts 'Run `rake fixture`'
+  $stderr.puts 'You need to build AND run the fixture app once before running tests'
+  $stderr.puts 'Run `rake run_fixture` to initalize the fixture'
   exit 3
 else
   sleep 2 # Instead of using high level features of AXElements that we are
@@ -23,19 +23,6 @@ end
 
 
 require 'test/runner'
-
-class MiniTest::Unit::TestCase
-
-  def self.pid_from name # sneaky naming
-    NSWorkspace.sharedWorkspace.runningApplications.find do |app|
-      app.bundleIdentifier == name
-    end.processIdentifier
-  end
-
-  PID = pid_from APP_BUNDLE_IDENTIFIER
-  REF = AXUIElementCreateApplication(PID)
-
-end
 
 
 # Force this to be on for testing

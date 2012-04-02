@@ -6,12 +6,7 @@ require 'accessibility/qualifier'
 require 'accessibility/errors'
 require 'accessibility/pp_inspector'
 require 'accessibility/factory'
-
-
-##
-# Namespace container for all the accessibility objects.
-module AX
-end
+require 'accessibility/core'
 
 ##
 # @abstract
@@ -46,7 +41,7 @@ class AX::Element
   # @param [AXUIElementRef]
   def initialize ref
     @ref   = ref
-    @attrs = attrs_for ref
+    @attrs = ref.attributes
   end
 
 
@@ -117,7 +112,7 @@ class AX::Element
   #
   # @return [Fixnum]
   def pid
-    @pid ||= pid_for @ref
+    @pid ||= @ref.pid
   end
 
   ##
