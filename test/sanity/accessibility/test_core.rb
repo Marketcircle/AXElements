@@ -29,11 +29,11 @@ class TestAccessibilityCore < MiniTest::Unit::TestCase
     }
   end
 
-  def slider;     @@slider     ||= child KAXSliderRole;      end
-  def check_box;  @@check_box  ||= child KAXCheckBoxRole;    end
-  def pop_up;     @@pop_up     ||= child KAXPopUpButtonRole; end
-  def search_box; @@search_box ||= child KAXTextFieldRole;   end
-  # def static_text; @@static_text ||= child KAXStaticTextRole; end
+  def slider;     @@slider       ||= child KAXSliderRole;      end
+  def check_box;  @@check_box    ||= child KAXCheckBoxRole;    end
+  def pop_up;     @@pop_up       ||= child KAXPopUpButtonRole; end
+  def search_box; @@search_box   ||= child KAXTextFieldRole;   end
+  def static_text; @@static_text ||= child KAXStaticTextRole;  end
 
   def yes_button
     @@yes_button ||= child(KAXButtonRole) { attribute(KAXTitleAttribute) == 'Yes' }
@@ -55,10 +55,10 @@ class TestAccessibilityCore < MiniTest::Unit::TestCase
   end
 
   def text_area
-    @@text_area ||= (child("AXScrollArea") do
+    @@text_area ||= (child("AXScrollArea") {
         attributes.include?(KAXIdentifierAttribute) &&
-          attribute(KAXIdentifierAttribute) == 'Text Area'
-      end
+        attribute(KAXIdentifierAttribute) == 'Text Area'
+      }
       children.first)
   end
 
@@ -69,7 +69,7 @@ class TestAccessibilityCore < MiniTest::Unit::TestCase
   # there are no tests to check what happens when they do not exist;
   # though I am quite sure that AXElements will raise an exception.
 
-  def test_attr_names_is_strings
+  def test_attributes
     @ref = REF
     attrs = attributes
 
@@ -80,7 +80,7 @@ class TestAccessibilityCore < MiniTest::Unit::TestCase
     assert_includes attrs, KAXMenuBarAttribute
   end
 
-  def test_attr_names_is_empty_for_dead_elements
+  def test_attributes_is_empty_for_dead_elements
     set_invalid_ref
     assert_empty attributes
   end
@@ -90,7 +90,7 @@ class TestAccessibilityCore < MiniTest::Unit::TestCase
     assert_raises(ArgumentError) { attributes }
   end
 
-  def test_attr_correctness
+  def test_attribute
     @ref = window
     assert_equal 'AXElementsTester',  attribute(KAXTitleAttribute  )
     assert_equal false,               attribute(KAXFocusedAttribute)
@@ -99,14 +99,14 @@ class TestAccessibilityCore < MiniTest::Unit::TestCase
     assert_equal 10..19,              attribute("AXPie"            )
   end
 
-  def test_attr_is_nil_when_no_value_or_dead
+  def test_attribute_is_nil_when_no_value_or_dead
     @ref = window
     assert_nil attribute(KAXGrowAreaAttribute)
     set_invalid_ref
     assert_nil attribute(KAXRoleAttribute)
   end
 
-  def test_attr_value_handles_errors
+  def test_attribute_handles_errors
     @ref = REF
     assert_raises(ArgumentError) { attribute 'MADEUPATTRIBUTE' }
   end
@@ -154,19 +154,19 @@ class TestAccessibilityCore < MiniTest::Unit::TestCase
     assert_raises(ArgumentError) { size_of 'pie' }
   end
 
-  def test_attr_writable
+  def test_writable
     @ref = REF
     refute writable? KAXTitleAttribute
     @ref = window
     assert writable? KAXMainAttribute
   end
 
-  def test_attr_writable_false_for_dead_cases
+  def test_writable_false_for_dead_cases
     set_invalid_ref
     refute writable? KAXRoleAttribute
   end
 
-  def test_attr_writable_handles_errors
+  def test_writable_handles_errors
     @ref = REF
     assert_raises(ArgumentError) { writable? 'FAKE' }
   end
@@ -205,6 +205,52 @@ class TestAccessibilityCore < MiniTest::Unit::TestCase
     assert_raises(ArgumentError) { set 'FAKE', true }
   end
 
+  def test_parameterized_attributes
+    @ref = REF
+    assert_empty parameterized_attributes
+
+    @ref = static_text
+    attrs = parameterized_attributes
+    assert_includes attrs, KAXStringForRangeParameterizedAttribute
+    assert_includes attrs, KAXLineForIndexParameterizedAttribute
+    assert_includes attrs, KAXBoundsForRangeParameterizedAttribute
+  end
+
+  def test_parameterized_attributes_empty_for_dead_elements
+    set_invalid_ref
+    assert_empty parameterized_attributes
+  end
+
+  def test_parameterized_attributes_handles_errors
+    @ref = nil
+    assert_raises(ArgumentError) { parameterized_attributes }
+  end
+
+  def test_attribute_for_parameter
+    @ref = static_text
+
+    attr = attribute KAXStringForRangeParameterizedAttribute, for_parameter: 0..4
+    assert_equal 'AXEle', attr
+
+
+    attr = attribute KAXAttributedStringForRangeParameterizedAttribute, for_parameter: 0..4
+    assert_equal 'AXEle', attr.string
+  end
+
+  def test_attribute_for_parameter_handles_dead_elements_and_no_value
+    set_invalid_ref
+    assert_nil attribute(KAXStringForRangeParameterizedAttribute, for_parameter: 0..0)
+
+    # Should add a test case to test the no value case, but it will have
+    # to be fabricated in the test app.
+  end
+
+  def test_attribute_for_parameter_handles_errors
+    @ref = REF
+    assert_raises(ArgumentError) {
+      attribute(KAXStringForRangeParameterizedAttribute, for_parameter: 0..1)
+    }
+  end
 
   def test_action_names
     @ref = REF
@@ -268,67 +314,6 @@ class TestAccessibilityCore < MiniTest::Unit::TestCase
     @ref = nil
     assert_raises(ArgumentError) { post [[56,true],[56,false]] }
   end
-
-
-#   def test_param_attrs
-#     assert_empty param_attrs_for REF
-
-#     attrs = param_attrs_for static_text
-#     assert_includes attrs, KAXStringForRangeParameterizedAttribute
-#     assert_includes attrs, KAXLineForIndexParameterizedAttribute
-#     assert_includes attrs, KAXBoundsForRangeParameterizedAttribute
-#   end
-
-#   def test_param_attrs_handles_errors
-#     assert_raises ArgumentError do # invalid
-#       param_attrs_for nil
-#     end
-
-#     # Need to test the other failure cases eventually...
-#   end
-
-
-
-#   def test_param_attr_fetching
-#     attr =   value_of KAXStringForRangeParameterizedAttribute,
-#            for_param: CFRange.new(0, 5).to_axvalue,
-#                  for: static_text
-
-#     assert_equal 'AXEle', attr
-
-#     attr =   value_of KAXAttributedStringForRangeParameterizedAttribute,
-#            for_param: CFRange.new(0, 5).to_axvalue,
-#                  for: static_text
-
-#     assert_kind_of NSAttributedString, attr
-#     assert_equal 'AXEle', attr.string
-
-#     # Should add a test case to test the no value case, but it will have
-#     # to be fabricated in the test app.
-#   end
-
-#   def test_param_attr_handles_errors
-#     assert_raises ArgumentError do # has no param attrs
-#         value_of KAXStringForRangeParameterizedAttribute,
-#       for_param: CFRange.new(0, 10).to_axvalue,
-#             for: REF
-#     end
-
-#     assert_raises ArgumentError do # invalid element
-#         value_of KAXStringForRangeParameterizedAttribute,
-#       for_param: CFRange.new(0, 10).to_axvalue,
-#             for: nil
-#     end
-
-#     assert_raises ArgumentError do # invalid argument
-#         value_of KAXStringForRangeParameterizedAttribute,
-#       for_param: CFRange.new(0, 10),
-#             for: REF
-#      end
-
-#     # Need to test the other failure cases eventually...
-#   end
-
 
 
 #   ##
