@@ -534,11 +534,13 @@ module Accessibility::Core
   #
   # @return [Fixnum]
   def pid
-    ptr  = Pointer.new :int
-    case code = AXUIElementGetPid(self, ptr)
-    when 0 then ptr.value
-    else handle_error code
-    end
+    @pid ||= (
+      ptr = Pointer.new :int
+      case code = AXUIElementGetPid(self, ptr)
+      when 0 then ptr.value
+      else handle_error code
+      end
+      )
   end
 
   ##
