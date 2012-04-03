@@ -1,63 +1,47 @@
+require 'test/helper'
+require 'ax/systemwide'
+
+class AX::Element
+  attr_reader :ref
+end
+
 class TestAXSystemWide < MiniTest::Unit::TestCase
 
+  def system_wide
+    @system_wide ||= AX::SystemWide.new
+  end
+
   def test_is_effectively_a_singleton
-    assert_equal system_wide, system_wide
-  end
-
-  def test_keydown
-    element = system_wide
-    got_callback = false
-    element.define_singleton_method :'post:to:' do |events, ref|
-      if events[0][1] == true && events.size == 1 && ref == element.ref
-        got_callback = true
-      end
-    end
-    element.keydown "\\OPTION"
-    assert got_callback
-  end
-
-  def test_keyup
-    element = system_wide
-    got_callback = false
-    element.define_singleton_method :'post:to:' do |events, ref|
-      if events[0][1] == false && events.size == 1 && ref == element.ref
-        got_callback = true
-      end
-    end
-    element.keyup "\\OPTION"
-    assert got_callback
+    assert_equal AX::SystemWide.new, AX::SystemWide.new
   end
 
   def test_type_string_forwards_events
-    element = system_wide
+    system  = system_wide.ref
+    meth    = system.method :post
     got_callback = false
-    element.define_singleton_method :'post:to:' do |events, ref|
-      got_callback = true if events.kind_of?(Array) && ref == element.ref
+    system.define_singleton_method :post do |events|
+      got_callback = true if events.kind_of?(Array)
     end
-    element.type_string 'test'
+    system_wide.type_string 'test'
     assert got_callback
+  ensure
+    system.define_singleton_method :post, meth if meth
   end
 
   def test_search_not_allowed
-    assert_raises NoMethodError do
-      system_wide.search
-    end
+    assert_raises(NoMethodError) { system_wide.search }
   end
 
   def test_notifications_not_allowed
-    assert_raises NoMethodError do
-      system_wide.search
-    end
+    assert_raises(NoMethodError) { system_wide.on_notification }
   end
 
-  def test_element_at_point
-    element = system_wide
-    extend Accessibility::Core
-
-    [[10,10],[100,100],[500,500],[800,600]].each do |point|
-      expected = element_at point, for: element.ref
-      actual   = element.element_at_point point
-      assert_equal expected, actual.ref
+  def test_element_at
+    system = system_wide.ref
+    [[10,10],[500,500]].each do |point|
+      expected = system.element_at(point)
+      actual   = system_wide.element_at(point).ref
+      assert_equal expected, actual
     end
   end
 

@@ -599,7 +599,7 @@ module Accessibility::DSL
   # @param [#to_point]
   # @return [AX::Element]
   def element_at_point point, for: app
-    app.element_at_point point
+    app.element_at point
   end
 
   ##

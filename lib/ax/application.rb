@@ -12,14 +12,6 @@ class AX::Application < AX::Element
   ##
   # Overridden so that we can also cache the `NSRunningApplication`
   # instance for this object.
-  def init ref, attrs
-    super
-    @app = NSRunningApplication.runningApplicationWithProcessIdentifier pid
-  end
-
-  ##
-  # Overridden so that we can also cache the `NSRunningApplication`
-  # instance for this object.
   #
   # You can initialize an application object with either the process
   # identifier (pid) of the application, the name of the application,
@@ -28,15 +20,15 @@ class AX::Application < AX::Element
   def initialize arg
     case arg
     when Fixnum
-      super application_for arg
+      super SYSTEMWIDE.application_for arg
       @app = NSRunningApplication.runningApplicationWithProcessIdentifier arg
     when String
-      spin_run_loop
+      SYSTEMWIDE.spin_run_loop
       @app = NSWorkspace.sharedWorkspace.runningApplications
         .find { |app| app.localizedName == arg }
-      super application_for @app.processIdentifier
+      super SYSTEMWIDE.application_for @app.processIdentifier
     when NSRunningApplication
-      super application_for arg.processIdentifier
+      super SYSTEMWIDE.application_for arg.processIdentifier
       @app = arg
     else
       super arg # assume it is an AXUIElementRef
@@ -65,7 +57,7 @@ class AX::Application < AX::Element
   # to the dynamic #focused? method, but might make more sense to use
   # in some cases.
   def active?
-    spin_run_loop
+    @ref.spin_run_loop
     @app.active?
   end
   alias_method :focused,  :active?
@@ -74,14 +66,14 @@ class AX::Application < AX::Element
   ##
   # Ask the app whether or not it is hidden.
   def hidden?
-    spin_run_loop
+    @ref.spin_run_loop
     @app.hidden?
   end
 
   ##
   # Ask the app whether or not it is still running.
   def terminated?
-    spin_run_loop
+    @ref.spin_run_loop
     @app.terminated?
   end
 
@@ -138,32 +130,35 @@ class AX::Application < AX::Element
   #
   # @return [Boolean]
   def type_string string
-    events = keyboard_events_for string
-    post events, to: @ref
+    @ref.post keyboard_events_for string
     true
   end
 
   # @todo doc and cleanup
   def keydown key
-    post [[EventGenerator::CUSTOM[key], true]], to: @ref
+    @ref.post [[EventGenerator::CUSTOM[key], true]]
     true
   end
 
   # @todo doc and cleanup
   def keyup key
-    post [[EventGenerator::CUSTOM[key], false]], to: @ref
+    @ref.post [[EventGenerator::CUSTOM[key], false]]
     true
   end
 
+  # @return [AX::MenuItem]
   def select_menu_item *path
-    press navigate_menu(*path)
+    target = navigate_menu *path
+    target.perform :press
+    target
   end
 
+  # @return [AX::MenuItem]
   def navigate_menu *path
     perform :unhide # can't navigate menus unless the app is up front
     current = attribute(:menu_bar).search(:menu_bar_item, title: path.shift)
     path.each do |part|
-      press current
+      current.perform :press
       next_item = current.search(:menu_item, title: part)
       if next_item.blank?
         failure = Accessibility::SearchFailure.new(current, :menu_item, title: part)
@@ -182,8 +177,8 @@ class AX::Application < AX::Element
   #
   # @return [AX::Window]
   def show_about_window
-    windows = self.children.select { |x| x.kind_of? AX::Window }
-    select_menu_item self.title, /^About /
+    windows = @ref.children.select { |x| x.role == KAXWindowRole }
+    select_menu_item @ref.attribute(KAXTitleAttribute), /^About /
     wait_for(:window, parent: self) { |window| !windows.include?(window) }
   end
 
@@ -196,11 +191,10 @@ class AX::Application < AX::Element
   #
   # @return [AX::Window]
   def show_preferences_window
-    windows = self.children.select { |x| x.kind_of? AX::Window }
+    windows = @ref.children.select { |x| x.role == KAXWindowRole }
     type_string "\\COMMAND+,"
     wait_for(:window, parent: self) { |window| !windows.include?(window) }
   end
-
 
   # @endgroup
 
@@ -220,8 +214,8 @@ class AX::Application < AX::Element
   #
   # @param [#to_point]
   # @return [AX::Element,nil]
-  def element_at_point point
-    process element_at(point, for: @ref)
+  def element_at point
+    process @ref.element_at point
   end
 
   ##

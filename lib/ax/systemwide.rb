@@ -14,7 +14,7 @@ class AX::SystemWide < AX::Element
   ##
   # Overridden since there is only one way to get the element ref.
   def initialize
-    super system_wide
+    super AXUIElementCreateSystemWide()
   end
 
   ##
@@ -28,19 +28,19 @@ class AX::SystemWide < AX::Element
   #
   # @return [Boolean]
   def type_string string
-    post keyboard_events_for string
+    @ref.post keyboard_events_for string
     true
   end
 
   # @todo doc and cleanup
   def keydown modifier
-    post [[EventGenerator::CUSTOM[modifier], true]], to: @ref
+    @ref.post [[EventGenerator::CUSTOM[modifier], true]]
     true
   end
 
   # @todo doc and cleanup
   def keyup modifier
-    post [[EventGenerator::CUSTOM[modifier], false]], to: @ref
+    @ref.post [[EventGenerator::CUSTOM[modifier], false]]
     true
   end
 
@@ -68,8 +68,8 @@ class AX::SystemWide < AX::Element
   #
   # @param [#to_point]
   # @return [AX::Element,nil]
-  def element_at_point point
-    process element_at point
+  def element_at point
+    process @ref.element_at point
   end
 
   ##
@@ -80,18 +80,7 @@ class AX::SystemWide < AX::Element
   # @param [Number]
   # @return [Number]
   def set_global_timeout seconds
-    set_timeout_to seconds
-  end
-
-
-  private
-
-  def _parameterized_attributes
-    []
-  end
-
-  def _actions
-    []
+    @ref.set_timeout_to seconds
   end
 
 end
