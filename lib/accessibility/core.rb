@@ -95,8 +95,10 @@ module Accessibility::Core
   def attribute name
     ptr = Pointer.new :id
     case code = AXUIElementCopyAttributeValue(self, name, ptr)
-    when 0                                         then ptr.value.to_ruby
-    when KAXErrorNoValue, KAXErrorInvalidUIElement then nil
+    when 0               then ptr.value.to_ruby
+    when KAXErrorNoValue then nil
+    when KAXErrorInvalidUIElement
+      name == KAXChildrenAttribute ? [] : nil
     when KAXErrorFailure
       name == KAXChildrenAttribute ? [] : handle_error(code, name)
     else handle_error code, name

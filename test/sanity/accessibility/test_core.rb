@@ -70,10 +70,14 @@ class TestAccessibilityCore < MiniTest::Unit::TestCase
     assert_equal 10..19,              window.attribute("AXPie"            )
   end
 
-  def test_attribute_is_nil_when_no_value_or_dead
+  def test_attribute_is_nil_when_no_value
     assert_nil window.attribute(KAXGrowAreaAttribute)
-    assert_nil invalid_ref.attribute(KAXRoleAttribute)
-   end
+  end
+
+  def test_attribute_when_dead
+    assert_nil   invalid_ref.attribute(KAXRoleAttribute)
+    assert_empty invalid_ref.attribute(KAXChildrenAttribute)
+  end
 
   def test_attribute_handles_errors
     assert_raises(ArgumentError) { REF.attribute 'MADEUPATTRIBUTE' }
