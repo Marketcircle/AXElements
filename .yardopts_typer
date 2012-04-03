@@ -5,6 +5,6 @@
 --markup-provider redcarpet
 --readme README.typer.markdown
 lib/**/*.rb
-ext/**/*.c
+ext/**/*{.m,.c}
 -
 docs/KeyboardEvents.markdown

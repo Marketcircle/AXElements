@@ -6,7 +6,7 @@ $LIBS   << ' -framework Cocoa -framework Carbon -framework ApplicationServices'
 if RUBY_ENGINE == 'macruby'
   $CFLAGS << ' -fobjc-gc'
 else
-  $CFLAGS << ' -DNOT_MACRUBY -fblocks'
+  $CFLAGS << ' -DNOT_MACRUBY'
 end
 
 create_makefile('accessibility/key_coder')

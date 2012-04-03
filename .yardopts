@@ -6,7 +6,7 @@
 --asset docs/images:images
 --readme README.markdown
 lib/**/*.rb
-ext/**/*.c
+ext/**/*{.m,.c}
 -
 docs/Inspecting.markdown
 docs/Acting.markdown
