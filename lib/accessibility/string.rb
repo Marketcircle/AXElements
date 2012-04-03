@@ -411,10 +411,12 @@ module Accessibility::String
 
     private
 
-    def increment_index; @index += 1 end
-    def rewind_index;    @index -= 1 end
-    def previous_token;  @events[@index-1] end
-    def add event; @events[@index] = event; increment_index end
+    def add event
+      @events[@index] = event
+      @index += 1
+    end
+    def previous_token; @events[@index-1] end
+    def rewind_index;   @index -= 1       end
 
     def gen_all tokens
       tokens.each do |token|
@@ -427,39 +429,35 @@ module Accessibility::String
     end
 
     def gen_nested head, tail
-      if code = CUSTOM[head] || MAPPING[head]
-        gen_dynamic(code) { gen_all tail }
-      elsif code = SHIFTED[head]
-        gen_shifted(code) { gen_all tail }
-      elsif code = OPTIONED[head]
-        gen_optioned(code) { gen_all tail }
-      else # handling a special case :(
-        gen_all head.split EMPTY_STRING
-      end
+      ((code =   CUSTOM[head]) &&  gen_dynamic(code, tail)) ||
+      ((code =  MAPPING[head]) &&  gen_dynamic(code, tail)) ||
+      ((code =  SHIFTED[head]) &&  gen_shifted(code, tail)) ||
+      ((code = OPTIONED[head]) && gen_optioned(code, tail)) ||
+      gen_all(head.split(EMPTY_STRING)) # handling a special case :(
     end
 
     def gen_single token
-      ((code =  MAPPING[token]) &&  gen_dynamic(code)) ||
-      ((code =  SHIFTED[token]) &&  gen_shifted(code)) ||
-      ((code = OPTIONED[token]) && gen_optioned(code)) ||
+      ((code =  MAPPING[token]) &&  gen_dynamic(code, nil)) ||
+      ((code =  SHIFTED[token]) &&  gen_shifted(code, nil)) ||
+      ((code = OPTIONED[token]) && gen_optioned(code, nil)) ||
       raise(ArgumentError, "#{token.inspect} has no mapping, bail!")
     end
 
-    def gen_shifted code, &block
+    def gen_shifted code, tail
       previous_token == SHIFT_UP ? rewind_index : add(SHIFT_DOWN)
-      gen_dynamic MAPPING[code], &block
+      gen_dynamic MAPPING[code], tail
       add SHIFT_UP
     end
 
-    def gen_optioned code, &block
+    def gen_optioned code, tail
       previous_token == OPTION_UP ? rewind_index : add(OPTION_DOWN)
-      gen_dynamic MAPPING[code], &block
+      gen_dynamic MAPPING[code], tail
       add OPTION_UP
     end
 
-    def gen_dynamic code, &block
+    def gen_dynamic code, tail
       add [code,  true]
-      yield if block_given?
+      gen_all tail if tail
       add [code, false]
     end
 
