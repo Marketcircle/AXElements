@@ -170,9 +170,9 @@ class TestAccessibilityStringEventGenerator < MiniTest::Unit::TestCase
   end
 
   def test_generate_backslashes
-    assert_equal [[bslash,t],[bslash,f]],                                     gen(["\\"])
-    assert_equal [[bslash,t],[bslash,f],[space,t],[space,f]],                 gen(["\\"," "])
-    assert_equal [[bslash,t],[bslash,f],[h,t],[h,f],[m,t],[m,f]],             gen(["\\",'h','m'])
+    assert_equal [[bslash,t],[bslash,f]],                               gen(["\\"])
+    assert_equal [[bslash,t],[bslash,f],[space,t],[space,f]],           gen(["\\"," "])
+    assert_equal [[bslash,t],[bslash,f],[h,t],[h,f],[m,t],[m,f]],       gen(["\\",'h','m'])
     # is this the job of the parser or the lexer?
     assert_equal [[bslash,t],[bslash,f],sd,[h,t],[h,f],[m,t],[m,f],su], gen([["\\HM"]])
   end
