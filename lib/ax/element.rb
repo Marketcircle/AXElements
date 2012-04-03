@@ -17,31 +17,9 @@ class AX::Element
   include Accessibility::PPInspector
   include Accessibility::Factory
 
-  ##
-  # Used internally by {Accessibility::Factory} for initializing with
-  # attributes instead of fetching the a second time. This is for
-  # performance reasons. If you have not already fetched the attributes
-  # for a reference then you should initialize normally.
-  #
-  # @param [AXUIElementRef]
-  # @param [Array<String>]
-  def self.fast_new ref, attrs
-    o = allocate
-    o.init ref, attrs
-    o
-  end
-
-  # @param [AXUIElementRef]
-  # @param [Array<String>]
-  def init ref, attrs
-    @ref   = ref
-    @attrs = attrs
-  end
-
   # @param [AXUIElementRef]
   def initialize ref
-    @ref   = ref
-    @attrs = ref.attributes
+    @ref = ref
   end
 
 

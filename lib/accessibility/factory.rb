@@ -79,7 +79,7 @@ module Accessibility::Factory
             else
               class_for role
             end
-    klass.fast_new ref, attrs
+    klass.new ref
   end
 
   ##
