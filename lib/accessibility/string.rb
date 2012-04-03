@@ -417,6 +417,14 @@ module Accessibility::String
       @index += 1
     end
 
+    def previous_token
+      @events[@index-1]
+    end
+
+    def rewind_index
+      @index -= 1
+    end
+
     def gen_all tokens
       tokens.each do |token|
         if token.kind_of? Array
@@ -445,13 +453,13 @@ module Accessibility::String
     end
 
     def gen_shifted code
-      add SHIFT_DOWN
+      previous_token == SHIFT_UP ? rewind_index : add(SHIFT_DOWN)
       gen_dynamic MAPPING[code]
       add SHIFT_UP
     end
 
     def gen_optioned code
-      add OPTION_DOWN
+      previous_token == OPTION_UP ? rewind_index : add(OPTION_DOWN)
       gen_dynamic MAPPING[code]
       add OPTION_UP
     end

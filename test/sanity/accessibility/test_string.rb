@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+require 'test/runner'
 require 'accessibility/string'
 
 class TestAccessibilityStringLexer < MiniTest::Unit::TestCase
@@ -131,10 +132,10 @@ class TestAccessibilityStringEventGenerator < MiniTest::Unit::TestCase
   end
 
   def test_generate_uppercase
-    assert_equal [sd,[a,t],[a,f],su],                                     gen(['A'])
-    assert_equal [sd,[c,t],[c,f],su,sd,[k,t],[k,f],su],                   gen(['C','K'])
-    assert_equal [sd,[e,t],[e,f],su,sd,[e,t],[e,f],su],                   gen(['E','E'])
-    assert_equal [sd,[c,t],[c,f],su,sd,[a,t],[a,f],su,sd,[k,t],[k,f],su], gen(['C','A','K'])
+    assert_equal [sd,[a,t],[a,f],su],                         gen(['A'])
+    assert_equal [sd,[c,t],[c,f],[k,t],[k,f],su],             gen(['C','K'])
+    assert_equal [sd,[e,t],[e,f],[e,t],[e,f],su],             gen(['E','E'])
+    assert_equal [sd,[c,t],[c,f],[a,t],[a,f],[k,t],[k,f],su], gen(['C','A','K'])
   end
 
   def test_generate_numbers
@@ -161,10 +162,11 @@ class TestAccessibilityStringEventGenerator < MiniTest::Unit::TestCase
   end
 
   def test_generate_unicode # holding option
-    assert_equal [od,[sigma,t],[sigma,f],ou], gen(["∑"])
-    assert_equal [od,[tm,t],[tm,f],ou],       gen(["™"])
-    assert_equal [od,[gbp,t],[gbp,f],ou],     gen(["£"])
-    assert_equal [od,[omega,t],[omega,f],ou], gen(["Ω"])
+    assert_equal [od,[sigma,t],[sigma,f],ou],           gen(["∑"])
+    assert_equal [od,[tm,t],[tm,f],ou],                 gen(["™"])
+    assert_equal [od,[gbp,t],[gbp,f],ou],               gen(["£"])
+    assert_equal [od,[omega,t],[omega,f],ou],           gen(["Ω"])
+    assert_equal [od,[tm,t],[tm,f],[gbp,t],[gbp,f],ou], gen(["™","£"])
   end
 
   def test_generate_backslashes
@@ -172,7 +174,7 @@ class TestAccessibilityStringEventGenerator < MiniTest::Unit::TestCase
     assert_equal [[bslash,t],[bslash,f],[space,t],[space,f]],                 gen(["\\"," "])
     assert_equal [[bslash,t],[bslash,f],[h,t],[h,f],[m,t],[m,f]],             gen(["\\",'h','m'])
     # is this the job of the parser or the lexer?
-    assert_equal [[bslash,t],[bslash,f],sd,[h,t],[h,f],su,sd,[m,t],[m,f],su], gen([["\\HM"]])
+    assert_equal [[bslash,t],[bslash,f],sd,[h,t],[h,f],[m,t],[m,f],su], gen([["\\HM"]])
   end
 
   def test_generate_a_custom_escape
