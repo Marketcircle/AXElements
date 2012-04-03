@@ -194,9 +194,8 @@ class TestAccessibilityStringEventGenerator < MiniTest::Unit::TestCase
   end
 
   def test_bails_for_unmapped_token
-    e = assert_raises ArgumentError do
-      gen(["☃"]) # cannot generate snowmen :(
-    end
+    # cannot generate snowmen :(
+    e = assert_raises(ArgumentError) { gen(["☃"]) }
     assert_match /bail/i, e.message
   end
 
