@@ -24,7 +24,7 @@ gem is a component of AXElements.
     'ext/accessibility/key_coder/extconf.rb'
   ]
   s.test_files       = [
-    'test/unit/accessibility/test_string.rb',
+    'test/sanity/accessibility/test_string.rb',
     'test/runner.rb'
   ]
   s.extra_rdoc_files = [
