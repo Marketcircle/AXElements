@@ -25,9 +25,8 @@ require 'rake/testtask'
 namespace :test do
   [:sanity, :integration].each do |group|
     Rake::TestTask.new(group) do |t|
-      t.libs     << 'test'
+      t.libs     << '.'
       t.pattern   = "test/#{group}/**/test_*.rb"
-      t.ruby_opts = ['-rhelper']
       t.verbose   = true
     end
     task group => [:ext, :fixture]
@@ -35,9 +34,8 @@ namespace :test do
 
   desc 'Run tests for the string parser'
   Rake::TestTask.new(:string) do |t|
-    t.libs << 'test'
+    t.libs << '.'
     t.pattern = "test/sanity/**/test_string.rb"
-    t.ruby_opts = ['-rrunner']
     t.verbose = true
   end
   task :string => :ext

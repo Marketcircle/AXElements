@@ -203,6 +203,10 @@ class TestAccessibilityStringEventGenerator < MiniTest::Unit::TestCase
     assert_equal [[c,t],[a,t],[k,t],[e,t],[e,f],[k,f],[a,f],[c,f]], gen([["c",["a",["k",["e"]]]]])
   end
 
+  def test_generate_command_A
+    assert_equal [cd,sd,[a,t],[a,f],su,cu], gen([["\\COMMAND",["A"]]])
+  end
+
 end
 
 
@@ -219,7 +223,7 @@ class TestAccessibilityString < MiniTest::Unit::TestCase
     assert_kind_of Array, events
     refute_empty events
 
-    assert_equal true, events[0][1]
+    assert_equal true,  events[0][1]
     assert_equal false, events[1][1]
   end
 

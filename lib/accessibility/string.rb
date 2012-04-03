@@ -411,18 +411,10 @@ module Accessibility::String
 
     private
 
-    def add event
-      @events[@index] = event
-      @index += 1
-    end
-
-    def previous_token
-      @events[@index-1]
-    end
-
-    def rewind_index
-      @index -= 1
-    end
+    def increment_index; @index += 1 end
+    def rewind_index;    @index -= 1 end
+    def previous_token;  @events[@index-1] end
+    def add event; @events[@index] = event; increment_index end
 
     def gen_all tokens
       tokens.each do |token|
@@ -435,12 +427,14 @@ module Accessibility::String
     end
 
     def gen_nested head, tail
-      if code = CUSTOM[head] || SHIFTED[head] || OPTIONED[head] || MAPPING[head]
-        add [code, true]
-        gen_all tail
-        add [code, false]
-      else # handling a special case
-        gen_all head.split(EMPTY_STRING)
+      if code = CUSTOM[head] || MAPPING[head]
+        gen_dynamic(code) { gen_all tail }
+      elsif code = SHIFTED[head]
+        gen_shifted(code) { gen_all tail }
+      elsif code = OPTIONED[head]
+        gen_optioned(code) { gen_all tail }
+      else # handling a special case :(
+        gen_all head.split EMPTY_STRING
       end
     end
 
@@ -451,31 +445,32 @@ module Accessibility::String
       raise(ArgumentError, "#{token.inspect} has no mapping, bail!")
     end
 
-    def gen_shifted code
+    def gen_shifted code, &block
       previous_token == SHIFT_UP ? rewind_index : add(SHIFT_DOWN)
-      gen_dynamic MAPPING[code]
+      gen_dynamic MAPPING[code], &block
       add SHIFT_UP
     end
 
-    def gen_optioned code
+    def gen_optioned code, &block
       previous_token == OPTION_UP ? rewind_index : add(OPTION_DOWN)
-      gen_dynamic MAPPING[code]
+      gen_dynamic MAPPING[code], &block
       add OPTION_UP
     end
 
-    def gen_dynamic code
+    def gen_dynamic code, &block
       add [code,  true]
+      yield if block_given?
       add [code, false]
     end
 
     # @private
-    EMPTY_STRING = ''
+    EMPTY_STRING = ""
     # @private
-    OPTION_DOWN  = [58, true]
+    OPTION_DOWN  = [58,  true]
     # @private
     OPTION_UP    = [58, false]
     # @private
-    SHIFT_DOWN   = [56, true]
+    SHIFT_DOWN   = [56,  true]
     # @private
     SHIFT_UP     = [56, false]
   end
