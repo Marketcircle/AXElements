@@ -537,9 +537,11 @@ module Accessibility::Core
   # @return [Fixnum]
   def pid
     @pid ||= (
-      ptr = Pointer.new :int
+      ptr  = Pointer.new :int
       case code = AXUIElementGetPid(self, ptr)
       when 0 then ptr.value
+      when KAXErrorInvalidUIElement
+        self == system_wide ? 0 : handle_error(code)
       else handle_error code
       end
       )

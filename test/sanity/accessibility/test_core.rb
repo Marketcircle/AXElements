@@ -327,9 +327,13 @@ class TestAccessibilityCore < MiniTest::Unit::TestCase
     # @todo I guess that's good enough?
   end
 
-  def test_pid_for_gets_pid
+  def test_pid
     assert_equal PID, REF.pid
     assert_equal PID, window.pid
+  end
+
+  def test_pid_is_zero_for_system_wide
+    assert_equal 0, REF.system_wide.pid
   end
 
   def test_system_wide
