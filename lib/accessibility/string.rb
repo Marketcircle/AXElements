@@ -6,10 +6,18 @@ framework 'ApplicationServices' if defined? MACRUBY_VERSION
 
 ##
 # Parses strings of human readable text into a series of events meant to
-# be processed by {Accessibility::Core#post:to:} or {KeyCoder.post_event}.
+# be processed by {Accessibility::Core#post} or {KeyCoder.post_event}.
 #
 # Supports most, if not all, latin keyboard layouts, maybe some
-# international layouts as well.
+# international layouts as well. Japanese layouts can be made to work with
+# use of `String#transform`.
+#
+# @example
+#
+#   app = AXUIElementCreateApplication(3456)
+#   include Accessibility::String
+#   app.post keyboard_events_for "Hello, world!\n"
+#
 module Accessibility::String
 
   ##
