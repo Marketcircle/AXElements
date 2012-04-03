@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 
+require 'test/helper'
+
 class TestAccessibilityCore < MiniTest::Unit::TestCase
   include Accessibility::Core
 

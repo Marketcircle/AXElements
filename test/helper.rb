@@ -26,7 +26,7 @@ end
 RUNNING_COMPILED =
   $LOADED_FEATURES.find { |file| file.match /ax_elements.rbo/ }
 
-require 'runner'
+require 'test/runner'
 require 'ax_elements'
 
 class MiniTest::Unit::TestCase
