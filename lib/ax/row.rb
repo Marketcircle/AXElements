@@ -27,8 +27,7 @@ class AX::Row < AX::Element
   #
   # @param [Hash]
   # @return [AX::Element]
-  def child_in_column filters
-    block     = block_given? ? Proc.new : nil
+  def child_in_column filters, &block
     qualifier = Accessibility::Qualifier.new(:Column, filters, &block)
     column    = self.parent.columns.index { |x| qualifier.qualifies? x }
     return self.children.at(column) if column
