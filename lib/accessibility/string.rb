@@ -2,7 +2,6 @@
 
 require   'accessibility/version'
 require   'accessibility/key_coder'
-framework 'ApplicationServices' if defined? MACRUBY_VERSION
 
 ##
 # Parses strings of human readable text into a series of events meant to
@@ -486,7 +485,7 @@ end
 
 ##
 # @note This will only work if a run loop is running
-#
+# framework 'ApplicationServices' if defined? MACRUBY_VERSION
 # Register to be notified if the keyboard layout changes at runtime
 # NSDistributedNotificationCenter.defaultCenter.addObserver Accessibility::String::EventGenerator,
 #                                                selector: 'regenerate_dynamic_mapping',
