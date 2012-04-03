@@ -34,7 +34,7 @@ class AX::Element
   #
   # @return [Array<Symbol>]
   def attributes
-    @attributes ||= TRANSLATOR.rubyize @attrs
+    @attributes ||= TRANSLATOR.rubyize @ref.attributes
   end
 
   ##
@@ -48,10 +48,10 @@ class AX::Element
   #   element.attribute :position # => #<CGPoint x=123.0 y=456.0>
   #
   # @param [#to_sym]
-  def attribute attr
-    real_attr = lookup attr, @attrs
-    raise Accessibility::LookupFailure.new(self, attr) unless real_attr
-    process value_of(real_attr, for: @ref)
+  def attribute name
+    if rattr = lookup(name, @ref.attributes)
+      process @ref.attribute(rattr)
+    end
   end
 
   ##
@@ -75,9 +75,11 @@ class AX::Element
   # @param [#to_sym]
   # @return [Number]
   def size_of attr
-    real_attr = lookup attr, @attrs
-    raise Accessibility::LookupFailure.new(self, attr) unless real_attr
-    size_of real_attr, for: @ref
+    if rattr = lookup(attr, @ref.attributes)
+      @ref.size_of rattr
+    else
+      0
+    end
   end
 
   ##
@@ -90,7 +92,7 @@ class AX::Element
   #
   # @return [Fixnum]
   def pid
-    @pid ||= @ref.pid
+    @ref.pid
   end
 
   ##
@@ -98,14 +100,16 @@ class AX::Element
   #
   # @example
   #
-  #   element.attribute_writable? :size  # => true
-  #   element.attribute_writable? :value # => false
+  #   element.writable? :size  # => true
+  #   element.writable? :value # => false
   #
   # @param [#to_sym]
-  def attribute_writable? attr
-    real_attr = lookup attr, @attrs
-    raise Accessibility::LookupFailure.new(self, attr) unless real_attr
-    writable? real_attr, for: @ref
+  def writable? attr
+    if rattr = lookup(attr, @ref.attributes)
+      @ref.writable? rattr
+    else
+      false
+    end
   end
 
   ##
@@ -113,20 +117,18 @@ class AX::Element
   #
   # @example
   #
-  #   element.set :value, to: 'Hello, world!'
-  #   element.set :size,  to: [100, 200].to_size
+  #   element.set :value, 'Hello, world!'
+  #   element.set :size,  [100, 200].to_size
   #
   # @param [#to_sym]
   # @return the value that you were setting is returned
-  def set attr, to: value
-    unless attribute_writable? attr
+  def set attr, val
+    unless writable? attr
       raise NoMethodError, "#{attr} is read-only for #{inspect}"
     end
-    if value.kind_of? Range
-      value = value.relative_to attribute(:value).size
-    end
-    real_attr = lookup attr, @attrs
-    set real_attr, to: value, for: @ref
+    value = value.relative_to(@ref.value.size) if value.kind_of? Range
+    rattr = lookup(attr, @ref.attributes)
+    @ref.set rattr, value
     value
   end
 
@@ -144,7 +146,7 @@ class AX::Element
   #
   # @return [Array<Symbol>]
   def parameterized_attributes
-    TRANSLATOR.rubyize _parameterized_attributes
+    TRANSLATOR.rubyize @ref.parameterized_attributes
   end
 
   ##
@@ -156,9 +158,10 @@ class AX::Element
   #
   # @param [#to_sym]
   def attribute attr, for_parameter: param
-    real_attr = lookup attr, _parameterized_attributes
-    raise Accessibility::LookupFailure.new(self, attr) unless real_attr
-    process value_of(real_attr, for_param: param, for: @ref)
+    if rattr = lookup(attr, @ref.parameterized_attributes)
+      param = param.relative_to(@ref.value.size) if value.kind_of? Range
+      process @ref.attribute(rattr, for_parameter: param)
+    end
   end
 
 
@@ -175,7 +178,7 @@ class AX::Element
   #
   # @return [Array<Symbol>]
   def actions
-    TRANSLATOR.rubyize _actions
+    TRANSLATOR.rubyize @ref.actions
   end
 
   ##
@@ -193,9 +196,11 @@ class AX::Element
   # @param [#to_sym]
   # @return [Boolean] true if successful
   def perform action
-    real_action = lookup action, _actions
-    raise Accessibility::LookupFailure.new(self, action) unless real_action
-    perform real_action, for: @ref
+    if raction = lookup(action, @ref.actions)
+      @ref.perform raction
+    else
+      false
+    end
   end
 
 
@@ -291,32 +296,25 @@ class AX::Element
   #   # attribute and element search failure
   #   window.application # => SearchFailure is raised
   #
-  def method_missing method, *args
+  def method_missing method, *args, &block
     if method[-1] == EQUALS
-      return set(method.chomp(EQUALS), to: args.first)
-    end
+      return set(method.chomp(EQUALS), args.first)
 
-    attribute = lookup method, @attrs
-    if attribute
-      return process value_of(attribute, for: @ref) if attribute
-    end
+    elsif attr = lookup(method, @ref.attributes)
+      return process @ref.attribute(attr)
 
-    attribute = lookup method, _parameterized_attributes
-    if attribute
-      return process value_of(attribute, for_param: args.first, for: @ref)
-    end
+    elsif attr = lookup(method, @ref.parameterized_attributes)
+      return process @ref.attribute(attr, for_parameter: args.first)
 
-    if @attrs.include? KAXChildrenAttribute
-      result = if block_given?
-                 search method, *args, &Proc.new
-               else
-                 search method, *args
-               end
+    elsif @ref.attributes.include? KAXChildrenAttribute
+      result = search method, *args, &block
       return result unless result.blank?
       raise Accessibility::SearchFailure.new(self, method, args.first)
-    end
 
-    super
+    else
+      super
+
+    end
   end
 
 
@@ -359,9 +357,9 @@ class AX::Element
   # @return [Array(Observer, String, CFRunLoopSource)]
   def on_notification name, &block
     notif    = TRANSLATOR.guess_notification_for name
-    observer = observer_for self.pid, &notif_callback_for(&block)
-    source   = run_loop_source_for observer
-    register observer, to_receive: notif, from: @ref
+    observer = @ref.observer &notif_callback_for(&block)
+    source   = @ref.run_loop_source_for observer
+    @ref.register observer, to_receive: notif
     CFRunLoopAddSource(CFRunLoopGetCurrent(), source, KCFRunLoopDefaultMode)
     notifs[name] = [observer, notif, source]
   end
@@ -395,10 +393,11 @@ class AX::Element
   # @return [String]
   def inspect
     msg  = "#<#{self.class}" << pp_identifier
-    msg << pp_position if @attrs.include? KAXPositionAttribute
-    msg << pp_children if @attrs.include? KAXChildrenAttribute
-    msg << pp_checkbox(:enabled) if @attrs.include? KAXEnabledAttribute
-    msg << pp_checkbox(:focused) if @attrs.include? KAXFocusedAttribute
+    attrs = @ref.attributes
+    msg << pp_position if attrs.include? KAXPositionAttribute
+    msg << pp_children if attrs.include? KAXChildrenAttribute
+    msg << pp_checkbox(:enabled) if attrs.include? KAXEnabledAttribute
+    msg << pp_checkbox(:focused) if attrs.include? KAXFocusedAttribute
     msg << '>'
   end
 
@@ -417,9 +416,8 @@ class AX::Element
   # Overriden to respond properly with regards to dynamic attribute
   # lookups, but will return false for potential implicit searches.
   def respond_to? name
-    lookup(name.chomp(EQUALS), @attrs)                                 ||
-    lookup(name, _parameterized_attributes)                            ||
-    (:description == name && @attrs.include?(KAXDescriptionAttribute)) ||
+    lookup(name.chomp(EQUALS), @ref.attributes)               ||
+    lookup(name,               @ref.parameterized_attributes) ||
     super
   end
 
@@ -446,6 +444,14 @@ class AX::Element
   end
 
   ##
+  # Get the application object for the element.
+  #
+  # @return [AX::Application]
+  def application
+    process @ref.application
+  end
+
+  ##
   # Concept borrowed from `Active Support`. It is used during implicit
   # searches to determine if searches yielded responses.
   def blank?
@@ -457,7 +463,7 @@ class AX::Element
   #
   # Like {#respond_to?}, this is overriden to include attribute methods.
   def methods include_super = true, include_objc_super = false
-    attributes.dup.concat(parameterized_attributes).concat(super)
+    super.concat(attributes).concat(parameterized_attributes)
   end
 
   ##
@@ -480,23 +486,15 @@ class AX::Element
   # @return [String]
   EQUALS = '='
 
-  def _parameterized_attributes
-    @param_attrs ||= param_attrs_for @ref
-  end
-
-  def _actions
-    @actions ||= actions_for @ref
-  end
-
   def lookup key, values
     value = TRANSLATOR.lookup key, values
     return value if values.include? value
   end
 
-  def notif_callback_for &block
+  def notif_callback_for
     # we are ignoring the context pointer since this is OO
     Proc.new do |observer, sender, notif, _|
-      break unless block.call(process sender) if block
+      break unless yield(process sender) if block_given?
       _unregister_notification observer, notif, run_loop_source_for(observer)
       CFRunLoopStop(CFRunLoopGetCurrent())
     end
@@ -509,7 +507,7 @@ class AX::Element
   #
   def _unregister_notification observer, notif, source
     CFRunLoopRemoveSource(CFRunLoopGetCurrent(), source, KCFRunLoopDefaultMode)
-    unregister observer, from_receiving: notif, from: @ref
+    @ref.unregister observer, from_receiving: notif
   end
 
 end
