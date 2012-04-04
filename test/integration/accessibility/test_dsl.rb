@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+require 'test/integration/helper'
 
 class TestAccessibilityDSL < MiniTest::Unit::TestCase
 
@@ -33,7 +34,7 @@ class TestAccessibilityDSL < MiniTest::Unit::TestCase
 
   def try_typing string, expected = nil
     expected = string unless expected
-    text_area.set :focused, to: true
+    text_area.set :focused, true
     dsl.type string
     assert_equal expected, text_area.value
   ensure # reset for next test
@@ -59,9 +60,7 @@ class TestAccessibilityDSL < MiniTest::Unit::TestCase
   end
 
   def test_typing_human_string
-    try_typing(
-     "A sentence, with punctuation and num8ers. LOL!\tA 'quoted' string--then some @#*$."
-    )
+    try_typing "A sentence, with punctuation and num8ers. LOL!\tA 'quoted' string--then some @#*$."
   end
 
   def test_typing_backspaces

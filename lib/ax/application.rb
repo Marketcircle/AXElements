@@ -177,8 +177,8 @@ class AX::Application < AX::Element
   #
   # @return [AX::Window]
   def show_about_window
-    windows = @ref.children.select { |x| x.role == KAXWindowRole }
-    select_menu_item @ref.attribute(KAXTitleAttribute), /^About /
+    windows = self.children.select { |x| x.kind_of? AX::Window }
+    select_menu_item self.title, /^About /
     wait_for(:window, parent: self) { |window| !windows.include?(window) }
   end
 
@@ -191,7 +191,7 @@ class AX::Application < AX::Element
   #
   # @return [AX::Window]
   def show_preferences_window
-    windows = @ref.children.select { |x| x.role == KAXWindowRole }
+    windows = self.children.select { |x| x.kind_of? AX::Window }
     type_string "\\COMMAND+,"
     wait_for(:window, parent: self) { |window| !windows.include?(window) }
   end
@@ -204,7 +204,7 @@ class AX::Application < AX::Element
   #
   # Override the base class to make sure the pid is included.
   def inspect
-    (super).sub! />$/, "#{pp_checkbox(:focused)} pid=#{pid}>"
+    super.sub! />$/, "#{pp_checkbox(:focused)} pid=#{pid}>"
   end
 
   ##

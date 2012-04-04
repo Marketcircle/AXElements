@@ -611,7 +611,7 @@ module Accessibility::DSL
   #
   # @param [#to_point]
   def element_at_point point
-    system_wide.element_at_point point
+    system_wide.element_at point
   end
 
   ##
@@ -634,11 +634,7 @@ module Accessibility::DSL
   # @param [AX::Application]
   # @return [AX::Window]
   def show_preferences_window_for app
-    windows = app.children.select { |x| x.kind_of? AX::Window }
-    type "\\COMMAND+,", app
-    wait_for :window, parent: app do |window|
-      !windows.include?(window)
-    end
+    app.show_preferences_window
   end
 
   ##
