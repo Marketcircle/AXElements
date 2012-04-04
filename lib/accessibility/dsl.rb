@@ -199,6 +199,7 @@ module Accessibility::DSL
   #   The normal way to raise an exception.
   def raise *args
     arg = args.first
+    # @todo Need to check if arg has the raise action
     arg.kind_of?(AX::Element) ? arg.perform(:raise) : super
   end
 
@@ -209,7 +210,7 @@ module Accessibility::DSL
   #
   # @param [AX::Element]
   def set_focus_to element
-    element.set(:focused, to: true) if element.respond_to? :focused?
+    element.set(:focused, true) if element.respond_to? :focused?
   end
   alias_method :set_focus, :set_focus_to
 
@@ -243,13 +244,13 @@ module Accessibility::DSL
   def set element, change
     if element.respond_to? :focused
       if element.attribute_writable? :focused
-        element.set :focused, to: true
+        element.set :focused, true
       end
     end
 
-    return element.set :value, to: change unless change.kind_of? Hash
+    return element.set :value, change unless change.kind_of? Hash
     key, value = change.first
-    return element.set key, to: value
+    return element.set key, value
   end
 
   ##
