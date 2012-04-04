@@ -465,23 +465,29 @@ module Accessibility::DSL
   end
 
   ##
+  # Click and drag the mouse from its current position to the given
+  # position.
+  #
   # There are many reasons why you would want to cause a drag event
   # with the mouse. Perhaps you want to drag an object to another
   # place, or maybe you want to hightlight an area of the screen.
   #
-  # This method will drag the mouse from its current point on the screen
-  # to the point given by calling `#to_point` on the argument.
-  #
-  # Generally, you will pass a {CGPoint} or some kind of {AX::Element},
-  # but you could pass anything that responds to `#to_point`.
-  #
   # @param [#to_point]
-  def drag_mouse_to arg, wait = 0.2
-    Mouse.drag_to arg.to_point
-    sleep wait
+  def drag_mouse_to arg, opts = {}
+    Mouse.drag_to arg.to_point, (opts[:duration] || 0.2)
+    sleep(opts[:wait] || 0.2)
   end
 
-  # @todo def drag obj, to: obj
+  ##
+  # Move the mouse to the first point and then drag to the second point.
+  #
+  # @param [#to_point]
+  # @param [#to_point]
+  def drag arg1, to: arg2
+    move_mouse_to obj
+    drag_mouse_to obj2
+  end
+
 
   ##
   # @todo Need to expose the units option? Would allow scrolling by pixel.
