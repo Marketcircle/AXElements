@@ -1,4 +1,5 @@
 require 'accessibility/version'
+framework 'Cocoa'
 
 ##
 # Collection of utility methods helpful when trying to debug issues.
