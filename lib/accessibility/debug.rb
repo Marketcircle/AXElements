@@ -1,3 +1,5 @@
+require 'accessibility/version'
+
 ##
 # Collection of utility methods helpful when trying to debug issues.
 module Accessibility::Debug
