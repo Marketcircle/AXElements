@@ -26,6 +26,9 @@ end
 require 'accessibility/version'
 
 ##
+# @todo Slowly back off on raising exceptions in error conditions. Most
+#       often we can just return nil or an empty array and it should all
+#       still work out ok.
 # @todo I feel a bit weird having to instantiate a new pointer every
 #       time I want to fetch an attribute. Since allocations are costly,
 #       it hurts performance a lot when it comes to searches. I wonder if
