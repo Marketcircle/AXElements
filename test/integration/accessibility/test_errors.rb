@@ -1,3 +1,5 @@
+require 'test/integration/helper'
+
 class TestAccessibilityErrors < MiniTest::Unit::TestCase
 
   def test_search_failure_shows_arguments

@@ -1,3 +1,5 @@
+require 'test/integration/helper'
+
 class TestAccessibilityEnumeratorsBreadthFirst < MiniTest::Unit::TestCase
 
   def app

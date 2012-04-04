@@ -1,3 +1,5 @@
+require 'test/integration/helper'
+
 class TestAccessibilityQualifier < MiniTest::Unit::TestCase
 
   def app

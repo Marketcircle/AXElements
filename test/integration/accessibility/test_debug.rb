@@ -1,3 +1,5 @@
+require 'test/integration/helper'
+
 class TestAccessibilityDebug < MiniTest::Unit::TestCase
 
   def app
