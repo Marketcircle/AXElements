@@ -6,11 +6,7 @@ framework 'Cocoa'
 module Accessibility::Debug
 
   # Initialize the DEBUG value
-  @on = if ENV['AXDEBUG']
-          ENV['AXDEBUG'] == 'true'
-        else
-          $DEBUG
-        end
+  @on = ENV.fetch 'AXDEBUG', $DEBUG
 
 
   class << self
