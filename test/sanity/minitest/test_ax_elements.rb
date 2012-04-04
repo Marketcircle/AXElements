@@ -1,3 +1,4 @@
+require 'test/runner'
 require 'minitest/ax_elements'
 
 class TestMiniTestAssertions < MiniTest::Unit::TestCase

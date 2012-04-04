@@ -1,3 +1,6 @@
+require 'test/runner'
+require 'ax_elements/nsarray_compat'
+
 class TestNSArrayCompat < MiniTest::Unit::TestCase
 
   def test_second_returns_second
