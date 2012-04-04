@@ -35,10 +35,4 @@ def pid_for name # sneaky naming
   end.processIdentifier
 end
 
-class MiniTest::Unit::TestCase
-  # needs to be defined in the class, there is a TOPLEVEL::PID
-  PID = pid_for APP_BUNDLE_IDENTIFIER
-  REF = AXUIElementCreateApplication(PID)
-end
-
 $LOAD_PATH << 'lib'

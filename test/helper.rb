@@ -25,5 +25,12 @@ end
 require 'test/runner'
 
 
+class MiniTest::Unit::TestCase
+  # needs to be defined in the class, there is a TOPLEVEL::PID
+  PID = pid_for APP_BUNDLE_IDENTIFIER
+  REF = AXUIElementCreateApplication(PID)
+end
+
+
 # Force this to be on for testing
 # Accessibility::Debug.on = true
