@@ -2,7 +2,6 @@
 
 require   'accessibility/version'
 require   'accessibility/key_coder'
-framework 'ApplicationServices' if defined? MACRUBY_VERSION
 
 ##
 # Parses strings of human readable text into a series of events meant to
@@ -424,6 +423,8 @@ module Accessibility::String
       @events[@index] = event
       @index += 1
     end
+    def previous_token; @events[@index-1] end
+    def rewind_index;   @index -= 1       end
 
     def gen_all tokens
       tokens.each do |token|
@@ -436,47 +437,46 @@ module Accessibility::String
     end
 
     def gen_nested head, tail
-      if code = CUSTOM[head] || SHIFTED[head] || OPTIONED[head] || MAPPING[head]
-        add [code, true]
-        gen_all tail
-        add [code, false]
-      else # handling a special case
-        gen_all head.split(EMPTY_STRING)
-      end
+      ((code =   CUSTOM[head]) &&  gen_dynamic(code, tail)) ||
+      ((code =  MAPPING[head]) &&  gen_dynamic(code, tail)) ||
+      ((code =  SHIFTED[head]) &&  gen_shifted(code, tail)) ||
+      ((code = OPTIONED[head]) && gen_optioned(code, tail)) ||
+      gen_all(head.split(EMPTY_STRING)) # handling a special case :(
     end
 
     def gen_single token
-      ((code =  MAPPING[token]) &&  gen_dynamic(code)) ||
-      ((code =  SHIFTED[token]) &&  gen_shifted(code)) ||
-      ((code = OPTIONED[token]) && gen_optioned(code)) ||
+      ((code =  MAPPING[token]) &&  gen_dynamic(code, nil)) ||
+      ((code =  SHIFTED[token]) &&  gen_shifted(code, nil)) ||
+      ((code = OPTIONED[token]) && gen_optioned(code, nil)) ||
       raise(ArgumentError, "#{token.inspect} has no mapping, bail!")
     end
 
-    def gen_shifted code
-      add SHIFT_DOWN
-      gen_dynamic MAPPING[code]
+    def gen_shifted code, tail
+      previous_token == SHIFT_UP ? rewind_index : add(SHIFT_DOWN)
+      gen_dynamic MAPPING[code], tail
       add SHIFT_UP
     end
 
-    def gen_optioned code
-      add OPTION_DOWN
-      gen_dynamic MAPPING[code]
+    def gen_optioned code, tail
+      previous_token == OPTION_UP ? rewind_index : add(OPTION_DOWN)
+      gen_dynamic MAPPING[code], tail
       add OPTION_UP
     end
 
-    def gen_dynamic code
+    def gen_dynamic code, tail
       add [code,  true]
+      gen_all tail if tail
       add [code, false]
     end
 
     # @private
-    EMPTY_STRING = ''
+    EMPTY_STRING = ""
     # @private
-    OPTION_DOWN  = [58, true]
+    OPTION_DOWN  = [58,  true]
     # @private
     OPTION_UP    = [58, false]
     # @private
-    SHIFT_DOWN   = [56, true]
+    SHIFT_DOWN   = [56,  true]
     # @private
     SHIFT_UP     = [56, false]
   end
@@ -486,7 +486,7 @@ end
 
 ##
 # @note This will only work if a run loop is running
-#
+# framework 'ApplicationServices' if defined? MACRUBY_VERSION
 # Register to be notified if the keyboard layout changes at runtime
 # NSDistributedNotificationCenter.defaultCenter.addObserver Accessibility::String::EventGenerator,
 #                                                selector: 'regenerate_dynamic_mapping',

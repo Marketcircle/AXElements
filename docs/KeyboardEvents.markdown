@@ -19,7 +19,7 @@ typing just make more sense when writing tests or scripts.
 
 ## Typing with the DSL
 
-The {Accessibility::DSL} mixin exposes keyboard events through the
+The {Accessibility::DSL} mix-in exposes keyboard events through the
 `type` method. A simple example would look like this:
 
     type "Hello, #{ENV['USER']}! How are you today?\n"
@@ -70,13 +70,13 @@ the string__, as in this example:
     type "\\PAGEDOWN notice the space afterwards\\PAGEUP but not before"
 
 The full list of supported custom escape sequences is listed in
-{Accessibility::StringParser::ESCAPES}. Some escapes have an alias,
+{Accessibility::StringParser::CUSTOM}. Some escapes have an alias,
 such as the right arrow key which can be escaped as `"\\RIGHT"` or as
 `"\\->"`.
 
 ### Hot Keys
 
-To support pressing multiple keys at the same time (i.e. hotkeys), you
+To support pressing multiple keys at the same time (i.e. hot keys), you
 must start with the custom escape sequence for the combination and
 instead of ending with a space you should put a `+` character to chain
 the next key. The entire sequence should be ended with a space or

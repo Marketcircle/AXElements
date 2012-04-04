@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+require 'test/runner'
 require 'accessibility/string'
 
 class TestAccessibilityStringLexer < MiniTest::Unit::TestCase
@@ -131,10 +132,10 @@ class TestAccessibilityStringEventGenerator < MiniTest::Unit::TestCase
   end
 
   def test_generate_uppercase
-    assert_equal [sd,[a,t],[a,f],su],                                     gen(['A'])
-    assert_equal [sd,[c,t],[c,f],su,sd,[k,t],[k,f],su],                   gen(['C','K'])
-    assert_equal [sd,[e,t],[e,f],su,sd,[e,t],[e,f],su],                   gen(['E','E'])
-    assert_equal [sd,[c,t],[c,f],su,sd,[a,t],[a,f],su,sd,[k,t],[k,f],su], gen(['C','A','K'])
+    assert_equal [sd,[a,t],[a,f],su],                         gen(['A'])
+    assert_equal [sd,[c,t],[c,f],[k,t],[k,f],su],             gen(['C','K'])
+    assert_equal [sd,[e,t],[e,f],[e,t],[e,f],su],             gen(['E','E'])
+    assert_equal [sd,[c,t],[c,f],[a,t],[a,f],[k,t],[k,f],su], gen(['C','A','K'])
   end
 
   def test_generate_numbers
@@ -161,18 +162,19 @@ class TestAccessibilityStringEventGenerator < MiniTest::Unit::TestCase
   end
 
   def test_generate_unicode # holding option
-    assert_equal [od,[sigma,t],[sigma,f],ou], gen(["∑"])
-    assert_equal [od,[tm,t],[tm,f],ou],       gen(["™"])
-    assert_equal [od,[gbp,t],[gbp,f],ou],     gen(["£"])
-    assert_equal [od,[omega,t],[omega,f],ou], gen(["Ω"])
+    assert_equal [od,[sigma,t],[sigma,f],ou],           gen(["∑"])
+    assert_equal [od,[tm,t],[tm,f],ou],                 gen(["™"])
+    assert_equal [od,[gbp,t],[gbp,f],ou],               gen(["£"])
+    assert_equal [od,[omega,t],[omega,f],ou],           gen(["Ω"])
+    assert_equal [od,[tm,t],[tm,f],[gbp,t],[gbp,f],ou], gen(["™","£"])
   end
 
   def test_generate_backslashes
-    assert_equal [[bslash,t],[bslash,f]],                                     gen(["\\"])
-    assert_equal [[bslash,t],[bslash,f],[space,t],[space,f]],                 gen(["\\"," "])
-    assert_equal [[bslash,t],[bslash,f],[h,t],[h,f],[m,t],[m,f]],             gen(["\\",'h','m'])
+    assert_equal [[bslash,t],[bslash,f]],                               gen(["\\"])
+    assert_equal [[bslash,t],[bslash,f],[space,t],[space,f]],           gen(["\\"," "])
+    assert_equal [[bslash,t],[bslash,f],[h,t],[h,f],[m,t],[m,f]],       gen(["\\",'h','m'])
     # is this the job of the parser or the lexer?
-    assert_equal [[bslash,t],[bslash,f],sd,[h,t],[h,f],su,sd,[m,t],[m,f],su], gen([["\\HM"]])
+    assert_equal [[bslash,t],[bslash,f],sd,[h,t],[h,f],[m,t],[m,f],su], gen([["\\HM"]])
   end
 
   def test_generate_a_custom_escape
@@ -192,14 +194,17 @@ class TestAccessibilityStringEventGenerator < MiniTest::Unit::TestCase
   end
 
   def test_bails_for_unmapped_token
-    e = assert_raises ArgumentError do
-      gen(["☃"]) # cannot generate snowmen :(
-    end
+    # cannot generate snowmen :(
+    e = assert_raises(ArgumentError) { gen(["☃"]) }
     assert_match /bail/i, e.message
   end
 
   def test_generate_arbitrary_nested_array_sequence
     assert_equal [[c,t],[a,t],[k,t],[e,t],[e,f],[k,f],[a,f],[c,f]], gen([["c",["a",["k",["e"]]]]])
+  end
+
+  def test_generate_command_A
+    assert_equal [cd,sd,[a,t],[a,f],su,cu], gen([["\\COMMAND",["A"]]])
   end
 
 end
@@ -218,7 +223,7 @@ class TestAccessibilityString < MiniTest::Unit::TestCase
     assert_kind_of Array, events
     refute_empty events
 
-    assert_equal true, events[0][1]
+    assert_equal true,  events[0][1]
     assert_equal false, events[1][1]
   end
 

@@ -1,3 +1,5 @@
+require 'test/helper'
+
 class TestAccessibilityCore < MiniTest::Unit::TestCase
 
   # this assumes that radar://10040865 is not fixed
