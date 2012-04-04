@@ -7,6 +7,8 @@ if RUBY_ENGINE == 'macruby'
   $CFLAGS << ' -fobjc-gc'
 else
   $CFLAGS << ' -DNOT_MACRUBY'
+  RbConfig::MAKEFILE_CONFIG["CC"]  = "clang"
+  RbConfig::MAKEFILE_CONFIG["CXX"] = "clang"
 end
 
 create_makefile('accessibility/key_coder')
