@@ -1,3 +1,5 @@
+require 'test/integration/helper'
+
 class TestAXApplication < MiniTest::Unit::TestCase
 
   def app

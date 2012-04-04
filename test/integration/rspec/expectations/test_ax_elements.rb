@@ -1,3 +1,4 @@
+require 'test/integration/helper'
 require 'rspec/expectations/ax_elements'
 
 class TestRSpecMatchers < MiniTest::Unit::TestCase

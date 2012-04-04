@@ -1,3 +1,5 @@
+require 'test/integration/helper'
+
 class TestNSArrayCompat < MiniTest::Unit::TestCase
 
   def app

@@ -1,3 +1,5 @@
+require 'test/integration/helper'
+
 class TestAXElement < MiniTest::Unit::TestCase
 
   def app
@@ -16,25 +18,25 @@ class TestAXElement < MiniTest::Unit::TestCase
 
   def test_set_range
     box = app.window.text_area
-    box.set :value, to: 'okey dokey lemon pokey'
+    box.set :value, 'okey dokey lemon pokey'
 
-    box.set :selected_text_range, to: 0..5
+    box.set :selected_text_range, 0..5
     assert_equal 0..5, box.selected_text_range
 
-    box.set :selected_text_range, to: 1..5
+    box.set :selected_text_range, 1..5
     assert_equal 1..5, box.selected_text_range
 
-    box.set :selected_text_range, to: 5...10
+    box.set :selected_text_range, 5...10
     assert_equal 5..9, box.selected_text_range
 
-    box.set :selected_text_range, to: 1..-1
+    box.set :selected_text_range, 1..-1
     assert_equal 1..21, box.selected_text_range
 
-    box.set :selected_text_range, to: 4...-10
+    box.set :selected_text_range, 4...-10
     assert_equal 4..11, box.selected_text_range
 
   ensure
-    box.set :value, to: '' if box
+    box.set :value, '' if box
   end
 
 end

@@ -1,19 +1,13 @@
+require 'test/integration/helper'
+
 class TestAXRow < MiniTest::Unit::TestCase
 
-  def app
-    @@app ||= AX::Application.new REF
-  end
-
-  def table
-    @@table ||= app.main_window.table
-  end
-
-  def rows
-    @@rows ||= table.rows
-  end
+  def app;   @@app   ||= AX::Application.new REF end
+  def table; @@table ||= app.main_window.table end
+  def rows;  @@rows  ||= table.rows end
+  def row;               rows.first end
 
   def test_child_in_column
-    row = rows.first
     assert_equal row.children.second, row.child_in_column(header: 'Two')
     assert_equal row.children.first,  row.child_in_column(header: 'One')
 

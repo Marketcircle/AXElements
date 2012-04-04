@@ -1,3 +1,4 @@
+require 'test/integration/helper'
 require 'minitest/ax_elements'
 
 class TestMiniTestAssertions < MiniTest::Unit::TestCase
