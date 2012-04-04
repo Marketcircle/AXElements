@@ -23,29 +23,31 @@ task :clobber => :clobber_fixture
 
 require 'rake/testtask'
 namespace :test do
-  [:sanity, :integration].each do |group|
-    Rake::TestTask.new(group) do |t|
-      t.libs     << '.'
-      t.pattern   = "test/#{group}/**/test_*.rb"
-      t.verbose   = true
-    end
-    task group => [:ext, :fixture]
+  Rake::TestTask.new(:sanity) do |t|
+    t.libs     << '.'
+    t.pattern   = "test/sanity/**/test_*.rb"
   end
+  task :sanity => [:ext, :fixture]
+
+  Rake::TestTask.new(:integration) do |t|
+    t.libs     << '.'
+    t.pattern   = "test/integration/**/test_*.rb"
+    t.ruby_opts = ["-rax_elements"]
+  end
+  task :integration => [:ext, :fixture]
 
   desc 'Run tests for the string parser'
-  Rake::TestTask.new(:string) do |t|
-    t.libs << '.'
-    t.pattern = "test/sanity/**/test_string.rb"
-    t.verbose = true
+  task :string do
+    ruby 'test/sanity/accessibility/test_string.rb'
   end
   task :string => :ext
 
   desc 'Run tests under CRuby (where applicable)'
   task :cruby do
     if ENV['RUBY_VERSION'] # using rvm
-      puts sh 'rvm 1.9.3 do rake test:string'
+      puts sh 'rvm 1.9.3 do ruby test/sanity/accessibility/test_string.rb'
     else
-      sh 'rake test:string'
+      sh 'ruby test/sanity/accessibility/test_string.rb'
     end
   end
 end
