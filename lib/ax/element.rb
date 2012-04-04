@@ -122,7 +122,7 @@ class AX::Element
   #
   # @param [#to_sym]
   # @return the value that you were setting is returned
-  def set attr, val
+  def set attr, value
     unless writable? attr
       raise NoMethodError, "#{attr} is read-only for #{inspect}"
     end
