@@ -1,3 +1,6 @@
+require 'test/helper'
+require 'ax/element'
+
 class TestAXElement < MiniTest::Unit::TestCase
 
   def element
@@ -5,12 +8,13 @@ class TestAXElement < MiniTest::Unit::TestCase
   end
 
   def test_methods_is_flat
-    assert_equal element.methods, element.methods.flatten
+    methods = element.methods
+    assert_equal methods.flatten.sort!, methods.sort!
   end
 
   def test_setting_through_method_missing
     got_callback = false
-    element.define_singleton_method :'set:to:' do |attr, value|
+    element.define_singleton_method :set do |attr, value|
       if attr == 'my_little_pony' && value == :firefly
         got_callback = true
       end
@@ -22,7 +26,7 @@ class TestAXElement < MiniTest::Unit::TestCase
     window = element.attribute(:main_window)
     assert_respond_to window, :position=
     assert_respond_to window, :size=
-    refute_respond_to window, :pie=
+    refute_respond_to window, :grandad=
   end
 
   def test_to_point
