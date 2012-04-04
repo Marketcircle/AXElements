@@ -28,15 +28,16 @@ module Accessibility::DSL
   # will forward the message to the element.
   #
   # @param [String] method an action constant
-  def method_missing method, *args
+  def method_missing meth, *args
     arg = args.first
-    if arg.kind_of?(AX::Element) && arg.actions.include?(method)
-      return arg.perform method
+    if arg.kind_of? AX::Element
+      return arg.perform meth if arg.actions.include? meth
+      raise ArgumentError, "`#{meth}' is not an action of #{self}:#{self.class}"
     end
     # @todo do we still need this? we should just call super
     # should be able to just call super, but there is a bug in MacRuby (#1320)
     # so we just recreate what should be happening
-    message = "undefined method `#{method}' for #{self}:#{self.class}"
+    message = "undefined method `#{meth}' for #{self}:#{self.class}"
     raise NoMethodError, message, caller(1)
   end
 
