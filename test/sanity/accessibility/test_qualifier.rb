@@ -1,3 +1,6 @@
+require 'test/runner'
+require 'accessibility/qualifier'
+
 class TestNSDictionaryExtensions < MiniTest::Unit::TestCase
 
   def test_ax_pp

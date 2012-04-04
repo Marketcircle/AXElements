@@ -1,3 +1,6 @@
+require 'test/runner'
+require 'accessibility/debug'
+
 class TestAccessibilityDebug < MiniTest::Unit::TestCase
 
   def mock_element
