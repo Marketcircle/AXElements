@@ -33,7 +33,8 @@ gem is a component of AXElements.
     'docs/KeyboardEvents.markdown'
   ]
 
-  s.add_development_dependency 'minitest',  '~> 2.11'
+
+  s.add_development_dependency 'minitest',  '~> 2.12'
   s.add_development_dependency 'yard',      '~> 0.7.5'
   s.add_development_dependency 'redcarpet', '~> 1.17'
 end
