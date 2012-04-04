@@ -1,11 +1,13 @@
-require 'singleton'
 require 'ax_elements/vendor/inflector'
 
 ##
 # Maintain all the rules for transforming Cocoa constants into something
 # a little more Rubyish.
 class Accessibility::Translator
-  include Singleton
+
+  def self.instance
+    @instance ||= new
+  end
 
   ##
   # Initialize the caches.
