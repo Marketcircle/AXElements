@@ -1,6 +1,15 @@
+require 'test/runner'
+require 'accessibility/translator'
+
+
 class TestAccessibilityTranslator < MiniTest::Unit::TestCase
 
   TRANSLATOR = Accessibility::Translator.instance
+
+  # trivial but important for backwards compat with Snow Leopard
+  def test_identifier_const
+    assert_equal 'AXIdentifier', KAXIdentifierAttribute
+  end
 
   def test_unprefixing
     def prefix_test before, after

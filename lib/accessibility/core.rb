@@ -874,17 +874,6 @@ class CFRange
 end
 
 
-unless Object.const_defined? :KAXIdentifierAttribute
-  ##
-  # Added for backwards compatability with Snow Leopard.
-  # This attribute is standard with Lion and newer. AXElements depends
-  # on it being defined.
-  #
-  # @return [String]
-  KAXIdentifierAttribute = 'AXIdentifier'
-end
-
-
 # AXElements extensions to `NSArray`.
 class NSArray
   # @return [CGPoint]

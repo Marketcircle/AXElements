@@ -25,7 +25,7 @@ class TestAccessibilityCore < MiniTest::Unit::TestCase
   def bye_button;  @@bye_button  ||= child(KAXButtonRole)     { |x| x.attribute(KAXTitleAttribute) == 'Bye!' } end
   def no_button;   @@no_button   ||= child(KAXButtonRole)     { |x| x.attribute(KAXTitleAttribute) == 'No'   } end
   def web_area;    @@web_area    ||= child("AXScrollArea")    { |x| x.attribute("AXDescription"  ) == 'Test Web Area' }.children.first end
-  def text_area;   @@text_area   ||= child("AXScrollArea")    { |x| x.attributes.include?(KAXIdentifierAttribute) && x.attribute(KAXIdentifierAttribute) == 'Text Area' }.children.first end
+  def text_area;   @@text_area   ||= child("AXScrollArea")    { |x| x.attributes.include?("AXIdentifier") && x.attribute("AXIdentifier") == 'Text Area' }.children.first end
 
   def invalid_ref
     bye_button # guarantee that it is cached
@@ -531,11 +531,6 @@ end
 
 
 class TestMiscCoreExtensions < MiniTest::Unit::TestCase
-
-  # trivial but important for backwards compat with Snow Leopard
-  def test_identifier_const
-    assert_equal 'AXIdentifier', KAXIdentifierAttribute
-  end
 
   def test_to_point
     p = CGPointMake(2,3)

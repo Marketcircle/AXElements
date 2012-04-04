@@ -1,4 +1,18 @@
+require 'accessibility/version'
 require 'ax_elements/vendor/inflector'
+
+framework 'ApplicationServices'
+
+unless Object.const_defined? :KAXIdentifierAttribute
+  ##
+  # Added for backwards compatability with Snow Leopard.
+  # This attribute is standard with Lion and newer. AXElements depends
+  # on it being defined.
+  #
+  # @return [String]
+  KAXIdentifierAttribute = 'AXIdentifier'
+end
+
 
 ##
 # Maintain all the rules for transforming Cocoa constants into something
