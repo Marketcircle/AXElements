@@ -24,15 +24,14 @@ task :clobber => :clobber_fixture
 require 'rake/testtask'
 namespace :test do
   Rake::TestTask.new(:sanity) do |t|
-    t.libs     << '.'
-    t.pattern   = "test/sanity/**/test_*.rb"
+    t.libs   << '.'
+    t.pattern = "test/sanity/**/test_*.rb"
   end
   task :sanity => [:ext, :fixture]
 
   Rake::TestTask.new(:integration) do |t|
-    t.libs     << '.'
-    t.pattern   = "test/integration/**/test_*.rb"
-    t.ruby_opts = ["-rax_elements"]
+    t.libs   << '.'
+    t.pattern = "test/integration/**/test_*.rb"
   end
   task :integration => [:ext, :fixture]
 
