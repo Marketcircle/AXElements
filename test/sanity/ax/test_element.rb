@@ -46,7 +46,7 @@ class TestAXElement < MiniTest::Unit::TestCase
     # rect in positive positive quadrant
     center_test [1,2], [6,10], [4,7]
     # rect in negative positive quadrant
-    center_test [-123.0,25.0], [6.0,10,0], [-120,30]
+    center_test [-123.0,25.0], [6.0,10.0], [-120,30]
     # rect starts in negative positive quadrant but is in positive positive
     center_test [-10.0,70.0], [20,42], [0,91]
   end
