@@ -36,17 +36,18 @@ namespace :test do
   task :integration => [:ext, :fixture]
 
   desc 'Run tests for the string parser'
-  task :string do
-    ruby 'test/sanity/accessibility/test_string.rb'
+  Rake::TestTask.new(:string) do |t|
+    t.libs   << '.'
+    t.pattern = "test/sanity/accessibility/test_string.rb"
   end
   task :string => :ext
 
   desc 'Run tests under CRuby (where applicable)'
   task :cruby do
     if ENV['RUBY_VERSION'] # using rvm
-      puts sh 'rvm 1.9.3 do ruby test/sanity/accessibility/test_string.rb'
+      puts sh 'rvm 1.9.3 do rake test:string'
     else
-      sh 'ruby test/sanity/accessibility/test_string.rb'
+      sh 'rake test:string'
     end
   end
 end
