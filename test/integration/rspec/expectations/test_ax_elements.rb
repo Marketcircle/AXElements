@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 require 'test/integration/helper'
 require 'rspec/expectations/ax_elements'
 
@@ -54,39 +55,4 @@ class TestRSpecMatchers < MiniTest::Unit::TestCase
     assert_equal 'should have a descendent matching Button', m.description
   end
 
-end
-
-
-begin
-  raise LoadError
-  require 'rspec-core'
-  RSpec::Core::Runner.disable_autorun!
-  RSpec.configuration.mock_with :nothing
-
-  class TestRSpecMatchers
-
-    def test_have_child
-      describe Accessibility::HasChildMatcher do
-        it "should find"
-        it "shoud fail to find"
-        it "should not find"
-        it "should fail to not find"
-      end
-      RSpec.world.example_groups.map { |x| x.run }
-    end
-
-    def test_have_descendent
-      describe Accessibility::HasDescendentMatcher do
-        it "should find"
-        it "shoud fail to find"
-        it "should not find"
-        it "should fail to not find"
-      end
-      RSpec.world.example_groups.map { |x| x.run }
-    end
-
-  end
-
-rescue LoadError
-  $stderr.puts 'You do not have rspec installed, skipping RSpec integration tests'
 end
