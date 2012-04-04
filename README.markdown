@@ -67,20 +67,26 @@ you should install MacRuby, the latest nightly build is required. If you
 are on Snow Leopard, you will also need to install the
 [Bridge Support Preview](http://www.macruby.org/blog/2010/10/08/bridgesupport-preview.html).
 
-Then you can install AXElements. For the time being, you should install
-from source. You can install like this:
+Then you can install AXElements. You can install AXElements via
+rubygems:
+
+```bash
+    gem install AXElements
+```
+
+Or you can install from source:
 
 ```bash
     cd ~/Documents # or where you want to put the AXElements code
     git clone git://github.com/Marketcircle/AXElements
     cd AXElements
+    rake install
 ```
 
 AXElements has no gem dependencies, so you can try it out in `macirb` at
 this point:
 
 ```bash
-    rake install
     rake console
 ```
 
