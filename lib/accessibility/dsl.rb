@@ -243,7 +243,7 @@ module Accessibility::DSL
   # @return [nil] do not rely on a return value
   def set element, change
     if element.respond_to? :focused
-      if element.attribute_writable? :focused
+      if element.writable? :focused
         element.set :focused, true
       end
     end
