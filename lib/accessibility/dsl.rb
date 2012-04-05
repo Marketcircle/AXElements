@@ -210,7 +210,7 @@ module Accessibility::DSL
   #
   # @param [AX::Element]
   def set_focus_to element
-    element.set(:focused, true) if element.respond_to? :focused?
+    element.set(:focused, true) if element.respond_to? :focused
   end
   alias_method :set_focus, :set_focus_to
 
