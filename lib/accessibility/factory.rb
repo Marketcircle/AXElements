@@ -66,16 +66,11 @@ module Accessibility::Factory
   # @param [AXUIElementRef]
   # @return [AX::Element]
   def process_element ref
-    role  = TRANSLATOR.unprefix ref.role
-    attrs = ref.attributes
-    klass = if attrs.include? KAXSubroleAttribute
-              subrole = ref.subrole
-              # Some objects claim to have a subrole but return nil
-              if subrole
-                class_for TRANSLATOR.unprefix(subrole), and: role
-              else
-                class_for role
-              end
+    role = TRANSLATOR.unprefix ref.role
+
+    # Some objects claim to have a subrole but return nil
+    klass = if subrole = ref.subrole
+              class_for TRANSLATOR.unprefix(subrole), and: role
             else
               class_for role
             end
@@ -87,9 +82,9 @@ module Accessibility::Factory
   #
   # @return [Array]
   def process_array vals
-    return vals if vals.empty?
-    return vals if CFGetTypeID(vals.first) != REF_TYPE
-    return vals.map { |val| process_element val }
+    (vals.empty? && vals)                         ||
+    (CFGetTypeID(vals.first) != REF_TYPE && vals) ||
+    vals.map { |val| process_element val }
   end
 
   ##
@@ -137,7 +132,7 @@ module Accessibility::Factory
 
   ##
   # Create a new class in the {AX} namesapce that has the given
-  # `superklass` as the superclass..
+  # `superklass` as the superclass.
   #
   # @param [#to_s] name
   # @param [#to_s] superklass
