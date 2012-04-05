@@ -17,6 +17,7 @@ class AX::Element
   include Accessibility::PPInspector
   include Accessibility::Factory
 
+
   # @param [AXUIElementRef]
   def initialize ref
     @ref = ref
@@ -34,7 +35,7 @@ class AX::Element
   #
   # @return [Array<Symbol>]
   def attributes
-    @attributes ||= TRANSLATOR.rubyize @ref.attributes
+    @attrs ||= TRANSLATOR.rubyize @ref.attributes
   end
 
   ##
@@ -146,7 +147,7 @@ class AX::Element
   #
   # @return [Array<Symbol>]
   def parameterized_attributes
-    TRANSLATOR.rubyize @ref.parameterized_attributes
+    @param_attrs ||= TRANSLATOR.rubyize @ref.parameterized_attributes
   end
 
   ##
@@ -178,7 +179,7 @@ class AX::Element
   #
   # @return [Array<Symbol>]
   def actions
-    TRANSLATOR.rubyize @ref.actions
+    @actions ||= TRANSLATOR.rubyize @ref.actions
   end
 
   ##
