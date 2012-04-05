@@ -59,6 +59,12 @@ class TestAccessibilityDSL < MiniTest::Unit::TestCase
     assert_equal app, dsl.app_with_pid(PID)
   end
 
+  def test_set_focus_to
+    assert dsl.set_focus_to app
+    assert dsl.set_focus    app
+    assert dsl.set_focus_to app.main_window.search_field
+    assert dsl.set_focus    app.main_window.search_field
+  end
   def test_typing_human_string
     try_typing "A sentence, with punctuation and num8ers. LOL!\tA 'quoted' string--then some @#*$."
   end

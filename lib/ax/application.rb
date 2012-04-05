@@ -81,7 +81,7 @@ class AX::Application < AX::Element
   # Overridden to handle the {Accessibility::Language#set_focus} case.
   #
   # (see AX::Element#set:to:)
-  def set attr, to: value
+  def set attr, value
     case attr
     when :focused
       perform(value ? :unhide : :hide)

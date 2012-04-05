@@ -17,12 +17,12 @@ class TestAXApplication < MiniTest::Unit::TestCase
   end
 
   def test_can_set_focus_and_blur_app # lol, blur
-    assert app.set :focused, to: false
+    assert app.set :focused, false
     refute app.active?
     refute app.attribute :focused
     refute app.attribute :focused?
 
-    assert app.set :focused, to: true
+    assert app.set :focused, true
     assert app.active?
     assert app.attribute :focused
     assert app.attribute :focused?
@@ -32,10 +32,10 @@ class TestAXApplication < MiniTest::Unit::TestCase
   end
 
   def test_can_hide_and_unhide_app
-    assert app.set :hidden, to: true
+    assert app.set :hidden, true
     assert app.hidden?
 
-    assert app.set :hidden, to: false
+    assert app.set :hidden, false
     refute app.hidden?
 
     assert app.perform :hide
@@ -46,6 +46,10 @@ class TestAXApplication < MiniTest::Unit::TestCase
 
   ensure
     running_app.activateWithOptions NSApplicationActivateIgnoringOtherApps
+  end
+
+  def test_set_calls_super
+    assert app.set(:enhanced_user_interface, true)
   end
 
   def test_element_at_point
