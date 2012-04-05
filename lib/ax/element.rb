@@ -50,14 +50,15 @@ class AX::Element
   #
   # @param [#to_sym]
   def attribute name
-    if rattr = lookup(name, @ref.attributes)
+    if rattr = TRANSLATOR.lookup(name, @ref.attributes)
       process @ref.attribute(rattr)
     end
   end
 
   ##
-  # Needed to override inherited `NSObject#description`. If you want a
-  # description of the object then you should use {#inspect} instead.
+  # Needed to override inherited `NSObject#description` as some
+  # elements have a `description` attribute. If you want a description
+  # of the object then you should use {#inspect} instead.
   def description
     attribute :description
   end
@@ -76,7 +77,7 @@ class AX::Element
   # @param [#to_sym]
   # @return [Number]
   def size_of attr
-    if rattr = lookup(attr, @ref.attributes)
+    if rattr = TRANSLATOR.lookup(attr, @ref.attributes)
       @ref.size_of rattr
     else
       0
@@ -106,7 +107,7 @@ class AX::Element
   #
   # @param [#to_sym]
   def writable? attr
-    if rattr = lookup(attr, @ref.attributes)
+    if rattr = TRANSLATOR.lookup(attr, @ref.attributes)
       @ref.writable? rattr
     else
       false
@@ -128,9 +129,7 @@ class AX::Element
       raise NoMethodError, "#{attr} is read-only for #{inspect}"
     end
     value = value.relative_to(@ref.value.size) if value.kind_of? Range
-    rattr = lookup(attr, @ref.attributes)
-    @ref.set rattr, value
-    value
+    @ref.set TRANSLATOR.lookup(attr, @ref.attributes), value
   end
 
 
@@ -159,7 +158,7 @@ class AX::Element
   #
   # @param [#to_sym]
   def attribute attr, for_parameter: param
-    if rattr = lookup(attr, @ref.parameterized_attributes)
+    if rattr = TRANSLATOR.lookup(attr, @ref.parameterized_attributes)
       param = param.relative_to(@ref.value.size) if value.kind_of? Range
       process @ref.attribute(rattr, for_parameter: param)
     end
@@ -192,12 +191,13 @@ class AX::Element
   #
   # @example
   #
-  #   button.perform :press # => true
+  #   button.perform :press    # => true
+  #   button.perform :make_pie # => false
   #
   # @param [#to_sym]
   # @return [Boolean] true if successful
   def perform action
-    if raction = lookup(action, @ref.actions)
+    if raction = TRANSLATOR.lookup(action, @ref.actions)
       @ref.perform raction
     else
       false
@@ -227,7 +227,7 @@ class AX::Element
     tree      = Accessibility::Enumerators::BreadthFirst.new(self)
 
     if TRANSLATOR.singularize(kind) == kind
-      tree.find { |element| qualifier.qualifies? element }
+      tree.find     { |element| qualifier.qualifies? element }
     else
       tree.find_all { |element| qualifier.qualifies? element }
     end
@@ -298,24 +298,23 @@ class AX::Element
   #   window.application # => SearchFailure is raised
   #
   def method_missing method, *args, &block
-    if method[-1] == EQUALS
-      return set(method.chomp(EQUALS), args.first)
+    return set(method.chomp(EQUALS), args.first) if method[-1] == EQUALS
 
-    elsif attr = lookup(method, @ref.attributes)
-      return process @ref.attribute(attr)
+    if result = attribute(method)
+      return result
+    end
 
-    elsif attr = lookup(method, @ref.parameterized_attributes)
-      return process @ref.attribute(attr, for_parameter: args.first)
+    if result = attribute(method, for_parameter: args.first)
+      return result
+    end
 
-    elsif @ref.attributes.include? KAXChildrenAttribute
+    if attributes.include? :children
       result = search method, *args, &block
       return result unless result.blank?
       raise Accessibility::SearchFailure.new(self, method, args.first)
-
-    else
-      super
-
     end
+
+    super
   end
 
 
@@ -488,11 +487,6 @@ class AX::Element
   #
   # @return [String]
   EQUALS = '='
-
-  def lookup key, values
-    value = TRANSLATOR.lookup key, values
-    return value if values.include? value
-  end
 
   def notif_callback_for
     # we are ignoring the context pointer since this is OO
