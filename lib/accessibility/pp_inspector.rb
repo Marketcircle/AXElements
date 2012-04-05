@@ -18,7 +18,6 @@ module Accessibility::PPInspector
   #
   # @return [String]
   def pp_identifier
-    # @todo Break this method up into chunks
     # @note use, or lack of use, of #inspect is intentional for visual effect
 
     if attributes.include? :value
