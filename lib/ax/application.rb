@@ -10,6 +10,13 @@ class AX::Application < AX::Element
   include Accessibility::String
 
   ##
+  # @private
+  # Cached reference to the system wide object.
+  #
+  # @return [AXUIElementRef]
+  SYSTEMWIDE = AXUIElementCreateSystemWide()
+
+  ##
   # Overridden so that we can also cache the `NSRunningApplication`
   # instance for this object.
   #

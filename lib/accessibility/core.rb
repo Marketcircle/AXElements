@@ -914,9 +914,3 @@ class CGPoint
   # @return [CGPoint]
   def to_point; self end
 end
-
-##
-# Cached reference to the system wide object.
-#
-# @return [AXUIElementRef]
-SYSTEMWIDE = AXUIElementCreateSystemWide()
