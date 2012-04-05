@@ -70,7 +70,7 @@ class TestAccessibilityCore < MiniTest::Unit::TestCase
     assert_equal 10..19,              window.attribute("AXPie"            )
   end
 
-  def test_attribute_is_nil_when_no_value
+  def test_attribute_when_no_value
     assert_nil window.attribute(KAXGrowAreaAttribute)
   end
 
@@ -79,8 +79,8 @@ class TestAccessibilityCore < MiniTest::Unit::TestCase
     assert_empty invalid_ref.attribute(KAXChildrenAttribute)
   end
 
-  def test_attribute_handles_errors
-    assert_raises(ArgumentError) { REF.attribute 'MADEUPATTRIBUTE' }
+  def test_attribute_when_not_supported_attribute
+    assert_nil REF.attribute('MADEUPATTRIBUTE')
   end
 
   def test_role
@@ -120,8 +120,8 @@ class TestAccessibilityCore < MiniTest::Unit::TestCase
     refute invalid_ref.writable? KAXRoleAttribute
   end
 
-  def test_writable_handles_errors
-    assert_raises(ArgumentError) { REF.writable? 'FAKE' }
+  def test_writable_false_for_bad_attributes
+    refute REF.writable? 'FAKE'
   end
 
   def test_set_number

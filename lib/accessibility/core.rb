@@ -98,13 +98,13 @@ module Accessibility::Core
   def attribute name
     ptr = Pointer.new :id
     case code = AXUIElementCopyAttributeValue(self, name, ptr)
-    when 0               then ptr.value.to_ruby
-    when KAXErrorNoValue then nil
-    when KAXErrorInvalidUIElement
+    when 0
+      ptr.value.to_ruby
+    when KAXErrorNoValue, KAXErrorAttributeUnsupported,
+         KAXErrorFailure, KAXErrorInvalidUIElement then
       name == KAXChildrenAttribute ? [] : nil
-    when KAXErrorFailure
-      name == KAXChildrenAttribute ? [] : handle_error(code, name)
-    else handle_error code, name
+    else
+      handle_error code, name
     end
   end
 
@@ -177,10 +177,13 @@ module Accessibility::Core
   def size_of name
     ptr = Pointer.new :long_long
     case code = AXUIElementGetAttributeValueCount(self, name, ptr)
-    when 0                                                  then ptr.value
+    when 0
+      ptr.value
     when KAXErrorFailure, KAXErrorAttributeUnsupported,
-      KAXErrorInvalidUIElement                              then 0
-    else handle_error code, name
+         KAXErrorNoValue, KAXErrorInvalidUIElement
+      0
+    else
+      handle_error code, name
     end
   end
 
@@ -196,9 +199,13 @@ module Accessibility::Core
   def writable? name
     ptr = Pointer.new :bool
     case code = AXUIElementIsAttributeSettable(self, name, ptr)
-    when 0                        then ptr.value
-    when KAXErrorInvalidUIElement then false
-    else handle_error code, name
+    when 0
+      ptr.value
+    when KAXErrorFailure, KAXErrorAttributeUnsupported,
+         KAXErrorNoValue, KAXErrorInvalidUIElement
+      false
+    else
+      handle_error code, name
     end
   end
 
@@ -223,8 +230,11 @@ module Accessibility::Core
   # @param [String] name an attribute constant
   def set name, value
     code = AXUIElementSetAttributeValue(self, name, value.to_ax)
-    return value if code.zero?
-    handle_error code, name, value
+    if code.zero?
+      value
+    else
+      handle_error code, name, value
+    end
   end
 
 
@@ -270,12 +280,15 @@ module Accessibility::Core
   # @param [String] attr an attribute constant
   # @param [Object] param
   def attribute name, for_parameter: param
-    ptr   = Pointer.new :id
-    param = param.to_ax
-    case code = AXUIElementCopyParameterizedAttributeValue(self,name,param,ptr)
-    when 0                                         then ptr.value.to_ruby
-    when KAXErrorNoValue, KAXErrorInvalidUIElement then nil
-    else handle_error code, name, param
+    ptr = Pointer.new :id
+    case code = AXUIElementCopyParameterizedAttributeValue(self, name, param.to_ax, ptr)
+    when 0
+      ptr.value.to_ruby
+    when KAXErrorFailure, KAXErrorAttributeUnsupported,
+         KAXErrorNoValue, KAXErrorInvalidUIElement
+      nil
+    else
+      handle_error code, name, param
     end
   end
 
@@ -318,8 +331,11 @@ module Accessibility::Core
   # @return [Boolean]
   def perform action
     code = AXUIElementPerformAction(self, action)
-    return true if code.zero?
-    handle_error code, action
+    if code.zero?
+      true
+    else
+      handle_error code, action
+    end
   end
 
   ##
@@ -398,9 +414,14 @@ module Accessibility::Core
   def element_at point
     ptr = Pointer.new ELEMENT
     case code = AXUIElementCopyElementAtPosition(self, *point.to_point, ptr)
-    when 0                                  then ptr.value
-    when KAXErrorNoValue                    then nil
-    else handle_error code, point, nil, nil
+    when 0
+      ptr.value
+    when KAXErrorNoValue
+      nil
+    when KAXErrorInvalidUIElement
+      system_wide.element_at point unless self == system_wide
+    else
+      handle_error code, point, nil, nil
     end
   end
 
@@ -453,9 +474,11 @@ module Accessibility::Core
     raise ArgumentError, 'A callback is required' unless block_given?
     ptr      = Pointer.new OBSERVER
     callback = proc { |obsrvr, sender, notif, ctx| yield obsrvr, sender, notif }
-    case code = AXObserverCreate(pid, callback, ptr)
-    when 0 then ptr.value
-    else handle_error code, callback
+    code = AXObserverCreate(pid, callback, ptr)
+    if code.zero?
+      ptr.value
+    else
+      handle_error code, callback
     end
   end
 
@@ -540,12 +563,14 @@ module Accessibility::Core
   # @return [Fixnum]
   def pid
     @pid ||= (
-      ptr  = Pointer.new :int
+      ptr = Pointer.new :int
       case code = AXUIElementGetPid(self, ptr)
-      when 0 then ptr.value
+      when 0
+        ptr.value
       when KAXErrorInvalidUIElement
         self == system_wide ? 0 : handle_error(code)
-      else handle_error code
+      else
+        handle_error code
       end
       )
   end
