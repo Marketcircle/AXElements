@@ -298,23 +298,26 @@ class AX::Element
   #   window.application # => SearchFailure is raised
   #
   def method_missing method, *args, &block
-    return set(method.chomp(EQUALS), args.first) if method[-1] == EQUALS
+    if method[-1] == EQUALS
+      return set(method.chomp(EQUALS), args.first)
 
-    if result = attribute(method)
-      return result
+    elsif attributes.include? method
+      return attribute method
+
+    elsif parameterized_attributes.include? method
+      return attribute method, for_parameter: args.first
+
+    elsif attributes.include? :children
+      if (result = search method, *args, &block).blank?
+        raise Accessibility::SearchFailure.new(self, method, args.first)
+      else
+        return result
+      end
+
+    else
+      super
+
     end
-
-    if result = attribute(method, for_parameter: args.first)
-      return result
-    end
-
-    if attributes.include? :children
-      result = search method, *args, &block
-      return result unless result.blank?
-      raise Accessibility::SearchFailure.new(self, method, args.first)
-    end
-
-    super
   end
 
 
@@ -416,11 +419,9 @@ class AX::Element
   # Overriden to respond properly with regards to dynamic attribute
   # lookups, but will return false for potential implicit searches.
   def respond_to? name
-    key = TRANSLATOR.lookup(name.chomp(EQUALS), @ref.attributes)
-    return true if @ref.attributes.include? key
-    key = TRANSLATOR.lookup(name, @ref.parameterized_attributes)
-    return true if @ref.parameterized_attributes.include? key
-    return super
+    attributes.include?(name)               ||
+    parameterized_attributes.include?(name) ||
+    super
   end
 
   ##
