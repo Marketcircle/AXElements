@@ -417,9 +417,11 @@ class AX::Element
   # Overriden to respond properly with regards to dynamic attribute
   # lookups, but will return false for potential implicit searches.
   def respond_to? name
-    lookup(name.chomp(EQUALS), @ref.attributes)               ||
-    lookup(name,               @ref.parameterized_attributes) ||
-    super
+    key = TRANSLATOR.lookup(name.chomp(EQUALS), @ref.attributes)
+    return true if @ref.attributes.include? key
+    key = TRANSLATOR.lookup(name, @ref.parameterized_attributes)
+    return true if @ref.parameterized_attributes.include? key
+    return super
   end
 
   ##
