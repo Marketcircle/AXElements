@@ -21,86 +21,52 @@ class Accessibility::Graph
   # to build Graphviz DOT graphs.
   class Node
 
-    ##
-    # Unique identifier for the node.
-    #
     # @return [String]
     attr_reader :id
 
     # @return [AX::Element]
-    attr_reader :ref
+    attr_reader :element
 
     # @param [AX::Element]
     def initialize element
-      @ref = element
-      @id  = "element_#{element.object_id}"
+      @element = element
+      @id      = "element_#{element.object_id}"
     end
 
     # @return [String]
-    def to_s
-      enabled = if ref.respond_to?(:enabled) && !ref.enabled?
-                  '[style = filled] [color = "grey"]'
-                else
-                  EMPTY_STRING
-                end
-
-      focus   = if ref.respond_to? :focused
-                  ref.focused? ? '[style = bold]' : EMPTY_STRING
-                else
-                  EMPTY_STRING
-                end
-
-      shape   = ref.actions.empty? ? '[shape = oval]' : '[shape = box]'
-
-      "#{id} #{identifier} #{enabled} #{focus} #{shape}"
+    def to_dot
+      "#{@id} #{identifier} #{shape}"
     end
 
 
     private
 
     EMPTY_STRING = ''
+    NAMESPACE = '::'
 
     def identifier
-      klass = ref.class.to_s.split('::').last
-
-      if ref.respond_to? :value
-        val = ref.attribute :value
-        if val.kind_of? NSString
-          return "[label = \"#{klass} #{val}\"]" unless val.empty?
-        else
-          # we assume that nil is not a legitimate value
-          unless val.nil?
-            return "[label = \"#{klass} value=#{val.inspect}\"]"
-          end
-        end
-      end
-
-      if ref.respond_to? :title
-        val = ref.attribute(:title)
-        if val && !val.empty?
-          return "[label = \"#{klass} #{val.inspect}\""
-        end
-      end
-
-      # @todo Should create a special edge to the title ui element
-      if ref.respond_to? :title_ui_element
-        #val = attribute :title_ui_element
-        return "[label = \"#{klass}\"]" #if val
-      end
-
-      if ref.respond_to? :description
-        val = ref.attribute(:description).to_s
-        return BUFFER + val unless val.empty?
-      end
-
-      if ref.respond_to? :id
-        return " id=#{ref.attribute(:identifier)}"
-      end
-
-      # @todo should we have other fallbacks?
-      return klass
+      klass = @element.class.to_s.split(NAMESPACE).last
+      ident = @element.pp_identifier
+      ident.gsub! /"/, '\"'
+      "[label = \"#{klass}#{ident}\"]"
     end
 
+    def shape
+      @element.actions.empty? ? OVAL : BOX
+    end
+
+    def enabled
+      FILL if @element.respond_to?(:enabled) && !@element.enabled?
+    end
+
+    def focus
+      BOLD if @element.respond_to?(:focused) && @element.focused?
+    end
+
+    OVAL = '[shape = oval]'
+    BOX  = '[shape = box]'
+    BOLD = '[style = bold]'
+    FILL = '[style = filled] [color = "grey"]'
   end
 
   ##
@@ -122,8 +88,8 @@ class Accessibility::Graph
     end
 
     # @return [String]
-    def to_s
-      arrow = style ? style : 'none'
+    def to_dot
+      arrow = style ? style : 'normal'
       "#{@head.id} -> #{@tail.id} [arrowhead = #{arrow}]"
     end
 
@@ -142,23 +108,16 @@ class Accessibility::Graph
   # @return [Array<Accessibility::Graph::Edge>]
   attr_reader :edges
 
-  ##
-  # Exploit the ordering of a breadth-first enumeration to simplify the
-  # creation of edges for the graph. This only works because the UI
-  # hiearchy is a simple tree.
-  #
-  # @return [Array<Accessibility::Graph::Node>]
-  attr_reader :edge_queue
-
   # @param [AX::Element]
   def initialize root
     root_node   = Node.new(root)
     @nodes      = [root_node]
     @edges      = []
-    @edge_queue = []
-    root.size_of(:children).times do
-      @edge_queue << root_node
-    end
+
+    # exploit the ordering of a breadth-first enumeration to simplify
+    # the creation of edges for the graph. This only works because
+    # the UI hiearchy is a simple tree.
+    @edge_queue = Array.new(root.size_of(:children), root_node)
   end
 
   ##
@@ -168,28 +127,24 @@ class Accessibility::Graph
   # breadth first ordering of the enumerator, which makes building the
   # edges very easy.
   def build!
-    Accessibility::Enumerators::BreadthFirst.new(nodes.last.ref).each do |element|
-      node   = Node.new(element)
-      nodes << node
-      edges << Edge.new(node, edge_queue.shift)
-
-      next unless element.respond_to? :children
-      element.size_of(:children).times do
-        edge_queue << node
-      end
+    Accessibility::Enumerators::BreadthFirst.new(nodes.last.element).each do |element|
+      nodes << node = Node.new(element)
+      edges << Edge.new(node, @edge_queue.shift)
+      @edge_queue.concat Array.new(element.size_of(:children), node)
     end
   end
 
   ##
   # Generate the `dot` graph code. You should take this string and
-  # feet it to the `dot` program to have it generate the graph.
+  # feed it to the `dot` program to have it generate the graph.
   #
   # @return [String]
-  def to_s
+  def to_dot
     graph  = "digraph {\n"
-    graph << nodes.map { |node| "#{node.to_s}\n" }.join
-    graph << edges.map { |edge| "#{edge.to_s}\n" }.join
-    graph << "}\n"
+    graph << nodes.map(&:to_dot).join("\n")
+    graph << "\n\n"
+    graph << edges.map(&:to_dot).join("\n")
+    graph << "\n}\n"
   end
 
 end
