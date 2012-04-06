@@ -378,8 +378,8 @@ module Accessibility::Core
   # events).
   #
   # This is just a magic number from trial and error. Both the repeat
-  # interval (NXKeyRepeatInterval) and threshold (NXKeyRepeatThreshold),
-  # but both were way too big.
+  # interval (NXKeyRepeatInterval) and threshold (NXKeyRepeatThreshold)
+  # were tried, but were way too big.
   #
   # @return [Number]
   KEY_RATE = case ENV['KEY_RATE']
