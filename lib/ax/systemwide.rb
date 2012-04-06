@@ -18,7 +18,7 @@ class AX::SystemWide < AX::Element
   end
 
   ##
-  # @note With the `SystemWide` class, using {#type_string} will send the
+  # @note With the `SystemWide` class, using {#type} will send the
   #       events to which ever app has focus.
   #
   # Generate keyboard events by simulating keyboard input.
@@ -27,7 +27,7 @@ class AX::SystemWide < AX::Element
   # more information on how to format strings.
   #
   # @return [Boolean]
-  def type_string string
+  def type string
     @ref.post keyboard_events_for string
     true
   end

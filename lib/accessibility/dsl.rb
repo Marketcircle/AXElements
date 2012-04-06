@@ -265,9 +265,10 @@ module Accessibility::DSL
   #   Send input to a specific application
   #   @param [#to_s]
   #   @param [AX::Application]
+  #
   def type string, app = system_wide
     sleep 0.1
-    app.type_string string.to_s
+    app.type string.to_s
   end
 
   ##

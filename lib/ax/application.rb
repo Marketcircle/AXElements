@@ -54,8 +54,7 @@ class AX::Application < AX::Element
     case attr
     when :focused?, :focused then active?
     when :hidden?,  :hidden  then hidden?
-    else
-      super
+    else super
     end
   end
 
@@ -145,7 +144,7 @@ class AX::Application < AX::Element
   # {file:docs/KeyboardEvents.markdown Keyboard} documentation.
   #
   # @return [Boolean]
-  def type_string string
+  def type string
     @ref.post keyboard_events_for string
     true
   end
@@ -208,7 +207,7 @@ class AX::Application < AX::Element
   # @return [AX::Window]
   def show_preferences_window
     windows = self.children.select { |x| x.kind_of? AX::Window }
-    type_string "\\COMMAND+,"
+    type "\\COMMAND+,"
     wait_for(:window, parent: self) { |window| !windows.include?(window) }
   end
 

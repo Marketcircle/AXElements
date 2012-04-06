@@ -2,9 +2,6 @@
 require 'test/helper'
 require 'ax/application'
 
-class AX::Element
-  attr_reader :ref
-end
 
 class TestAXApplication < MiniTest::Unit::TestCase
 
@@ -17,7 +14,7 @@ class TestAXApplication < MiniTest::Unit::TestCase
       NSRunningApplication.runningApplicationWithProcessIdentifier app.pid
   end
 
-  def test_is_a_direct_subclass_of_element
+  def test_subclass_of_element
     assert_equal AX::Element, AX::Application.superclass
   end
 
@@ -33,10 +30,9 @@ class TestAXApplication < MiniTest::Unit::TestCase
     mock.define_singleton_method(:terminate)   { got_called = true }
     mock.define_singleton_method(:terminated?) { false }
     app.instance_variable_set :@app, mock
+
     app.perform :terminate
     assert got_called
-  ensure
-    app.instance_variable_set :@app, running_app
   end
 
   def test_force_terminate
@@ -48,12 +44,6 @@ class TestAXApplication < MiniTest::Unit::TestCase
 
     app.perform :force_terminate
     assert got_called
-  ensure
-    app.instance_variable_set :@app, running_app
-  end
-
-  def test_attribute_calls_super
-    assert_equal 'AXElementsTester', app.title
   end
 
   def test_writable_handles_focused_and_hidden
@@ -61,6 +51,10 @@ class TestAXApplication < MiniTest::Unit::TestCase
     assert app.writable? :focused
     assert app.writable? :hidden
     assert app.writable? :hidden?
+  end
+
+  def test_attribute_calls_super
+    assert_equal 'AXElementsTester', app.title
   end
 
   def test_set_calls_super
@@ -88,16 +82,6 @@ class TestAXApplication < MiniTest::Unit::TestCase
     end
     app.perform :some_action
     assert called_super
-  end
-
-  def test_type_string_forwards_events
-    skip "This strangely causes other tests to fail occassionally"
-    got_callback = false
-    app.ref.define_singleton_method :post do |events|
-      got_callback = true if events.kind_of?(Array)
-    end
-    app.type_string 'test'
-    assert got_callback
   end
 
   def test_bundle_identifier
