@@ -6,9 +6,9 @@ Gem::Specification.new do |s|
 
   s.summary     = 'A DSL for automating GUI manipulation'
   s.description = <<-EOS
-AXElements is a DSL abstraction on top of the Mac OS X Accessibility Framework
-that allows code to be written in a very natural and declarative style that
-describes user interactions.
+AXElements is a UI automation DSL built on top of the Mac OS X Accessibility
+Framework that allows code to be written in a very natural and declarative
+style that describes user interactions.
   EOS
   s.authors     = ['Mark Rada']
   s.email       = 'mrada@marketcircle.com'
