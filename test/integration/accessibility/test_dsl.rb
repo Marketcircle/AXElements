@@ -204,16 +204,16 @@ class TestAccessibilityDSL < MiniTest::Unit::TestCase
     pop_up = app.main_window.pop_up_button
 
     pop_up.perform :press
-    expected = pop_up.menu_item(title: '49')
-    dsl.scroll_menu_to expected
-    assert_equal expected, element_under_mouse
+    item = wait_for :menu_item, ancestor: pop_up, title: '49'
+    dsl.scroll_menu_to item
+    assert_equal item, element_under_mouse
     dsl.click
     assert_equal '49', pop_up.value
 
     pop_up.perform :press
-    expected = pop_up.menu_item(title: 'Togusa')
-    dsl.scroll_menu_to expected
-    assert_equal expected, element_under_mouse
+    item = wait_for :menu_item, ancestor: pop_up, title: 'Togusa'
+    dsl.scroll_menu_to item
+    assert_equal item, element_under_mouse
     dsl.click
     assert_equal 'Togusa', pop_up.value
 
