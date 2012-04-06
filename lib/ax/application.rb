@@ -47,7 +47,7 @@ class AX::Application < AX::Element
   # @group Attributes
 
   ##
-  # Overridden to handle the {Accessibility::Language#set_focus} case.
+  # Overridden to handle the {Accessibility::DSL#set_focus} case.
   #
   # (see AX::Element#attribute)
   def attribute attr
@@ -56,6 +56,15 @@ class AX::Application < AX::Element
     when :hidden?,  :hidden  then hidden?
     else
       super
+    end
+  end
+
+  ##
+  # Overridden to handle the {Accessibility::DSL#set_focus_to} case.
+  def writable? attr
+    case attr
+    when :focused?, :focused, :hidden?, :hidden then true
+    else super
     end
   end
 
