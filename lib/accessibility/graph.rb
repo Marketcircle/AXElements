@@ -56,11 +56,11 @@ class Accessibility::Graph
     end
 
     def enabled
-      FILL if @element.respond_to?(:enabled) && !@element.enabled?
+      FILL if @element.enabled?
     end
 
     def focus
-      BOLD if @element.respond_to?(:focused) && @element.focused?
+      BOLD if @element.focused?
     end
 
     OVAL = '[shape = oval]'
