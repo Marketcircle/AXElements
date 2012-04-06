@@ -18,13 +18,11 @@ module Accessibility::Enumerators
     #
     # @yieldparam [AX::Element]
     def each
-      # @todo Lazy-wrap element refs, might make things a bit faster
-      #       for fat trees; what is impact on thin trees?
-      # @todo See if we can implement the method in a single loop
+      # @todo Mutate the queue less
       queue = [@root]
       until queue.empty?
         queue.shift.attribute(:children).each do |x|
-          queue << x if x.attributes.include? :children
+          queue << x
           yield x
         end
       end
@@ -61,10 +59,8 @@ module Accessibility::Enumerators
       until stack.empty?
         current = stack.shift
         yield current
-        if current.attributes.include? :children
-          # need to reverse it since child ordering seems to matter in practice
-          stack.unshift *current.attribute(:children)
-        end
+        # needed to reverse it since child ordering seems to matter in practice
+        stack.unshift *current.attribute(:children)
       end
     end
 
@@ -92,10 +88,8 @@ module Accessibility::Enumerators
     # @param [#call]
     def recursive_each_with_level element, depth, block
       block.call element, depth
-      if element.respond_to? :children
-        element.attribute(:children).each do |x|
-          recursive_each_with_level x, depth + 1, block
-        end
+      element.attribute(:children).each do |x|
+        recursive_each_with_level x, depth + 1, block
       end
     end
 

@@ -26,7 +26,7 @@ class TestAccessibilityEnumeratorsBreadthFirst < MiniTest::Unit::TestCase
     def enum.first
       each { |x| return x }
     end
-    assert_instance_of AX::StandardWindow, enum.first
+    refute_instance_of AX::Application, enum.first
   end
 
   # this was a big performance issue, so we should make sure it
@@ -119,4 +119,3 @@ class TestAccessibilityEnumeratorsDepthFirst < MiniTest::Unit::TestCase
   end
 
 end
-
