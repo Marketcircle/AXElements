@@ -292,13 +292,13 @@ class AX::Element
 
     key = TRANSLATOR.cocoaify method
     if @ref.attributes.include? key
-      return process @ref.attribute key
+      return attribute method
 
     elsif @ref.parameterized_attributes.include? key
-      return process @ref.attribute(key, for_parameter: args.first)
+      return attribute(method, for_parameter: args.first)
 
     elsif @ref.attributes.include? KAXChildrenAttribute
-      if (result = search method, *args, &block).blank?
+      if (result = search(method, *args, &block)).blank?
         raise Accessibility::SearchFailure.new(self, method, args.first)
       else
         return result
