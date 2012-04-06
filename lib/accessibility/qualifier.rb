@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 require 'accessibility/translator'
 
 ##
@@ -37,9 +38,7 @@ class Accessibility::Qualifier
   #
   # @param [AX::Element]
   def qualifies? element
-    return false unless the_right_type? element
-    return false unless meets_criteria? element
-    return true
+    the_right_type?(element) && meets_criteria?(element)
   end
 
   # @return [String]
@@ -65,18 +64,18 @@ class Accessibility::Qualifier
   def compile criteria
     @filters = criteria.map do |key, value|
       if value.kind_of? Hash
-        [:children, [:subsearch, key, value]]
+        [:subsearch, key, value]
       elsif key.kind_of? Array
         filter = value.kind_of?(Regexp) ?
           :parameterized_match : :parameterized_equality
-        [key.first, [filter, *key, value]]
+        [filter, *key, value]
       else
         filter = value.kind_of?(Regexp) ?
           :match : :equality
-        [key, [filter, key, value]]
+        [filter, key, value]
       end
     end
-    @filters << [:role, [:block_check]] if @block
+    @filters << [:block_check] if @block
   end
 
   ##
@@ -92,7 +91,7 @@ class Accessibility::Qualifier
         return false
       end
     end
-    return element.kind_of? @const
+    element.kind_of? @const
   end
 
   ##
@@ -102,9 +101,7 @@ class Accessibility::Qualifier
   # @param [AX::Element]
   def meets_criteria? element
     @filters.all? do |filter|
-      if element.respond_to? filter.first
-        self.send *filter.last, element
-      end
+      self.send *filter, element
     end
   end
 
@@ -113,7 +110,7 @@ class Accessibility::Qualifier
   end
 
   def match attr, regexp, element
-    element.attribute(attr).match regexp
+    element.attribute(attr).to_s.match regexp
   end
 
   def equality attr, value, element
@@ -121,7 +118,7 @@ class Accessibility::Qualifier
   end
 
   def parameterized_match attr, param, regexp, element
-    element.attribute(attr, for_parameter: param).match regexp
+    element.attribute(attr, for_parameter: param).to_s.match regexp
   end
 
   def parameterized_equality attr, param, value, element
