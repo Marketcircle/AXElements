@@ -49,10 +49,8 @@ class AX::Element
   #   element.attribute :position # => #<CGPoint x=123.0 y=456.0>
   #
   # @param [#to_sym]
-  def attribute name
-    if rattr = TRANSLATOR.lookup(name, @ref.attributes)
-      process @ref.attribute(rattr)
-    end
+  def attribute attr
+    process @ref.attribute TRANSLATOR.cocoaify attr
   end
 
   ##
@@ -77,11 +75,7 @@ class AX::Element
   # @param [#to_sym]
   # @return [Number]
   def size_of attr
-    if rattr = TRANSLATOR.lookup(attr, @ref.attributes)
-      @ref.size_of rattr
-    else
-      0
-    end
+    @ref.size_of TRANSLATOR.cocoaify attr
   end
 
   ##
@@ -107,11 +101,7 @@ class AX::Element
   #
   # @param [#to_sym]
   def writable? attr
-    if rattr = TRANSLATOR.lookup(attr, @ref.attributes)
-      @ref.writable? rattr
-    else
-      false
-    end
+    @ref.writable? TRANSLATOR.cocoaify attr
   end
 
   ##
@@ -129,7 +119,7 @@ class AX::Element
       raise NoMethodError, "#{attr} is read-only for #{inspect}"
     end
     value = value.relative_to(@ref.value.size) if value.kind_of? Range
-    @ref.set TRANSLATOR.lookup(attr, @ref.attributes), value
+    @ref.set TRANSLATOR.cocoaify(attr), value
   end
 
 
@@ -158,7 +148,7 @@ class AX::Element
   #
   # @param [#to_sym]
   def attribute attr, for_parameter: param
-    if rattr = TRANSLATOR.lookup(attr, @ref.parameterized_attributes)
+    if rattr = TRANSLATOR.cocoaify(attr)
       param = param.relative_to(@ref.value.size) if value.kind_of? Range
       process @ref.attribute(rattr, for_parameter: param)
     end
@@ -197,7 +187,7 @@ class AX::Element
   # @param [#to_sym]
   # @return [Boolean] true if successful
   def perform action
-    if raction = TRANSLATOR.lookup(action, @ref.actions)
+    if raction = TRANSLATOR.cocoaify(action)
       @ref.perform raction
     else
       false
@@ -298,16 +288,16 @@ class AX::Element
   #   window.application # => SearchFailure is raised
   #
   def method_missing method, *args, &block
-    if method[-1] == EQUALS
-      return set(method.chomp(EQUALS), args.first)
+    return set(method.chomp(EQUALS), args.first) if method[-1] == EQUALS
 
-    elsif attributes.include? method
-      return attribute method
+    key = TRANSLATOR.cocoaify method
+    if @ref.attributes.include? key
+      return process @ref.attribute key
 
-    elsif parameterized_attributes.include? method
-      return attribute method, for_parameter: args.first
+    elsif @ref.parameterized_attributes.include? key
+      return process @ref.attribute(key, for_parameter: args.first)
 
-    elsif attributes.include? :children
+    elsif @ref.attributes.include? KAXChildrenAttribute
       if (result = search method, *args, &block).blank?
         raise Accessibility::SearchFailure.new(self, method, args.first)
       else
@@ -359,7 +349,7 @@ class AX::Element
   # @yieldreturn [Boolean]
   # @return [Array(Observer, String, CFRunLoopSource)]
   def on_notification name, &block
-    notif    = TRANSLATOR.guess_notification_for name
+    notif    = TRANSLATOR.guess_notification name
     observer = @ref.observer &notif_callback_for(&block)
     source   = @ref.run_loop_source_for observer
     @ref.register observer, to_receive: notif
@@ -396,11 +386,10 @@ class AX::Element
   # @return [String]
   def inspect
     msg  = "#<#{self.class}" << pp_identifier
-    attrs = @ref.attributes
-    msg << pp_position if attrs.include? KAXPositionAttribute
-    msg << pp_children if attrs.include? KAXChildrenAttribute
-    msg << pp_checkbox(:enabled) if attrs.include? KAXEnabledAttribute
-    msg << pp_checkbox(:focused) if attrs.include? KAXFocusedAttribute
+    msg << pp_position if attributes.include? :position
+    msg << pp_children if attributes.include? :children
+    msg << pp_checkbox(:enabled) if attributes.include? :enabled
+    msg << pp_checkbox(:focused) if attributes.include? :focused
     msg << '>'
   end
 
@@ -418,9 +407,12 @@ class AX::Element
   ##
   # Overriden to respond properly with regards to dynamic attribute
   # lookups, but will return false for potential implicit searches.
+  #
+  # This does not work for predicate methods at the moment.
   def respond_to? name
-    attributes.include?(name)               ||
-    parameterized_attributes.include?(name) ||
+    key = TRANSLATOR.cocoaify name.chomp(EQUALS)
+    @ref.attributes.include?(key)               ||
+    @ref.parameterized_attributes.include?(key) ||
     super
   end
 

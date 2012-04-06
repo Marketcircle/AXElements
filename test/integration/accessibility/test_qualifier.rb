@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 require 'test/integration/helper'
 
 class TestAccessibilityQualifier < MiniTest::Unit::TestCase
@@ -99,7 +100,7 @@ class TestAccessibilityQualifier < MiniTest::Unit::TestCase
 
   def test_qualifiers_can_use_aliased_attributes
     id = "I'm a little teapot"
-    q = qualifier(:Button, id: id)
+    q  = qualifier(:Button, id: id)
     app.main_window.children.each do |kid|
       if kid.attributes.include?(:identifier) && kid.id == id
         assert q.qualifies? kid
