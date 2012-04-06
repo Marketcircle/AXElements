@@ -220,7 +220,7 @@ class TestAccessibilityCore < MiniTest::Unit::TestCase
   ##
   # The keyboard simulation stuff is a bit weird...
 
-  def test_post_events_to
+  def test_post
     events = [[0x56,true], [0x56,false], [0x54,true], [0x54,false]]
     string = '42'
 

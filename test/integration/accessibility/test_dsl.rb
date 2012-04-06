@@ -12,25 +12,10 @@ class TestAccessibilityDSL < MiniTest::Unit::TestCase
     @dsl ||= DSL.new
   end
 
-  def app
-    @@app ||= AX::Application.new REF
-  end
-
-  def text_area
-    @@text_area ||= app.main_window.text_area
-  end
-
-  def pref_window
-    app.children.find { |x|
-      x.attributes.include?(:title) && x.title == 'Preferences'
-    }
-  end
-
-  def spelling_window
-    app.children.find { |x|
-      x.attributes.include?(:title) && x.title.match(/^Spelling/)
-    }
-  end
+  def app;             @@app       ||= AX::Application.new REF                               end
+  def text_area;       @@text_area ||= app.main_window.text_area                             end
+  def pref_window;     app.children.find { |x| x.attribute(:title) == 'Preferences'   }      end
+  def spelling_window; app.children.find { |x| x.attribute(:title).to_s.match(/^Spelling/) } end
 
   def try_typing string, expected = nil
     expected = string unless expected
