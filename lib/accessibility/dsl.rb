@@ -210,7 +210,7 @@ module Accessibility::DSL
   #
   # @param [AX::Element]
   def set_focus_to element
-    element.set(:focused, true) if element.respond_to? :focused
+    element.set(:focused, true) if element.writable? :focused
   end
   alias_method :set_focus, :set_focus_to
 
@@ -242,15 +242,13 @@ module Accessibility::DSL
   #
   # @return [nil] do not rely on a return value
   def set element, change
-    if element.respond_to? :focused
-      if element.writable? :focused
-        element.set :focused, true
-      end
-    end
+    set_focus_to element
 
-    return element.set :value, change unless change.kind_of? Hash
-    key, value = change.first
-    return element.set key, value
+    if change.kind_of? Hash
+      element.set *change.first
+    else
+      element.set :value, change
+    end
   end
 
   ##
