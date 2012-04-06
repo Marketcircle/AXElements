@@ -27,8 +27,8 @@ class Accessibility::Translator
   # Initialize the caches.
   def initialize
     init_unprefixes
-    init_normalizations
     init_rubyisms
+    init_cocoaifications
     init_classifications
     init_singularizations
   end
@@ -54,32 +54,18 @@ class Accessibility::Translator
     @unprefixes[key]
   end
 
+  # @return [Array<Symbol>]
+  def rubyize keys
+    keys.map { |x| @rubyisms[x] }
+  end
+
   ##
   # Given a symbol, return the equivalent accessibility constant.
   #
   # @param [#to_sym]
-  # @param [Array<String>]
   # @return [String]
-  def lookup key, values
-    @values = values
-    @rubyisms[key.to_sym]
-  end
-
-  # @return [Array<Symbol>]
-  def rubyize keys
-    keys.map { |x| @normalizations[x] }
-  end
-
-  ##
-  # Try to turn an arbitrary symbol into a notification constant, and
-  # then get the value of the constant.
-  #
-  # @param [#to_s]
-  # @return [String]
-  def guess_notification_for name
-    name  = name.to_s.gsub /(?:^|_)(.)/ do $1.upcase! || $1 end
-    const = "KAX#{name}Notification"
-    Object.const_defined?(const) ? Object.const_get(const) : name
+  def cocoaify key
+    @cocoaifications[key.to_sym]
   end
 
   ##
@@ -114,36 +100,46 @@ class Accessibility::Translator
     @singularizations[klass]
   end
 
+  ##
+  # Try to turn an arbitrary symbol into a notification constant, and
+  # then get the value of the constant.
+  #
+  # @param [#to_s]
+  # @return [String]
+  def guess_notification name
+    name  = name.to_s.gsub /(?:^|_)(.)/ do $1.upcase! || $1 end
+    const = "KAX#{name}Notification"
+    Object.const_defined?(const) ? Object.const_get(const) : name
+  end
+
 
   private
 
   # @return [Hash{String=>String}]
   def init_unprefixes
     @unprefixes = Hash.new do |hash, key|
-      hash[key] = key.sub /^[A-Z]*?AX(?:Is)?|\s+/, EMPTY_STRING
+      hash[key] = key.sub /^[A-Z]*?AX|\s+/, EMPTY_STRING
     end
   end
 
   # @return [Hash{String=>Symbol}]
-  def init_normalizations
-    @normalizations = Hash.new do |hash, key|
+  def init_rubyisms
+    @rubyisms = Hash.new do |hash, key|
       hash[key] = Accessibility::Inflector.underscore(@unprefixes[key]).to_sym
     end
   end
 
   # @return [Hash{Symbol=>String}]
-  def init_rubyisms
-    @rubyisms = Hash.new do |hash, key|
-      @values.each do |v| hash[@normalizations[v]] = v end
-      hash.fetch(key) do |k|
-        chomped_key = k.chomp(QUESTION_MARK).to_sym
-        chomped_val = hash.fetch(chomped_key, nil)
-        hash[key]   = chomped_val if chomped_val
-      end
+  def init_cocoaifications
+    @cocoaifications = Hash.new do |hash, key|
+      hash[key] = "AX#{Accessibility::Inflector.camelize(key.chomp QUESTION_MARK)}"
     end
     # preload the table
-    @rubyisms[:id]          = KAXIdentifierAttribute
-    @rubyisms[:placeholder] = KAXPlaceholderValueAttribute
+    @cocoaifications[:id]          = KAXIdentifierAttribute
+    @cocoaifications[:placeholder] = KAXPlaceholderValueAttribute
+    # workaround the one known case where AX uses "Is" for a boolean attribute
+    @cocoaifications[:application_running]  = # let the value all fall through
+    @cocoaifications[:application_running?] = KAXIsApplicationRunningAttribute
   end
 
   # @return [Hash{String=>String}]
