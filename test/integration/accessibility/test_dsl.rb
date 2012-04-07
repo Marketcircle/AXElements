@@ -21,10 +21,10 @@ class TestAccessibilityDSL < MiniTest::Unit::TestCase
     expected = string unless expected
     text_area.set :focused, true
     assert text_area.focused?
-    dsl.type string
+    dsl.type string, app
     assert_equal expected, text_area.value
   ensure # reset for next test
-    dsl.type "\\COMMAND+a \b"
+    dsl.type "\\COMMAND+a \b", app
   end
 
   def test_dsl_is_mixed_into_toplevel
