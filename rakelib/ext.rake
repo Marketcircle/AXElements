@@ -24,7 +24,7 @@ end
 namespace :ext do
   extend ExtHelpers
 
-  desc 'Compile C extensions'
+  desc 'Compile the key_coder C extension'
   task :key_coder do
     dir = 'ext/accessibility/key_coder'
     ext = "#{dir}/key_coder"
