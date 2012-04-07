@@ -20,6 +20,7 @@ class TestAccessibilityDSL < MiniTest::Unit::TestCase
   def try_typing string, expected = nil
     expected = string unless expected
     text_area.set :focused, true
+    assert text_area.focused?
     dsl.type string
     assert_equal expected, text_area.value
   ensure # reset for next test
