@@ -107,7 +107,7 @@ class MiniTest::Assertions
 
   def ax_check_children parent, kind, filters, block
     q = Accessibility::Qualifier.new(kind, filters, &block)
-    parent.attribute(:children).find { |x| q.qualifies? x }
+    parent.children.find { |x| q.qualifies? x }
   end
 
   def ax_check_descendent ancestor, kind, filters, block

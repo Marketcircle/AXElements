@@ -62,6 +62,15 @@ class AX::Element
   end
 
   ##
+  # Fetch the children elements for the current element. If the current
+  # element does not have children then an empty array will be returned.
+  #
+  # @return [Array<AX::Element>]
+  def children
+    attribute :children
+  end
+
+  ##
   # Return the `#size` of an attribute. This only works for attributes
   # that are a collection. This exists because it is _much_ more
   # efficient to find out how many `children` exist using this API

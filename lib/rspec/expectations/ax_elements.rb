@@ -46,7 +46,7 @@ class Accessibility::HasChildMatcher
 
   def search parent
     @parent = parent
-    @result = parent.attribute(:children).find { |x| @qualifier.qualifies? x }
+    @result = parent.children.find { |x| @qualifier.qualifies? x }
   end
 
 end

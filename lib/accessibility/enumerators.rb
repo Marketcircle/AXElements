@@ -8,7 +8,7 @@ module Accessibility::Enumerators
   class BreadthFirst
     include Enumerable
 
-    # @param [AX::Element]
+    # @param [#children]
     def initialize root
       @root = root
     end
@@ -16,12 +16,11 @@ module Accessibility::Enumerators
     ##
     # Semi-lazily iterate through the tree.
     #
-    # @yieldparam [AX::Element]
+    # @yieldparam [AX::Element,AXUIElementRef]
     def each
-      # @todo Mutate the queue less
       queue = [@root]
       until queue.empty?
-        queue.shift.attribute(:children).each do |x|
+        queue.shift.children.each do |x|
           queue << x
           yield x
         end
@@ -48,19 +47,19 @@ module Accessibility::Enumerators
   class DepthFirst
     include Enumerable
 
-    # @param [AX::Element]
+    # @param [#children]
     def initialize root
       @root = root
     end
 
-    # @yieldparam [AX::Element]
+    # @yieldparam [AX::Element,AXUIElementRef]
     def each
-      stack = @root.attribute(:children)
+      stack = @root.children
       until stack.empty?
         current = stack.shift
         yield current
         # needed to reverse it since child ordering seems to matter in practice
-        stack.unshift *current.attribute(:children)
+        stack.unshift *current.children
       end
     end
 
@@ -68,11 +67,11 @@ module Accessibility::Enumerators
     # Walk the UI element tree and yield both the element and the level
     # that the element is at relative to the root.
     #
-    # @yieldparam [AX::Element]
+    # @yieldparam [AX::Element,AXUIElementRef]
     # @yieldparam [Number]
     def each_with_level &block
       # @todo A bit of a hack that I would like to fix one day...
-      @root.attribute(:children).each do |element|
+      @root.children.each do |element|
         recursive_each_with_level element, 1, block
       end
     end
@@ -88,7 +87,7 @@ module Accessibility::Enumerators
     # @param [#call]
     def recursive_each_with_level element, depth, block
       block.call element, depth
-      element.attribute(:children).each do |x|
+      element.children.each do |x|
         recursive_each_with_level x, depth + 1, block
       end
     end

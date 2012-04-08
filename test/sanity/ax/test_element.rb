@@ -7,6 +7,11 @@ class TestAXElement < MiniTest::Unit::TestCase
     @element ||= AX::Element.new REF
   end
 
+  def test_children # not much we can do here
+    assert_respond_to element, :children
+    assert_kind_of Array, element.children
+  end
+
   def test_methods_is_flat
     methods = element.methods
     assert_equal methods.flatten.sort!, methods.sort!
