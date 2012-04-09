@@ -18,6 +18,8 @@ module Accessibility::Enumerators
     #
     # @yieldparam [AX::Element,AXUIElementRef]
     def each
+      # @todo mutate the array less, perhaps use an index instead
+      #       of #shift, then the array only grows
       queue = [@root]
       until queue.empty?
         queue.shift.children.each do |x|
