@@ -66,20 +66,23 @@ module Accessibility::Factory
   # @param [AXUIElementRef]
   # @return [AX::Element]
   def process_element ref
-    role  = TRANSLATOR.unprefix ref.role
-    attrs = ref.attributes
-    klass = if attrs.include? KAXSubroleAttribute
-              subrole = ref.subrole
-              # Some objects claim to have a subrole but return nil
-              if subrole
-                class_for TRANSLATOR.unprefix(subrole), and: role
-              else
-                class_for role
-              end
-            else
-              class_for role
-            end
-    klass.new ref
+    if role = ref.role
+      role  = TRANSLATOR.unprefix role
+      attrs = ref.attributes
+      if attrs.include? KAXSubroleAttribute
+        subrole = ref.subrole
+        # Some objects claim to have a subrole but return nil
+        if subrole
+          class_for(TRANSLATOR.unprefix(subrole), and: role).new ref
+        else
+          class_for(role).new ref
+        end
+      else
+        class_for(role).new ref
+      end
+    else # failsafe in case object dies before we even get the role
+      AX::Element.new ref
+    end
   end
 
   ##
