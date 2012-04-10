@@ -100,22 +100,18 @@ module Accessibility::Debug
       app    = NSApplication.sharedApplication
       colour = opts[:colour] || opts[:color] || NSColor.magentaColor
       window = highlight_window_for element.bounds, colour
-      kill window, after: opts[:timeout] if opts.has_key? :timeout
+
+      if opts.has_key? :timeout
+        Dispatch::Queue.new('window_killer').after opts[:timeout] do
+          window.close
+        end
+      end
+
       window
     end
 
 
     private
-
-    # @param [NSWindow]
-    # @param [Number]
-    def kill window, after: time
-      @kill_queue ||= Dispatch::Queue.new 'com.marketcircle.AXElements'
-      @kill_queue.async do
-        sleep time
-        window.close
-      end
-    end
 
     ##
     # Create the window that acts as the highlighted portion of the screen.
