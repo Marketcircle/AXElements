@@ -74,28 +74,33 @@ rubygems:
     gem install AXElements
 ```
 
+And then you can try things out in IRb:
+
+```bash
+    irb -rubygems -rax_elements
+```
+
 Or you can install from source:
 
 ```bash
     cd ~/Documents # or where you want to put the AXElements code
     git clone git://github.com/Marketcircle/AXElements
-    cd AXElements
-    rake install
+    cd AXElements && rake install
 ```
 
-AXElements has no gem dependencies, so you can try it out in `macirb` at
-this point:
+And then try things out in the developer console. AXElements has no
+gem dependencies, so from the AXElements source directory you can just
+run the `console` task:
 
 ```bash
     rake console
 ```
 
 __NOTE__: If you are not using RVM, then you should use `macrake`
-instead of `rake`, and do so for any other references to `rake` in the
-documentation. You may also need to add `sudo` to your command when you
-install the gem. Also, remember that if you are not using RVM with
-MacRuby but still have RVM installed then you will need to disable RVM
-like so:
+instead of `rake`, and `macirb` instead of `irb`, etc.. You may also
+need to add `sudo` to your command when you install the gem. If you
+are not using RVM with MacRuby, but have RVM installed, remember to
+disable it like so:
 
 ```bash
     rvm use system
@@ -154,7 +159,9 @@ tests aren't programmed to do anything destructive, but if you
 interfere with them then something could go wrong. To run the tests
 you simply need to run the `test` task:
 
+```bash
     rake test
+```
 
 __NOTE__: There may be some tests are dependent on Accessibility
 features that are new in OS X Lion which will cause test failures on
@@ -170,7 +177,9 @@ Benchmarks are also included as part of the test suite, but they are
 disabled by default. In order to enable them you need to set the
 `BENCH` environment variable:
 
+```bash
     BENCH=1 rake test
+```
 
 
 ## Contributing to AXElements
