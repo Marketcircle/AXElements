@@ -129,6 +129,7 @@ class TestAccessibilityDSL < MiniTest::Unit::TestCase
     assert_equal AX::DOCK.list.trash_dock_item, result
 
     result = dsl.wait_for :button, parent: app.main_window, title: 'Yes'
+    refute_nil result
     assert_equal 'Yes', result.title
   end
 
