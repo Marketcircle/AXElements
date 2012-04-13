@@ -1,6 +1,6 @@
 module Accessibility
   # @return [String]
-  VERSION   = '0.7.7'
+  VERSION   = '0.7.8'
 
   # @return [String]
   CODE_NAME = 'Clefairy'
