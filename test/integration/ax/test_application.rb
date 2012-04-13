@@ -12,6 +12,7 @@ class TestAXApplication < MiniTest::Unit::TestCase
 
   def test_initialize_args
     assert_equal app, AX::Application.new(PID)
+    assert_equal app, AX::Application.new(APP_BUNDLE_IDENTIFIER)
     assert_equal app, AX::Application.new(running_app.localizedName)
     assert_equal app, AX::Application.new(running_app)
   end

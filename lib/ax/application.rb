@@ -30,9 +30,14 @@ class AX::Application < AX::Element
       super SYSTEMWIDE.application_for arg
       @app = NSRunningApplication.runningApplicationWithProcessIdentifier arg
     when String
-      SYSTEMWIDE.spin_run_loop
-      @app = NSWorkspace.sharedWorkspace.runningApplications
-        .find { |app| app.localizedName == arg }
+      @app =
+        NSRunningApplication.runningApplicationsWithBundleIdentifier(arg).first ||
+        (
+          SYSTEMWIDE.spin_run_loop
+          NSWorkspace.sharedWorkspace.runningApplications.find { |app|
+            app.localizedName == arg
+          }
+        )
       super SYSTEMWIDE.application_for @app.processIdentifier
     when NSRunningApplication
       super SYSTEMWIDE.application_for arg.processIdentifier

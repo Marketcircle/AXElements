@@ -34,8 +34,8 @@ class << self
   # @return [AX::Application,nil]
   def application_with_bundle_identifier bundle
     10.times do
-      apps = NSRunningApplication.runningApplicationsWithBundleIdentifier bundle
-      return AX::Application.new(apps.first.processIdentifier) unless apps.empty?
+      app = NSRunningApplication.runningApplicationsWithBundleIdentifier(bundle)
+      return AX::Application.new(app) if app
       launch_application bundle
       sleep 2
     end
