@@ -21,7 +21,6 @@ class TestAccessibilityTranslator < MiniTest::Unit::TestCase
 
   def test_cocoaification
     assert_equal KAXChildrenAttribute,       TRANSLATOR.cocoaify(:children)
-    assert_equal KAXTitleUIElementAttribute, TRANSLATOR.cocoaify(:title_ui_element)
     assert_equal KAXFocusedAttribute,        TRANSLATOR.cocoaify(:focused?)
     assert_equal 'AXTotallyFake',            TRANSLATOR.cocoaify(:totally_fake)
 
@@ -34,6 +33,12 @@ class TestAccessibilityTranslator < MiniTest::Unit::TestCase
     assert_equal KAXIsApplicationRunningAttribute, TRANSLATOR.cocoaify(:is_application_running)
     assert_equal KAXIsApplicationRunningAttribute, TRANSLATOR.cocoaify(:application_running?)
     assert_equal KAXIsApplicationRunningAttribute, TRANSLATOR.cocoaify(:application_running)
+  end
+
+  def test_cocoaification_of_acronyms
+    assert_equal KAXURLAttribute,                      TRANSLATOR.cocoaify(:url)
+    assert_equal KAXTitleUIElementAttribute,           TRANSLATOR.cocoaify(:title_ui_element)
+    assert_equal KAXRTFForRangeParameterizedAttribute, TRANSLATOR.cocoaify(:rtf_for_range)
   end
 
   def test_rubyize

@@ -61,5 +61,6 @@ module Accessibility
     # Related to accessibility
     inflect.acronym('UI')
     inflect.acronym('RTF')
+    inflect.acronym('URL')
   end
 end
