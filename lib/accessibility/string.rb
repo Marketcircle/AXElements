@@ -43,7 +43,7 @@ module Accessibility::String
   # @example
   #
   #   Lexer.new("Hai").lex          # => ['H','a','i']
-  #   Lexer.new("\\CAPSLOCK").lex   # => [["\\CAPSLOCK"]]
+  #   Lexer.new("\\CONTROL").lex    # => [["\\CONTROL"]]
   #   Lexer.new("\\COMMAND+a").lex  # => [["\\COMMAND", ['a']]]
   #   Lexer.new("One\nTwo").lex     # => ['O','n','e',"\n",'T','w','o']
   #
@@ -150,8 +150,8 @@ module Accessibility::String
   #   # Upper case 'A'
   #   EventGenerator.new(["A"]).generate  # => [[56,true],[70,true],[70,false],[56,false]]
   #
-  #   # Press the caps lock button, turn it on
-  #   EventGenerator.new([["\\CAPS"]]).generate # => [[0x39,true],[0x39,false]]
+  #   # Press the volume up key
+  #   EventGenerator.new([["\\F12"]]).generate # => [[0x39,true],[0x39,false]]
   #
   #   # Hotkey, press and hold command key and then 'a', then release both
   #   EventGenerator.new([["\\CMD",["a"]]]).generate # => [[55,true],[70,true],[70,false],[55,false]]
