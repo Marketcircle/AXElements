@@ -6,5 +6,3 @@
 --readme README.typer.markdown
 lib/**/*.rb
 ext/**/*{.m,.c}
--
-docs/KeyboardEvents.markdown

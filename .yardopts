@@ -7,13 +7,3 @@
 --readme README.markdown
 lib/**/*.rb
 ext/**/*{.m,.c}
--
-docs/Inspecting.markdown
-docs/Acting.markdown
-docs/Searching.markdown
-docs/Notifications.markdown
-docs/KeyboardEvents.markdown
-docs/Debugging.markdown
-docs/NewBehaviour.markdown
-docs/AccessibilityTips.markdown
-docs/TestingExtensions.markdown
