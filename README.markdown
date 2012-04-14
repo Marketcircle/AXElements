@@ -109,18 +109,10 @@ disable it like so:
 
 ## Getting Started
 
-The
-[documentation](http://rdoc.info/github/Marketcircle/AXElements/master/frames)
+The [wiki](http://github.com/Marketcircle/AXElements/wiki)
 is the best place to get started, it includes tutorials to help you get
 started as well the API documentation (API docs are broken right now due
-to incompatabilities between MacRuby and YARD). The starting tutorial is the
-[Inspecting Tutorial](docs/Inspecting.markdown).
-
-Documentation is hosted by rdoc.info, but you can also generate it yourself
-using YARD. Documentation is stored in the `docs/` directory, but the
-documentation includes a number of cross references and even some
-pictures so you will lose a lot of the quality if you view them as
-plain text.
+to incompatabilities between MacRuby and YARD).
 
 Though it is not required, you may want to read Apple's
 [Accessibility Overview](http://developer.apple.com/library/mac/#documentation/Accessibility/Conceptual/AccessibilityMacOSX/OSXAXModel/OSXAXmodel.html)
@@ -137,7 +129,7 @@ increase. Documentation will be overhauled and more examples will be
 added. It will be magical, so we're code naming the next version
 "Clefairy".
 
-![The Moon](https://github.com/Marketcircle/AXElements/raw/master/docs/images/next_version.png)
+![The Moon](https://github.com/Marketcircle/AXElements/raw/gh-pages/images/next_version.png)
 
 Proper releases to rubygems will be made as milestones are reached.
 
