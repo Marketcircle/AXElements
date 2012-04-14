@@ -26,7 +26,7 @@ module Accessibility::String
   # {Accessibility::String::EventGenerator::CUSTOM}.
   #
   # For more details on event generation, read the
-  # {file:docs/KeyboardEvents.markdown Keyboard Events} documentation.
+  # [Keyboarding documentation](http://github.com/Marketcircle/AXElements/wiki/Keyboarding).
   #
   # @param [String]
   # @return [Array<Array(Fixnum,Boolean)>]

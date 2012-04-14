@@ -23,8 +23,9 @@ class AX::SystemWide < AX::Element
   #
   # Generate keyboard events by simulating keyboard input.
   #
-  # See the {file:docs/KeyboardEvents.markdown Keyboard} documentation for
-  # more information on how to format strings.
+  # See the
+  # [Keyboarding documentation](http://github.com/Marketcircle/AXElements/wiki/Keyboarding)
+  # for more information on how to format strings.
   #
   # @return [Boolean]
   def type string

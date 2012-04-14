@@ -4,7 +4,7 @@
 # an image for the graph.
 #
 # You can learn more about generating graphs in the
-# {file:docs/Debugging.markdown Debugging} tutorial.
+# [Debugging tutorial](http://github.com/Marketcircle/AXElements/wiki/Debugging).
 class Accessibility::Graph
 
   ##

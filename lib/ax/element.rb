@@ -210,8 +210,8 @@ class AX::Element
   # Perform a breadth first search through the view hierarchy rooted at
   # the current element.
   #
-  # See the {file:docs/Searching.markdown Searching} tutorial for the
-  # details on searching.
+  # See the [Searching tutorial](http://github.com/Marketcircle/AXElements/wiki/Searching)
+  # for the details on search semantics.
   #
   # @example Find the dock icon for the Finder app
   #
@@ -330,8 +330,8 @@ class AX::Element
   # Register to receive notification of the given event being completed
   # by the given element.
   #
-  # {file:docs/Notifications.markdown Notifications} are a way to put
-  # non-polling delays into your scripts.
+  # [Notifications](http://github.com/Marketcircle/AXElements/wiki/Notifications)
+  # are a way to put non-polling delays into your scripts.
   #
   # Use this method to register to be notified of the specified event in
   # an application.

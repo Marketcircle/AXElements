@@ -351,7 +351,7 @@ module Accessibility::Core
   # keyup).
   #
   # You can learn more about keyboard events from the
-  # {file:docs/KeyboardEvents.markdown Keyboard Events} documentation.
+  # [Keyboard Events documentation](http://github.com/Marketcircle/AXElements/wiki/Keyboarding).
   #
   # @example
   #

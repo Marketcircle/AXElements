@@ -146,7 +146,7 @@ class AX::Application < AX::Element
   # has focus will receive the key presses.
   #
   # For details on how to format the string, check out the
-  # {file:docs/KeyboardEvents.markdown Keyboard} documentation.
+  # [Keyboarding documentation](http://github.com/Marketcircle/AXElements/wiki/Keyboarding).
   #
   # @return [Boolean]
   def type string

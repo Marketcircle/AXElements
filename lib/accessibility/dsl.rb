@@ -15,8 +15,8 @@ require 'accessibility/debug'
 # The idea here is to pull actions out from an object and put them
 # in front of object to give AXElements more of a DSL feel to make
 # communicating test steps more clear. See the
-# {file:docs/Acting.markdown Acting tutorial} for examples on how to use
-# methods from this module.
+# [Acting tutorial](http://github.com/Marketcircle/AXElements/wiki/Acting)
+# for examples on how to use methods from this module.
 module Accessibility::DSL
 
 
@@ -255,7 +255,7 @@ module Accessibility::DSL
   # Simulate keyboard input by typing out the given string. To learn
   # more about how to encode modifier keys (e.g. Command), see the
   # dedicated documentation page on
-  # {file:docs/KeyboardEvents.markdown Keyboard Events}.
+  # [Keyboard Events](http://github.com/Marketcircle/AXElements/wiki/Keyboarding).
   #
   # @overload type string
   #   Send input to the currently focused application
