@@ -30,7 +30,6 @@ gem is a component of AXElements.
   s.extra_rdoc_files = [
     'README.typer.markdown',
     '.yardopts_typer',
-    'docs/KeyboardEvents.markdown'
   ]
 
 

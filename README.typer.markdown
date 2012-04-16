@@ -1,10 +1,12 @@
 # AXTyper
 
-This gem is a component of AXElements. It provides an interface for
-posting keyboard events to the system as well as a mixin for parsing
-a string into a series of events.
+This gem is a component of
+[AXElements](http://github.com/Marketcircle/AXElements). It provides
+an interface for posting keyboard events to the system as well as a
+mixin for parsing a string into a series of events.
 
-## Demo
+
+## Quick Demo
 
 The basics:
 
@@ -30,20 +32,40 @@ Something a bit more advanced:
     end
 ```
 
-## Testing
+A more detailed demonstration of what this library offers is offered in
+[this blog post](http://ferrous26.com/blog/2012/04/03/axelements-part1/).
 
-Running the AXElements test suite for only the AXTyper related tests
-can be accomplished with the `test:string` task.
+
+## Documentation
+
+- [API documentation](http://rdoc.info/gems/AXTyper/frames)
+- The AXElements [keyboarding tutorial](https://github.com/Marketcircle/AXElements/wiki/Keyboarding)
+
+
+## Development
+
+Development of this library happens as part of AXElements, but tests
+and the API for this component should remain separate enough so that
+it can be released as part of the AXTyper gem.
+
+### Testing
+
+Running tests for this subset of AXElements is best done by using the
+`test:string` rake task, and also run `test:cruby` to make sure that
+some MacRuby specific code didn't sneak into the keyboarding
+component.
 
 ```shell
     rake test:string
+    rake test:cruby
 ```
 
-## TODO
+### TODO
 
 The API for posting events is ad-hoc for the sake of demonstration;
 AXElements exposes this functionality via `Kernel#type`. The standalone
 API provided here could be improved.
+
 
 ## License
 
