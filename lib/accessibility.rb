@@ -43,7 +43,8 @@ class << self
   end
 
   ##
-  # @deprecated Use {AX::Application.new} instead.
+  # @deprecated Directly initialize an {AX::Application} instance instead.
+  #             `AX::Application.new('Terminal')`
   #
   # Get the accessibility object for an application given its localized
   # name. This will only work if the application is already running.
@@ -55,6 +56,7 @@ class << self
   # @param [String] name name of the application to launch
   # @return [AX::Application,nil]
   def application_with_name name
+    $stderr.puts 'DEPRECATED: Use AX::Application.new instead'
     AX::Application.new name
   end
 
