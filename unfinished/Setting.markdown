@@ -1,0 +1,1 @@
+You can use ruby ranges, but there is one caveat, which is that negative ranges will have to be converted ahead of time by the programmer, but only if you are using Core directly. If you are using an AX::Element derived class then it will Just Work™.
