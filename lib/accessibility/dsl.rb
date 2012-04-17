@@ -8,15 +8,13 @@ require 'accessibility'
 require 'accessibility/debug'
 
 ##
-# @todo Allow the animation duration to be overridden for Mouse stuff?
-#
 # DSL methods for AXElements.
 #
 # The idea here is to pull actions out from an object and put them
 # in front of object to give AXElements more of a DSL feel to make
 # communicating test steps more clear. See the
 # [Acting tutorial](http://github.com/Marketcircle/AXElements/wiki/Acting)
-# for examples on how to use methods from this module.
+# for a more in depth tutorial on using this module.
 module Accessibility::DSL
 
 
@@ -317,7 +315,7 @@ module Accessibility::DSL
   #
   # @param [#to_s]
   # @param [Hash] opts
-  # @option opts [Number] :timeout (15)
+  # @option opts [Number] :timeout (15) timeout in seconds
   # @option opts [AX::Element] :parent
   # @option opts [AX::Element] :ancestor
   # @return [AX::Element,nil]
@@ -393,8 +391,8 @@ module Accessibility::DSL
   #
   # @param [#to_point]
   # @param [Hash] opts
-  # @option opts [Number] :duration
-  # @option opts [Number] :wait
+  # @option opts [Number] :duration (0.2) in seconds
+  # @option opts [Number] :wait (0.2) in seconds
   def move_mouse_to arg, opts = {}
     duration = opts[:duration] || 0.2
     if Accessibility::Debug.on? && arg.respond_to?(:bounds)
@@ -412,7 +410,16 @@ module Accessibility::DSL
   # with the mouse. Perhaps you want to drag an object to another
   # place, or maybe you want to hightlight an area of the screen.
   #
+  # @example
+  #
+  #   drag_mouse_to [100,100]
+  #   drag_mouse_to drop_zone, from: desktop_icon
+  #
   # @param [#to_point]
+  # @param [Hash] opts
+  # @option opts [#to_point] :from a point to move to before dragging
+  # @option opts [Number] :duration (0.2) in seconds
+  # @option opts [Number] :wait (0.2) in seconds
   def drag_mouse_to arg, opts = {}
     move_mouse_to opts[:from] if opts[:from]
     Mouse.drag_to arg.to_point, (opts[:duration] || 0.2)
@@ -480,14 +487,17 @@ module Accessibility::DSL
 
   # @group Debug
 
+  # (see Accessibility::Debug.highlight)
   def highlight element, opts = {}
     Accessibility::Debug.highlight element, opts
   end
 
+  # (see Accessibility::Debug.path)
   def path_for element
     Accessibility::Debug.path element
   end
 
+  # (see Accessibility::Debug.text_subtree)
   def subtree_for element
     # @todo Create Element#descendants
     Accessibility::Debug.text_subtree element
@@ -546,6 +556,8 @@ module Accessibility::DSL
   #   element_at window # find out what is in the middle of the window
   #
   # @param [#to_point]
+  # @param [Hash] opts
+  # @option opts [AX::Application] :for
   # @return [AX::Element]
   def element_at_point point, opts = {}
     base = opts[:for] || system_wide
