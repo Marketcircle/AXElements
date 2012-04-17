@@ -88,8 +88,11 @@ module Accessibility::Debug
     # @example
     #
     #   highlighter = highlight window.outline
-    #   highlight window.outline.row, colour: NSColor.greenColor, timeout: 5
+    #   # wait a few seconds...
     #   highlighter.stop
+    #
+    #   highlight window.outline.row, colour: NSColor.greenColor, timeout: 5
+    #
     #
     # @param [AX::Element]
     # @param [Hash] opts
