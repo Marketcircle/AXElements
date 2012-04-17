@@ -73,7 +73,7 @@ module Accessibility::Factory
         subrole = ref.subrole
         # Some objects claim to have a subrole but return nil
         if subrole
-          class_for(TRANSLATOR.unprefix(subrole), and: role).new ref
+          class_for2(TRANSLATOR.unprefix(subrole), role).new ref
         else
           class_for(role).new ref
         end
@@ -118,12 +118,12 @@ module Accessibility::Factory
   # @param [#to_s]
   # @param [#to_s]
   # @return [Class]
-  def class_for subrole, and: role
+  def class_for2 subrole, role
     # @todo it would be nice if we didn't have to lookup twice
     if AX.const_defined? subrole, false
       AX.const_get subrole
     else
-      create_class subrole, with_superclass: role
+      create_class2 subrole, role
     end
   end
 
@@ -145,7 +145,7 @@ module Accessibility::Factory
   # @param [#to_s] name
   # @param [#to_s] superklass
   # @return [Class]
-  def create_class name, with_superclass: superklass
+  def create_class2 name, superklass
     unless AX.const_defined? superklass, false
       create_class superklass
     end
