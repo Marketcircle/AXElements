@@ -289,65 +289,6 @@ module Accessibility::DSL
   end
 
 
-  # @group Notifications
-
-  ##
-  # Register for a notification from a specific element.
-  #
-  # @param [#to_s]
-  # @param [Array(#to_s,AX::Element)]
-  def register_for notif, from: element, &block
-    @registered_elements ||= []
-    @registered_elements << element
-    element.on_notification notif, &block
-  end
-
-  ##
-  # @deprecated This API exists for backwards compatability only
-  #
-  # Register for a notification from a specific element.
-  #
-  # @param [AX::Element]
-  # @param [String]
-  def register_for_notification element, notif, &block
-    register_for notif, from: element, &block
-  end
-
-  ##
-  # Pause script execution until notification that has been registered
-  # for is received or the full timeout period has passed.
-  #
-  # If the script is unpaused because of a timeout, then it is assumed
-  # that the notification was never received and all notification
-  # registrations will be unregistered to avoid future complications.
-  #
-  # @param [Float] timeout number of seconds to wait for a notification
-  # @return [Boolean]
-  def wait_for_notification timeout = 10.0
-    # We use RunInMode because it has timeout functionality
-    case CFRunLoopRunInMode(KCFRunLoopDefaultMode, timeout, false)
-    when KCFRunLoopRunStopped       then true
-    when KCFRunLoopRunTimedOut      then false.tap { |_| unregister_notifications }
-    when KCFRunLoopFinished         then
-      raise RuntimeError, 'The run loop was not configured properly'
-    when KCFRunLoopRunHandledSource then
-      raise RuntimeError, 'Did you start your own run loop?'
-    else
-      raise 'You just found a bug, might be yours, or OS X, or MacRuby...'
-    end
-  end
-
-  ##
-  # Undo _all_ notification registries.
-  def unregister_notifications
-    return unless @registered_elements
-    @registered_elements.each do |element|
-      element.unregister_notifications
-    end
-    @registered_elements = []
-  end
-
-
   # @group Polling
 
   ##
