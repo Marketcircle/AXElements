@@ -22,13 +22,10 @@ style that describes user interactions.
     Dir.glob('lib/**/*.rb*') +
     Dir.glob('ext/**/*{.rb,.m,.c}') +
     Dir.glob('rakelib/*.rake') +
-    ['Rakefile']
+    ['Rakefile', 'README.markdown', '.yardopts']
   s.test_files       =
     Dir.glob('test/**/test_*.rb') +
     [ 'test/helper.rb' ]
-  s.extra_rdoc_files =
-    Dir.glob('docs/**/*') +
-    [ '.yardopts', 'README.markdown' ]
 
 
   s.add_development_dependency 'minitest',  '~> 2.12'
