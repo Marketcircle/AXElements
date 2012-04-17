@@ -317,9 +317,9 @@ module Accessibility::DSL
   #
   # @param [#to_s]
   # @param [Hash] opts
-  # @options opts [Number] :timeout (15)
-  # @options opts [AX::Element] :parent
-  # @options opts [AX::Element] :ancestor
+  # @option opts [Number] :timeout (15)
+  # @option opts [AX::Element] :parent
+  # @option opts [AX::Element] :ancestor
   # @return [AX::Element,nil]
   def wait_for element, opts = {}, &block
     if opts.has_key? :ancestor
