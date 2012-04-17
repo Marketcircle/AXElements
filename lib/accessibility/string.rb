@@ -151,7 +151,7 @@ module Accessibility::String
   #   EventGenerator.new(["A"]).generate  # => [[56,true],[70,true],[70,false],[56,false]]
   #
   #   # Press the volume up key
-  #   EventGenerator.new([["\\F12"]]).generate # => [[0x39,true],[0x39,false]]
+  #   EventGenerator.new([["\\F12"]]).generate # => [[0x6F,true],[0x6F,false]]
   #
   #   # Hotkey, press and hold command key and then 'a', then release both
   #   EventGenerator.new([["\\CMD",["a"]]]).generate # => [[55,true],[70,true],[70,false],[55,false]]

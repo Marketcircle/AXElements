@@ -301,7 +301,7 @@ class AX::Element
 
     key = TRANSLATOR.cocoaify method
     if @ref.attributes.include? key
-      return attribute method
+      return attribute(method)
 
     elsif @ref.parameterized_attributes.include? key
       return attribute(method, for_parameter: args.first)
