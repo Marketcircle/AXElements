@@ -414,20 +414,10 @@ module Accessibility::DSL
   #
   # @param [#to_point]
   def drag_mouse_to arg, opts = {}
+    move_mouse_to opts[:from] if opts[:from]
     Mouse.drag_to arg.to_point, (opts[:duration] || 0.2)
     sleep(opts[:wait] || 0.2)
   end
-
-  ##
-  # Move the mouse to the first point and then drag to the second point.
-  #
-  # @param [#to_point]
-  # @param [#to_point]
-  def drag arg1, to: arg2
-    move_mouse_to obj
-    drag_mouse_to obj2
-  end
-
 
   ##
   # @todo Need to expose the units option? Would allow scrolling by pixel.

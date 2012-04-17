@@ -144,6 +144,23 @@ class TestAccessibilityDSL < MiniTest::Unit::TestCase
     assert_equal 'AXIsNyan', result.value
   end
 
+  def test_drag_mouse_to
+    title_element = app.main_window.title_ui_element
+    orig_title_position = title_element.to_point
+    orig_window_position = app.main_window.position
+
+    dsl.drag_mouse_to [100,100], from: title_element
+    assert_in_delta 100, title_element.to_point.x, 1
+    assert_in_delta 100, title_element.to_point.y, 1
+
+    dsl.drag_mouse_to orig_title_position
+    assert_in_delta orig_title_position.x, title_element.to_point.x, 1
+    assert_in_delta orig_title_position.y, title_element.to_point.y, 1
+
+  ensure
+    app.main_window.set :position, orig_window_position if orig_window_position
+  end
+
   def test_system_wide
     assert_instance_of AX::SystemWide, dsl.system_wide
   end
