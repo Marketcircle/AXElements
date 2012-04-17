@@ -115,23 +115,21 @@ class TestAccessibilityDSL < MiniTest::Unit::TestCase
   end
 
   def test_wait_for_obeys_timeout_option
+    # loop sleeps for 0.2, so we have to wait at least that long
     start = Time.now
-    assert_raises(Accessibility::PollingTimeout) {
-      # loop sleeps for 0.2, so we have to wait at least that long
-      dsl.wait_for :strawberry_rhubarb, parent: AX::DOCK, timeout: 0.2
-    }
+    dsl.wait_for :strawberry_rhubarb, parent: AX::DOCK, timeout: 0.2
     assert_in_delta Time.now, start, 0.3
   end
 
   def test_wait_for_parent_only_looks_at_children
-    assert_raises(Accessibility::PollingTimeout) {
-      dsl.wait_for :trash_dock_item, parent: AX::DOCK, timeout: 0.5
-    }
+    result = dsl.wait_for :trash_dock_item, parent: AX::DOCK, timeout: 0.5
+    assert_nil result
 
     result = dsl.wait_for :trash_dock_item, parent: AX::DOCK.list
     assert_equal AX::DOCK.list.trash_dock_item, result
 
     result = dsl.wait_for :button, parent: app.main_window, title: 'Yes'
+    refute_nil result
     assert_equal 'Yes', result.title
   end
 
@@ -139,9 +137,8 @@ class TestAccessibilityDSL < MiniTest::Unit::TestCase
     result = dsl.wait_for :trash_dock_item, ancestor: AX::DOCK
     assert_equal AX::DOCK.list.trash_dock_item, result
 
-    assert_raises(Accessibility::PollingTimeout) {
-      dsl.wait_for :nothing, ancestor: AX::DOCK, timeout: 0.5
-    }
+    result = dsl.wait_for :nothing, ancestor: AX::DOCK, timeout: 0.5
+    assert_nil result
 
     result = dsl.wait_for :text_field, ancestor: app.main_window, value: 'AXIsNyan'
     assert_equal 'AXIsNyan', result.value

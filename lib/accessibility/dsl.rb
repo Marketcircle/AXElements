@@ -407,7 +407,7 @@ module Accessibility::DSL
       return result unless result.blank?
       sleep 0.2
     end
-    raise Accessibility::PollingTimeout.new(ancestor, descendant, opts)
+    nil
   end
   alias_method :wait_for_descendent, :wait_for_descendant
 
@@ -435,7 +435,7 @@ module Accessibility::DSL
       return result unless result.blank?
       sleep 0.2
     end
-    raise Accessibility::PollingTimeout.new(parent, child, opts)
+    nil
   end
 
 
