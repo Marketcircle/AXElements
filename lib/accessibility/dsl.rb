@@ -544,20 +544,22 @@ module Accessibility::DSL
   # the given application. The given point can be a CGPoint, an Array,
   # or anything else that responds to `#to_point`.
   #
-  # @param [#to_point]
-  # @return [AX::Element]
-  def element_at_point point, for: app
-    app.element_at point
-  end
-
-  ##
-  # Get the top most object at an arbitrary point on the screen. The
-  # given point can be a CGPoint, an Array, or anything else that
-  # responds to `#to_point`.
+  # Optionally, you can look for the top-most element for a specific
+  # application by passing an {AX::Application} object using the `for:`
+  # key.
+  #
+  # @example
+  #
+  #   element_at [100, 456]
+  #   element_at CGPointMake(33, 45), for: safari
+  #
+  #   element_at window # find out what is in the middle of the window
   #
   # @param [#to_point]
-  def element_at_point point
-    system_wide.element_at point
+  # @return [AX::Element]
+  def element_at_point point, opts = {}
+    base = opts[:for] || system_wide
+    base.element_at point
   end
 
   ##
