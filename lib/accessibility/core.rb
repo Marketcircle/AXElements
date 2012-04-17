@@ -101,7 +101,8 @@ module Accessibility::Core
     when 0
       ptr.value.to_ruby
     when KAXErrorNoValue, KAXErrorAttributeUnsupported,
-         KAXErrorFailure, KAXErrorInvalidUIElement then
+         KAXErrorFailure, KAXErrorInvalidUIElement,
+                          KAXErrorInvalidArgument then
       name == KAXChildrenAttribute ? [] : nil
     else
       handle_error code, name
