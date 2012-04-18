@@ -4,5 +4,6 @@
 --markup markdown
 --markup-provider redcarpet
 --readme README.typer.markdown
+--hide-void-return
 lib/**/*.rb
 ext/**/*{.m,.c}
