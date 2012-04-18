@@ -147,7 +147,8 @@ module Accessibility::DSL
   #
   # @example
   #
-  #   app_with_identifier 'com.apple.finder'
+  #   app_with_bundle_identifier 'com.apple.finder'
+  #   launch                     'com.apple.mail'
   #
   # @param [String]
   # @return [AX::Application]
