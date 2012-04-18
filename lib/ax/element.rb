@@ -39,10 +39,9 @@ class AX::Element
   end
 
   ##
-  # @todo Consider returning `nil` if the element does not have
-  #       the given attribute.
-  #
-  # Get the value of an attribute.
+  # Get the value of an attribute. If the element does not have the value
+  # then `nil` will be returned, except for the `AXChildren` attribute
+  # which is always guaranteed to return an array.
   #
   # @example
   #
@@ -54,9 +53,12 @@ class AX::Element
   end
 
   ##
-  # Needed to override inherited `NSObject#description` as some
-  # elements have a `description` attribute. If you want a description
-  # of the object then you should use {#inspect} instead.
+  # Get the accessibility description for the element.
+  #
+  # This overrides the inherited `NSObject#description`. If you want a
+  # description of the object then you should use {#inspect} instead.
+  #
+  # @return [String]
   def description
     attribute :description
   end
@@ -68,6 +70,19 @@ class AX::Element
   # @return [Array<AX::Element>]
   def children
     attribute :children
+  end
+
+  ##
+  # Get the process identifier for the application that the element
+  # belongs to.
+  #
+  # @example
+  #
+  #   element.pid # => 12345
+  #
+  # @return [Fixnum]
+  def pid
+    @ref.pid
   end
 
   ##
@@ -85,19 +100,6 @@ class AX::Element
   # @return [Number]
   def size_of attr
     @ref.size_of TRANSLATOR.cocoaify attr
-  end
-
-  ##
-  # Get the process identifier for the application that the element
-  # belongs to.
-  #
-  # @example
-  #
-  #   element.pid # => 12345
-  #
-  # @return [Fixnum]
-  def pid
-    @ref.pid
   end
 
   ##
@@ -125,7 +127,7 @@ class AX::Element
   # @return the value that you were setting is returned
   def set attr, value
     unless writable? attr
-      raise NoMethodError, "#{attr} is read-only for #{inspect}"
+      raise ArgumentError, "#{attr} is read-only for #{inspect}"
     end
     value = value.relative_to(@ref.value.size) if value.kind_of? Range
     @ref.set TRANSLATOR.cocoaify(attr), value
@@ -157,10 +159,8 @@ class AX::Element
   #
   # @param [#to_sym]
   def attribute attr, for_parameter: param
-    if rattr = TRANSLATOR.cocoaify(attr)
-      param = param.relative_to(@ref.value.size) if value.kind_of? Range
-      process @ref.attribute(rattr, for_parameter: param)
-    end
+    param = param.relative_to(@ref.value.size) if value.kind_of? Range
+    process @ref.attribute(TRANSLATOR.cocoaify(attr), for_parameter: param)
   end
 
 
@@ -196,11 +196,7 @@ class AX::Element
   # @param [#to_sym]
   # @return [Boolean] true if successful
   def perform action
-    if raction = TRANSLATOR.cocoaify(action)
-      @ref.perform raction
-    else
-      false
-    end
+    @ref.perform TRANSLATOR.cocoaify action
   end
 
 
@@ -210,12 +206,12 @@ class AX::Element
   # Perform a breadth first search through the view hierarchy rooted at
   # the current element.
   #
-  # See the [Searching tutorial](http://github.com/Marketcircle/AXElements/wiki/Searching)
+  # See the [Searching Tutorial](http://github.com/Marketcircle/AXElements/wiki/Searching)
   # for the details on search semantics.
   #
   # @example Find the dock icon for the Finder app
   #
-  #   AX::DOCK.search( :application_dock_item, title:'Finder' )
+  #   AX::DOCK.search(:application_dock_item, title:'Finder')
   #
   # @param [#to_s]
   # @param [Hash{Symbol=>Object}]
@@ -233,7 +229,7 @@ class AX::Element
   end
 
   ##
-  # Search for an ancestor of the current elemenet.
+  # Search for an ancestor of the current element.
   #
   # As the opposite of {#search}, this also takes filters, and can
   # be used to find a specific ancestor for the current element.
@@ -261,22 +257,30 @@ class AX::Element
   # lookup is always tried first, followed by a parameterized attribute
   # lookup, and then finally a search.
   #
-  # Failing all lookups, this method calls `super`.
+  # Failing all lookups, this method calls `super`, which will probably
+  # raise an exception; however, most elements have children and so it
+  # is more likely that you will get an {Accessibility::SearchFailure}
+  # in cases where you sholud get a `NoMethodError`.
   #
   # @example
   #
-  #   mail   = AX::Application.application_with_bundle_identifier 'com.apple.mail'
+  #   mail   = Accessibility.application_with_bundle_identifier 'com.apple.mail'
   #
   #   # attribute lookup
   #   window = mail.focused_window
   #   # is equivalent to
   #   window = mail.attribute :focused_window
   #
+  #   # attribute setting
+  #   window.position = CGPointMake(100, 100)
+  #   # is equivalent to
+  #   window.set :position, CGPointMake(100, 100)
+  #
   #   # parameterized attribute lookup
-  #   window.title_ui_element.string_for_range (1..10).relative_to(100)
+  #   window.title_ui_element.string_for_range 1..10
   #   # is equivalent to
   #   title = window.attribute :title_ui_element
-  #   title.param_attribute :string_for_range, for_param: (1..10).relative_to(100)
+  #   title.attribute :string_for_range, for_parameter: 1..10
   #
   #   # simple single element search
   #   window.button # => You want the first Button that is found
@@ -293,7 +297,7 @@ class AX::Element
   #   # is equivalent to
   #   window.search :button, title: 'Log In'
   #
-  #   # attribute and element search failure
+  #   # searching from #method_missing will #raise if nothing is found
   #   window.application # => SearchFailure is raised
   #
   def method_missing method, *args, &block
@@ -323,7 +327,7 @@ class AX::Element
 
 
   ##
-  # Overriden to produce cleaner output.
+  # Get relevant details about the current object.
   #
   # @return [String]
   def inspect
@@ -388,9 +392,7 @@ class AX::Element
     process @ref.application
   end
 
-  ##
-  # Concept borrowed from `Active Support`. It is used during implicit
-  # searches to determine if searches yielded responses.
+  # (see NilClass#blank?)
   def blank?
     false
   end
@@ -404,8 +406,10 @@ class AX::Element
   end
 
   ##
-  # Overridden so that equality testing would work. A hack, but the only
-  # sane way I can think of to test for equivalency.
+  # Overridden so that equality testing would work.
+  #
+  # A hack, but the only sane way I can think of to test for
+  # equivalency.
   def == other
     @ref == other.instance_variable_get(:@ref)
   end
@@ -415,17 +419,29 @@ class AX::Element
 
   private
 
-  ##
   # @private
-  #
-  # Performance hack.
-  #
   # @return [String]
   EQUALS = '='
 
 end
 
 
-# Extensions so checking #blank? on search result "just works".
-class NSArray;  alias_method :blank?, :empty? end
-class NilClass; def blank?; true end end
+# Extensions so checking `#blank?` on search result "just works".
+class NSArray
+  # (see NilClass#blank?)
+  alias_method :blank?, :empty?
+end
+
+# Extensions so checking `#blank?` on search result "just works".
+class NilClass
+  ##
+  # Whether or not the object is "blank". The concept of blankness
+  # borrowed from `Active Support` and is true if the object is falsey
+  # or `#empty?`.
+  #
+  # This method is used by implicit searching in AXElements to
+  # determine if searches yielded responses.
+  def blank?
+    true
+  end
+end
