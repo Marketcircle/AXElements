@@ -91,6 +91,7 @@ module Accessibility::Debug
     #   # wait a few seconds...
     #   highlighter.stop
     #
+    #   # highlighter automatically turns off after 5 seconds
     #   highlight window.outline.row, colour: NSColor.greenColor, timeout: 5
     #
     #
@@ -136,9 +137,6 @@ module Accessibility::Debug
       window.setIgnoresMouseEvents true
       window.setFrame bounds, display: false
       window.makeKeyAndOrderFront NSApp
-      def window.stop
-        close
-      end
       window
     end
 
@@ -163,5 +161,18 @@ class CGRect
     screen_height = NSMaxY(NSScreen.mainScreen.frame)
     origin.y      = screen_height - NSMaxY(self)
     self
+  end
+end
+
+
+##
+# AXElements extensions to `NSWindow`.
+class NSWindow
+  ##
+  # Tell the window to stop displaying.
+  #
+  # @return [self]
+  def stop
+    close
   end
 end
