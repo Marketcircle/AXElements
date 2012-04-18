@@ -277,8 +277,8 @@ class TestAccessibilityCore < MiniTest::Unit::TestCase
   # # more than meets the eye
   def test_notification_registration_and_unregistration
     obsrvr = REF.observer { |_,_,_| }
-    assert   REF.register(obsrvr,     to_receive: KAXWindowCreatedNotification)
-    assert REF.unregister(obsrvr, from_receiving: KAXWindowCreatedNotification)
+    assert   REF.register(obsrvr, KAXWindowCreatedNotification)
+    assert REF.unregister(obsrvr, KAXWindowCreatedNotification)
   end
 
   # integration-y
@@ -286,7 +286,7 @@ class TestAccessibilityCore < MiniTest::Unit::TestCase
     obsrvr = REF.observer do |observer, element, notif|
       @notif_triple = [observer, element, notif]
     end
-    REF.register observer, to_receive: 'Cheezburger'
+    REF.register observer, 'Cheezburger'
     source = REF.run_loop_source_for observer
     CFRunLoopAddSource(CFRunLoopGetCurrent(), source, KCFRunLoopDefaultMode)
 
@@ -302,21 +302,21 @@ class TestAccessibilityCore < MiniTest::Unit::TestCase
 
   def test_register_handles_errors
     assert_raises(ArgumentError) {
-      REF.register(nil, to_receive: KAXWindowCreatedNotification)
+      REF.register(nil, KAXWindowCreatedNotification)
     }
     assert_raises(ArgumentError) {
       obsrvr = REF.observer { |_,_,_| }
-      REF.register(obsrvr, to_receive: nil)
+      REF.register(obsrvr, nil)
     }
   end
 
   def test_unregister_handles_errors
     assert_raises(ArgumentError) {
-      REF.unregister(nil, from_receiving: KAXWindowCreatedNotification)
+      REF.unregister(nil, KAXWindowCreatedNotification)
     }
     assert_raises(ArgumentError) {
       obsrvr = REF.observer { |_,_,_| }
-      REF.unregister(obsrvr, from_receiving: nil)
+      REF.unregister(obsrvr, nil)
     }
   end
 

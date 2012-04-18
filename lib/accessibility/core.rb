@@ -511,12 +511,12 @@ module Accessibility::Core
   #
   # @example
   #
-  #   register observer, to_receive: KAXWindowCreatedNotification
+  #   register observer, KAXWindowCreatedNotification
   #
   # @param [AXObserverRef]
   # @param [String]
   # @return [Boolean]
-  def register observer, to_receive: notif
+  def register observer, notif
     case code = AXObserverAddNotification(observer, self, notif, nil)
     when 0 then true
     else handle_error code, notif, observer, nil, nil
@@ -526,10 +526,14 @@ module Accessibility::Core
   ##
   # Unregister a notification that has been previously setup.
   #
+  # @example
+  #
+  #   unregister observer, KAXWindowCreatedNotification
+  #
   # @param [AXObserverRef]
   # @param [String]
   # @return [Boolean]
-  def unregister observer, from_receiving: notif
+  def unregister observer, notif
     case code = AXObserverRemoveNotification(observer, self, notif)
     when 0 then true
     else handle_error code, notif, observer, nil, nil
