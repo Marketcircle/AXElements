@@ -319,73 +319,6 @@ class AX::Element
     end
   end
 
-
-  # @group Notifications
-
-  def notifs
-    @notifs ||= {}
-  end
-
-  ##
-  # Register to receive notification of the given event being completed
-  # by the given element.
-  #
-  # [Notifications](http://github.com/Marketcircle/AXElements/wiki/Notifications)
-  # are a way to put non-polling delays into your scripts.
-  #
-  # Use this method to register to be notified of the specified event in
-  # an application.
-  #
-  # The block is optional. The block will be given the sender of the
-  # notification, which will almost always be `self`, and also the name
-  # of the notification being received. The block should return a
-  # boolean value that decides if the notification received is the
-  # expected one.
-  #
-  # @example
-  #
-  #   on_notification(:window_created) { |sender|
-  #     puts "#{sender.inspect} sent the ':window_created' notification"
-  #     true
-  #   }
-  #
-  # @param [#to_s] notif the name of the notification
-  # @yield Validate the notification; the block should return truthy if
-  #        the notification received is the expected one and the script can
-  #        stop waiting, otherwise should return falsy.
-  # @yieldparam [String] notif the name of the notification
-  # @yieldparam [AXUIElementRef] element the element that sent the notification
-  # @yieldreturn [Boolean]
-  # @return [Array(Observer, String, CFRunLoopSource)]
-  def on_notification name, &block
-    notif    = TRANSLATOR.guess_notification name
-    observer = @ref.observer &notif_callback_for(&block)
-    source   = @ref.run_loop_source_for observer
-    @ref.register observer, to_receive: notif
-    CFRunLoopAddSource(CFRunLoopGetCurrent(), source, KCFRunLoopDefaultMode)
-    notifs[name] = [observer, notif, source]
-  end
-
-  def unregister_notification name
-    unless notifs.has_key? name
-      raise ArgumentError, "You have no registrations for #{name}"
-    end
-    _unregister_notification *notifs.delete(name)
-  end
-
-  ##
-  # Cancel _all_ notification registrations for this object. Simple and
-  # clean, but a blunt tool at best. This will have to do for the time
-  # being...
-  #
-  # @return [nil]
-  def unregister_all
-    notifs.keys.each do |notif|
-      unregister_notification notif
-    end
-    nil
-  end
-
   # @endgroup
 
 
@@ -489,25 +422,6 @@ class AX::Element
   #
   # @return [String]
   EQUALS = '='
-
-  def notif_callback_for
-    # we are ignoring the context pointer since this is OO
-    Proc.new do |observer, sender, notif, _|
-      break unless yield(process sender) if block_given?
-      _unregister_notification observer, notif, run_loop_source_for(observer)
-      CFRunLoopStop(CFRunLoopGetCurrent())
-    end
-  end
-
-  ##
-  # @todo What are the implications of removing the run loop source?
-  #       Taking it out would clobber other notifications that are using
-  #       the same source, so we would have to check if we can remove it.
-  #
-  def _unregister_notification observer, notif, source
-    CFRunLoopRemoveSource(CFRunLoopGetCurrent(), source, KCFRunLoopDefaultMode)
-    @ref.unregister observer, from_receiving: notif
-  end
 
 end
 
