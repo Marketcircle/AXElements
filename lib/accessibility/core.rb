@@ -275,12 +275,12 @@ module Accessibility::Core
   #
   # @example
   #
-  #   attribute KAXStringForRangeParameterizedAttribute, for_param: 1..10
+  #   parameterized_attribute KAXStringForRangeParameterizedAttribute, 1..10
   #     # => "ello, worl"
   #
   # @param [String] attr an attribute constant
   # @param [Object] param
-  def attribute name, for_parameter: param
+  def parameterized_attribute name, param
     ptr = Pointer.new :id
     case code = AXUIElementCopyParameterizedAttributeValue(self, name, param.to_ax, ptr)
     when 0

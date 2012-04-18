@@ -167,28 +167,26 @@ class TestAccessibilityCore < MiniTest::Unit::TestCase
     assert_empty invalid_ref.parameterized_attributes
   end
 
-  def test_attribute_for_parameter
+  def test_parameterized_attribute
     expected = 'My Li'
 
-    attr = static_text.attribute KAXStringForRangeParameterizedAttribute,
-                  for_parameter: 0..4
+    attr = static_text.parameterized_attribute(KAXStringForRangeParameterizedAttribute, 0..4)
     assert_equal expected, attr
 
-    attr = static_text.attribute KAXAttributedStringForRangeParameterizedAttribute,
-                  for_parameter: 0..4
+    attr = static_text.parameterized_attribute(KAXAttributedStringForRangeParameterizedAttribute, 0..4)
     assert_equal expected, attr.string
   end
 
-  def test_attribute_for_parameter_handles_dead_elements_and_no_value
-    assert_nil invalid_ref.attribute(KAXStringForRangeParameterizedAttribute, for_parameter: 0..0)
+  def test_parameterized_attribute_handles_dead_elements_and_no_value
+    assert_nil invalid_ref.parameterized_attribute(KAXStringForRangeParameterizedAttribute, 0..0)
 
     # Should add a test case to test the no value case, but it will have
     # to be fabricated in the test app.
   end
 
-  def test_attribute_for_parameter_handles_errors
+  def test_parameterized_attribute_handles_errors
     assert_raises(ArgumentError) {
-      REF.attribute(KAXStringForRangeParameterizedAttribute, for_parameter: 0..1)
+      REF.parameterized_attribute(KAXStringForRangeParameterizedAttribute, 0..1)
     }
   end
 

@@ -155,12 +155,12 @@ class AX::Element
   #
   # @example
   #
-  #  text_field.attribute :string_for_range, for_param: (2..8).relative_to(10)
+  #  text_field.parameterized_attribute :string_for_range, 2..8
   #
   # @param [#to_sym]
-  def attribute attr, for_parameter: param
+  def parameterized_attribute attr, param
     param = param.relative_to(@ref.value.size) if value.kind_of? Range
-    process @ref.attribute(TRANSLATOR.cocoaify(attr), for_parameter: param)
+    process @ref.parameterized_attribute(TRANSLATOR.cocoaify(attr), param)
   end
 
 
@@ -280,7 +280,7 @@ class AX::Element
   #   window.title_ui_element.string_for_range 1..10
   #   # is equivalent to
   #   title = window.attribute :title_ui_element
-  #   title.attribute :string_for_range, for_parameter: 1..10
+  #   title.parameterized_attribute :string_for_range, 1..10
   #
   #   # simple single element search
   #   window.button # => You want the first Button that is found
@@ -308,7 +308,7 @@ class AX::Element
       return attribute(method)
 
     elsif @ref.parameterized_attributes.include? key
-      return attribute(method, for_parameter: args.first)
+      return paramaterized_attribute(method, args.first)
 
     elsif @ref.attributes.include? KAXChildrenAttribute
       if (result = search(method, *args, &block)).blank?
