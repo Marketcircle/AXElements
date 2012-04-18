@@ -100,7 +100,7 @@ module Mouse
     event = new_event KCGEventLeftMouseDown, point, KCGMouseButtonLeft
     post event
     duration.times { sleep QUANTUM }
-    set event, to: KCGEventLeftMouseUp
+    set event, KCGEventLeftMouseUp
     post event
   end
 
@@ -112,7 +112,7 @@ module Mouse
     event = new_event KCGEventRightMouseDown, point, KCGMouseButtonRight
     post event
     duration.times { sleep QUANTUM }
-    set event, to: KCGEventRightMouseUp
+    set event, KCGEventRightMouseUp
     post event
   end
   alias_method :right_click, :secondary_click
@@ -124,13 +124,13 @@ module Mouse
   def double_click point = current_position
     event = new_event KCGEventLeftMouseDown, point, KCGMouseButtonLeft
     post event
-    set  event, to: KCGEventLeftMouseUp
+    set  event, KCGEventLeftMouseUp
     post event
 
     CGEventSetIntegerValueField(event, KCGMouseEventClickState, 2)
-    set  event, to: KCGEventLeftMouseDown
+    set  event, KCGEventLeftMouseDown
     post event
-    set  event, to: KCGEventLeftMouseUp
+    set  event, KCGEventLeftMouseUp
     post event
   end
 
@@ -204,7 +204,7 @@ module Mouse
     CGEventPost(KCGHIDEventTap, event)
   end
 
-  def set event, to: state
+  def set event, state
     CGEventSetType(event, state)
   end
 
