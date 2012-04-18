@@ -107,6 +107,13 @@ keycoder_post_event(VALUE self, VALUE event)
 void
 Init_key_coder()
 {
+  /*
+   *  Document-class: KeyCoder
+   *
+   *  Class that encapsulates some low level work for finding key code mappings
+   *  and posting keyboard events to the system.
+   *
+   */
   VALUE cKeyCoder = rb_define_class("KeyCoder", rb_cObject);
   rb_define_singleton_method(cKeyCoder, "dynamic_mapping", keycoder_dynamic_mapping, 0);
   rb_define_singleton_method(cKeyCoder, "post_event", keycoder_post_event, 1);

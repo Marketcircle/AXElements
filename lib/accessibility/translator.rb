@@ -159,15 +159,11 @@ class Accessibility::Translator
   ##
   # @private
   #
-  # Cached for performance.
-  #
   # @return [String]
   EMPTY_STRING = ''
 
   ##
   # @private
-  #
-  # Performance hack.
   #
   # @return [String]
   QUESTION_MARK = '?'
