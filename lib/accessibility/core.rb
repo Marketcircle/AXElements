@@ -648,10 +648,12 @@ module Accessibility::Core
     raise klass, msg, caller(1)
   end
 
+  # @return [String]
   def handle_failure *args
     "A system failure occurred with #{inspect}, stopping to be safe"
   end
 
+  # @return [String]
   def handle_illegal_argument *args
     case args.size
     when 0
@@ -674,16 +676,19 @@ module Accessibility::Core
     end
   end
 
+  # @return [String]
   def handle_invalid_element *args
     "#{inspect} is no longer a valid reference"
   end
 
+  # @return [String]
   def handle_invalid_observer *args
     "#{args[1].inspect} is no longer a valid observer for " +
       "#{inspect} or was never valid"
   end
 
   # @param [AXUIElementRef]
+  # @return [String]
   def handle_cannot_complete *args
     spin_run_loop
     app = NSRunningApplication.runningApplicationWithProcessIdentifier pid
@@ -695,42 +700,51 @@ module Accessibility::Core
     end
   end
 
+  # @return [String]
   def handle_attr_unsupported *args
     "#{inspect} does not have a #{args.first.inspect} attribute"
   end
 
+  # @return [String]
   def handle_action_unsupported *args
     "#{inspect} does not have a #{args.first.inspect} action"
   end
 
+  # @return [String]
   def handle_notif_unsupported *args
     "#{inspect} does not support the #{args.first.inspect} notification"
   end
 
+  # @return [String]
   def handle_not_implemented *args
     "The program that owns #{inspect} does not work with AXAPI properly"
   end
 
   # @todo Does this really neeed to raise an exception? Seems
   #       like a warning would be sufficient.
+  # @return [String]
   def handle_notif_registered *args
     "You have already registered to hear about #{args[0].inspect} " +
       "from #{inspect}"
   end
 
+  # @return [String]
   def handle_notif_not_registered *args
     "You have not registered to hear about #{args[0].inspect} " +
       "from #{inspect}"
   end
 
+  # @return [String]
   def handle_api_disabled *args
     'AXAPI has been disabled'
   end
 
+  # @return [String]
   def handle_param_attr_unsupported *args
     "#{inspect} does not have a #{args[0].inspect} parameterized attribute"
   end
 
+  # @return [String]
   def handle_not_enough_precision
     'AXAPI said there was not enough precision ¯\(°_o)/¯'
   end
@@ -862,18 +876,34 @@ class Boxed
 end
 
 # AXElements extensions for `CFRange`.
-class << CFRange; def ax_value; KAXValueCFRangeType; end end
+class << CFRange
+  # (see Boxed.ax_value)
+  def ax_value; KAXValueCFRangeType end
+end
 # AXElements extensions for `CGSize`.
-class << CGSize;  def ax_value; KAXValueCGSizeType;  end end
+class << CGSize
+  # (see Boxed.ax_value)
+  def ax_value; KAXValueCGSizeType end
+end
 # AXElements extensions for `CGRect`.
-class << CGRect;  def ax_value; KAXValueCGRectType;  end end
+class << CGRect
+  # (see Boxed.ax_value)
+  def ax_value; KAXValueCGRectType end
+end
 # AXElements extensions for `CGPoint`.
-class << CGPoint; def ax_value; KAXValueCGPointType; end end
+class << CGPoint
+  # (see Boxed.ax_value)
+  def ax_value; KAXValueCGPointType end
+end
 
 
 # AXElements extensions for `NSObject`.
 class NSObject
+  ##
+  # Return an object safe for passing to AXAPI.
   def to_ax;   self end
+  ##
+  # Return a usable object from an AXAPI pointer.
   def to_ruby; self end
 end
 
