@@ -8,7 +8,6 @@ framework 'ApplicationServices'
 # @todo More intelligent default duration
 # @todo Refactor to try and reuse the same event for a single action
 #       instead of creating new events.
-# @todo Pause between down/up clicks
 module Mouse
   extend self
 
@@ -20,7 +19,7 @@ module Mouse
 
   ##
   # @note We keep the number as a rational to try and avoid rounding
-  #       error introduced by the way MacRuby deals with floats.
+  #       error introduced by the floats, especially MacRuby floats.
   #
   # Smallest unit of time allowed for an animation step.
   #

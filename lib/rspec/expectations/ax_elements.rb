@@ -33,9 +33,6 @@ class Accessibility::HasChildMatcher
     "Expected #@parent to NOT have child #@result"
   end
 
-  ##
-  # Implemented to override `NSObject#description`.
-  #
   # @return [String]
   def description
     "should have a child that matches #{@qualifier.describe}"
@@ -104,9 +101,6 @@ class Accessibility::HasDescendentMatcher
     "Expected #@ancestor to NOT have descendent #@result"
   end
 
-  ##
-  # Implemented to override `NSObject#description`.
-  #
   # @return [String]
   def description
     "should have a descendent matching #{@qualifier.describe}"

@@ -25,6 +25,10 @@ module AwesomePrint::AXElements
 
   private
 
+  ##
+  # Give the awesome output for an {AX::Element} object.
+  #
+  # @return [String]
   def awesome_ax_element object
     object.inspect
   end

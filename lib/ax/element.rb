@@ -204,7 +204,8 @@ class AX::Element
 
   ##
   # Perform a breadth first search through the view hierarchy rooted at
-  # the current element.
+  # the current element. If you are concerned about the return value of
+  # this method, you can call {#blank?} on the return object.
   #
   # See the [Searching Tutorial](http://github.com/Marketcircle/AXElements/wiki/Searching)
   # for the details on search semantics.
@@ -398,9 +399,8 @@ class AX::Element
   end
 
   ##
-  # @todo Need to add '?' to predicate methods, but how?
-  #
   # Like {#respond_to?}, this is overriden to include attribute methods.
+  # Though, it does include dynamic predicate methods at the moment.
   def methods include_super = true, include_objc_super = false
     super.concat(attributes).concat(parameterized_attributes)
   end
@@ -408,8 +408,7 @@ class AX::Element
   ##
   # Overridden so that equality testing would work.
   #
-  # A hack, but the only sane way I can think of to test for
-  # equivalency.
+  # A hack, but the only sane way I can think of to test for equivalency.
   def == other
     @ref == other.instance_variable_get(:@ref)
   end

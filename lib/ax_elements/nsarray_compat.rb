@@ -53,6 +53,7 @@ module Accessibility::NSArrayCompat
   private
 
   # @private
+  # @return [Accessibility::Translator]
   TRANSLATOR = Accessibility::Translator.instance
 
 end
