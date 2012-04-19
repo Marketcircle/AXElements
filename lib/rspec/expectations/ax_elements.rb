@@ -15,7 +15,9 @@ class Accessibility::HasChildMatcher
 
   # @param [AX::Element]
   def matches? parent
-    !search(parent).blank?
+    @parent = parent
+    @result = parent.children.find { |x| @qualifier.qualifies? x }
+    !@result.blank?
   end
 
   # @return [String]
@@ -25,7 +27,7 @@ class Accessibility::HasChildMatcher
 
   # @param [AX::Element]
   def does_not_match? parent
-    search(parent).blank?
+    !matches?(parent)
   end
 
   # @return [String]
@@ -36,14 +38,6 @@ class Accessibility::HasChildMatcher
   # @return [String]
   def description
     "should have a child that matches #{@qualifier.describe}"
-  end
-
-
-  private
-
-  def search parent
-    @parent = parent
-    @result = parent.children.find { |x| @qualifier.qualifies? x }
   end
 
 end
@@ -83,7 +77,9 @@ class Accessibility::HasDescendentMatcher
 
   # @param [AX::Element]
   def matches? ancestor
-    !search(ancestor).blank?
+    @ancestor = ancestor
+    @result   = ancestor.search(@kind, @filters, &@block)
+    !@result.blank?
   end
 
   # @return [String]
@@ -93,7 +89,7 @@ class Accessibility::HasDescendentMatcher
 
   # @param [AX::Element]
   def does_not_match? ancestor
-    search(ancestor).blank?
+    !matches?(ancestor)
   end
 
   # @return [String]
@@ -104,14 +100,6 @@ class Accessibility::HasDescendentMatcher
   # @return [String]
   def description
     "should have a descendent matching #{@qualifier.describe}"
-  end
-
-
-  private
-
-  def search ancestor
-    @ancestor = ancestor
-    @result   = ancestor.search(@kind, @filters, &@block)
   end
 
 end
