@@ -1,5 +1,6 @@
 require 'ax/element'
 require 'accessibility/qualifier'
+require 'accessibility/dsl'
 
 ##
 # AXElements assertions for MiniTest.
@@ -52,6 +53,34 @@ class MiniTest::Assertions
     result
   end
   alias_method :assert_has_descendant, :assert_has_descendent
+
+  ##
+  # Test that an element will have a child/descendent soon. This method
+  # will block until the element is found or a timeout occurs.
+  #
+  # This is a minitest front end to using {DSL#wait_for}, so any
+  # parameters you would normally pass to that method will work here.
+  # This also means that you must include either a `parent` key or an
+  # `ancestor` key as one of the filters.
+  #
+  # @param [#to_s]
+  # @param [Hash]
+  # @yield An optional block to be used in the search qualifier
+  def assert_shortly_has kind, filters = {}, &block
+    # need to know if parent/ancestor now because wait_for eats some keys
+    (ancest = filters[:ancestor]) || (parent = filters[:parent])
+    msg = message {
+      descend = ax_search_id kind, filters, block
+      if ancest
+        "Expected #{ancest.inspect} to have descendent #{descend} before a timeout occurred"
+      else
+        "Expected #{parent.inspect} to have child #{descend} before a timeout occurred"
+      end
+    }
+    result = wait_for kind, filters, &block
+    refute result.blank?, msg
+    result
+  end
 
   ##
   # Test that an element _does not_ have a specific child. For example,

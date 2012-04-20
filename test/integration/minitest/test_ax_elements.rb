@@ -13,65 +13,64 @@ class TestMiniTestAssertions < MiniTest::Unit::TestCase
     assert_equal expected, assert_has_child(app, :window)
     assert_equal expected, assert_has_child(app, :window, title: 'AXElementsTester')
 
-    result = assert_has_child(app, :window) { |x|
-      @got_called = true
-      x.title == 'AXElementsTester'
-    }
-    assert_equal expected, result
+    assert_has_child(app, :window) { |_| @got_called = true }
     assert @got_called
   end
 
   def test_assert_has_child_raises_in_failure_cases
-    e = assert_raises MiniTest::Assertion do
-      assert_has_child app, :button
-    end
+    e = assert_raises(MiniTest::Assertion) { assert_has_child app, :button }
     assert_match /to have Button as a child/, e.message
 
-    e = assert_raises MiniTest::Assertion do
-      assert_has_child app, :button, title: 'Press Me'
-    end
-    assert_match /to have Button\(title: "Press Me"\) as a child/, e.message
+    e = assert_raises(MiniTest::Assertion) { assert_has_child app, :button, title: "Press" }
+    assert_match %r{to have Button\(title: "Press"\) as a child}, e.message
   end
 
   def test_assert_has_descendent
     expected = app.main_window.check_box
 
     assert_equal expected, assert_has_descendent(app,:check_box)
-    assert_equal expected, assert_has_descendent(app,:check_box,title: /Box/)
+    assert_equal expected, assert_has_descendent(app,:check_box, title: /Box/)
 
-    result = assert_has_descendent app, :check_box do |x|
-      @got_called = true
-      x.title == 'Unchecked Check Box'
-    end
-    assert_equal expected, result
+    assert_has_descendent(app, :check_box) { |_| @got_called = true }
     assert @got_called
   end
 
   def test_assert_has_descendent_raises_in_failure_cases
-    ancestor = app.main_window.slider
-    e        = assert_raises MiniTest::Assertion do
-      assert_has_descendent ancestor, :window, title: /Cake/
-    end
+    e = assert_raises(MiniTest::Assertion) {
+      assert_has_descendent(app.main_window.slider, :window, title: /Cake/)
+    }
     assert_match /to have Window\(title: \/Cake\/\) as a descendent/, e.message
   end
 
-  def test_refute_has_child
-    assert_nil refute_has_child(app,:button)
-    assert_nil refute_has_child(app,:window,title: 'Herp Derp')
+  def test_assert_shortly_has
+    assert_equal app.window, assert_shortly_has(:window, parent: app)
+    assert_equal app.check_box, assert_shortly_has(:check_box, ancestor: app)
 
-    result = refute_has_child app, :window do |x|
-      @got_called = true
-      x.title == 'Herp Derp'
-    end
-    assert_nil result
+    assert_shortly_has(:window, parent: app) { @got_called = true }
     assert @got_called
+  end
+
+  def test_assert_shortly_has_raises_in_failure_cases
+    e = assert_raises(MiniTest::Assertion) { assert_shortly_has(:button, parent: app, timeout: 0) }
+    assert_match /to have child Button before a timeout occurred/, e.message
+
+    e = assert_raises(MiniTest::Assertion) { assert_shortly_has(:table, ancestor: app.menu_bar_item, timeout: 0) }
+    assert_match /to have descendent Table before a timeout occurred/, e.message
+  end
+
+  def test_refute_has_child
+    assert_nil refute_has_child(app, :button)
+    assert_nil refute_has_child(app, :window, title: 'Herp Derp')
+
+    result = refute_has_child(app, :window) { |x| x.title == 'Herp Derp' }
+    assert_nil result
   end
 
   def test_refute_has_child_raises_in_failure_cases
     e = assert_raises MiniTest::Assertion do
       refute_has_child app, :window
     end
-    assert_match /not to have #{Regexp.escape(app.window.inspect)} as a child/, e.message
+    assert_match /NOT to have #{Regexp.escape(app.window.inspect)} as a child/, e.message
   end
 
   def test_refute_has_descendent
