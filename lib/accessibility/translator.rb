@@ -19,6 +19,12 @@ end
 # a little more Rubyish.
 class Accessibility::Translator
 
+  ##
+  # Get the singleton instance of the {Accessibility::Translator} class.
+  # This is meant to mimic the important functionality of the
+  # `Singleton` mix-in.
+  #
+  # @return [Accessibility::Translator]
   def self.instance
     @instance ||= new
   end
