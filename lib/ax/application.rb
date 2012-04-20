@@ -154,14 +154,26 @@ class AX::Application < AX::Element
     true
   end
 
-  def keydown key
-    @ref.post [[EventGenerator::CUSTOM[key], true]]
-    true
-  end
-
-  def keyup key
-    @ref.post [[EventGenerator::CUSTOM[key], false]]
-    true
+  ##
+  # Press the given modifier key and hold it down while yielding to the
+  # given block.
+  #
+  # @example
+  #
+  #   hold_key "\\CONTROL" do
+  #     drag_mouse_to point
+  #   end
+  #
+  # @param [String]
+  # @return [Number,nil]
+  def hold_modifier key
+    code = EventGenerator::CUSTOM[key]
+    raise ArgumentError, "Invalid modifier `#{key}' given" unless code
+    @ref.post [[code, true]]
+    yield
+  ensure
+    @ref.post [[code,false]] if code
+    code
   end
 
   # @return [AX::MenuItem]
