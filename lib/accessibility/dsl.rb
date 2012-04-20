@@ -389,7 +389,7 @@ module Accessibility::DSL
   #
   #  move_mouse_to button
   #  move_mouse_to [344, 516]
-  #  move_mouse_to CGPointMake(100, 100)
+  #  move_mouse_to CGPoint.new(100, 100)
   #
   # @param [#to_point]
   # @param [Hash] opts
@@ -553,7 +553,7 @@ module Accessibility::DSL
   # @example
   #
   #   element_at [100, 456]
-  #   element_at CGPointMake(33, 45), for: safari
+  #   element_at CGPoint.new(33, 45), for: safari
   #
   #   element_at window # find out what is in the middle of the window
   #

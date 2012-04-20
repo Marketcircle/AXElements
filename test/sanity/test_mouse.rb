@@ -7,11 +7,11 @@ class TestMouseModule < MiniTest::Unit::TestCase
   end
 
   def test_move_to
-    point = CGPointMake(100, 100)
+    point = CGPoint.new(100, 100)
     Mouse.move_to point
     assert_in_delta 0, distance(point,Mouse.current_position), 1.0
 
-    point = CGPointMake(rand(700)+150, rand(500)+100)
+    point = CGPoint.new(rand(700)+150, rand(500)+100)
     Mouse.move_to point
     assert_in_delta 0, distance(point,Mouse.current_position), 1.0
   end

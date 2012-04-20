@@ -273,9 +273,9 @@ class AX::Element
   #   window = mail.attribute :focused_window
   #
   #   # attribute setting
-  #   window.position = CGPointMake(100, 100)
+  #   window.position = CGPoint.new(100, 100)
   #   # is equivalent to
-  #   window.set :position, CGPointMake(100, 100)
+  #   window.set :position, CGPoint.new(100, 100)
   #
   #   # parameterized attribute lookup
   #   window.title_ui_element.string_for_range 1..10
@@ -380,9 +380,7 @@ class AX::Element
   #
   # @return [CGRect]
   def bounds
-    point = attribute :position
-    size  = attribute :size
-    CGRectMake(*point, *size)
+    CGRect.new(attribute(:position), attribute(:size))
   end
 
   ##

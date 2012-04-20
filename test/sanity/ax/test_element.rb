@@ -38,12 +38,12 @@ class TestAXElement < MiniTest::Unit::TestCase
     def center_test position, size, expected
       element.define_singleton_method :attribute do |attr|
         case attr
-        when :position then CGPointMake(*position)
-        when :size     then CGSizeMake(*size)
+        when :position then CGPoint.new(*position)
+        when :size     then CGSize.new(*size)
         else raise ArgumentError
         end
       end
-      assert_equal CGPointMake(*expected), element.to_point
+      assert_equal CGPoint.new(*expected), element.to_point
     end
 
     # the nil case

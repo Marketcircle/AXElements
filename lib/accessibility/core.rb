@@ -867,8 +867,8 @@ class Boxed
   #
   # @example
   #
-  #   CGPointMake(12, 34).to_ax # => #<AXValueRef:0x455678e2>
-  #   CGSizeMake(56, 78).to_ax  # => #<AXValueRef:0x555678e2>
+  #   CGPoint.new(12, 34).to_ax # => #<AXValueRef:0x455678e2>
+  #   CGSize.new(56, 78).to_ax  # => #<AXValueRef:0x555678e2>
   #
   # @return [AXValueRef]
   def to_ax
@@ -941,7 +941,9 @@ class NSArray
   # @return [CGSize]
   def to_size;  CGSize.new(first, at(1))  end
   # @return [CGRect]
-  def to_rect;  CGRectMake(*self[0..3])   end
+  def to_rect
+    CGRect.new(CGPoint.new(*self[0..1]), CGSize.new(*self[2..3]))
+  end
 end
 
 # AXElements extensions for `CGPoint`.

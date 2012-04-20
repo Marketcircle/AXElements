@@ -65,7 +65,7 @@ class TestAccessibilityCore < MiniTest::Unit::TestCase
   def test_attribute
     assert_equal 'AXElementsTester',  window.attribute(KAXTitleAttribute  )
     assert_equal false,               window.attribute(KAXFocusedAttribute)
-    assert_equal CGSizeMake(555,483), window.attribute(KAXSizeAttribute   )
+    assert_equal CGSize.new(555,483), window.attribute(KAXSizeAttribute   )
     assert_equal REF,                 window.attribute(KAXParentAttribute )
     assert_equal 10..19,              window.attribute("AXPie"            )
   end
@@ -373,7 +373,7 @@ class TestAccessibilityCore < MiniTest::Unit::TestCase
       should_raise: ArgumentError,
     with_fragments: [/can't get\/set "cake" with\/to "chocolate"/, app]
 
-    p = CGPointMake(1,3)
+    p = CGPoint.new(1,3)
     assert_error [KAXErrorIllegalArgument, p, nil, nil],
       should_raise: ArgumentError,
     with_fragments: [/The point #{p.inspect}/, app]
@@ -516,7 +516,7 @@ class TestToAXToRubyHooks < MiniTest::Unit::TestCase
 
   def test_to_ruby
     assert_equal CGPointZero,       CGPointZero      .to_ax.to_ruby
-    assert_equal CGSizeMake(10,10), CGSizeMake(10,10).to_ax.to_ruby
+    assert_equal CGSize.new(10,10), CGSize.new(10,10).to_ax.to_ruby
     assert_equal Range.new(1,10),   CFRange.new(1,10).to_ax.to_ruby
   end
 
@@ -531,20 +531,20 @@ end
 class TestMiscCoreExtensions < MiniTest::Unit::TestCase
 
   def test_to_point
-    p = CGPointMake(2,3)
+    p = CGPoint.new(2,3)
     assert_equal p, p.to_point
 
-    p = CGPointMake(1,3)
+    p = CGPoint.new(1,3)
     assert_equal p, p.to_a.to_point
   end
 
   def test_to_size
-    s = CGSizeMake(2,4)
+    s = CGSize.new(2,4)
     assert_equal s, s.to_a.to_size
   end
 
   def test_to_rect
-    r = CGRectMake(6,7,8,9)
+    r = CGRect.new(CGPoint.new(6,7),CGSize.new(8,9))
     assert_equal r, r.to_a.map(&:to_a).flatten.to_rect
   end
 

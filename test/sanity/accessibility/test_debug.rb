@@ -5,7 +5,7 @@ class TestAccessibilityDebug < MiniTest::Unit::TestCase
 
   def mock_element
     @mock = Object.new
-    def @mock.bounds; CGRectMake(100,100,100,100); end
+    def @mock.bounds; CGRect.new(CGPoint.new(100,100),CGSize.new(100,100)) end
     @mock
   end
 
@@ -52,8 +52,10 @@ class TestCGRectExtensions < MiniTest::Unit::TestCase
 
   def test_flipping
     size = NSScreen.mainScreen.frame.size
-    assert_equal CGRectMake(  0,     size.height,  0,  0), CGRectZero.dup.flip!
-    assert_equal CGRectMake(100, size.height-200,100,100), CGRectMake(100,100,100,100).flip!
+    assert_equal CGRect.new(CGPoint.new(0,       size.height), CGSize.new(0,    0)),
+      CGRectZero.dup.flip!
+    assert_equal CGRect.new(CGPoint.new(100, size.height-200), CGSize.new(100,100)),
+      CGRect.new(CGPoint.new(100,100),CGSize.new(100,100)).flip!
   end
 
   def test_flipping_twice_returns_to_original
