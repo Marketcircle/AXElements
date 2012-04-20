@@ -49,11 +49,7 @@ class Accessibility::Qualifier
 
   private
 
-  ##
   # @private
-  #
-  # Local reference to the {Accessibility::Translator}.
-  #
   # @return [Accessibility::Translator]
   TRANSLATOR = Accessibility::Translator.instance
 
@@ -133,7 +129,7 @@ end
 
 
 ##
-# Extensions to `NSDictionary`.
+# AXElements extensions to `NSDictionary`.
 class NSDictionary
   ##
   # Format the hash for AXElements pretty printing.

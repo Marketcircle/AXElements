@@ -33,13 +33,11 @@ class AX::SystemWide < AX::Element
     true
   end
 
-  # @todo doc and cleanup
   def keydown modifier
     @ref.post [[EventGenerator::CUSTOM[modifier], true]]
     true
   end
 
-  # @todo doc and cleanup
   def keyup modifier
     @ref.post [[EventGenerator::CUSTOM[modifier], false]]
     true

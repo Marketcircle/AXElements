@@ -69,7 +69,7 @@ class MiniTest::Assertions
   def refute_has_child parent, kind, filters = {}, &block
     result = ax_check_children parent, kind, filters, block
     msg    = message {
-      "Expected #{parent.inspect} not to have #{result} as a child"
+      "Expected #{parent.inspect} NOT to have #{result} as a child"
     }
     assert result.blank?, msg
     result
@@ -91,12 +91,41 @@ class MiniTest::Assertions
   def refute_has_descendent ancestor, kind, filters = {}, &block
     result = ax_check_descendent ancestor, kind, filters, block
     msg    = message {
-      "Expected #{ancestor.inspect} not to have #{result} as a descendent"
+      "Expected #{ancestor.inspect} NOT to have #{result} as a descendent"
     }
     assert result.blank?, msg
     result
   end
   alias_method :refute_has_descendant, :refute_has_descendent
+
+  ##
+  # @todo Does having this assertion make sense? I've only added it
+  #       for the time being because OCD demands it.
+  #
+  # Test that an element will NOT have a child/descendent soon. This
+  # method will block until the element is found or a timeout occurs.
+  #
+  # This is a minitest front end to using {DSL#wait_for}, so any
+  # parameters you would normally pass to that method will work here.
+  # This also means that you must include either a `parent` key or an
+  # `ancestor` key as one of the filters.
+  #
+  # @param [#to_s]
+  # @param [Hash]
+  # @yield An optional block to be used in the search qualifier
+  def refute_shortly_has kind, filters = {}, &block
+    result = wait_for kind, filters, &block
+    msg = message {
+      if ancest = filters[:ancestor]
+        "Expected #{ancest.inspect} NOT to have #{result.inspect} as a descendent"
+      else
+        parent = filters[:parent]
+        "Expected #{parent.inspect} NOT to have #{result.inspect} as a child"
+      end
+    }
+    assert result.blank?, msg
+    result
+  end
 
 
   private
@@ -115,5 +144,3 @@ class MiniTest::Assertions
   end
 
 end
-
-# @todo assertions for minitest/spec

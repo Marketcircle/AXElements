@@ -154,13 +154,11 @@ class AX::Application < AX::Element
     true
   end
 
-  # @todo doc and cleanup
   def keydown key
     @ref.post [[EventGenerator::CUSTOM[key], true]]
     true
   end
 
-  # @todo doc and cleanup
   def keyup key
     @ref.post [[EventGenerator::CUSTOM[key], false]]
     true

@@ -132,10 +132,13 @@ module Accessibility::String
     end
 
     # @private
+    # @return [String]
     SPACE         = " "
     # @private
+    # @return [String]
     PLUS          = "+"
     # @private
+    # @return [String]
     CUSTOM_ESCAPE = "\\"
   end
 
@@ -470,14 +473,19 @@ module Accessibility::String
     end
 
     # @private
+    # @return [String]
     EMPTY_STRING = ""
     # @private
+    # @return [Array(Number,Boolean)]
     OPTION_DOWN  = [58,  true]
     # @private
+    # @return [Array(Number,Boolean)]
     OPTION_UP    = [58, false]
     # @private
+    # @return [Array(Number,Boolean)]
     SHIFT_DOWN   = [56,  true]
     # @private
+    # @return [Array(Number,Boolean)]
     SHIFT_UP     = [56, false]
   end
 

@@ -43,8 +43,8 @@ class << self
   end
 
   ##
-  # @deprecated Directly initialize an {AX::Application} instance instead.
-  #             `AX::Application.new('Terminal')`
+  # @deprecated Directly initialize an {AX::Application} instance instead
+  #             (e.g. `AX::Application.new('Terminal')`).
   #
   # Get the accessibility object for an application given its localized
   # name. This will only work if the application is already running.

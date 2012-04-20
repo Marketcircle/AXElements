@@ -41,7 +41,11 @@ class Accessibility::Graph
 
     private
 
+    # @private
+    # @return [String]
     EMPTY_STRING = ''
+    # @private
+    # @return [String]
     NAMESPACE = '::'
 
     def identifier
@@ -63,9 +67,17 @@ class Accessibility::Graph
       BOLD if @element.focused?
     end
 
+    # @private
+    # @return [String]
     OVAL = '[shape = oval]'
+    # @private
+    # @return [String]
     BOX  = '[shape = box]'
+    # @private
+    # @return [String]
     BOLD = '[style = bold]'
+    # @private
+    # @return [String]
     FILL = '[style = filled] [color = "grey"]'
   end
 
