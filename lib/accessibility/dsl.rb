@@ -269,6 +269,7 @@ module Accessibility::DSL
     sleep 0.1
     app.type string.to_s
   end
+  alias_method :type_string, :type
 
   ##
   # Navigate the menu bar menus for the given application and select

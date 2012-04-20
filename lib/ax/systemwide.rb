@@ -32,6 +32,7 @@ class AX::SystemWide < AX::Element
     @ref.post keyboard_events_for string
     true
   end
+  alias_method :type_string, :type
 
   ##
   # Press the given modifier key and hold it down while yielding to the
