@@ -72,6 +72,11 @@ class AX::Element
     attribute :children
   end
 
+  # (see Accessibility::Debug#path)
+  def ancestry
+    Accessibility::Debug.path(self)
+  end
+
   ##
   # Get the process identifier for the application that the element
   # belongs to.
