@@ -67,17 +67,15 @@ class TestMiniTestAssertions < MiniTest::Unit::TestCase
   end
 
   def test_refute_has_child_raises_in_failure_cases
-    e = assert_raises MiniTest::Assertion do
-      refute_has_child app, :window
-    end
+    e = assert_raises(MiniTest::Assertion) { refute_has_child app, :window }
     assert_match /NOT to have #{Regexp.escape(app.window.inspect)} as a child/, e.message
   end
 
   def test_refute_has_descendent
     slider = app.main_window.slider
 
-    assert_nil refute_has_descendent(slider,:window)
-    assert_nil refute_has_descendent(slider,:element,title: 'Rhubarb')
+    assert_nil refute_has_descendent(slider, :window)
+    assert_nil refute_has_descendent(slider, :element, title: 'Rhubarb')
 
     result = refute_has_descendent slider, :element do |x|
       @got_called = true
@@ -88,9 +86,7 @@ class TestMiniTestAssertions < MiniTest::Unit::TestCase
   end
 
   def test_refute_has_descendent_raises_in_failure_cases
-    e = assert_raises MiniTest::Assertion do
-      refute_has_descendent app, :window
-    end
+    e = assert_raises(MiniTest::Assertion) { refute_has_descendent app, :window }
     assert_match /#{Regexp.escape(app.window.inspect)} as a descendent/, e.message
   end
 
