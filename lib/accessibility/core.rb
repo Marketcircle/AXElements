@@ -161,6 +161,33 @@ module Accessibility::Core
   end
 
   ##
+  # Get the process identifier (PID) of the application that the element
+  # belongs to.
+  #
+  # This method will return `0` if the element is dead or if the receiver
+  # is the the system wide element.
+  #
+  # @example
+  #
+  #   pid              # => 12345
+  #   system_wide.pid  # => 0
+  #
+  # @return [Fixnum]
+  def pid
+    @pid ||= (
+      ptr = Pointer.new :int
+      case code = AXUIElementGetPid(self, ptr)
+      when 0
+        ptr.value
+      when KAXErrorInvalidUIElement
+        self == system_wide ? 0 : handle_error(code)
+      else
+        handle_error code
+      end
+      )
+  end
+
+  ##
   # Get the size of the array for attributes that would return an array.
   # When performance matters, this is much faster than getting the array
   # and asking for the size.
@@ -556,29 +583,6 @@ module Accessibility::Core
   #
   def enabled?
     AXAPIEnabled()
-  end
-
-  ##
-  # Get the process identifier (PID) of the application that the element
-  # belongs to.
-  #
-  # @example
-  #
-  #   pid   # => 12345
-  #
-  # @return [Fixnum]
-  def pid
-    @pid ||= (
-      ptr = Pointer.new :int
-      case code = AXUIElementGetPid(self, ptr)
-      when 0
-        ptr.value
-      when KAXErrorInvalidUIElement
-        self == system_wide ? 0 : handle_error(code)
-      else
-        handle_error code
-      end
-      )
   end
 
   ##
