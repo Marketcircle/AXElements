@@ -1,5 +1,6 @@
-require 'accessibility/version'
 framework 'Cocoa'
+require   'accessibility/version'
+
 
 ##
 # Collection of utility methods helpful when trying to debug issues.
@@ -22,14 +23,14 @@ module Accessibility::Debug
     alias_method :on?, :on
 
     ##
-    # Get a list of elements, starting with an element you give, and riding
+    # Get a list of elements, starting with the receiver and riding
     # the hierarchy up to the top level object (i.e. the {AX::Application}).
     #
     # @example
     #
     #   element = AX::DOCK.list.application_dock_item
-    #   path_for element
-    #     # => [AX::ApplicationDockItem, AX::List, AX::Application]
+    #   element.ancestry
+    #     # => [#<AX::ApplicationDockItem...>, #<AX::List...>, #<AX::Application...>]
     #
     # @param [AX::Element]
     # @return [Array<AX::Element>] the path in ascending order
@@ -42,7 +43,7 @@ module Accessibility::Debug
     ##
     # Make a `dot` format graph of the tree, meant for graphing with GraphViz.
     #
-    # @return [String]
+    # @return [Accessibility::Graph]
     def graph root
       require 'accessibility/graph'
       Accessibility::Graph.new(root)
@@ -59,7 +60,6 @@ module Accessibility::Debug
     # @return [String]
     def text_subtree element
       output = element.inspect + "\n"
-      # @todo should use each_child_with_level instead
       enum   = Accessibility::Enumerators::DepthFirst.new element
       enum.each_with_level do |element, depth|
         output << "\t"*depth + element.inspect + "\n"
