@@ -366,14 +366,12 @@ module Accessibility::Core
     events.each do |event|
       code = AXUIElementPostKeyboardEvent(self, 0, *event)
       handle_error code unless code.zero?
-      sleep KEY_RATE
+      sleep @@key_rate
     end
     sleep 0.1 # in many cases, UI is not done updating right away
   end
 
   ##
-  # @todo Make this runtime configurable.
-  #
   # The delay between key presses. The default value is `0.01`, which
   # should be about 50 characters per second (down and up are separate
   # events).
@@ -383,12 +381,15 @@ module Accessibility::Core
   # were tried, but were way too big.
   #
   # @return [Number]
-  KEY_RATE = case ENV['KEY_RATE']
-             when 'VERY_SLOW' then 0.9
-             when 'SLOW'      then 0.09
-             when nil         then 0.009
-             else                  ENV['KEY_RATE'].to_f
-             end
+  def key_rate
+    @@key_rate
+  end
+  @@key_rate = case ENV['KEY_RATE']
+               when 'VERY_SLOW' then 0.9
+               when 'SLOW'      then 0.09
+               when nil         then 0.009
+               else                  ENV['KEY_RATE'].to_f
+               end
 
 
   # @group Element Hierarchy Entry Points
