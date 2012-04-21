@@ -7,21 +7,21 @@ class << Accessibility
 
   ##
   # @todo Move to {AX::Aplication#initialize} eventually.
-  # @todo Find a way for this method to work without sleeping;
-  #       consider looping begin/rescue/end until AX starts up
-  # @todo This needs to handle bad bundle identifier's gracefully
   #
   # This is the standard way of creating an application object. It will
   # launch the app if it is not already running and then create the
   # accessibility object.
   #
-  # However, this method is a _HUGE_ hack in cases where the app is not
+  # However, this method is a bit of a hack in cases where the app is not
   # already running; I've tried to register for notifications, launch
   # synchronously, etc., but there is always a problem with accessibility
-  # not being ready.
+  # not being ready right away.
   #
   # If this method fails to find an app with the appropriate bundle
-  # identifier then it will return nil, eventually.
+  # identifier then it will raise an exception. If the problem was not a
+  # typo, then it might mean that the bundle identifier has not been
+  # registered with the system yet and you should launch the app once
+  # manually.
   #
   # @example
   #
@@ -31,11 +31,14 @@ class << Accessibility
   # @param [String] bundle a bundle identifier
   # @return [AX::Application,nil]
   def application_with_bundle_identifier bundle
-    10.times do
-      app = NSRunningApplication.runningApplicationsWithBundleIdentifier(bundle).first
-      return AX::Application.new(app) if app
-      launch_application bundle
-      sleep 2
+    if launch_application bundle
+      10.times do
+        app = NSRunningApplication.runningApplicationsWithBundleIdentifier(bundle).first
+        return AX::Application.new(app) if app
+        sleep 1
+      end
+    else
+      raise ArgumentError "Could not launch app matching bundle id `#{bundle}'"
     end
     nil
   end
