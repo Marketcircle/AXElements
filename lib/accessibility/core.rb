@@ -31,8 +31,9 @@ require 'accessibility/version'
 #       still work out ok.
 # @todo I feel a bit weird having to instantiate a new pointer every
 #       time I want to fetch an attribute. Since allocations are costly,
-#       it hurts performance a lot when it comes to searches. I wonder if
-#       it would pay off to have a pool of pointers...
+#       and searching requires _many_ AXAPI calls, it hurts performance
+#       a lot when it comes to searches. I wonder if it would pay off
+#       to have a pool of pointers...
 #
 # Core abstraction layer that that interacts with OS X Accessibility
 # APIs (AXAPI). This is actually just a mixin for `AXUIElementRef` objects
@@ -85,8 +86,11 @@ module Accessibility::Core
   # will be unwrapped for you, if you expect to get a {CFRange} you
   # will be given a {Range} instead.
   #
-  # As a convention, if the backing element is no longer alive then
-  # you will receive `nil` for any attribute.
+  # As a convention, if the backing element is no longer alive, or
+  # the attribute does not exist, or a system failure occurs then
+  # you will receive `nil` for any attribute except for
+  # `KAXChildrenAttribute`. `KAXChildrenAttribute` will always return
+  # an array.
   #
   # @example
   #   attribute KAXTitleAttribute   # => "HotCocoa Demo"
@@ -94,7 +98,7 @@ module Accessibility::Core
   #   attribute KAXParentAttribute  # => #<AXUIElementRef>
   #   attribute KAXNoValueAttribute # => nil
   #
-  # @param [String] name an attribute constant
+  # @param [String]
   def attribute name
     ptr = Pointer.new :id
     case code = AXUIElementCopyAttributeValue(self, name, ptr)
@@ -110,13 +114,14 @@ module Accessibility::Core
   end
 
   ##
-  # Shortcut for getting the `KAXRoleAttribute`.
+  # Shortcut for getting the `KAXRoleAttribute`. Remember that
+  # dead elements may return `nil` for their role.
   #
   # @example
   #
   #   role  # => KAXWindowRole
   #
-  # @return [String]
+  # @return [String,nil]
   def role
     attribute KAXRoleAttribute
   end
@@ -137,7 +142,9 @@ module Accessibility::Core
   end
 
   ##
-  # Shortcut for getting the `KAXChildrenAttribute`.
+  # Shortcut for getting the `KAXChildrenAttribute`. This is guaranteed
+  # to alwayl return an array or raise an exception, unless the object
+  # you are querying is behaving maliciously.
   #
   # @example
   #
@@ -200,7 +207,7 @@ module Accessibility::Core
   #   size_of KAXChildrenAttribute  # => 19
   #   size_of KAXRowsAttribute      # => 100
   #
-  # @param [String] name an attribute constant
+  # @param [String]
   # @return [Number]
   def size_of name
     ptr = Pointer.new :long_long
@@ -216,14 +223,18 @@ module Accessibility::Core
   end
 
   ##
-  # Returns whether or not an attribute is writable.
+  # Returns whether or not an attribute is writable. You should check
+  # writability before trying call {#set} for the attribute.
+  #
+  # In case of internal error or if the element dies, this method will
+  # return `false`.
   #
   # @example
   #
   #   writable? KAXSizeAttribute  # => true
   #   writable? KAXTitleAttribute # => false
   #
-  # @param [String] name an attribute constant
+  # @param [String]
   def writable? name
     ptr = Pointer.new :bool
     case code = AXUIElementIsAttributeSettable(self, name, ptr)
@@ -238,24 +249,24 @@ module Accessibility::Core
   end
 
   ##
-  # @note This method does not check writability of the attribute
-  #       you are setting. If you need to check, use {#writable?}
-  #       first.
-  #
-  # Set the given value to the given attribute. You do not need to
+  # Set the given value for the given attribute. You do not need to
   # worry about wrapping objects first, `Range` objects will also
   # be automatically converted into `CFRange` objects and then
   # wrapped.
   #
-  # Unlike when reading attributes, writing to a dead element will
-  # raise an exception.
+  # This method does not check writability of the attribute you are
+  # setting. If you need to check, use {#writable?} first to check.
+  #
+  # Unlike when reading attributes, writing to a dead element, and
+  # other error conditions, will raise an exception.
   #
   # @example
+  #
   #   set KAXValueAttribute,        "hi"       # => "hi"
   #   set KAXSizeAttribute,         [250,250]  # => [250,250]
   #   set KAXVisibleRangeAttribute, 0..-3      # => 0..-3
   #
-  # @param [String] name an attribute constant
+  # @param [String]
   def set name, value
     code = AXUIElementSetAttributeValue(self, name, value.to_ax)
     if code.zero?
@@ -276,6 +287,9 @@ module Accessibility::Core
   # Most elements do not have parameterized attributes, but the ones
   # that do, have many.
   #
+  # Similar to {#attributes}, this method will also return an empty
+  # array if the element is dead.
+  #
   # @example
   #
   #   parameterized_attributes  # => ["AXStringForRange", ...]
@@ -294,19 +308,23 @@ module Accessibility::Core
   end
 
   ##
-  # Fetch the given pramaeterized attribute value using the given parameter.
-  # Only `AXUIElementRef` objects will be given raw, `Boxed` objects will be
-  # unwrapped for you automatically and `CFRange` objects will be turned into
-  # `Range` objects. Similarly, you do not need to worry about wrapping the
-  # parameter as that will be done for you.
+  # Fetch the given pramaeterized attribute value for the given parameter.
+  # Only `AXUIElementRef` objects will be returned in their raw form,
+  # {Boxed} objects will be unwrapped for you automatically and {CFRange}
+  # objects will be turned into {Range} objects. Similarly, you do not
+  # need to worry about wrapping the parameter as that will be done for you.
+  #
+  # As a convention, if the backing element is no longer alive, or the
+  # attribute does not exist, or a system failure occurs then you will
+  # receive `nil`.
   #
   # @example
   #
   #   parameterized_attribute KAXStringForRangeParameterizedAttribute, 1..10
   #     # => "ello, worl"
   #
-  # @param [String] attr an attribute constant
-  # @param [Object] param
+  # @param [String]
+  # @param [Object]
   def parameterized_attribute name, param
     ptr = Pointer.new :id
     case code = AXUIElementCopyParameterizedAttributeValue(self, name, param.to_ax, ptr)
@@ -325,8 +343,8 @@ module Accessibility::Core
 
   ##
   # Get the list of actions that the element can perform. If an element
-  # does not have actions, then an empty list will be returned.
-  # Dead elements will also return an empty array.
+  # does not have actions, then an empty list will be returned. Dead
+  # elements will also return an empty array.
   #
   # @example
   #
@@ -346,7 +364,8 @@ module Accessibility::Core
 
   ##
   # Ask an element to perform the given action. This method will always
-  # return true or raise an exception. Actions should never fail.
+  # return true or raise an exception. Actions should never fail, but
+  # there are some extreme edge cases (e.g. out of memory, etc.).
   #
   # Unlike when reading attributes, performing an action on a dead element
   # will raise an exception.
@@ -355,7 +374,7 @@ module Accessibility::Core
   #
   #   perform KAXPressAction  # => true
   #
-  # @param [String] action an action constant
+  # @param [String]
   # @return [Boolean]
   def perform action
     code = AXUIElementPerformAction(self, action)
@@ -430,13 +449,16 @@ module Accessibility::Core
   # system (origin is in the top-left, increasing downward and to the right
   # as if reading a book in English).
   #
-  # If more than one element is at the position then the
-  # z-order of the elements will be used to determine which is
-  # "on top".
+  # If more than one element is at the position then the z-order of the
+  # elements will be used to determine which is "on top".
+  #
+  # This method will safely return `nil` if there is no UI element at the
+  # give point.
   #
   # @example
   #
   #   element_at [453, 200]  # table
+  #   element_at CGPoint.new(453, 200)  # table
   #
   # @param [#to_point]
   # @return [AXUIElementRef,nil]
@@ -455,15 +477,15 @@ module Accessibility::Core
   end
 
   ##
-  # Get the application accessibility object/token for an application
-  # given the process identifier (PID) for that application.
+  # Get the application object object/token for an application given the
+  # process identifier (PID) for that application.
   #
   # @example
   #
   #   app = application_for 54743  # => #<AXUIElementRefx00000000>
   #   CFShow(app)
   #
-  # @param [Fixnum]
+  # @param [Number]
   # @return [AXUIElementRef]
   def application_for pid
     spin_run_loop
@@ -534,6 +556,8 @@ module Accessibility::Core
 
   ##
   # @todo Should passing around a context be supported?
+  # @todo If a block is passed instead of an observer, then implicitly create
+  #       the observer.
   #
   # Register a notification observer for a specific event.
   #
@@ -586,7 +610,8 @@ module Accessibility::Core
   end
 
   ##
-  # Returns the application reference that the element belongs to.
+  # Returns the application reference for the application that the receiver
+  # belongs to.
   #
   # @return [AXUIElementRef]
   def application
@@ -601,7 +626,7 @@ module Accessibility::Core
   #
   #   spin_run_loop # not much to it
   #
-  # @return [self] returns the receiver
+  # @return [void]
   def spin_run_loop
     NSRunLoop.currentRunLoop.runUntilDate Time.now
   end
@@ -615,8 +640,8 @@ module Accessibility::Core
   #
   # Setting the global timeout to `0` seconds will reset the timeout value
   # to the system default. Apple does not appear to have publicly documented
-  # what the system default is though, so I can't tell you what that value
-  # is.
+  # what the system default is and there is no API to check what the value
+  # is set to, so I can't tell you what the current value is.
   #
   # @param [Number]
   # @return [Number]
@@ -648,15 +673,16 @@ module Accessibility::Core
     "A system failure occurred with #{inspect}, stopping to be safe"
   end
 
+  # @todo this is a pretty crappy way of handling the various illegal
+  #       argument cases
   # @return [String]
   def handle_illegal_argument *args
     case args.size
     when 0
       "#{inspect} is not an AXUIElementRef"
     when 1
-      "Either the element #{inspect} " +
-        "or the attribute/action/callback #{args.first.inspect} " +
-        "is not a legal argument"
+      "Either the element #{inspect} or the attribute/action/callback " +
+        "#{args.first.inspect} is not a legal argument"
     when 2
       "You can't get/set #{args.first.inspect} with/to " +
         "#{args[1].inspect} for #{inspect}"
@@ -664,10 +690,8 @@ module Accessibility::Core
       "The point #{args.first.to_point.inspect} is not a valid point, " +
         "or #{inspect} is not an AXUIElementRef"
     when 4
-      "Either the observer #{args[1].inspect}, " +
-        "the element #{inspect}, or " +
-        "the notification #{args.first.inspect} " +
-        "is not a legitimate argument"
+      "Either the observer #{args[1].inspect}, the element #{inspect}, " +
+        "or the notification #{args.first.inspect} is not a legitimate argument"
     end
   end
 
@@ -678,8 +702,7 @@ module Accessibility::Core
 
   # @return [String]
   def handle_invalid_observer *args
-    "#{args[1].inspect} is no longer a valid observer for " +
-      "#{inspect} or was never valid"
+    "#{args[1].inspect} is no longer a valid observer for #{inspect} or was never valid"
   end
 
   # @param [AXUIElementRef]
@@ -688,8 +711,7 @@ module Accessibility::Core
     spin_run_loop
     app = NSRunningApplication.runningApplicationWithProcessIdentifier pid
     if app
-      "An unspecified error occurred using #{inspect} with AXAPI" +
-        ", maybe a timeout :("
+      "An unspecified error occurred using #{inspect} with AXAPI, maybe a timeout :("
     else
       "Application for pid=#{pid} is no longer running. Maybe it crashed?"
     end
@@ -719,19 +741,17 @@ module Accessibility::Core
   #       like a warning would be sufficient.
   # @return [String]
   def handle_notif_registered *args
-    "You have already registered to hear about #{args[0].inspect} " +
-      "from #{inspect}"
+    "You have already registered to hear about #{args[0].inspect} from #{inspect}"
   end
 
   # @return [String]
   def handle_notif_not_registered *args
-    "You have not registered to hear about #{args[0].inspect} " +
-      "from #{inspect}"
+    "You have not registered to hear about #{args[0].inspect} from #{inspect}"
   end
 
   # @return [String]
   def handle_api_disabled *args
-    'AXAPI has been disabled'
+    "AXAPI has been disabled"
   end
 
   # @return [String]
@@ -748,24 +768,18 @@ module Accessibility::Core
 
 
   ##
-  # @private
-  #
   # `Pointer` type encoding for `CFArrayRef` objects.
   #
   # @return [String]
   ARRAY    = '^{__CFArray}'
 
   ##
-  # @private
-  #
   # `Pointer` type encoding for `AXUIElementRef` objects.
   #
   # @return [String]
   ELEMENT  = '^{__AXUIElement}'
 
   ##
-  # @private
-  #
   # `Pointer` type encoding for `AXObserverRef` objects.
   #
   # @return [String]
@@ -831,7 +845,7 @@ module Accessibility::ValueUnwrapper
   end
 end
 
-# hack to find the proper class
+# hack to find the __NSCFType class
 klass = AXUIElementCreateSystemWide().class
 klass.send :include, Accessibility::Core
 klass.send :include, Accessibility::ValueUnwrapper
@@ -848,7 +862,7 @@ class Boxed
   #
   # @return [Number]
   def self.ax_value
-    raise NotImplementedError, "#{self.class} cannot be wraped"
+    raise NotImplementedError, "#{inspect}:#{self.class} cannot be wraped"
   end
 
   ##
@@ -932,9 +946,7 @@ class NSArray
   # @return [CGSize]
   def to_size;  CGSize.new(first, at(1))  end
   # @return [CGRect]
-  def to_rect
-    CGRect.new(CGPoint.new(*self[0..1]), CGSize.new(*self[2..3]))
-  end
+  def to_rect;  CGRectMake(*self[0..3])   end
 end
 
 # AXElements extensions for `CGPoint`.

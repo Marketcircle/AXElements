@@ -539,7 +539,7 @@ class TestMiscCoreExtensions < MiniTest::Unit::TestCase
   end
 
   def test_to_rect
-    r = CGRect.new(CGPoint.new(6,7),CGSize.new(8,9))
+    r = CGRectMake(6, 7, 8, 9)
     assert_equal r, r.to_a.map(&:to_a).flatten.to_rect
   end
 
