@@ -572,20 +572,6 @@ module Accessibility::Core
   # @group Misc.
 
   ##
-  # Ask whether or not AXAPI is enabled.
-  #
-  # @example
-  #
-  #   enabled?  # => true
-  #
-  #   # After unchecking "Enable access for assistive devices" in System Prefs
-  #   enabled?  # => false
-  #
-  def enabled?
-    AXAPIEnabled()
-  end
-
-  ##
   # Create a new reference to the system wide object. This is very useful when
   # working with the system wide object as caching the system wide reference
   # does not seem to work often.

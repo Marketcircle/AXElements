@@ -320,11 +320,6 @@ class TestAccessibilityCore < MiniTest::Unit::TestCase
     }
   end
 
-  def test_enabled?
-    assert REF.enabled?
-    # @todo I guess that's good enough?
-  end
-
   def test_pid
     assert_equal PID, REF.pid
     assert_equal PID, window.pid
