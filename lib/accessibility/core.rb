@@ -954,3 +954,20 @@ class CGPoint
   # @return [CGPoint]
   def to_point; self end
 end
+
+
+##
+# AXElements extensions for `NSURL`.
+class NSString
+  ##
+  # Create an NSURL using the receiver as the initialization string.
+  # If the receiver is not a valid URL then `nil` will be returned.
+  #
+  # This exists because of
+  # [rdar://11207662](http://openradar.appspot.com/11207662).
+  #
+  # @return [NSURL,nil]
+  def to_url
+    NSURL.URLWithString self
+  end
+end
