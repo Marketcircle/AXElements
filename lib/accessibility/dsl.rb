@@ -509,7 +509,7 @@ module Accessibility::DSL
   # Make a `dot` format graph of the tree, meant for graphing with
   # GraphViz.
   #
-  # @return [String]
+  # @return [String] path to the saved image
   def graph element, open = true
     g = Accessibility::Debug.graph element
     g.build!
