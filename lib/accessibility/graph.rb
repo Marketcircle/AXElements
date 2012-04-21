@@ -134,8 +134,8 @@ class Accessibility::Graph
 
     # @return [String]
     def to_dot
-      #arrow = style ? style : 'normal'
-      "#{@head.id} -> #{@tail.id}" # [arrowhead = #{arrow}]"
+      arrow = style ? style : 'normal'
+      "#{@head.id} -> #{@tail.id} [arrowhead = #{arrow}]"
     end
 
   end
@@ -187,9 +187,9 @@ class Accessibility::Graph
   # @return [String]
   def to_dot
     graph  = "digraph {\n"
-    graph << nodes.map(&:to_dot).join("\n")
+    graph << nodes.map(&:to_dot).join(";\n")
     graph << "\n\n"
-    graph << edges.map(&:to_dot).join("\n")
+    graph << edges.map(&:to_dot).join(";\n")
     graph << "\n}\n"
   end
 
