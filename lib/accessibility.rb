@@ -1,9 +1,7 @@
+require 'accessibility/version'
 require 'ax/application'
 
-##
-# The main AXElements namespace.
-module Accessibility
-class << self
+class << Accessibility
 
   # @group Finding an application object
 
@@ -77,5 +75,4 @@ class << self
                                             launchIdentifier: nil
   end
 
-end
 end
