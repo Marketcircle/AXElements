@@ -506,16 +506,23 @@ module Accessibility::DSL
   end
 
   ##
-  # @note This is an unfinished feature
-  #
   # Make a `dot` format graph of the tree, meant for graphing with
   # GraphViz.
   #
   # @return [String]
   def graph element, open = true
-    Accessibility::Debug.graph_subtree element
-    # @todo Use the `open` flag to decide if it should be sent to
-    #       graphviz and opened right away
+    g = Accessibility::Debug.graph element
+    g.build!
+
+    require 'tempfile'
+    file = Tempfile.new('graph')
+    File.open(file.path, 'w') do |fd|
+      fd.write g.to_dot
+    end
+
+    `dot -Tpng #{file.path} > #{file.path}.png`
+    `open #{file.path}.png` if open
+    file.path
   end
 
 

@@ -40,17 +40,12 @@ module Accessibility::Debug
     end
 
     ##
-    # @note This is an unfinished feature
-    #
-    # Make a `dot` format graph of the tree, meant for graphing with
-    # GraphViz.
+    # Make a `dot` format graph of the tree, meant for graphing with GraphViz.
     #
     # @return [String]
-    def graph_subtree root
+    def graph root
       require 'accessibility/graph'
-      dot = Accessibility::Graph.new(root)
-      dot.build!
-      dot.to_s
+      Accessibility::Graph.new(root)
     end
 
     ##
