@@ -373,8 +373,8 @@ class AX::Element
   #
   # @return [CGPoint]
   def to_point
-    size     = attribute :size
-    point    = attribute :position
+    size  = attribute :size
+    point = attribute :position
     point.x += size.width  / 2
     point.y += size.height / 2
     point
