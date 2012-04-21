@@ -6,7 +6,7 @@ include Accessibility::DSL
 # The Mac OS X dock application.
 #
 # @return [AX::Application]
-AX::DOCK = app_with_bundle_identifier 'com.apple.dock'
+AX::DOCK = AX::Application.new('com.apple.dock')
 
 # Load explicitly defined elements that are optional
 require 'ax/button'
