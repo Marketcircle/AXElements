@@ -51,6 +51,9 @@ class Accessibility::Graph
     def identifier
       klass = @element.class.to_s.split(NAMESPACE).last
       ident = @element.pp_identifier
+      if ident.length > 10
+        ident = "#{ident[0..9]}..."
+      end
       ident.gsub! /"/, '\"'
       "[label = \"#{klass}#{ident}\"]"
     end
