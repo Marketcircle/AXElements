@@ -102,6 +102,15 @@ class TestAccessibilityCore < MiniTest::Unit::TestCase
     assert_equal    slider.attribute(KAXValueAttribute), slider.value
   end
 
+  def test_pid
+    assert_equal PID, REF.pid
+    assert_equal PID, window.pid
+  end
+
+  def test_pid_is_zero_for_system_wide
+    assert_equal 0, REF.system_wide.pid
+  end
+
   def test_size_of
     assert_equal REF.children.size, REF.size_of(KAXChildrenAttribute)
     assert_equal 0,                 pop_up.size_of(KAXChildrenAttribute)
@@ -318,15 +327,6 @@ class TestAccessibilityCore < MiniTest::Unit::TestCase
       obsrvr = REF.observer { |_,_,_| }
       REF.unregister(obsrvr, nil)
     }
-  end
-
-  def test_pid
-    assert_equal PID, REF.pid
-    assert_equal PID, window.pid
-  end
-
-  def test_pid_is_zero_for_system_wide
-    assert_equal 0, REF.system_wide.pid
   end
 
   def test_system_wide
