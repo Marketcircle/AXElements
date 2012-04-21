@@ -1,13 +1,14 @@
 framework 'ApplicationServices'
 
 ##
+# This is a first attempt at writing a wrapper around the CoreGraphics event
+# taps API provided by OS X. The module provides a simple Ruby interface to
+# performing mouse interactions such as moving and clicking.
+#
 # [Reference](http://developer.apple.com/library/mac/#documentation/Carbon/Reference/QuartzEventServicesRef/Reference/reference.html).
 #
-# @todo Inertial scrolling
-# @todo Bezier paths
-# @todo More intelligent default duration
-# @todo Refactor to try and reuse the same event for a single action
-#       instead of creating new events.
+# A rewrite is in the works, but in the mean time this code base still works
+# despite its warts.
 module Mouse
   extend self
 
@@ -98,8 +99,9 @@ module Mouse
   def click point = current_position, duration = 12
     event = new_event KCGEventLeftMouseDown, point, KCGMouseButtonLeft
     post event
-    duration.times { sleep QUANTUM }
-    set event, KCGEventLeftMouseUp
+    sleep QUANTUM*duration
+    yield if block_given?
+    set_type event, KCGEventLeftMouseUp
     post event
   end
 
@@ -110,8 +112,9 @@ module Mouse
   def secondary_click point = current_position, duration = 12
     event = new_event KCGEventRightMouseDown, point, KCGMouseButtonRight
     post event
-    duration.times { sleep QUANTUM }
-    set event, KCGEventRightMouseUp
+    sleep QUANTUM*duration
+    yield if block_given?
+    set_type event, KCGEventRightMouseUp
     post event
   end
   alias_method :right_click, :secondary_click
@@ -123,13 +126,13 @@ module Mouse
   def double_click point = current_position
     event = new_event KCGEventLeftMouseDown, point, KCGMouseButtonLeft
     post event
-    set  event, KCGEventLeftMouseUp
+    set_type  event, KCGEventLeftMouseUp
     post event
 
     CGEventSetIntegerValueField(event, KCGMouseEventClickState, 2)
-    set  event, KCGEventLeftMouseDown
+    set_type  event, KCGEventLeftMouseDown
     post event
-    set  event, KCGEventLeftMouseUp
+    set_type  event, KCGEventLeftMouseUp
     post event
   end
 
@@ -148,11 +151,12 @@ module Mouse
   # @param [CGPoint]
   # @param [Number]
   def arbitrary_click point = current_position, button = KCGMouseButtonCenter, duration = 12
-    event = CGEventCreateMouseEvent(nil, KCGEventOtherMouseDown, point, button)
-    CGEventPost(KCGHIDEventTap, event)
-    duration.times do sleep QUANTUM end
-    CGEventSetType(event, KCGEventOtherMouseUp)
-    CGEventPost(KCGHIDEventTap, event)
+    event = new_event KCGEventOtherMouseDown, point, button
+    post event
+    sleep QUANTUM*duration
+    yield if block_given?
+    set_type event, KCGEventOtherMouseUp
+    post event
   end
   alias_method :other_click, :arbitrary_click
 
@@ -203,7 +207,10 @@ module Mouse
     CGEventPost(KCGHIDEventTap, event)
   end
 
-  def set event, state
+  ##
+  # Change the event type for an instance of an event. This is how you would
+  # reuse a specific event. In most cases, reusing events is a necessity.
+  def set_type event, state
     CGEventSetType(event, state)
   end
 
