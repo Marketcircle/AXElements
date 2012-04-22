@@ -13,7 +13,7 @@ class Accessibility::SearchFailure < NoMethodError
     msg << "as a child of #{searcher.class}\n"
     msg << "Element Path:\n\t" << path_to(searcher)
     # @todo Consider turning this on by default
-    msg << "\nSubtree:\n\t" << debug(searcher) if Accessibility::Debug.on?
+    msg << "\nSubtree:\n\t" << subtree_for(searcher) if Accessibility.debug?
     super msg
   end
 
@@ -28,11 +28,6 @@ class Accessibility::SearchFailure < NoMethodError
   # Nice string representation of element's path from the application root
   def path_to element
     element.ancestry.map! { |x| x.inspect }.join("\n\t")
-  end
-
-  # Nice string representation of the subtree underneath the searcher
-  def debug searcher
-    Accessibility::Debug.text_subtree(searcher)
   end
 
 end
