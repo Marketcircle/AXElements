@@ -262,6 +262,20 @@ class AX::Application < AX::Element
     @app.bundleIdentifier
   end
 
+  ##
+  # @note This is provisionally a public API.
+  #
+  # Return the `Info.plist` data for the application. This is a plist
+  # file that all bundles in OS X must contain.
+  #
+  # Many bits of metadata are stored in the plist, check the
+  # [reference](https://developer.apple.com/library/mac/#documentation/MacOSX/Conceptual/BPRuntimeConfig/Articles/ConfigFiles.html)
+  # for more details.
+  #
+  # @return [Hash]
+  def info_plist
+    bundle.infoDictionary
+  end
 
   ##
   # Get the version string for the application.

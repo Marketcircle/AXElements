@@ -88,6 +88,10 @@ class TestAXApplication < MiniTest::Unit::TestCase
     assert_equal running_app.bundleIdentifier, app.bundle_identifier
   end
 
+  def test_info_plist
+    assert_equal 'hmmmmm.icns', app.info_plist['CFBundleIconFile']
+  end
+
   def test_version
     assert_equal '1.0', app.version
   end
