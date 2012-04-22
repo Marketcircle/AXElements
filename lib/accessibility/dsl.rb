@@ -554,13 +554,9 @@ module Accessibility::DSL
   #
   # @return [String]
   def subtree_for element
-    output = element.inspect + "\n"
-    enum   = Accessibility::Enumerators::DepthFirst.new element
-    enum.each_with_level do |element, depth|
-      output << "\t"*depth + element.inspect + "\n"
-    end
-    output
+    element.inspect_subtree
   end
+  alias_method :subtree, :subtree_for
 
   ##
   # @note You will need to have GraphViz command line tools installed

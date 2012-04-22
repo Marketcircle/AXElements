@@ -379,6 +379,25 @@ class AX::Element
   end
 
   ##
+  # Get the relevant details about the receiver and also the children
+  # and further descendents of the receiver. Each generation down the
+  # tree will be indented one level further.
+  #
+  # @example
+  #
+  #   puts app.inspect_subtree
+  #
+  # @return [String]
+  def inspect_subtree
+    output = self.inspect + "\n"
+    enum   = Accessibility::Enumerators::DepthFirst.new self
+    enum.each_with_level do |element, depth|
+      output << "\t"*depth + element.inspect + "\n"
+    end
+    output
+  end
+
+  ##
   # Overriden to respond properly with regards to dynamic attribute
   # lookups, but will return false for potential implicit searches.
   #
