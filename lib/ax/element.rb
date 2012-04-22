@@ -1,18 +1,22 @@
 # -*- coding: utf-8 -*-
 
-require 'ax_elements/vendor/inflector'
+require 'accessibility/core'
+require 'accessibility/factory'
+require 'accessibility/translator'
 require 'accessibility/enumerators'
 require 'accessibility/qualifier'
 require 'accessibility/errors'
 require 'accessibility/pp_inspector'
-require 'accessibility/factory'
-require 'accessibility/core'
 
 ##
 # @abstract
 #
-# The abstract base class for all accessibility objects. This class
-# provides generic functionality that all accessibility objects require.
+# The abstract base class for all accessibility objects. `AX::Element`
+# composes low level `AXUIElementRef` objects into a more Rubyish
+# interface.
+#
+# This abstract base class provides generic functionality that all
+# accessibility objects require.
 class AX::Element
   include Accessibility::PPInspector
   include Accessibility::Factory
@@ -39,9 +43,11 @@ class AX::Element
   end
 
   ##
-  # Get the value of an attribute. If the element does not have the value
-  # then `nil` will be returned, except for the `AXChildren` attribute
-  # which is always guaranteed to return an array.
+  # Get the value of an attribute. This method will return `nil` if
+  # the attribute does not have a value, if the element does not have
+  # the attribute, or if the element is dead. There is an execption
+  # for the `:children` attribute which is always guaranteed to return
+  # an array.
   #
   # @example
   #
