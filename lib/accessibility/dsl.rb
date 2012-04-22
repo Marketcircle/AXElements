@@ -679,6 +679,7 @@ module Accessibility::DSL
     end
     sleep 0.1
   end
+  alias_method :scroll_to_visible, :scroll_to
 
   ##
   # Scroll a menu to an item in the menu and then move the mouse

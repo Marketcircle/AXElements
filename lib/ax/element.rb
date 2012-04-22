@@ -420,6 +420,7 @@ class AX::Element
     point.y += size.height / 2
     point
   end
+  alias_method :hitpoint, :to_point
 
   ##
   # Get the bounding rectangle for the element.
