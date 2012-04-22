@@ -6,6 +6,14 @@ class TestAXElement < MiniTest::Unit::TestCase
     @@app ||= AX::Application.new PID
   end
 
+  def test_path_returns_correct_elements_in_correct_order
+    list = app.window.close_button.ancestry
+    assert_equal 3, list.size
+    assert_equal app, list.third
+    assert_equal app.window, list.second
+    assert_equal app.window.close_button, list.first
+  end
+
   def test_search_singular_returns_array
     result = app.search(:window)
     assert_kind_of AX::Window, result

@@ -494,11 +494,6 @@ module Accessibility::DSL
     Accessibility::Debug.highlight element, opts
   end
 
-  # (see Accessibility::Debug.path)
-  def path_for element
-    Accessibility::Debug.path element
-  end
-
   # (see Accessibility::Debug.text_subtree)
   def subtree_for element
     # @todo Create Element#descendants

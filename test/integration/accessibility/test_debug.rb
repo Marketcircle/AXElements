@@ -6,14 +6,6 @@ class TestAccessibilityDebug < MiniTest::Unit::TestCase
     @app ||= AX::Application.new PID
   end
 
-  def test_path_returns_correct_elements_in_correct_order
-    list = Accessibility::Debug.path(app.window.close_button)
-    assert_equal 3, list.size
-    assert_instance_of AX::CloseButton,    list.first
-    assert_instance_of AX::StandardWindow, list.second
-    assert_instance_of AX::Application,    list.third
-  end
-
   def test_dump_works_for_nested_tab_groups
     element = app.window.tab_group
     output  = Accessibility::Debug.subtree_for element

@@ -7,6 +7,10 @@ class TestAXElement < MiniTest::Unit::TestCase
     @element ||= AX::Element.new REF
   end
 
+  def test_ancestry
+    assert_equal [element], element.ancestry
+  end
+
   def test_children # not much we can do here
     assert_respond_to element, :children
     assert_kind_of Array, element.children

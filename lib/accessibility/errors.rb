@@ -27,7 +27,7 @@ class Accessibility::SearchFailure < NoMethodError
 
   # Nice string representation of element's path from the application root
   def path_to element
-    Accessibility::Debug.path(element).map! { |x| x.inspect }.join("\n\t")
+    element.ancestry.map! { |x| x.inspect }.join("\n\t")
   end
 
   # Nice string representation of the subtree underneath the searcher

@@ -72,9 +72,25 @@ class AX::Element
     attribute :children
   end
 
-  # (see Accessibility::Debug#path)
-  def ancestry
-    Accessibility::Debug.path(self)
+  ##
+  # Get a list of elements, starting with the receiver and riding
+  # the hierarchy up to the top level object (i.e. the {AX::Application}).
+  #
+  # @example
+  #
+  #   element = AX::DOCK.list.application_dock_item
+  #   element.ancestry
+  #     # => [#<AX::ApplicationDockItem...>, #<AX::List...>, #<AX::Application...>]
+  #
+  # @return [Array<AX::Element>]
+  def ancestry *elements
+    elements = [self] if elements.empty?
+    element  = elements.last
+    if element.attributes.include? :parent
+      ancestry(elements << element.parent)
+    else
+      elements
+    end
   end
 
   ##

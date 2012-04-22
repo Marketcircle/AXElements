@@ -23,33 +23,6 @@ module Accessibility::Debug
     alias_method :on?, :on
 
     ##
-    # Get a list of elements, starting with the receiver and riding
-    # the hierarchy up to the top level object (i.e. the {AX::Application}).
-    #
-    # @example
-    #
-    #   element = AX::DOCK.list.application_dock_item
-    #   element.ancestry
-    #     # => [#<AX::ApplicationDockItem...>, #<AX::List...>, #<AX::Application...>]
-    #
-    # @param [AX::Element]
-    # @return [Array<AX::Element>] the path in ascending order
-    def path *elements
-      element = elements.last
-      return path(elements << element.parent) if element.respond_to? :parent
-      return elements
-    end
-
-    ##
-    # Make a `dot` format graph of the tree, meant for graphing with GraphViz.
-    #
-    # @return [Accessibility::Graph]
-    def graph root
-      require 'accessibility/graph'
-      Accessibility::Graph.new(root)
-    end
-
-    ##
     # Dump a tree to the console, indenting for each level down the
     # tree that we go, and inspecting each element.
     #
