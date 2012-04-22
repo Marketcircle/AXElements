@@ -2,13 +2,13 @@ require 'ax/element'
 require 'accessibility/qualifier'
 
 ##
-# UI Element for the row in a table, outline, etc.
+# UI Element for the row in a table, outline view, etc.
 class AX::Row < AX::Element
 
   ##
   # Retrieve the child in a row that corresponds to a specific column.
   # You must pass filters here in the same way that you would for a
-  # search.
+  # search or wait.
   #
   # This is useful for tables where it is difficult to identify which
   # row item is the one you want based on the row items themselves.

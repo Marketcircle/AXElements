@@ -112,6 +112,23 @@ module Accessibility::DSL
   end
 
   ##
+  # @note This method overrides `Kernel#raise` so we have to check the
+  #       class of the first argument to decide which code path to take.
+  #
+  # Try to perform the `raise` action on the given element.
+  #
+  # @overload raise element
+  #   @param [AX::Element] element
+  #   @return [Boolean]
+  #
+  # @overload raise exception[, message[, backtrace]]
+  #   The normal way to raise an exception.
+  def raise *args
+    arg = args.first
+    arg.kind_of?(AX::Element) ? arg.perform(:raise) : super(*args)
+  end
+
+  ##
   # Tell an app to hide itself.
   #
   # @param [AX::Application]
@@ -121,8 +138,7 @@ module Accessibility::DSL
   end
 
   ##
-  # Tell an app to unhide itself. This does not guarantee it will be
-  # focused.
+  # Tell an app to unhide itself.
   #
   # @param [AX::Application]
   # @return [Boolean]
@@ -141,9 +157,8 @@ module Accessibility::DSL
   end
 
   ##
-  # Find the application with the given bundle identifier.
-  # If the application is not already running, it will be
-  # launched.
+  # Find the application with the given bundle identifier. If the
+  # application is not already running, it will be launched.
   #
   # @example
   #
@@ -151,7 +166,7 @@ module Accessibility::DSL
   #   launch                     'com.apple.mail'
   #
   # @param [String]
-  # @return [AX::Application]
+  # @return [AX::Application,nil]
   def app_with_bundle_identifier id
     Accessibility.application_with_bundle_identifier id
   end
@@ -159,7 +174,9 @@ module Accessibility::DSL
   alias_method :launch,             :app_with_bundle_identifier
 
   ##
-  # Find the application with the given name.
+  # Find the application with the given name. If the application
+  # is not already running, it will NOT be launched and this
+  # method will return `nil`.
   #
   # @example
   #
@@ -172,7 +189,8 @@ module Accessibility::DSL
   end
 
   ##
-  # Find the application with the given process identifier.
+  # Find the application with the given process identifier. An
+  # invalid PID will cause an exception to be raised.
   #
   # @example
   #
@@ -185,27 +203,9 @@ module Accessibility::DSL
   end
 
   ##
-  # @note This method overrides `Kernel#raise` so we have to check the
-  #       class of the first argument to decide which code path to take.
-  #
-  # Try to perform the `raise` action on the given element.
-  #
-  # @overload raise element
-  #   @param [AX::Element] element
-  #   @return [Boolean]
-  #
-  # @overload raise exception[, message[, backtrace]]
-  #   The normal way to raise an exception.
-  def raise *args
-    arg = args.first
-    # @todo Need to check if arg has the raise action
-    arg.kind_of?(AX::Element) ? arg.perform(:raise) : super
-  end
-
-  ##
-  # Focus an element on the screen if it can be focused. It is safe to
-  # pass any element into this method as nothing will happen if it is
-  # not capable of having focus set on it.
+  # Focus an element on the screen, but only if it can be directly
+  # focused. It is safe to pass any element into this method as nothing
+  # will happen if it does not have a writable focused state attribute.
   #
   # @param [AX::Element]
   def set_focus_to element
@@ -217,8 +217,8 @@ module Accessibility::DSL
   # Set the value of an attribute on an element.
   #
   # This method will try to set focus to the element first; this is
-  # to avoid cases where developers assumed an element would have
-  # to have focus before a user could change the value.
+  # to compensate for cases where app developers assumed an element
+  # would have to have focus before a user could change the value.
   #
   # @overload set element, attribute_name: new_value
   #   Set a specified attribute to a new value
@@ -227,7 +227,7 @@ module Accessibility::DSL
   #
   # @example
   #
-  #   set text_field, selected_text_range: CFRangeMake(1,10)
+  #   set text_field, selected_text_range: 1..10
   #
   # @overload set element, new_value
   #   Set the `value` attribute to a new value
@@ -239,7 +239,6 @@ module Accessibility::DSL
   #   set text_field,   'Mark Rada'
   #   set radio_button, 1
   #
-  # @return [nil] do not rely on a return value
   def set element, change
     set_focus_to element
 
@@ -254,11 +253,16 @@ module Accessibility::DSL
   # Simulate keyboard input by typing out the given string. To learn
   # more about how to encode modifier keys (e.g. Command), see the
   # dedicated documentation page on
-  # [Keyboard Events](http://github.com/Marketcircle/AXElements/wiki/Keyboarding).
+  # [Keyboard Events](http://github.com/Marketcircle/AXElements/wiki/Keyboarding)
+  # wiki page.
   #
   # @overload type string
   #   Send input to the currently focused application
   #   @param [#to_s]
+  #
+  # @example
+  #
+  #   type "Hello, world!"
   #
   # @overload type string, app
   #   Send input to a specific application
@@ -292,13 +296,13 @@ module Accessibility::DSL
   # @group Polling
 
   ##
-  # Simply wait around for something to show up. This method is similar to
-  # performing an explicit search on an element except that the search filters
-  # take two extra options which can control how long to wait and from where
-  # to start searches from. You __MUST__ supply either the parent or ancestor
-  # options to specify where to search from. Searching from the parent implies
-  # that what you are waiting for is a child of the parent and not a more
-  # distant descendant.
+  # Simply wait around for something to show up. This method is similar
+  # to performing an explicit search on an element except that the search
+  # filters take two extra options which can control the timeout period
+  # and the search subtree. You __MUST__ supply either the parent or
+  # ancestor option to specify where to search from. Searching from the
+  # parent implies that what you are waiting for is a child of the parent
+  # and not a more distant descendant.
   #
   # This is an alternative to using the notifications system. It is far
   # easier to use than notifications in most cases, but it will perform
@@ -336,6 +340,8 @@ module Accessibility::DSL
   # The options you pass to this method can be any search filter that
   # you can normally use.
   #
+  # See {#wait_for} for more details.
+  #
   # @param [#to_s]
   # @param [AX::Element]
   # @param [Hash]
@@ -355,13 +361,16 @@ module Accessibility::DSL
   ##
   # @note This is really just an optimized case of
   #       {#wait_for_descendant} when you know what you are waiting
-  #       for is a child of a particular element.
+  #       for is a child of a particular element. Use
+  #       {#wait_for_descendant} if you are unsure of the relationship.
   #
   # Wait around for particular element and then return that element.
-  # The parent option must be the parent of the element you are
+  # The parent argument must be the parent of the element you are
   # waiting for, this method will not look further down the hierarchy.
   # The options you pass to this method can be any search filter that
   # you can normally use.
+  #
+  # See {#wait_for} for more details.
   #
   # @param [#to_s]
   # @param [AX::Element]
@@ -380,10 +389,10 @@ module Accessibility::DSL
   end
 
 
-  # @group Mouse Interaction
+  # @group Mouse Manipulation
 
   ##
-  # Move the mouse cursor to the given point on the screen.
+  # Move the mouse cursor to the given point or object on the screen.
   #
   # @example
   #
@@ -410,7 +419,7 @@ module Accessibility::DSL
   #
   # There are many reasons why you would want to cause a drag event
   # with the mouse. Perhaps you want to drag an object to another
-  # place, or maybe you want to hightlight an area of the screen.
+  # place, or maybe you want to select a group of objects on the screen.
   #
   # @example
   #
@@ -449,19 +458,27 @@ module Accessibility::DSL
   ##
   # Perform a regular click.
   #
-  # If an argument is provided then the mouse will move to that point
+  # If a parameter is provided then the mouse will move to that point
   # first; the argument must respond to `#to_point`.
+  #
+  # If a block is given, it will be yielded to between the click down
+  # and click up event.
+  #
+  # @example
+  #
+  #   click
+  #   click window.close_button
   #
   # @param [#to_point]
   def click obj = nil, wait = 0.2
-    if obj
-      point = obj.to_point
-      move_mouse_to point, wait: 0
-      if Mouse.current_position != point
-        move_mouse_to point, wait: 0
-      end
+    move_mouse_to obj, wait: 0 if obj
+    if block_given?
+      Mouse.click_down
+      yield
+      Mouse.click_up
+    else
+      Mouse.click
     end
-    Mouse.click
     sleep wait
   end
 
@@ -493,7 +510,7 @@ module Accessibility::DSL
   end
 
 
-  # @group Debug
+  # @group Debug Helpers
 
   ##
   # Highlight an element on screen. You can optionally specify the
@@ -527,8 +544,9 @@ module Accessibility::DSL
   end
 
   ##
-  # Dump a tree to the console, indenting for each level down the
-  # tree that we go, and inspecting each element.
+  # Get the dump of the subtree of children and descendants for the given
+  # element. Each generation down the tree will be indented another level,
+  # and each element will be inspected.
   #
   # @example
   #
@@ -572,7 +590,7 @@ module Accessibility::DSL
   end
 
 
-  # @group Misc.
+  # @group Macros
 
   ##
   # Convenience for `AX::SystemWide.new`.
@@ -582,12 +600,10 @@ module Accessibility::DSL
     AX::SystemWide.new
   end
 
-
-  # @group Macros
-
   ##
-  # Get the current mouse position and return the top most element at
-  # that point.
+  # Return the top most element at the current mouse position.
+  #
+  # See {#element_at_point} for more details.
   #
   # @return [AX::Element]
   def element_under_mouse
@@ -643,14 +659,18 @@ module Accessibility::DSL
   end
 
   ##
-  # Scroll though a table until the given element is visible.
+  # Scroll though a scroll area until the given element is visible.
   #
   # If you need to scroll an unknown ammount of units through a scroll area
   # you can just pass the element that you need visible and this method
   # will scroll to it for you.
   #
+  # @example
+  #
+  #   scroll_to table.rows.last
+  #
   # @param [AX::Element]
-  # @return [Boolean]
+  # @return [void]
   def scroll_to element
     scroll_area = element.ancestor :scroll_area
 
@@ -665,11 +685,15 @@ module Accessibility::DSL
   end
 
   ##
-  # Scroll a popup menu to an item in the menu and then move the
-  # mouse pointer to that item.
+  # Scroll a menu to an item in the menu and then move the mouse
+  # pointer to that item.
+  #
+  # @example
+  #
+  #   scroll_menu_to menu.element(title: "Expensive Cake")
   #
   # @param [AX::Element]
-  # @return [Boolean]
+  # @return [void]
   def scroll_menu_to element
     menu = element.ancestor :menu
     move_mouse_to menu

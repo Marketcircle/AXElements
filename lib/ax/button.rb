@@ -13,8 +13,11 @@ class AX::Button < AX::Element
   #
   # @return [Boolean]
   def == other
-    return super unless other.kind_of? NSString
-    return attribute(:title) == other
+    if other.kind_of? NSString
+      attribute(:title) == other
+    else
+      super
+    end
   end
 
 end

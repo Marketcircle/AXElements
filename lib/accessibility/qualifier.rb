@@ -10,7 +10,7 @@ class Accessibility::Qualifier
   # Initialize a qualifier with the kind of object that you want to
   # qualify and a dictionary of filter criteria. You can optionally
   # pass a block if your qualification criteria is too complicated
-  # for key/value pairs and the blocks return value will be used to
+  # for key/value pairs; the blocks return value will be used to
   # determine if an element qualifies.
   #
   # @example
@@ -22,7 +22,7 @@ class Accessibility::Qualifier
   #     element.children.size > 5 && NSContainsRect(element.bounds, rect)
   #   end
   #
-  # @param [#to_s] klass
+  # @param [#to_s]
   # @param [Hash]
   # @yield Optional block that can qualify an element
   def initialize klass, criteria
@@ -41,6 +41,10 @@ class Accessibility::Qualifier
     the_right_type?(element) && meets_criteria?(element)
   end
 
+  ##
+  # Return a compact description of the qualifier. If the qualifier
+  # includes a block then a checkmarked box will be included.
+  #
   # @return [String]
   def describe
     "#{@klass}#{@criteria.ax_pp}#{@block ? '[✔]' : ''}"
@@ -55,6 +59,8 @@ class Accessibility::Qualifier
 
   ##
   # Take a hash of search filters and generate an optimized search
+  # array. This is done to avoid checking types for each call to
+  # {#qualifies?}.
   #
   # @param [Hash]
   def compile criteria

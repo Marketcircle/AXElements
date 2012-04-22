@@ -9,13 +9,20 @@ module AX; end
 # Mixin made for processing low level data from AXAPI methods.
 module Accessibility::Factory
 
+  # @todo This should provide alternate #to_ruby functionality for
+  #       the __NSCFType class in order to avoid the overhead of
+  #       checking type information (or at least reducing it).
+  #       However, it will force the lower level to always wrap
+  #       element references; this should be ok most of the time
+  #       but makes testing a bit of a pain...hmmm
+
   ##
-  # Processes any given data from an AXAPI method and wraps it if
-  # needed. Meant for taking a return value from {Accessibility::Core#attr:for:}
-  # and friends.
+  # Processes any given data from an AXAPI function and wraps it if
+  # needed. Meant for taking a return value from
+  # {Accessibility::Core#attribute} and friends.
   #
-  # Generally, used to process an `AXValue` into a `CGPoint` or an
-  # `AXUIElementRef` into some kind of {AX::Element} object.
+  # Generally, used to process an `AXUIElementRef` into a some kind
+  # of {AX::Element} subclass.
   def process value
     return nil if value.nil? # CFGetTypeID(nil) crashes runtime
     case CFGetTypeID(value)

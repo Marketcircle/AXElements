@@ -13,8 +13,8 @@
 module Accessibility::PPInspector
 
   ##
-  # Create an identifier for `self` using various attributes that should
-  # make it very easy to identify the element.
+  # Create an identifier for the receiver by using various attributes
+  # that should make it very easy to identify the element.
   #
   # @return [String]
   def pp_identifier
@@ -55,7 +55,7 @@ module Accessibility::PPInspector
 
   ##
   # Create a string that succinctly encodes the screen coordinates
-  # of `self`.
+  # of the receiver.
   #
   # @return [String]
   def pp_position
@@ -69,7 +69,7 @@ module Accessibility::PPInspector
 
   ##
   # Create a string that nicely presents the number of children
-  # that `self` has.
+  # that the receiver has.
   #
   # @return [String]
   def pp_children

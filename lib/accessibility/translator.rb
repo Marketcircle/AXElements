@@ -16,7 +16,8 @@ end
 
 ##
 # Maintain all the rules for transforming Cocoa constants into something
-# a little more Rubyish.
+# a little more Rubyish and taking the Rubyish symbols and translating
+# them back to Cocoa constants.
 class Accessibility::Translator
 
   ##
@@ -60,6 +61,14 @@ class Accessibility::Translator
     @unprefixes[key]
   end
 
+  ##
+  # Take an array of Cocoa accessibility constants and return an
+  # array of shortened Ruby symbols.
+  #
+  # @example
+  #
+  #   rubyize ["AXRole", "AXTitleUIElement"] # => [:role, :title_ui_element]
+  #
   # @return [Array<Symbol>]
   def rubyize keys
     keys.map { |x| @rubyisms[x] }
@@ -108,7 +117,9 @@ class Accessibility::Translator
 
   ##
   # Try to turn an arbitrary symbol into a notification constant, and
-  # then get the value of the constant.
+  # then get the value of the constant. If it cannot be turned into
+  # a notification constant then the original string parameter will
+  # be returned.
   #
   # @param [#to_s]
   # @return [String]
@@ -162,15 +173,11 @@ class Accessibility::Translator
     end
   end
 
-  ##
   # @private
-  #
   # @return [String]
   EMPTY_STRING = ''
 
-  ##
   # @private
-  #
   # @return [String]
   QUESTION_MARK = '?'
 end

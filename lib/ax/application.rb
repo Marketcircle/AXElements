@@ -2,28 +2,24 @@ require 'ax/element'
 require 'accessibility/string'
 
 ##
-# Some additional constructors and conveniences for Application objects.
+# The accessibility object representing the running application. This
+# class contains some additional constructors and conveniences for
+# Application objects.
 #
 # As this class has evolved, it has gathered some functionality from
-# the `NSRunningApplication` class.
+# the `NSRunningApplication` and `NSBundle` classes.
 class AX::Application < AX::Element
   include Accessibility::String
 
   ##
-  # @private
-  # Cached reference to the system wide object.
-  #
-  # @return [AXUIElementRef]
-  SYSTEMWIDE = AXUIElementCreateSystemWide()
-
-  ##
-  # Overridden so that we can also cache the `NSRunningApplication`
-  # instance for this object.
+  # Overridden so that we can more flexibly manipulate input.
   #
   # You can initialize an application object with either the process
   # identifier (pid) of the application, the name of the application,
   # an `NSRunningApplication` instance for the application, or an
   # accessibility (`AXUIElementRef`) token.
+  #
+  # @param [Number,String,NSRunningApplication]
   def initialize arg
     case arg
     when Fixnum
@@ -52,7 +48,7 @@ class AX::Application < AX::Element
   # @group Attributes
 
   ##
-  # Overridden to handle the {Accessibility::DSL#set_focus} case.
+  # Overridden to handle the {Accessibility::DSL#set_focus_to} case.
   #
   # (see AX::Element#attribute)
   def attribute attr
@@ -74,7 +70,7 @@ class AX::Application < AX::Element
 
   ##
   # Ask the app whether or not it is the active app. This is equivalent
-  # to the dynamic #focused? method, but might make more sense to use
+  # to the dynamic `#focused?` method, but might make more sense to use
   # in some cases.
   def active?
     @ref.spin_run_loop
@@ -100,7 +96,7 @@ class AX::Application < AX::Element
   ##
   # Overridden to handle the {Accessibility::Language#set_focus} case.
   #
-  # (see AX::Element#set:to:)
+  # (see AX::Element#set)
   def set attr, value
     case attr
     when :focused
@@ -142,8 +138,8 @@ class AX::Application < AX::Element
   end
 
   ##
-  # Send keyboard input to `self`, the control in the app that currently
-  # has focus will receive the key presses.
+  # Send keyboard input to the receiver, the control in the app that
+  # currently has focus will receive the key presses.
   #
   # For details on how to format the string, check out the
   # [Keyboarding documentation](http://github.com/Marketcircle/AXElements/wiki/Keyboarding).
@@ -156,8 +152,8 @@ class AX::Application < AX::Element
   alias_method :type_string, :type
 
   ##
-  # Press the given modifier key and hold it down while yielding to the
-  # given block.
+  # Press the given modifier key and hold it down while yielding to
+  # the given block.
   #
   # @example
   #
@@ -177,6 +173,15 @@ class AX::Application < AX::Element
     code
   end
 
+  ##
+  # Navigate the menu bar menus for the receiver and select the menu
+  # item at the end of the given path. This method will open each menu
+  # in the path.
+  #
+  # @example
+  #
+  #   safari.select_menu_item 'Edit', 'Find', /Google/
+  #
   # @return [AX::MenuItem]
   def select_menu_item *path
     target = navigate_menu *path
@@ -184,8 +189,15 @@ class AX::Application < AX::Element
     target
   end
 
+  ##
+  # Navigate the menu bar menus for the receiver. This method will not
+  # select the last item, but it will open each menu along the path.
+  #
+  # You may also be interested in {#select_menu_item}.
+  #
   # @return [AX::MenuItem]
   def navigate_menu *path
+    # @todo CLEAN UP
     perform :unhide # can't navigate menus unless the app is up front
     current = attribute(:menu_bar).search(:menu_bar_item, title: path.shift)
     path.each do |part|
@@ -231,15 +243,13 @@ class AX::Application < AX::Element
 
 
   ##
-  # @todo Include bundle identifier?
-  #
   # Override the base class to make sure the pid is included.
   def inspect
     super.sub! />$/, "#{pp_checkbox(:focused)} pid=#{pid}>"
   end
 
   ##
-  # Find the element in `self` that is present at point given.
+  # Find the element in the receiver that is at point given.
   #
   # `nil` will be returned if there was nothing at that point.
   #
@@ -263,8 +273,6 @@ class AX::Application < AX::Element
   end
 
   ##
-  # @note This is provisionally a public API.
-  #
   # Return the `Info.plist` data for the application. This is a plist
   # file that all bundles in OS X must contain.
   #
@@ -298,5 +306,9 @@ class AX::Application < AX::Element
   def bundle
     @bundle ||= NSBundle.bundleWithURL @app.bundleURL
   end
+
+  # @private
+  # @return [AXUIElementRef]
+  SYSTEMWIDE = AXUIElementCreateSystemWide()
 
 end

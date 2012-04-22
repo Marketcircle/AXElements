@@ -30,11 +30,12 @@ module Accessibility::Enumerators
     end
 
     ##
-    # @note Explicitly defined so that escaping at the first found element
-    #       actually works. Since only a single `break` is called when an
-    #       item is found it does not fully escape the method. Technically,
-    #       we need to do this with other 'escape-early' iteraters, but
-    #       they aren't being used...yet.
+    # @note Explicitly defined so that escaping at the first found
+    #       element actually works. Since only a single `break` is
+    #       called when an item is found it does not fully escape the
+    #       built in implementation. Technically, we need to do this
+    #       with other 'escape-early' iteraters, but they aren't
+    #       being used...yet.
     #
     # Override `Enumerable#find` for performance reasons.
     def find
@@ -60,14 +61,14 @@ module Accessibility::Enumerators
       until stack.empty?
         current = stack.shift
         yield current
-        # needed to reverse it since child ordering seems to matter in practice
+        # needed to reverse, child ordering matters in practice
         stack.unshift *current.children
       end
     end
 
     ##
-    # Walk the UI element tree and yield both the element and the level
-    # that the element is at relative to the root.
+    # Walk the UI element tree and yield both the element and the
+    # level that the element is at relative to the root.
     #
     # @yieldparam [AX::Element,AXUIElementRef]
     # @yieldparam [Number]

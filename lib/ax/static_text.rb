@@ -12,8 +12,11 @@ class AX::StaticText < AX::Element
   #
   # @return [Boolean]
   def == other
-    return super unless other.kind_of? NSString
-    return attribute(:value) == other
+    if other.kind_of? NSString
+      attribute(:value) == other
+    else
+      super
+    end
   end
 
 end
