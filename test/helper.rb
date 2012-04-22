@@ -1,7 +1,8 @@
 framework 'Cocoa'
 
 # We want to launch the test app and make sure it responds to
-# accessibility queries, but that is difficult, so we just sleep
+# accessibility queries, but that is difficult to know at what
+# point it will start to respond, so we just sleep
 APP_BUNDLE_URL = NSURL.fileURLWithPath File.expand_path './test/fixture/Release/AXElementsTester.app'
 APP_BUNDLE_IDENTIFIER = 'com.marketcircle.AXElementsTester'
 
