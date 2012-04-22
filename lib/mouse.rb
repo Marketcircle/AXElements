@@ -100,7 +100,6 @@ module Mouse
     event = new_event KCGEventLeftMouseDown, point, KCGMouseButtonLeft
     post event
     sleep QUANTUM*duration
-    yield if block_given?
     set_type event, KCGEventLeftMouseUp
     post event
   end
@@ -113,7 +112,6 @@ module Mouse
     event = new_event KCGEventRightMouseDown, point, KCGMouseButtonRight
     post event
     sleep QUANTUM*duration
-    yield if block_given?
     set_type event, KCGEventRightMouseUp
     post event
   end
@@ -154,7 +152,6 @@ module Mouse
     event = new_event KCGEventOtherMouseDown, point, button
     post event
     sleep QUANTUM*duration
-    yield if block_given?
     set_type event, KCGEventOtherMouseUp
     post event
   end
