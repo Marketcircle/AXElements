@@ -5,7 +5,7 @@ require 'ax/element'
 require 'ax/application'
 require 'ax/systemwide'
 require 'accessibility'
-require 'accessibility/debug'
+require 'accessibility/enumerators'
 
 ##
 # DSL methods for AXElements.
@@ -520,10 +520,22 @@ module Accessibility::DSL
     Accessibility::Highlighter.new obj.bounds, opts
   end
 
-  # (see Accessibility::Debug.text_subtree)
+  ##
+  # Dump a tree to the console, indenting for each level down the
+  # tree that we go, and inspecting each element.
+  #
+  # @example
+  #
+  #   puts subtree_for app
+  #
+  # @return [String]
   def subtree_for element
-    # @todo Create Element#descendants
-    Accessibility::Debug.text_subtree element
+    output = element.inspect + "\n"
+    enum   = Accessibility::Enumerators::DepthFirst.new element
+    enum.each_with_level do |element, depth|
+      output << "\t"*depth + element.inspect + "\n"
+    end
+    output
   end
 
   ##

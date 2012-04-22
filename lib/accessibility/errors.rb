@@ -1,5 +1,3 @@
-require 'accessibility/debug'
-
 ##
 # Error raised when an implicit search fails to return a result.
 class Accessibility::SearchFailure < NoMethodError
