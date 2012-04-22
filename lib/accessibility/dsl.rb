@@ -585,6 +585,43 @@ module Accessibility::DSL
     file.path
   end
 
+  ##
+  # Take a screen shot and save it to disk. If a file name and path are
+  # not given then default values will be used; given paths will be
+  # expanded automatically.A timestamp and file extension will always
+  # automatically be appended to the file name.
+  #
+  # @example
+  #
+  #   screenshot
+  #     # => "~/Desktop/AXElements-ScreenShot-20120422184650.png"
+  #
+  #   screenshot app.title
+  #     # => "~/Desktop/Safari-20120422184650.png"
+  #
+  #   screenshot app.title, "/Volumes/SecretStash"
+  #     # => "/Volumes/SecretStash/Safari-20120422184650.png"
+  #
+  # @param [#to_s]
+  # @param [#to_s]
+  # @return [String] path to the screenshot
+  def screenshot name = "AXElements-ScreenShot", dir = '~/Desktop'
+    dir  = File.expand_path dir.to_s
+    file = "#{dir}/#{name}-#{Time.now.strftime '%Y%m%d%H%M%S'}.png"
+
+    cg_image = CGWindowListCreateImage(CGRectInfinite,
+                                       KCGWindowListOptionOnScreenOnly,
+                                       KCGNullWindowID,
+                                       KCGWindowImageDefault)
+    NSBitmapImageRep
+      .alloc
+      .initWithCGImage(cg_image)
+      .representationUsingType(NSPNGFileType, properties: nil)
+      .writeToFile(file, atomically: false)
+
+    file
+  end
+
 
   # @group Macros
 

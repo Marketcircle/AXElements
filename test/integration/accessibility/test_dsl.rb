@@ -205,6 +205,24 @@ class TestAccessibilityDSL < MiniTest::Unit::TestCase
     end
   end
 
+  def test_screenshot
+    path = dsl.screenshot
+    assert File.exists? path
+    FileUtils.rm path
+
+    path = dsl.screenshot "Thing"
+    assert File.exists? path
+    assert_match /\/Thing/, path
+    FileUtils.rm path
+
+    path = dsl.screenshot "Thing", "/tmp"
+    assert File.exists? path
+    assert_match %r{/tmp/Thing-}, path
+    FileUtils.rm path
+  ensure
+    FileUtils.rm path if File.exists? path
+  end
+
   def test_system_wide
     assert_instance_of AX::SystemWide, dsl.system_wide
   end
