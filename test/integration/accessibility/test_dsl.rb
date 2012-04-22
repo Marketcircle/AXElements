@@ -161,6 +161,24 @@ class TestAccessibilityDSL < MiniTest::Unit::TestCase
     app.main_window.set :position, orig_window_position if orig_window_position
   end
 
+  def test_highlight
+    highlighter = dsl.highlight app.main_window, colour: NSColor.blueColor
+    assert_kind_of Accessibility::Highlighter, highlighter
+    assert_equal   NSColor.blueColor,          highlighter.backgroundColor
+    highlighter.stop
+
+    def highlight_test
+      @got_called = true
+    end
+    highlighter = dsl.highlight app.main_window, color: NSColor.greenColor, timeout: 0.1
+    NSNotificationCenter.defaultCenter.addObserver self,
+                                         selector: 'highlight_test',
+                                             name: NSWindowWillCloseNotification,
+                                           object: highlighter
+    sleep 0.1
+    assert @got_called
+  end
+
   def test_system_wide
     assert_instance_of AX::SystemWide, dsl.system_wide
   end

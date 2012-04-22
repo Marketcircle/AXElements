@@ -489,9 +489,35 @@ module Accessibility::DSL
 
   # @group Debug
 
-  # (see Accessibility::Debug.highlight)
-  def highlight element, opts = {}
-    Accessibility::Debug.highlight element, opts
+  ##
+  # Highlight an element on screen. You can optionally specify the
+  # highlight colour or pass a timeout to automatically have the
+  # highlighter disappear.
+  #
+  # The highlighter is actually a window, so if you do not set a
+  # timeout, you will need to call `#stop` or `#close` on the returned
+  # highlighter object in order to get rid of the highlighter.
+  #
+  # You could use this method to highlight an arbitrary number of
+  # elements on screen, with a rainbow of colours. Great for debugging.
+  #
+  # @example
+  #
+  #   highlighter = highlight window.outline
+  #   # wait a few seconds...
+  #   highlighter.stop
+  #
+  #   # highlighter automatically turns off after 5 seconds
+  #   highlight window.outline.row, colour: NSColor.greenColor, timeout: 5
+  #
+  # @param [#bounds]
+  # @param [Hash] opts
+  # @option opts [Number] :timeout
+  # @option opts [NSColor] :colour (NSColor.magentaColor)
+  # @return [Accessibility::Highlighter]
+  def highlight obj, opts = {}
+    require 'accessibility/highlighter'
+    Accessibility::Highlighter.new obj.bounds, opts
   end
 
   # (see Accessibility::Debug.text_subtree)
