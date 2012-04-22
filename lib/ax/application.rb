@@ -262,4 +262,27 @@ class AX::Application < AX::Element
     @app.bundleIdentifier
   end
 
+
+  ##
+  # Get the version string for the application.
+  #
+  # @example
+  #
+  #   AX::Application.new("Safari").version    # => "5.2"
+  #   AX::Application.new("Terminal").version  # => "2.2.2"
+  #   AX::Application.new("Daylite").version   # => "3.15 (build 3664)"
+  #
+  # @return [String]
+  def version
+    bundle.objectForInfoDictionaryKey 'CFBundleShortVersionString'
+  end
+
+
+  private
+
+  # @return [NSBundle]
+  def bundle
+    @bundle ||= NSBundle.bundleWithURL @app.bundleURL
+  end
+
 end
