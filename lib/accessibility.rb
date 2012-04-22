@@ -45,10 +45,9 @@ class << Accessibility
   # @param [String] bundle a bundle identifier
   # @return [AX::Application,nil]
   def application_with_bundle_identifier bundle
-    if launch_application bundle
+    if app_running?(bundle) || launch_application(bundle)
       10.times do
-        app = NSRunningApplication.runningApplicationsWithBundleIdentifier(bundle).first
-        return AX::Application.new(app) if app
+        return AX::Application.new(bundle) if app_running? bundle
         sleep 1
       end
     else
@@ -79,6 +78,16 @@ class << Accessibility
 
 
   private
+
+  ##
+  # Find out if the app is running and if so, return the running application
+  # for that bundle.
+  #
+  # @param [String]
+  # @return [NSRunningApplication,nil]
+  def app_running? bundle
+    NSRunningApplication.runningApplicationsWithBundleIdentifier(bundle).first
+  end
 
   ##
   # Asynchronously launch an application given the bundle identifier.
