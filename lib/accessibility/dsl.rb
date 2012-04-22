@@ -454,7 +454,13 @@ module Accessibility::DSL
   #
   # @param [#to_point]
   def click obj = nil, wait = 0.2
-    move_mouse_to obj, wait: 0 if obj
+    if obj
+      point = obj.to_point
+      move_mouse_to point, wait: 0
+      if Mouse.current_position != point
+        move_mouse_to point, wait: 0
+      end
+    end
     Mouse.click
     sleep wait
   end
@@ -539,22 +545,29 @@ module Accessibility::DSL
   end
 
   ##
-  # Make a `dot` format graph of the tree, meant for graphing with
-  # GraphViz.
+  # @note You will need to have GraphViz command line tools installed
+  #       in order for this to work.
   #
+  # Make and open a `dot` format graph of the tree, meant for graphing
+  # with GraphViz.
+  #
+  # @example
+  #
+  #   graph app.main_window
+  #
+  # @param [AX::Element]
   # @return [String] path to the saved image
-  def graph element, open = true
-    g = Accessibility::Debug.graph element
-    g.build!
+  def graph element
+    require 'accessibility/graph'
+    graph = Accessibility::Graph.new(element)
+    graph.build!
 
     require 'tempfile'
     file = Tempfile.new('graph')
-    File.open(file.path, 'w') do |fd|
-      fd.write g.to_dot
-    end
-
+    File.open(file.path, 'w') do |fd| fd.write graph.to_dot end
     `dot -Tpng #{file.path} > #{file.path}.png`
-    `open #{file.path}.png` if open
+    `open #{file.path}.png`
+
     file.path
   end
 
