@@ -21,7 +21,7 @@ from a quick look window:
     require 'ax_elements'
 
     finder = app_with_bundle_identifier 'com.apple.finder'
-    set_focus finder # bring to the front so you can see it happening
+    set_focus_to finder # bring to the front so you can see it happening
 
     type "\\COMMAND+n"
     sleep 1 # this is so you can see it happen in "slow motion"
@@ -60,8 +60,9 @@ slider in the menu bar (unless you've hidden it):
 
 ## Getting Setup
 
-You need to have the OS X developer tools installed in build and
-install AXElements (sorry). Go ahead and install the tools now if you
+You need to have the OS X command line tools installed in order to
+build and install AXElements, but you will also need Xcode in order to
+run the test suite (sorry). Go ahead and install the tools now if you
 haven't done that yet, I'll wait. Once you have the developer tools,
 you should install MacRuby, the latest nightly build is required. If you
 are on Snow Leopard, you will also need to install the
