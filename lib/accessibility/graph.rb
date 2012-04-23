@@ -45,7 +45,7 @@ class Accessibility::Graph
 
     def identifier
       klass = @element.class.to_s.split(NAMESPACE).last
-      ident = @element.pp_identifier
+      ident = @element.pp_identifier.dup
       if ident.length > 12
         ident = "#{ident[0...12]}..."
       end
