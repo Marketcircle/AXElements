@@ -14,6 +14,7 @@ class TestAccessibilityDSL < MiniTest::Unit::TestCase
 
   def app;             @@app       ||= AX::Application.new REF                               end
   def text_area;       @@text_area ||= app.main_window.text_area                             end
+  def pop_up;          @@pop_up    ||= app.main_window.pop_up_button                         end
   def pref_window;     app.children.find { |x| x.attribute(:title) == 'Preferences'   }      end
   def spelling_window; app.children.find { |x| x.attribute(:title).to_s.match(/^Spelling/) } end
 
@@ -308,8 +309,6 @@ class TestAccessibilityDSL < MiniTest::Unit::TestCase
   end
 
   def test_scroll_menu_to
-    pop_up = app.main_window.pop_up_button
-
     pop_up.perform :press
     item = wait_for :menu_item, ancestor: pop_up, title: '49'
     dsl.scroll_menu_to item
@@ -325,9 +324,7 @@ class TestAccessibilityDSL < MiniTest::Unit::TestCase
     assert_equal 'Togusa', pop_up.value
 
   ensure
-    unless pop_up.children.empty?
-      pop_up.menu_item.perform :cancel
-    end if pop_up
+    pop_up.menu_item.perform :cancel unless pop_up.children.empty?
   end
 
 end
