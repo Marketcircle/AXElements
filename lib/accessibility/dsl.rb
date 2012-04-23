@@ -352,7 +352,7 @@ module Accessibility::DSL
     until Time.now - start > timeout
       result = ancestor.search(descendant, filters, &block)
       return result unless result.blank?
-      sleep 0.2
+      sleep 0.1
     end
     nil
   end
@@ -383,7 +383,7 @@ module Accessibility::DSL
     until Time.now - start > timeout
       result = parent.children.find { |x| q.qualifies? x }
       return result unless result.blank?
-      sleep 0.2
+      sleep 0.1
     end
     nil
   end
@@ -434,7 +434,7 @@ module Accessibility::DSL
 
     until Time.now - start > timeout
       return true if element.invalid?
-      sleep 0.2
+      sleep 0.1
     end
     false
   end
