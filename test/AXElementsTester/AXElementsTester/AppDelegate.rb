@@ -45,6 +45,7 @@ class AppDelegate
 
   def post_notification sender
     NSAccessibilityPostNotification(yes_button.cell, 'Cheezburger')
+    window.contentView.addSubview bye_button
   end
 
   def populate_table

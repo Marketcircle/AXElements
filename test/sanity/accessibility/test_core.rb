@@ -65,7 +65,7 @@ class TestAccessibilityCore < MiniTest::Unit::TestCase
   def test_attribute
     assert_equal 'AXElementsTester',  window.attribute(KAXTitleAttribute  )
     assert_equal false,               window.attribute(KAXFocusedAttribute)
-    assert_equal CGSize.new(555,483), window.attribute(KAXSizeAttribute   )
+    assert_equal CGSize.new(555,529), window.attribute(KAXSizeAttribute   )
     assert_equal REF,                 window.attribute(KAXParentAttribute )
     assert_equal 10..19,              window.attribute("AXPie"            )
   end
