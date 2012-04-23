@@ -47,4 +47,13 @@ class TestAXElement < MiniTest::Unit::TestCase
     box.set :value, '' if box
   end
 
+  def test_invalid
+    refute app.invalid?
+
+    app.main_window.button(title: 'Yes').perform :press
+    bye = app.main_window.button(title: /Bye/)
+    app.main_window.button(title: 'No').perform :press
+    assert bye.invalid?
+  end
+
 end

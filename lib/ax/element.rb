@@ -445,6 +445,15 @@ class AX::Element
   end
 
   ##
+  # Return whether or not the receiver is "dead".
+  #
+  # A dead element is one that is no longer in the app's view
+  # hierarchy, which is not necessarily related to visibility.
+  def invalid?
+    @ref.role.nil?
+  end
+
+  ##
   # Like {#respond_to?}, this is overriden to include attribute methods.
   # Though, it does include dynamic predicate methods at the moment.
   def methods include_super = true, include_objc_super = false
