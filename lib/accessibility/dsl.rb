@@ -320,18 +320,18 @@ module Accessibility::DSL
   #   wait_for :a_million_dollars, ancestor: fruit_basket, timeout: 1000000
   #
   # @param [#to_s]
-  # @param [Hash] opts
-  # @option opts [Number] :timeout (15) timeout in seconds
-  # @option opts [AX::Element] :parent
-  # @option opts [AX::Element] :ancestor
+  # @param [Hash] filters
+  # @option filters [Number] :timeout (15) timeout in seconds
+  # @option filters [AX::Element] :parent
+  # @option filters [AX::Element] :ancestor
   # @return [AX::Element,nil]
-  def wait_for element, opts = {}, &block
-    if opts.has_key? :ancestor
-      wait_for_descendant element, opts.delete(:ancestor), opts, &block
-    elsif opts.has_key? :parent
-      wait_for_child element, opts.delete(:parent), opts, &block
+  def wait_for element, filters = {}, &block
+    if filters.has_key? :ancestor
+      wait_for_descendant element, filters.delete(:ancestor), filters, &block
+    elsif filters.has_key? :parent
+      wait_for_child element, filters.delete(:parent), filters, &block
     else
-      raise ArgumentError, 'parent/ancestor opt required'
+      raise ArgumentError, 'parent/ancestor filter required'
     end
   end
 
@@ -346,11 +346,11 @@ module Accessibility::DSL
   # @param [AX::Element]
   # @param [Hash]
   # @return [AX::Element,nil]
-  def wait_for_descendant descendant, ancestor, opts, &block
-    timeout = opts.delete(:timeout) || 15
+  def wait_for_descendant descendant, ancestor, filters, &block
+    timeout = filters.delete(:timeout) || 15
     start   = Time.now
     until Time.now - start > timeout
-      result = ancestor.search(descendant, opts, &block)
+      result = ancestor.search(descendant, filters, &block)
       return result unless result.blank?
       sleep 0.2
     end
@@ -376,10 +376,10 @@ module Accessibility::DSL
   # @param [AX::Element]
   # @param [Hash]
   # @return [AX::Element,nil]
-  def wait_for_child child, parent, opts, &block
-    timeout = opts.delete(:timeout) || 15
+  def wait_for_child child, parent, filters, &block
+    timeout = filters.delete(:timeout) || 15
     start   = Time.now
-    q       = Accessibility::Qualifier.new(child, opts, &block)
+    q       = Accessibility::Qualifier.new(child, filters, &block)
     until Time.now - start > timeout
       result = parent.children.find { |x| q.qualifies? x }
       return result unless result.blank?
