@@ -144,6 +144,32 @@ class TestAccessibilityDSL < MiniTest::Unit::TestCase
     assert_equal 'AXIsNyan', result.value
   end
 
+  def test_wait_for_invalid_raises_if_wait_for_without_parent_or_ancestor
+    assert_raises(ArgumentError) { dsl.wait_for_invalidation_of(:button) }
+  end
+
+  def test_wait_for_invalid_false_if_timeout
+    refute dsl.wait_for_invalidation_of(:button, parent: app.main_window, timeout: 1)
+  end
+
+  def test_wait_for_invalidation_of_element
+    app.main_window.button(title: 'Yes').perform(:press)
+    Dispatch::Queue.new("herp").after(1) do
+      app.main_window.button(title: 'No').perform(:press)
+    end
+
+    assert dsl.wait_for_invalid(app.main_window.button(title: 'Bye!'))
+  end
+
+  def test_wait_for_invalidation_of_wait_for
+    app.main_window.button(title: 'Yes').perform(:press)
+    Dispatch::Queue.new("herp").after(1) do
+      app.main_window.button(title: 'No').perform(:press)
+    end
+
+    assert dsl.wait_for_invalid(:button, ancestor: app, title: 'Bye!')
+  end
+
   def test_drag_mouse_to
     title_element = app.main_window.title_ui_element
     orig_title_position = title_element.to_point

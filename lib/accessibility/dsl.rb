@@ -388,6 +388,59 @@ module Accessibility::DSL
     nil
   end
 
+  ##
+  # Simply wait for an element to disappear. Optionally wait for the
+  # element to appear first.
+  #
+  # Like {#wait_for}, you can pass any search filters that you normally
+  # would, including blocks. However, this method also supports the
+  # ability to pass an {AX::Element} and simply wait for it to become
+  # invalid.
+  #
+  # An example usage would be typing into a search field and then
+  # waiting for the busy indicator to disappear and indicate that
+  # all search results have been returned.
+  #
+  # @overload wait_for_invalidation_of element
+  # @param [AX::Element]
+  # @param [Hash] filters
+  # @option filters [Number] :timeout (15) in seconds
+  # @return [Boolean]
+  #
+  # @example
+  #
+  #   wait_for_invalidation_of table.row(static_text: { value: 'Cake' })
+  #
+  # @overload wait_for_invalidation_of kind, filters = {}, &block
+  # @param [#to_s]
+  # @param [Hash] filters
+  # @option filters [Number] :timeout (15) in seconds
+  # @return [Boolean]
+  #
+  # @example
+  #
+  #   wait_for_invalidation_of :row, parent: table, static_text: { value: 'Cake' }
+  #
+  # @return [Boolean]
+  def wait_for_invalidation_of element, filters = {}, &block
+    timeout = filters[:timeout] || 15
+    start   = Time.now
+
+    unless element.kind_of? AX::Element
+      element = wait_for element, filters, &block
+      # this is a tricky situation,
+      return true unless element
+    end
+
+    until Time.now - start > timeout
+      return true if element.invalid?
+      sleep 0.2
+    end
+    false
+  end
+  alias_method :wait_for_invalidation, :wait_for_invalidation_of
+  alias_method :wait_for_invalid,      :wait_for_invalidation_of
+
 
   # @group Mouse Manipulation
 
