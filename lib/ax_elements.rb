@@ -13,6 +13,7 @@ require 'ax/button'
 require 'ax/radio_button'
 require 'ax/row'
 require 'ax/static_text'
+require 'ax/pop_up_button'
 
 # Misc things that we need to load
 require 'ax_elements/nsarray_compat'
