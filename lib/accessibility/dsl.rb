@@ -321,7 +321,7 @@ module Accessibility::DSL
   #
   # @param [#to_s]
   # @param [Hash] filters
-  # @option filters [Number] :timeout (15) timeout in seconds
+  # @option filters [Number] :timeout (5) timeout in seconds
   # @option filters [AX::Element] :parent
   # @option filters [AX::Element] :ancestor
   # @return [AX::Element,nil]
@@ -347,7 +347,7 @@ module Accessibility::DSL
   # @param [Hash]
   # @return [AX::Element,nil]
   def wait_for_descendant descendant, ancestor, filters, &block
-    timeout = filters.delete(:timeout) || 15
+    timeout = filters.delete(:timeout) || 5
     start   = Time.now
     until Time.now - start > timeout
       result = ancestor.search(descendant, filters, &block)
@@ -377,7 +377,7 @@ module Accessibility::DSL
   # @param [Hash]
   # @return [AX::Element,nil]
   def wait_for_child child, parent, filters, &block
-    timeout = filters.delete(:timeout) || 15
+    timeout = filters.delete(:timeout) || 5
     start   = Time.now
     q       = Accessibility::Qualifier.new(child, filters, &block)
     until Time.now - start > timeout
@@ -404,7 +404,7 @@ module Accessibility::DSL
   # @overload wait_for_invalidation_of element
   # @param [AX::Element]
   # @param [Hash] filters
-  # @option filters [Number] :timeout (15) in seconds
+  # @option filters [Number] :timeout (5) in seconds
   # @return [Boolean]
   #
   # @example
@@ -414,7 +414,7 @@ module Accessibility::DSL
   # @overload wait_for_invalidation_of kind, filters = {}, &block
   # @param [#to_s]
   # @param [Hash] filters
-  # @option filters [Number] :timeout (15) in seconds
+  # @option filters [Number] :timeout (5) in seconds
   # @return [Boolean]
   #
   # @example
@@ -423,7 +423,7 @@ module Accessibility::DSL
   #
   # @return [Boolean]
   def wait_for_invalidation_of element, filters = {}, &block
-    timeout = filters[:timeout] || 15
+    timeout = filters[:timeout] || 5
     start   = Time.now
 
     unless element.kind_of? AX::Element
