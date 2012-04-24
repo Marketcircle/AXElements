@@ -13,7 +13,7 @@ class Accessibility::SearchFailure < NoMethodError
     msg << "as a child of #{searcher.class}\n"
     msg << "Element Path:\n\t" << path_to(searcher)
     # @todo Consider turning this on by default
-    msg << "\nSubtree:\n\n" << subtree_for(searcher) if Accessibility.debug?
+    msg << "\nSubtree:\n\n" << searcher.inspect_subtree if Accessibility.debug?
     super msg
   end
 
