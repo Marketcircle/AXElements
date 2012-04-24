@@ -781,24 +781,30 @@ module Accessibility::DSL
   #
   #   scroll_menu_to menu.element(title: "Expensive Cake")
   #
-  # @param [AX::Element]
+  # @param [AX:]
   # @return [void]
   def scroll_menu_to element
     menu = element.ancestor :menu
     move_mouse_to menu
 
-    direction = element.position.y > menu.position.y ? -5 : 5
+    row_height = menu.menu_item.size.height
+    point = menu.position
+    point.x += menu.size.width / 2
+    point.y += if element.position.y > menu.position.y
+                 menu.size.height - (row_height * 0.1)
+               else
+                 row_height * 0.1
+               end
+
     until NSContainsRect(menu.bounds, element.bounds)
-      Mouse.scroll direction
+      move_mouse_to point
     end
 
     start = Time.now
     until Time.now - start > 5
       # This can happen sometimes with the little arrow bars
       # in menus covering up the menu item.
-      if element_under_mouse.kind_of? AX::Menu
-        scroll direction
-      elsif element_under_mouse != element
+      if element_under_mouse != element
         move_mouse_to element
       else
         break
