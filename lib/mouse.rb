@@ -93,29 +93,14 @@ module Mouse
   end
 
   ##
-  # A standard click. Default position is the current position.
-  #
-  # This `duration` parameter is used to add a minimum time between
-  # down and up click as clicking up too fast has shown to screw things up in
-  # some cases. However, the duration is arbitrary and if the system lags it
-  # could cause certain timing behaviours (consider the two behaviours of
-  # pop up buttons).
-  #
-  # @param [CGPoint]
-  def click point = current_position, duration = 12
-    click_down
-    sleep QUANTUM*duration
-    click_up
-  end
-
-  ##
   # Perform a down click. You should follow this up with a call to
   # {#click_up} to finish the click.
   #
   # @param [CGPoint]
-  def click_down point = current_position
+  def click_down point = current_position, duration = 12
     event = new_event KCGEventLeftMouseDown, point, KCGMouseButtonLeft
     post event
+    sleep QUANTUM*duration
   end
 
   ##

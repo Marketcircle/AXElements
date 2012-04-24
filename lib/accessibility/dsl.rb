@@ -484,13 +484,9 @@ module Accessibility::DSL
   # @param [#to_point]
   def click obj = nil, wait = 0.2
     move_mouse_to obj, wait: 0 if obj
-    if block_given?
-      Mouse.click_down
-      yield
-      Mouse.click_up
-    else
-      Mouse.click
-    end
+    Mouse.click_down
+    yield if block_given?
+    Mouse.click_up
     sleep wait
   end
 
