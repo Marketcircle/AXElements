@@ -14,7 +14,7 @@ class TestAccessibilityDSL < MiniTest::Unit::TestCase
 
   def app;             @@app       ||= AX::Application.new REF                               end
   def text_area;       @@text_area ||= app.main_window.text_area                             end
-  def pop_up;          @@pop_up    ||= app.main_window.pop_up_button                         end
+  def pop_up;          @@pop_up    ||= app.main_window.pop_up                                end
   def pref_window;     app.children.find { |x| x.attribute(:title) == 'Preferences'   }      end
   def spelling_window; app.children.find { |x| x.attribute(:title).to_s.match(/^Spelling/) } end
 
@@ -309,20 +309,26 @@ class TestAccessibilityDSL < MiniTest::Unit::TestCase
   end
 
   def test_scroll_menu_to
-    pop_up.perform :press
-    item = wait_for :menu_item, ancestor: pop_up, title: '49'
-    dsl.scroll_menu_to item
-    assert_equal item, element_under_mouse
-    dsl.click
-    assert_equal '49', pop_up.value
+    ['49', 'Togusa'].each do |title|
+      pop_up.perform :press
+      item = wait_for :menu_item, ancestor: pop_up, title: title
+      dsl.scroll_menu_to item
+      assert_equal item, element_under_mouse
+      dsl.click
+      assert_equal title, pop_up.value
+    end
+  ensure
+    pop_up.menu_item.perform :cancel unless pop_up.children.empty?
+  end
 
-    pop_up.perform :press
-    item = wait_for :menu_item, ancestor: pop_up, title: 'Togusa'
-    dsl.scroll_menu_to item
-    assert_equal item, element_under_mouse
-    dsl.click
-    assert_equal 'Togusa', pop_up.value
-
+  def test_scroll_menu_to_using_single_click
+    ['40', 'Batou', '49', 'Motoko'].each do |title|
+      dsl.click pop_up do
+        item = wait_for :menu_item, title: title, ancestor: pop_up
+        dsl.scroll_menu_to item
+      end
+      assert_equal title, pop_up.value
+    end
   ensure
     pop_up.menu_item.perform :cancel unless pop_up.children.empty?
   end
