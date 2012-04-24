@@ -557,13 +557,13 @@ module Accessibility::DSL
   #
   # @example
   #
-  #   puts subtree_for app
+  #   puts subtree app
   #
   # @return [String]
-  def subtree_for element
+  def subtree element
     element.inspect_subtree
   end
-  alias_method :subtree, :subtree_for
+  alias_method :subtree_for, :subtree
 
   ##
   # @note You will need to have GraphViz command line tools installed
@@ -591,6 +591,7 @@ module Accessibility::DSL
 
     file.path
   end
+  alias_method :graph_for, :graph
 
   ##
   # Take a screen shot and save it to disk. If a file name and path are
