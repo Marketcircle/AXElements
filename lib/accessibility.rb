@@ -51,7 +51,7 @@ class << Accessibility
         sleep 1
       end
     else
-      raise ArgumentError "Could not launch app matching bundle id `#{bundle}'"
+      raise ArgumentError, "Could not launch app matching bundle id `#{bundle}'"
     end
     nil
   end
