@@ -157,52 +157,6 @@ module Accessibility::DSL
   end
 
   ##
-  # Find the application with the given bundle identifier. If the
-  # application is not already running, it will be launched.
-  #
-  # @example
-  #
-  #   app_with_bundle_identifier 'com.apple.finder'
-  #   launch                     'com.apple.mail'
-  #
-  # @param [String]
-  # @return [AX::Application,nil]
-  def app_with_bundle_identifier id
-    Accessibility.application_with_bundle_identifier id
-  end
-  alias_method :app_with_bundle_id, :app_with_bundle_identifier
-  alias_method :launch,             :app_with_bundle_identifier
-
-  ##
-  # Find the application with the given name. If the application
-  # is not already running, it will NOT be launched and this
-  # method will return `nil`.
-  #
-  # @example
-  #
-  #   app_with_name 'Finder'
-  #
-  # @param [String]
-  # @return [AX::Application,nil]
-  def app_with_name name
-    AX::Application.new name
-  end
-
-  ##
-  # Find the application with the given process identifier. An
-  # invalid PID will cause an exception to be raised.
-  #
-  # @example
-  #
-  #   app_with_pid 35843
-  #
-  # @param [Fixnum]
-  # @return [AX::Application]
-  def app_with_pid pid
-    AX::Application.new pid
-  end
-
-  ##
   # Focus an element on the screen, but only if it can be directly
   # focused. It is safe to pass any element into this method as nothing
   # will happen if it does not have a writable focused state attribute.
@@ -678,7 +632,54 @@ module Accessibility::DSL
   alias_method :shoot_screen,   :screenshot
 
 
-  # @group Macros
+  # @endgroup
+
+
+  ##
+  # Find the application with the given bundle identifier. If the
+  # application is not already running, it will be launched.
+  #
+  # @example
+  #
+  #   app_with_bundle_identifier 'com.apple.finder'
+  #   launch                     'com.apple.mail'
+  #
+  # @param [String]
+  # @return [AX::Application,nil]
+  def app_with_bundle_identifier id
+    Accessibility.application_with_bundle_identifier id
+  end
+  alias_method :app_with_bundle_id, :app_with_bundle_identifier
+  alias_method :launch,             :app_with_bundle_identifier
+
+  ##
+  # Find the application with the given name. If the application
+  # is not already running, it will NOT be launched and this
+  # method will return `nil`.
+  #
+  # @example
+  #
+  #   app_with_name 'Finder'
+  #
+  # @param [String]
+  # @return [AX::Application,nil]
+  def app_with_name name
+    AX::Application.new name
+  end
+
+  ##
+  # Find the application with the given process identifier. An
+  # invalid PID will cause an exception to be raised.
+  #
+  # @example
+  #
+  #   app_with_pid 35843
+  #
+  # @param [Fixnum]
+  # @return [AX::Application]
+  def app_with_pid pid
+    AX::Application.new pid
+  end
 
   ##
   # Convenience for `AX::SystemWide.new`.
