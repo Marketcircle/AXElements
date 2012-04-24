@@ -629,7 +629,6 @@ module Accessibility::DSL
     file
   end
   alias_method :capture_screen, :screenshot
-  alias_method :shoot_screen,   :screenshot
 
 
   # @endgroup
