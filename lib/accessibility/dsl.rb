@@ -4,6 +4,7 @@ require 'mouse'
 require 'ax/element'
 require 'ax/application'
 require 'ax/systemwide'
+require 'ax/menu'
 require 'accessibility'
 require 'accessibility/enumerators'
 
