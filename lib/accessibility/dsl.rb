@@ -475,7 +475,12 @@ module Accessibility::DSL
   #
   #   click
   #   click window.close_button
+  #   click do
+  #     move_mouse_to [0,0]
+  #   end
   #
+  # @yield Optionally take a block that is executed between click down
+  #        and click up events.
   # @param [#to_point]
   def click obj = nil, wait = 0.2
     move_mouse_to obj, wait: 0 if obj
