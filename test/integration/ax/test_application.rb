@@ -2,10 +2,6 @@ require 'test/integration/helper'
 
 class TestAXApplication < MiniTest::Unit::TestCase
 
-  def app
-    @app ||= AX::Application.new REF
-  end
-
   def running_app
     @app.instance_variable_get :@app
   end

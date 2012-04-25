@@ -2,10 +2,6 @@ require 'test/integration/helper'
 
 class TestNSArrayCompat < MiniTest::Unit::TestCase
 
-  def app
-    @@app ||= AX::Application.new PID
-  end
-
   def test_raises_for_non_elements
     assert_raises NoMethodError do
       [1].rows

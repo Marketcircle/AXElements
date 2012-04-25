@@ -3,10 +3,6 @@ require 'minitest/ax_elements'
 
 class TestMiniTestAssertions < MiniTest::Unit::TestCase
 
-  def app
-    @@app ||= AX::Application.new PID
-  end
-
   def test_assert_has_child
     expected = app.window
 

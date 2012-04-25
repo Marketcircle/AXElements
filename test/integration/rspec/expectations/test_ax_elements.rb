@@ -4,11 +4,6 @@ require 'rspec/expectations/ax_elements'
 
 class TestRSpecMatchers < MiniTest::Unit::TestCase
 
-  def app
-    @@app ||= AX::Application.new PID
-  end
-
-
 
   def test_have_child_should_failure_message
     e = app.main_window.slider

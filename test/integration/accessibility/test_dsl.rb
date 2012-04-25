@@ -12,7 +12,6 @@ class TestAccessibilityDSL < MiniTest::Unit::TestCase
     @dsl ||= DSL.new
   end
 
-  def app;             @@app       ||= AX::Application.new REF                               end
   def text_area;       @@text_area ||= app.main_window.text_area                             end
   def pop_up;          @@pop_up    ||= app.main_window.pop_up                                end
   def pref_window;     app.children.find { |x| x.attribute(:title) == 'Preferences'   }      end

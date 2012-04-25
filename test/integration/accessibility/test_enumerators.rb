@@ -2,10 +2,6 @@ require 'test/integration/helper'
 
 class TestAccessibilityEnumeratorsBreadthFirst < MiniTest::Unit::TestCase
 
-  def app
-    @@app ||= AX::Application.new REF
-  end
-
   def test_each_iterates_in_correct_order
     tab_group = app.main_window.children.find { |x| x.class == AX::TabGroup }
     enum      = Accessibility::Enumerators::BreadthFirst.new(tab_group)

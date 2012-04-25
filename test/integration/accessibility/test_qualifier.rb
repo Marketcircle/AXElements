@@ -3,10 +3,6 @@ require 'test/integration/helper'
 
 class TestAccessibilityQualifier < MiniTest::Unit::TestCase
 
-  def app
-    AX::Application.new REF
-  end
-
   def qualifier klass, criteria, &block
     Accessibility::Qualifier.new(klass, criteria, &block)
   end
