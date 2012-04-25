@@ -46,8 +46,8 @@ task :clobber_key_coder do
     $stdout.puts "rm #{file}"
     rm_f file
   end
-  file = 'rm ext/accessibility/key_coder/Makefile'
-  $stdout.puts file
+  file = 'ext/accessibility/key_coder/Makefile'
+  $stdout.puts "rm #{file}"
   rm_f file
 end
 
