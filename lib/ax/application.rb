@@ -197,21 +197,18 @@ class AX::Application < AX::Element
   #
   # @return [AX::MenuItem]
   def navigate_menu *path
-    # @todo CLEAN UP
     perform :unhide # can't navigate menus unless the app is up front
-    current = attribute(:menu_bar).search(:menu_bar_item, title: path.shift)
+    item = self.menu_bar.menu_bar_item(title: path.shift)
     path.each do |part|
-      current.perform :press
-      next_item = current.search(:menu_item, title: part)
-      if next_item.blank?
-        failure = Accessibility::SearchFailure.new(current, :menu_item, title: part)
-        current.perform :cancel # close menu
-        raise failure
-      else
-        current = next_item
-      end
+      item.perform :press
+      next_item = item.menu_item(title: part)
+      item = next_item
     end
-    current
+    item
+  ensure
+    if item == next_item # is this to implementation dependent?
+      self.menu_bar.menu_bar_item.perform :cancel
+    end
   end
 
   ##
