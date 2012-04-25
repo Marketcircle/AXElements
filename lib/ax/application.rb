@@ -198,7 +198,7 @@ class AX::Application < AX::Element
   # @return [AX::MenuItem]
   def navigate_menu *path
     perform :unhide # can't navigate menus unless the app is up front
-    item = self.menu_bar.menu_bar_item(title: path.shift)
+    bar_item = item = self.menu_bar.menu_bar_item(title: path.shift)
     path.each do |part|
       item.perform :press
       next_item = item.menu_item(title: part)
@@ -206,9 +206,8 @@ class AX::Application < AX::Element
     end
     item
   ensure
-    if item == next_item # is this to implementation dependent?
-      self.menu_bar.menu_bar_item.perform :cancel
-    end
+    # got to the end
+    bar_item.perform :cancel unless item.title == path.last
   end
 
   ##
