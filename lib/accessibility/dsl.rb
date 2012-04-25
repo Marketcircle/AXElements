@@ -671,6 +671,9 @@ module Accessibility::DSL
   # @param [#to_s]
   # @return [String] path to the screenshot
   def screenshot name = "AXElements-ScreenShot", dir = '~/Desktop'
+    # @todo this could move to its own class, much like
+    #       {Accessibility::Highlighter} and expose more options
+    #       while retaining good defaults
     dir  = File.expand_path dir.to_s
     file = "#{dir}/#{name}-#{Time.now.strftime '%Y%m%d%H%M%S'}.png"
 
