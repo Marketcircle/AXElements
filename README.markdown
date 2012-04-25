@@ -123,12 +123,9 @@ as the technical underpinnings of AXElements.
 
 ## Development
 
-Development of a stable release of AXElements is under way! The main
-focus is an overall refactoring to create a more robust core, end user
-features will become more consistent, and performance will
-increase. Documentation will be overhauled and more examples will be
-added. It will be magical, so we're code naming the next version
-"Clefairy".
+AXElements has reached a point where the main focus is now performance,
+features, and documentation. It will be magical, so we're code naming
+the next version "Clefable".
 
 ![The Moon](https://github.com/Marketcircle/AXElements/raw/gh-pages/images/next_version.png)
 

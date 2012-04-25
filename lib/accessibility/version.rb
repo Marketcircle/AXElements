@@ -5,5 +5,5 @@ module Accessibility
   VERSION   = '0.8.0'
 
   # @return [String]
-  CODE_NAME = 'Clefairy'
+  CODE_NAME = 'Clefable'
 end
