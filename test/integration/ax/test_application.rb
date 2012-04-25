@@ -3,7 +3,7 @@ require 'test/integration/helper'
 class TestAXApplication < MiniTest::Unit::TestCase
 
   def running_app
-    @app.instance_variable_get :@app
+    app.instance_variable_get :@app
   end
 
   def test_initialize_args
