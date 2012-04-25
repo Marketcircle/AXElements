@@ -340,7 +340,7 @@ class AX::Element
 
     elsif @ref.attributes.include? KAXChildrenAttribute
       if (result = search(method, *args, &block)).blank?
-        raise Accessibility::SearchFailure.new(self, method, args.first)
+        raise Accessibility::SearchFailure.new(self, method, args.first, &block)
       else
         return result
       end

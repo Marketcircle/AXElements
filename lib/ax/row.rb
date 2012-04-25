@@ -31,7 +31,7 @@ class AX::Row < AX::Element
     qualifier = Accessibility::Qualifier.new(:Column, filters, &block)
     column    = self.parent.columns.index { |x| qualifier.qualifies? x }
     return self.children.at(column) if column
-    raise Accessibility::SearchFailure.new(self.parent, 'column', filters)
+    raise Accessibility::SearchFailure.new(self.parent, 'column', filters, &block)
   end
 
 end

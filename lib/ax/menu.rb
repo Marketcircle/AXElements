@@ -10,7 +10,9 @@ class AX::Menu < AX::Element
   # filters. The filters should be specified just as they would
   # be when calling {#search}.
   def item filters = {}, &block
-    self.search :menu_item, filters, &block
+    result = self.search :menu_item, filters, &block
+    return result unless result.blank?
+    raise Accessibility::SearchFailure.new(self, :menu_item, filters, &block)
   end
 
 end

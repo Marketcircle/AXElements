@@ -7,9 +7,9 @@ class Accessibility::SearchFailure < NoMethodError
   # @param [AX::Element]
   # @param [#to_s]
   # @param [Hash{Symbol=>Object}]
-  def initialize searcher, searchee, filters
+  def initialize searcher, searchee, filters, &block
     filters = {} unless filters.kind_of? Hash
-    msg  = "Could not find `#{pp_searchee searchee, filters}` "
+    msg  = "Could not find `#{pp_searchee searchee, filters, &block}` "
     msg << "as a child of #{searcher.class}\n"
     msg << "Element Path:\n\t" << path_to(searcher)
     # @todo Consider turning this on by default
@@ -21,8 +21,8 @@ class Accessibility::SearchFailure < NoMethodError
   private
 
   # Nice string representation of what was being searched for
-  def pp_searchee searchee, filters
-    Accessibility::Qualifier.new(searchee, filters).describe
+  def pp_searchee searchee, filters, &block
+    Accessibility::Qualifier.new(searchee, filters, &block).describe
   end
 
   # Nice string representation of element's path from the application root
