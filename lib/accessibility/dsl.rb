@@ -12,11 +12,13 @@ require 'accessibility/enumerators'
 ##
 # DSL methods for AXElements.
 #
-# The idea here is to pull actions out from an object and put them
-# in front of object to give AXElements more of a DSL feel to make
-# communicating test steps more clear. See the
-# [Acting tutorial](http://github.com/Marketcircle/AXElements/wiki/Acting)
-# for a more in depth tutorial on using this module.
+# The DSL for AXElements is designed to pull actions out from an object
+# and put them in front of object to make communicating test steps seem
+# more like human instructions.
+#
+# You can read more about the DSL in the
+# [Acting](http://github.com/Marketcircle/AXElements/wiki/Acting)
+# section of the AXElements wiki.
 module Accessibility::DSL
 
 
