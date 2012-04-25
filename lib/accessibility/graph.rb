@@ -178,6 +178,7 @@ class Accessibility::Graph
       # should use #size_of(:children), but that doesn't in all cases
       @edge_queue.concat Array.new(element.children.size, node)
     end
+    @built = true
   end
 
   ##
