@@ -248,6 +248,64 @@ module Accessibility::DSL
     app.select_menu_item *path
   end
 
+  ##
+  # Show the "About" window for an app. Returns the window that is
+  # opened.
+  #
+  # @param [AX::Application]
+  # @return [AX::Window]
+  def show_about_window_for app
+    app.show_about_window
+  end
+
+  ##
+  # @note This method assumes that the app has setup the standard
+  #       CMD+, hotkey to open the pref window
+  #
+  # Try to open the preferences for an app. Returns the window that
+  # is opened.
+  #
+  # @param [AX::Application]
+  # @return [AX::Window]
+  def show_preferences_window_for app
+    app.show_preferences_window
+  end
+
+  ##
+  # Scroll through a scroll area until the given element is visible.
+  #
+  # If you need to scroll an unknown amount of units through a table
+  # or another type of object contained in as scroll area, you can
+  # just pass the element that you are trying to get to and this method
+  # will scroll to it for you.
+  #
+  # @example
+  #
+  #   scroll_to table.rows.last
+  #
+  # @param [AX::Element]
+  # @return [void]
+  def scroll_to element
+    element.ancestor(:scroll_area).scroll_to element
+  end
+  alias_method :scroll_to_visible, :scroll_to
+
+  ##
+  # Scroll a menu to an item in the menu and then move the mouse
+  # pointer to that item.
+  #
+  # @example
+  #
+  #   click window.pop_up do
+  #     scroll_menu_to pop_up.menu.item(title: "Expensive Cake")
+  #   end
+  #
+  # @param [AX:]
+  # @return [void]
+  def scroll_menu_to element
+    menu = element.ancestor(:menu).scroll_to element
+  end
+
 
   # @group Polling
 
@@ -726,94 +784,6 @@ module Accessibility::DSL
     base = opts[:for] || system_wide
     base.element_at point
   end
-
-  ##
-  # Show the "About" window for an app. Returns the window that is
-  # opened.
-  #
-  # @param [AX::Application]
-  # @return [AX::Window]
-  def show_about_window_for app
-    app.show_about_window
-  end
-
-  ##
-  # @note This method assumes that the app has setup the standard
-  #       CMD+, hotkey to open the pref window
-  #
-  # Try to open the preferences for an app. Returns the window that
-  # is opened.
-  #
-  # @param [AX::Application]
-  # @return [AX::Window]
-  def show_preferences_window_for app
-    app.show_preferences_window
-  end
-
-  ##
-  # Scroll though a scroll area until the given element is visible.
-  #
-  # If you need to scroll an unknown ammount of units through a scroll area
-  # you can just pass the element that you need visible and this method
-  # will scroll to it for you.
-  #
-  # @example
-  #
-  #   scroll_to table.rows.last
-  #
-  # @param [AX::Element]
-  # @return [void]
-  def scroll_to element
-    scroll_area = element.ancestor :scroll_area
-
-    return if NSContainsRect(scroll_area.bounds, element.bounds)
-    move_mouse_to scroll_area
-    # calculate direction to scroll
-    direction = element.position.y > scroll_area.position.y ? -5 : 5
-    until NSContainsRect(scroll_area.bounds, element.bounds)
-      Mouse.scroll direction
-    end
-    sleep 0.1
-  end
-  alias_method :scroll_to_visible, :scroll_to
-
-  ##
-  # Scroll a menu to an item in the menu and then move the mouse
-  # pointer to that item.
-  #
-  # @example
-  #
-  #   scroll_menu_to menu.element(title: "Expensive Cake")
-  #
-  # @param [AX:]
-  # @return [void]
-  def scroll_menu_to element
-    menu = element.ancestor :menu
-    move_mouse_to menu
-
-    row_height = menu.menu_item.size.height
-    point = menu.position
-    point.x += menu.size.width / 2
-    point.y += if element.position.y > menu.position.y
-                 menu.size.height - (row_height * 0.1)
-               else
-                 row_height * 0.1
-               end
-
-    until NSContainsRect(menu.bounds, element.bounds)
-      move_mouse_to point
-    end
-
-    start = Time.now
-    until Time.now - start > 5
-      # This can happen sometimes with the little arrow bars
-      # in menus covering up the menu item.
-      if element_under_mouse != element
-        move_mouse_to element
-      else
-        break
-      end
-    end
-  end
+  alias_method :element_at, :element_at_point
 
 end
