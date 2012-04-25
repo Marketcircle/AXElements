@@ -644,15 +644,9 @@ module Accessibility::DSL
   def graph element
     require 'accessibility/graph'
     graph = Accessibility::Graph.new(element)
-    graph.build!
-
-    require 'tempfile'
-    file = Tempfile.new('graph')
-    File.open(file.path, 'w') do |fd| fd.write graph.to_dot end
-    `dot -Tpng #{file.path} > #{file.path}.png`
-    `open #{file.path}.png`
-
-    file.path
+    path  = graph.generate_png!
+    `open #{path}`
+    path
   end
   alias_method :graph_for, :graph
 

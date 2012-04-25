@@ -1,3 +1,5 @@
+require 'tempfile'
+
 ##
 # DOT graph generator for AXElements. It can generate the digraph code
 # for a UI subtree. That code can then be given to GraphViz to generate
@@ -192,6 +194,19 @@ class Accessibility::Graph
     graph << "\n\n"
     graph << edges.map(&:to_dot).join(";\n")
     graph << "\n}\n"
+  end
+
+  ##
+  # Generate the PNG file for the graph and save it to a temporary
+  # file. The path to the temporary file will be returned.
+  #
+  # @return [String] path to the saved PNG file
+  def generate_png!
+    build! unless @built
+    file = Tempfile.new 'ax_elements_graph'
+    file.write self.to_dot
+    `dot -Tpng #{file.path} > #{file.path}.png`
+    "#{file.path}.png"
   end
 
 end
