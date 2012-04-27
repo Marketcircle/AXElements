@@ -12,8 +12,6 @@ class AX::Application < AX::Element
   include Accessibility::String
 
   ##
-  # Overridden so that we can more flexibly manipulate input.
-  #
   # You can initialize an application object with either the process
   # identifier (pid) of the application, the name of the application,
   # an `NSRunningApplication` instance for the application, or an
@@ -47,9 +45,6 @@ class AX::Application < AX::Element
 
   # @group Attributes
 
-  ##
-  # Overridden to handle the {Accessibility::DSL#set_focus_to} case.
-  #
   # (see AX::Element#attribute)
   def attribute attr
     case attr
@@ -59,8 +54,7 @@ class AX::Application < AX::Element
     end
   end
 
-  ##
-  # Overridden to handle the {Accessibility::DSL#set_focus_to} case.
+  # (see AX::Element#writable?)
   def writable? attr
     case attr
     when :focused?, :focused, :hidden?, :hidden then true
@@ -93,9 +87,6 @@ class AX::Application < AX::Element
     @app.terminated?
   end
 
-  ##
-  # Overridden to handle the {Accessibility::Language#set_focus} case.
-  #
   # (see AX::Element#set)
   def set attr, value
     case attr
@@ -106,6 +97,46 @@ class AX::Application < AX::Element
     else
       super
     end
+  end
+
+  ##
+  # Get the bundle identifier for the application.
+  #
+  # @example
+  #
+  #   safari.bundle_identifier 'com.apple.safari'
+  #   daylite.bundle_identifier 'com.marketcircle.Daylite'
+  #
+  # @return [String]
+  def bundle_identifier
+    @app.bundleIdentifier
+  end
+
+  ##
+  # Return the `Info.plist` data for the application. This is a plist
+  # file that all bundles in OS X must contain.
+  #
+  # Many bits of metadata are stored in the plist, check the
+  # [reference](https://developer.apple.com/library/mac/#documentation/MacOSX/Conceptual/BPRuntimeConfig/Articles/ConfigFiles.html)
+  # for more details.
+  #
+  # @return [Hash]
+  def info_plist
+    bundle.infoDictionary
+  end
+
+  ##
+  # Get the version string for the application.
+  #
+  # @example
+  #
+  #   AX::Application.new("Safari").version    # => "5.2"
+  #   AX::Application.new("Terminal").version  # => "2.2.2"
+  #   AX::Application.new("Daylite").version   # => "3.15 (build 3664)"
+  #
+  # @return [String]
+  def version
+    bundle.objectForInfoDictionaryKey 'CFBundleShortVersionString'
   end
 
 
@@ -253,46 +284,6 @@ class AX::Application < AX::Element
   # @return [AX::Element,nil]
   def element_at point
     process @ref.element_at point
-  end
-
-  ##
-  # Get the bundle identifier for the application.
-  #
-  # @example
-  #
-  #   safari.bundle_identifier 'com.apple.safari'
-  #   daylite.bundle_identifier 'com.marketcircle.Daylite'
-  #
-  # @return [String]
-  def bundle_identifier
-    @app.bundleIdentifier
-  end
-
-  ##
-  # Return the `Info.plist` data for the application. This is a plist
-  # file that all bundles in OS X must contain.
-  #
-  # Many bits of metadata are stored in the plist, check the
-  # [reference](https://developer.apple.com/library/mac/#documentation/MacOSX/Conceptual/BPRuntimeConfig/Articles/ConfigFiles.html)
-  # for more details.
-  #
-  # @return [Hash]
-  def info_plist
-    bundle.infoDictionary
-  end
-
-  ##
-  # Get the version string for the application.
-  #
-  # @example
-  #
-  #   AX::Application.new("Safari").version    # => "5.2"
-  #   AX::Application.new("Terminal").version  # => "2.2.2"
-  #   AX::Application.new("Daylite").version   # => "3.15 (build 3664)"
-  #
-  # @return [String]
-  def version
-    bundle.objectForInfoDictionaryKey 'CFBundleShortVersionString'
   end
 
 
