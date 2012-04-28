@@ -12,7 +12,7 @@ end
 desc 'Install dependencies for development'
 task :setup_dev do
   require 'rubygems/dependency_installer'
-  spec.development_dependencies.each do |dep|
+  ax_elements.development_dependencies.each do |dep|
     puts "Installing #{dep.name} (#{dep.requirement})"
     Gem::DependencyInstaller.new.install(dep.name, dep.requirement)
   end
