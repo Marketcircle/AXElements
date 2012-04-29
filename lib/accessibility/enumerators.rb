@@ -16,6 +16,7 @@ module Accessibility::Enumerators
     ##
     # Semi-lazily iterate through the tree.
     #
+    # @yield An element in the UI hierarchy
     # @yieldparam [AX::Element,AXUIElementRef]
     def each
       # @todo mutate the array less, perhaps use an index instead
@@ -38,6 +39,9 @@ module Accessibility::Enumerators
     #       being used...yet.
     #
     # Override `Enumerable#find` for performance reasons.
+    #
+    # @yield An element in the UI hierarchy
+    # @yieldparam [AX::Element,AXUIElementRef]
     def find
       each { |x| return x if yield x }
     end
@@ -55,6 +59,7 @@ module Accessibility::Enumerators
       @root = root
     end
 
+    # @yield An element in the UI hierarchy
     # @yieldparam [AX::Element,AXUIElementRef]
     def each
       stack = @root.children
@@ -70,6 +75,7 @@ module Accessibility::Enumerators
     # Walk the UI element tree and yield both the element and the
     # level that the element is at relative to the root.
     #
+    # @yield An element in the UI hierarchy
     # @yieldparam [AX::Element,AXUIElementRef]
     # @yieldparam [Number]
     def each_with_level &block
