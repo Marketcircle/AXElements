@@ -29,6 +29,6 @@ style that describes user interactions.
 
 
   s.add_development_dependency 'minitest',  '~> 2.12'
-  s.add_development_dependency 'yard',      '~> 0.7.5'
+  s.add_development_dependency 'yard',      '~> 0.8.0'
   s.add_development_dependency 'redcarpet', '~> 1.17'
 end
