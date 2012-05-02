@@ -16,6 +16,10 @@ module Accessibility
     # pluralization and singularization rules that is runs. This guarantees that your rules run before any of the rules that may
     # already have been loaded.
     class Inflections
+      ##
+      # Singleton instance of the inflections database.
+      #
+      # @return [Accessibility::Inflector::Inflections]
       def self.instance
         @__instance__ ||= new
       end
