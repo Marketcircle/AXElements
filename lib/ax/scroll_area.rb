@@ -17,7 +17,7 @@ class AX::ScrollArea < AX::Element
   #
   #   scroll_area.scroll_to table.rows.last
   #
-  # @param [AX::Element]
+  # @param element [AX::Element]
   # @return [void]
   def scroll_to element
     return if NSContainsRect(self.bounds, element.bounds)

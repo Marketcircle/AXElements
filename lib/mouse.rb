@@ -48,7 +48,7 @@ module Mouse
   ##
   # Move the mouse from the current position to the given point.
   #
-  # @param [CGPoint]
+  # @param [CGPoint] point
   # @param [Float] duration animation duration, in seconds
   def move_to point, duration = 0.2
     animate KCGEventMouseMoved, KCGMouseButtonLeft, current_position, point, duration

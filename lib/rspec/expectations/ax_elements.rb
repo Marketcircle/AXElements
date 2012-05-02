@@ -19,14 +19,14 @@ module Accessibility
     # @return [Proc]
     attr_reader :block
 
-    # @param [#to_s]
-    # @param [Hash]
-    # @yield
+    # @param kind [#to_s]
+    # @param filters [Hash]
+    # @yield Optional block used for search filtering
     def initialize kind, filters, &block
       @kind, @filters, @block = kind, filters, block
     end
 
-    # @param [AX::Element]
+    # @param element [AX::Element]
     def does_not_match? element
       !matches?(element)
     end
@@ -44,7 +44,7 @@ module Accessibility
   # Custom matcher for RSpec to check if an element has the specified
   # child element.
   class HasChildMatcher < AbstractMatcher
-    # @param [AX::Element]
+    # @param parent [AX::Element]
     def matches? parent
       @parent = parent
       @result = parent.children.find { |x| qualifier.qualifies? x }
@@ -71,7 +71,7 @@ module Accessibility
   # Custom matcher for RSpec to check if an element has the specified
   # descendent element.
   class HasDescendentMatcher < AbstractMatcher
-    # @param [AX::Element]
+    # @param ancestor [AX::Element]
     def matches? ancestor
       @ancestor = ancestor
       @result   = ancestor.search(kind, filters, &block)
@@ -101,7 +101,7 @@ module Accessibility
   class HasChildShortlyMatcher < AbstractMatcher
     include DSL
 
-    # @param [AX::Element]
+    # @param parent [AX::Element]
     def matches? parent
       @filters[:parent] = @parent = parent
       @result = wait_for kind, filters, &block
@@ -131,7 +131,7 @@ module Accessibility
   class HasDescendentShortlyMatcher < AbstractMatcher
     include DSL
 
-    # @param [AX::Element]
+    # @param ancestor [AX::Element]
     def matches? ancestor
       @filters[:ancestor] = @ancestor = ancestor
       @result = wait_for kind, filters, &block
@@ -168,8 +168,8 @@ end
 #
 #   search_field.should_not have_child(:busy_indicator)
 #
-# @param [#to_s]
-# @param [Hash]
+# @param kind [#to_s]
+# @param filters [Hash]
 # @yield An optional block to be used as part of the search qualifier
 def have_child kind, filters = {}, &block
   Accessibility::HasChildMatcher.new kind, filters, &block
@@ -186,8 +186,8 @@ end
 #
 #   row.should_not have_descendent(:check_box)
 #
-# @param [#to_s]
-# @param [Hash]
+# @param kind [#to_s]
+# @param filters [Hash]
 # @yield An optional block to be used as part of the search qualifier
 def have_descendent kind, filters = {}, &block
   Accessibility::HasDescendentMatcher.new kind, filters, &block
@@ -206,8 +206,8 @@ alias :have_descendant :have_descendent
 #
 #   row.should_not shortly_have_child(:check_box)
 #
-# @param [#to_s]
-# @param [Hash]
+# @param kind [#to_s]
+# @param filters [Hash]
 # @yield An optional block to be used as part of the search qualifier
 def shortly_have_child kind, filters = {}, &block
   Accessibility::HasChildShortlyMatcher.new(kind, filters, &block)
@@ -225,8 +225,8 @@ end
 #
 #   row.should_not shortly_have_child(:check_box)
 #
-# @param [#to_s]
-# @param [Hash]
+# @param kind [#to_s]
+# @param filters [Hash]
 # @yield An optional block to be used as part of the search qualifier
 def shortly_have_descendent kind, filters = {}, &block
   Accessibility::HasDescendentShortlyMatcher.new kind, filters, &block

@@ -27,6 +27,7 @@ class AX::SystemWide < AX::Element
   # [Keyboarding documentation](http://github.com/Marketcircle/AXElements/wiki/Keyboarding)
   # for more information on how to format strings.
   #
+  # @param string [String]
   # @return [Boolean]
   def type string
     @ref.post keyboard_events_for string
@@ -44,7 +45,7 @@ class AX::SystemWide < AX::Element
   #     drag_mouse_to point
   #   end
   #
-  # @param [String]
+  # @param key [String]
   # @return [Number,nil]
   def hold_modifier key
     code = EventGenerator::CUSTOM[key]
@@ -78,7 +79,7 @@ class AX::SystemWide < AX::Element
   #
   # `nil` will be returned if there was nothing at that point.
   #
-  # @param [#to_point]
+  # @param point [#to_point]
   # @return [AX::Element,nil]
   def element_at point
     process @ref.element_at point
@@ -89,7 +90,7 @@ class AX::SystemWide < AX::Element
   # and looking up attributes incurs a lot of IPC calls and sometimes an
   # app is slow to respond.
   #
-  # @param [Number]
+  # @param seconds [Number]
   # @return [Number]
   def set_global_timeout seconds
     @ref.set_timeout_to seconds

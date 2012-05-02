@@ -16,9 +16,10 @@ class MiniTest::Assertions
   #
   #   assert_has_child table, :row, static_text: { value: 'Mark' }
   #
-  # @param [AX::Element]
-  # @param [#to_s]
-  # @param [Hash]
+  # @param parent [AX::Element]
+  # @param kind [#to_s]
+  # @param filters [Hash]
+  # @yield Optional block used for filtering
   # @return [AX::Element]
   def assert_has_child parent, kind, filters = {}, &block
     msg = message {
@@ -39,9 +40,10 @@ class MiniTest::Assertions
   #
   #   assert_has_descendent window, :static_text, value: /Cake/
   #
-  # @param [AX::Element]
-  # @param [#to_s]
-  # @param [Hash]
+  # @param ancestor [AX::Element]
+  # @param kind [#to_s]
+  # @param filters [Hash]
+  # @yield Optional block used for filtering
   # @return [AX::Element]
   def assert_has_descendent ancestor, kind, filters = {}, &block
     msg = message {
@@ -63,8 +65,8 @@ class MiniTest::Assertions
   # This also means that you must include either a `parent` key or an
   # `ancestor` key as one of the filters.
   #
-  # @param [#to_s]
-  # @param [Hash]
+  # @param kind [#to_s]
+  # @param filters [Hash]
   # @yield An optional block to be used in the search qualifier
   def assert_shortly_has kind, filters = {}, &block
     # need to know if parent/ancestor now because wait_for eats some keys
@@ -91,9 +93,10 @@ class MiniTest::Assertions
   #
   #   refute_has_child table, :row, id: 'MyRow'
   #
-  # @param [AX::Element]
-  # @param [#to_s]
-  # @param [Hash]
+  # @param parent [AX::Element]
+  # @param kind [#to_s]
+  # @param filters [Hash]
+  # @yield An optional block to be used in the search qualifier
   # @return [nil]
   def refute_has_child parent, kind, filters = {}, &block
     result = ax_check_children parent, kind, filters, block
@@ -113,9 +116,10 @@ class MiniTest::Assertions
   #
   #  refute_has_descendent window, :busy_indicator
   #
-  # @param [AX::Element]
-  # @param [#to_s]
-  # @param [Hash]
+  # @param ancestor [AX::Element]
+  # @param kind [#to_s]
+  # @param filters [Hash]
+  # @yield An optional block to be used in the search qualifier
   # @return [nil,Array()]
   def refute_has_descendent ancestor, kind, filters = {}, &block
     result = ax_check_descendent ancestor, kind, filters, block
@@ -139,9 +143,10 @@ class MiniTest::Assertions
   # This also means that you must include either a `parent` key or an
   # `ancestor` key as one of the filters.
   #
-  # @param [#to_s]
-  # @param [Hash]
+  # @param kind [#to_s]
+  # @param filters [Hash]
   # @yield An optional block to be used in the search qualifier
+  # @return [nil]
   def refute_shortly_has kind, filters = {}, &block
     result = wait_for kind, filters, &block
     msg = message {

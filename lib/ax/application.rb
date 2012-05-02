@@ -17,7 +17,7 @@ class AX::Application < AX::Element
   # an `NSRunningApplication` instance for the application, or an
   # accessibility (`AXUIElementRef`) token.
   #
-  # @param [Number,String,NSRunningApplication]
+  # @param arg [Number,String,NSRunningApplication]
   def initialize arg
     case arg
     when Fixnum
@@ -142,12 +142,8 @@ class AX::Application < AX::Element
 
   # @group Actions
 
-  ##
-  # Overridden to provide extra actions (e.g. `hide`, `terminate`).
-  #
+
   # (see AX::Element#perform)
-  #
-  # @return [Boolean]
   def perform name
     case name
     when :terminate
@@ -175,6 +171,7 @@ class AX::Application < AX::Element
   # For details on how to format the string, check out the
   # [Keyboarding documentation](http://github.com/Marketcircle/AXElements/wiki/Keyboarding).
   #
+  # @param string [String]
   # @return [Boolean]
   def type string
     @ref.post keyboard_events_for string
@@ -192,7 +189,7 @@ class AX::Application < AX::Element
   #     drag_mouse_to point
   #   end
   #
-  # @param [String]
+  # @param key [String]
   # @return [Number,nil]
   def hold_modifier key
     code = EventGenerator::CUSTOM[key]
@@ -213,6 +210,7 @@ class AX::Application < AX::Element
   #
   #   safari.select_menu_item 'Edit', 'Find', /Google/
   #
+  # @param path [String,Regexp]
   # @return [AX::MenuItem]
   def select_menu_item *path
     target = navigate_menu *path
@@ -226,6 +224,7 @@ class AX::Application < AX::Element
   #
   # You may also be interested in {#select_menu_item}.
   #
+  # @param path [String,Regexp]
   # @return [AX::MenuItem]
   def navigate_menu *path
     perform :unhide # can't navigate menus unless the app is up front
@@ -280,7 +279,7 @@ class AX::Application < AX::Element
   #
   # `nil` will be returned if there was nothing at that point.
   #
-  # @param [#to_point]
+  # @param point [#to_point]
   # @return [AX::Element,nil]
   def element_at point
     process @ref.element_at point

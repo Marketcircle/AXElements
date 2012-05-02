@@ -22,7 +22,7 @@ class AX::Element
   include Accessibility::Factory
 
 
-  # @param [AXUIElementRef]
+  # @param ref [AXUIElementRef]
   def initialize ref
     @ref = ref
   end
@@ -53,7 +53,7 @@ class AX::Element
   #
   #   element.attribute :position # => #<CGPoint x=123.0 y=456.0>
   #
-  # @param [#to_sym]
+  # @param attr [#to_sym]
   def attribute attr
     process @ref.attribute TRANSLATOR.cocoaify attr
   end
@@ -123,7 +123,7 @@ class AX::Element
   #   table.size_of  :rows     # => 111
   #   window.size_of :children # => 16
   #
-  # @param [#to_sym]
+  # @param attr [#to_sym]
   # @return [Number]
   def size_of attr
     @ref.size_of TRANSLATOR.cocoaify attr
@@ -137,7 +137,7 @@ class AX::Element
   #   element.writable? :size  # => true
   #   element.writable? :value # => false
   #
-  # @param [#to_sym]
+  # @param attr [#to_sym]
   def writable? attr
     @ref.writable? TRANSLATOR.cocoaify attr
   end
@@ -150,7 +150,7 @@ class AX::Element
   #   element.set :value, 'Hello, world!'
   #   element.set :size,  [100, 200].to_size
   #
-  # @param [#to_sym]
+  # @param attr [#to_sym]
   # @return the value that you were setting is returned
   def set attr, value
     unless writable? attr
@@ -184,7 +184,8 @@ class AX::Element
   #
   #  text_field.parameterized_attribute :string_for_range, 2..8
   #
-  # @param [#to_sym]
+  # @param attr [#to_sym]
+  # @param param [Object]
   def parameterized_attribute attr, param
     param = param.relative_to(@ref.value.size) if value.kind_of? Range
     process @ref.parameterized_attribute(TRANSLATOR.cocoaify(attr), param)
@@ -220,7 +221,7 @@ class AX::Element
   #   button.perform :press    # => true
   #   button.perform :make_pie # => false
   #
-  # @param [#to_sym]
+  # @param action [#to_sym]
   # @return [Boolean] true if successful
   def perform action
     @ref.perform TRANSLATOR.cocoaify action
@@ -234,15 +235,16 @@ class AX::Element
   # the current element. If you are concerned about the return value of
   # this method, you can call {#blank?} on the return object.
   #
-  # See the [Searching Tutorial](http://github.com/Marketcircle/AXElements/wiki/Searching)
+  # See the [Searching wiki](http://github.com/Marketcircle/AXElements/wiki/Searching)
   # for the details on search semantics.
   #
   # @example Find the dock icon for the Finder app
   #
   #   AX::DOCK.search(:application_dock_item, title:'Finder')
   #
-  # @param [#to_s]
-  # @param [Hash{Symbol=>Object}]
+  # @param kind [#to_s]
+  # @param filters [Hash{Symbol=>Object}]
+  # @yield Optional block used for filtering
   # @return [AX::Element,nil,Array<AX::Element>,Array<>]
   def search kind, filters = {}, &block
     kind      = kind.to_s
@@ -267,8 +269,9 @@ class AX::Element
   #   button.ancestor :window       # => #<AX::StandardWindow>
   #   row.ancestor    :scroll_area  # => #<AX::ScrollArea>
   #
-  # @param [#to_s]
-  # @param [Hash{Symbol=>Object}]
+  # @param kind [#to_s]
+  # @param filters [Hash{Symbol=>Object}]
+  # @yield Optional block used for search filtering
   # @return [AX::Element]
   def ancestor kind, filters = {}, &block
     qualifier = Accessibility::Qualifier.new(kind, filters, &block)

@@ -16,8 +16,8 @@ require   'accessibility/version'
 #
 class Accessibility::Highlighter < NSWindow
 
-  # @param [CGRect]
-  # @param [Hash] opts
+  # @param bounds [CGRect]
+  # @param opts [Hash]
   # @option opts [Number] :timeout
   # @option opts [NSColor] :colour (NSColor.magentaColor)
   def initialize bounds, opts = {}

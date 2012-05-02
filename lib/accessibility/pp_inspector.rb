@@ -88,7 +88,7 @@ module Accessibility::PPInspector
   # is the given attribute, and the check box value will be
   # determined by the value of the attribute.
   #
-  # @param [Symbol]
+  # @param attr [Symbol]
   # @return [String]
   def pp_checkbox attr
     " #{attr}[#{attribute(attr) ? CHECKMARK : CROSS }]"

@@ -8,7 +8,7 @@ module Accessibility::Enumerators
   class BreadthFirst
     include Enumerable
 
-    # @param [#children]
+    # @param root [#children]
     def initialize root
       @root = root
     end
@@ -54,7 +54,7 @@ module Accessibility::Enumerators
   class DepthFirst
     include Enumerable
 
-    # @param [#children]
+    # @param root [#children]
     def initialize root
       @root = root
     end
@@ -91,9 +91,9 @@ module Accessibility::Enumerators
     ##
     # Recursive implementation of a depth first iterator.
     #
-    # @param [AX::Element]
-    # @param [Number]
-    # @param [#call]
+    # @param element [AX::Element]
+    # @param depth [Number]
+    # @param block [#call]
     def recursive_each_with_level element, depth, block
       block.call element, depth
       element.children.each do |x|

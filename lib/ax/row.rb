@@ -25,7 +25,7 @@ class AX::Row < AX::Element
   #   }
   #   puts "The average price is $ #{total / rows.size}"
   #
-  # @param [Hash]
+  # @param [Hash] filters
   # @return [AX::Element]
   def child_in_column filters, &block
     qualifier = Accessibility::Qualifier.new(:Column, filters, &block)

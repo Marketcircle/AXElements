@@ -21,7 +21,7 @@ class AX::Menu < AX::Element
   #     menu.scroll_to menu.item(title: "Expensive Cake")
   #   end
   #
-  # @param [AX::Element]
+  # @param [AX::Element] element
   # @return [void]
   def scroll_to element
     Mouse.move_to self.to_point
@@ -58,6 +58,10 @@ class AX::Menu < AX::Element
   # Search the menu for a `menu_item` that matches the given
   # filters. The filters should be specified just as they would
   # be when calling {#search}.
+  #
+  # @param [Hash] filters
+  # @yield Optional block used for search filtering
+  # @return [AX::Element]
   def item filters = {}, &block
     result = self.search :menu_item, filters, &block
     return result unless result.blank?
