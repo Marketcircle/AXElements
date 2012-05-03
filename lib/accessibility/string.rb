@@ -26,9 +26,9 @@ module Accessibility::String
   # {Accessibility::String::EventGenerator::CUSTOM}.
   #
   # For more details on event generation, read the
-  # [Keyboarding documentation](http://github.com/Marketcircle/AXElements/wiki/Keyboarding).
+  # [Keyboarding wiki](http://github.com/Marketcircle/AXElements/wiki/Keyboarding).
   #
-  # @param [String]
+  # @param string [#to_s]
   # @return [Array<Array(Fixnum,Boolean)>]
   def keyboard_events_for string
     EventGenerator.new(Lexer.new(string).lex).generate
@@ -55,7 +55,7 @@ module Accessibility::String
     # @return [Array<String,Array<String,...>]
     attr_accessor :tokens
 
-    # @param [#to_s]
+    # @param string [#to_s]
     def initialize string
       @chars  = string.to_s
       @tokens = []
@@ -395,7 +395,7 @@ module Accessibility::String
     # @return [Array<Array(Fixnum,Boolean)>]
     attr_reader :events
 
-    # @param [Array<String,Array<String,Array...>>]
+    # @param tokens [Array<String,Array<String,Array...>>]
     def initialize tokens
       @tokens = tokens
       # *3 since the output array will be at least *2 the

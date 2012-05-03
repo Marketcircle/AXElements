@@ -31,7 +31,7 @@ class Accessibility::Graph
     # @return [AX::Element]
     attr_reader :element
 
-    # @param [AX::Element]
+    # @param element [AX::Element]
     def initialize element
       @element = element
       @id      = "element_#{element.object_id}"
@@ -128,8 +128,8 @@ class Accessibility::Graph
     # @return [String]
     attr_accessor :style
 
-    # @param [Accessibility::Graph::Node]
-    # @param [Accessibility::Graph::Node]
+    # @param head [Accessibility::Graph::Node]
+    # @param tail [Accessibility::Graph::Node]
     def initialize head, tail
       @head, @tail = head, tail
     end
@@ -155,7 +155,7 @@ class Accessibility::Graph
   # @return [Array<Accessibility::Graph::Edge>]
   attr_reader :edges
 
-  # @param [AX::Element]
+  # @param root [AX::Element]
   def initialize root
     root_node   = Node.new(root)
     @nodes      = [root_node]

@@ -55,7 +55,7 @@ require 'accessibility/version'
 module Accessibility::Core
 
 
-  # @group Attributes
+  # @!group Attributes
 
   ##
   # @todo Invalid elements do not always raise an error.
@@ -98,7 +98,7 @@ module Accessibility::Core
   #   attribute KAXParentAttribute  # => #<AXUIElementRef>
   #   attribute KAXNoValueAttribute # => nil
   #
-  # @param [String]
+  # @param name [String]
   def attribute name
     ptr = Pointer.new :id
     case code = AXUIElementCopyAttributeValue(self, name, ptr)
@@ -207,7 +207,7 @@ module Accessibility::Core
   #   size_of KAXChildrenAttribute  # => 19
   #   size_of KAXRowsAttribute      # => 100
   #
-  # @param [String]
+  # @param name [String]
   # @return [Number]
   def size_of name
     ptr = Pointer.new :long_long
@@ -234,7 +234,7 @@ module Accessibility::Core
   #   writable? KAXSizeAttribute  # => true
   #   writable? KAXTitleAttribute # => false
   #
-  # @param [String]
+  # @param name [String]
   def writable? name
     ptr = Pointer.new :bool
     case code = AXUIElementIsAttributeSettable(self, name, ptr)
@@ -266,7 +266,7 @@ module Accessibility::Core
   #   set KAXSizeAttribute,         [250,250]  # => [250,250]
   #   set KAXVisibleRangeAttribute, 0..-3      # => 0..-3
   #
-  # @param [String]
+  # @param name [String]
   def set name, value
     code = AXUIElementSetAttributeValue(self, name, value.to_ax)
     if code.zero?
@@ -277,7 +277,7 @@ module Accessibility::Core
   end
 
 
-  # @group Parameterized Attributes
+  # @!group Parameterized Attributes
 
   ##
   # Get the list of parameterized attributes for the element. If the
@@ -323,8 +323,8 @@ module Accessibility::Core
   #   parameterized_attribute KAXStringForRangeParameterizedAttribute, 1..10
   #     # => "ello, worl"
   #
-  # @param [String]
-  # @param [Object]
+  # @param name [String]
+  # @param param [Object]
   def parameterized_attribute name, param
     ptr = Pointer.new :id
     case code = AXUIElementCopyParameterizedAttributeValue(self, name, param.to_ax, ptr)
@@ -339,7 +339,7 @@ module Accessibility::Core
   end
 
 
-  # @group Actions
+  # @!group Actions
 
   ##
   # Get the list of actions that the element can perform. If an element
@@ -374,7 +374,7 @@ module Accessibility::Core
   #
   #   perform KAXPressAction  # => true
   #
-  # @param [String]
+  # @param action [String]
   # @return [Boolean]
   def perform action
     code = AXUIElementPerformAction(self, action)
@@ -406,8 +406,7 @@ module Accessibility::Core
   #   events = keyboard_events_for "Hello, world!\n"
   #   post events
   #
-  # @param [Array<Array(Number,Boolean)>]
-  # @param [AXUIElementRef]
+  # @param events [Array<Array(Number,Boolean)>]
   def post events
     events.each do |event|
       code = AXUIElementPostKeyboardEvent(self, 0, *event)
@@ -438,7 +437,7 @@ module Accessibility::Core
                end
 
 
-  # @group Element Hierarchy Entry Points
+  # @!group Element Hierarchy Entry Points
 
   ##
   # Find the top most element at a point on the screen that belongs to the
@@ -460,7 +459,7 @@ module Accessibility::Core
   #   element_at [453, 200]  # table
   #   element_at CGPoint.new(453, 200)  # table
   #
-  # @param [#to_point]
+  # @param point [#to_point]
   # @return [AXUIElementRef,nil]
   def element_at point
     ptr = Pointer.new ELEMENT
@@ -485,7 +484,7 @@ module Accessibility::Core
   #   app = application_for 54743  # => #<AXUIElementRefx00000000>
   #   CFShow(app)
   #
-  # @param [Number]
+  # @param pid [Number]
   # @return [AXUIElementRef]
   def application_for pid
     spin_run_loop
@@ -497,7 +496,7 @@ module Accessibility::Core
   end
 
 
-  # @group Notifications
+  # @!group Notifications
 
   ##
   # @todo Allow a `Method` object to be passed once MacRuby ticket #1463
@@ -548,7 +547,7 @@ module Accessibility::Core
   #
   #   # don't forget to remove the source when you are done!
   #
-  # @param [AXObserverRef]
+  # @param observer [AXObserverRef]
   # @return [CFRunLoopSourceRef]
   def run_loop_source_for observer
     AXObserverGetRunLoopSource(observer)
@@ -565,8 +564,8 @@ module Accessibility::Core
   #
   #   register observer, KAXWindowCreatedNotification
   #
-  # @param [AXObserverRef]
-  # @param [String]
+  # @param observer [AXObserverRef]
+  # @param notif [String]
   # @return [Boolean]
   def register observer, notif
     case code = AXObserverAddNotification(observer, self, notif, nil)
@@ -582,8 +581,8 @@ module Accessibility::Core
   #
   #   unregister observer, KAXWindowCreatedNotification
   #
-  # @param [AXObserverRef]
-  # @param [String]
+  # @param observer [AXObserverRef]
+  # @param notif [String]
   # @return [Boolean]
   def unregister observer, notif
     case code = AXObserverRemoveNotification(observer, self, notif)
@@ -593,7 +592,7 @@ module Accessibility::Core
   end
 
 
-  # @group Misc.
+  # @!group Misc.
 
   ##
   # Create a new reference to the system wide object. This is very useful when
@@ -632,7 +631,7 @@ module Accessibility::Core
   end
 
 
-  # @group Debug
+  # @!group Debug
 
   ##
   # Change the timeout value for the element. If you change the timeout
@@ -643,7 +642,7 @@ module Accessibility::Core
   # what the system default is and there is no API to check what the value
   # is set to, so I can't tell you what the current value is.
   #
-  # @param [Number]
+  # @param seconds [Number]
   # @return [Number]
   def set_timeout_to seconds
     case code = AXUIElementSetMessagingTimeout(self, seconds)
@@ -655,9 +654,9 @@ module Accessibility::Core
 
   private
 
-  # @group Error Handling
+  # @!group Error Handling
 
-  # @param [Number]
+  # @param code [Number]
   def handle_error code, *args
     klass, handler = AXERROR.fetch code, [RuntimeError, :handle_unknown]
     msg            = if handler == :handle_unknown
@@ -705,7 +704,7 @@ module Accessibility::Core
     "#{args[1].inspect} is no longer a valid observer for #{inspect} or was never valid"
   end
 
-  # @param [AXUIElementRef]
+  # @param args [AXUIElementRef]
   # @return [String]
   def handle_cannot_complete *args
     spin_run_loop
@@ -764,7 +763,7 @@ module Accessibility::Core
     'AXAPI said there was not enough precision ¯\(°_o)/¯'
   end
 
-  # @endgroup
+  # @!endgroup
 
 
   ##

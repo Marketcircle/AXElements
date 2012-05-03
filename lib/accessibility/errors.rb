@@ -4,9 +4,10 @@ require 'accessibility/qualifier'
 # Error raised when an implicit search fails to return a result.
 class Accessibility::SearchFailure < NoMethodError
 
-  # @param [AX::Element]
-  # @param [#to_s]
-  # @param [Hash{Symbol=>Object}]
+  # @param searcher [AX::Element]
+  # @param searchee [#to_s]
+  # @param filters [Hash{Symbol=>Object}]
+  # @yield Optional block that would have been used for a search filter
   def initialize searcher, searchee, filters, &block
     filters = {} unless filters.kind_of? Hash
     msg  = "Could not find `#{pp_searchee searchee, filters, &block}` "

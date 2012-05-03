@@ -22,14 +22,14 @@ require 'accessibility/enumerators'
 module Accessibility::DSL
 
 
-  # @group Actions
+  # @!group Actions
 
   ##
   # We assume that any method that has the first argument with a type
   # of {AX::Element} is intended to be an action and so `#method_missing`
   # will forward the message to the element.
   #
-  # @param [String] method an action constant
+  # @param meth [String] an action constant
   def method_missing meth, *args
     arg = args.first
     if arg.kind_of? AX::Element
@@ -46,7 +46,7 @@ module Accessibility::DSL
   ##
   # Try to perform the `press` action on the given element.
   #
-  # @param [AX::Element]
+  # @param element [AX::Element]
   # @return [Boolean]
   def press element
     element.perform :press
@@ -55,7 +55,7 @@ module Accessibility::DSL
   ##
   # Try to perform the `show_menu` action on the given element.
   #
-  # @param [AX::Element]
+  # @param element [AX::Element]
   # @return [Boolean]
   def show_menu element
     element.perform :show_menu
@@ -64,7 +64,7 @@ module Accessibility::DSL
   ##
   # Try to perform the `pick` action on the given element.
   #
-  # @param [AX::Element]
+  # @param element [AX::Element]
   # @return [Boolean]
   def pick element
     element.perform :pick
@@ -73,7 +73,7 @@ module Accessibility::DSL
   ##
   # Try to perform the `decrement` action on the given element.
   #
-  # @param [AX::Element]
+  # @param element [AX::Element]
   # @return [Boolean]
   def decrement element
     element.perform :decrement
@@ -82,7 +82,7 @@ module Accessibility::DSL
   ##
   # Try to perform the `confirm` action on the given element.
   #
-  # @param [AX::Element]
+  # @param element [AX::Element]
   # @return [Boolean]
   def confirm element
     element.perform :confirm
@@ -91,7 +91,7 @@ module Accessibility::DSL
   ##
   # Try to perform the `increment` action on the given element.
   #
-  # @param [AX::Element]
+  # @param element [AX::Element]
   # @return [Boolean]
   def increment element
     element.perform :increment
@@ -100,7 +100,7 @@ module Accessibility::DSL
   ##
   # Try to perform the `delete` action on the given element.
   #
-  # @param [AX::Element]
+  # @param element [AX::Element]
   # @return [Boolean]
   def delete element
     element.perform :delete
@@ -109,7 +109,7 @@ module Accessibility::DSL
   ##
   # Try to perform the `cancel` action on the given element.
   #
-  # @param [AX::Element]
+  # @param element [AX::Element]
   # @return [Boolean]
   def cancel element
     element.perform :cancel
@@ -122,7 +122,7 @@ module Accessibility::DSL
   # Try to perform the `raise` action on the given element.
   #
   # @overload raise element
-  #   @param [AX::Element] element
+  #   @param element [AX::Element]
   #   @return [Boolean]
   #
   # @overload raise exception[, message[, backtrace]]
@@ -135,7 +135,7 @@ module Accessibility::DSL
   ##
   # Tell an app to hide itself.
   #
-  # @param [AX::Application]
+  # @param app [AX::Application]
   # @return [Boolean]
   def hide app
     app.perform :hide
@@ -144,7 +144,7 @@ module Accessibility::DSL
   ##
   # Tell an app to unhide itself.
   #
-  # @param [AX::Application]
+  # @param app [AX::Application]
   # @return [Boolean]
   def unhide app
     app.perform :unhide
@@ -154,7 +154,7 @@ module Accessibility::DSL
   ##
   # Tell an app to quit.
   #
-  # @param [AX::Application]
+  # @param app [AX::Application]
   # @return [Boolean]
   def terminate app
     app.perform :terminate
@@ -165,7 +165,7 @@ module Accessibility::DSL
   # focused. It is safe to pass any element into this method as nothing
   # will happen if it does not have a writable focused state attribute.
   #
-  # @param [AX::Element]
+  # @param element [AX::Element]
   def set_focus_to element
     element.set(:focused, true) if element.writable? :focused
   end
@@ -180,8 +180,8 @@ module Accessibility::DSL
   #
   # @overload set element, attribute_name: new_value
   #   Set a specified attribute to a new value
-  #   @param [AX::Element] element
-  #   @param [Hash{attribute_name=>new_value}] change
+  #   @param element [AX::Element]
+  #   @param change [Hash{attribute_name=>new_value}]
   #
   # @example
   #
@@ -189,8 +189,8 @@ module Accessibility::DSL
   #
   # @overload set element, new_value
   #   Set the `value` attribute to a new value
-  #   @param [AX::Element] element
-  #   @param [Object] change
+  #   @param element [AX::Element]
+  #   @param change [Object]
   #
   # @example
   #
@@ -216,7 +216,7 @@ module Accessibility::DSL
   #
   # @overload type string
   #   Send input to the currently focused application
-  #   @param [#to_s]
+  #   @param string [String]
   #
   # @example
   #
@@ -224,7 +224,7 @@ module Accessibility::DSL
   #
   # @overload type string, app
   #   Send input to a specific application
-  #   @param [#to_s]
+  #   @param String [String]
   #   @param [AX::Application]
   #
   def type string, app = system_wide
@@ -243,8 +243,8 @@ module Accessibility::DSL
   #   select_menu_item mail, 'View', 'Sort By', 'Subject'
   #   select_menu_item mail, 'Edit', /Spelling/, /show spelling/i
   #
-  # @param [AX::Application]
-  # @param [String,Regexp] path
+  # @param app [AX::Application]
+  # @param path [String,Regexp]
   # @return [Boolean]
   def select_menu_item app, *path
     app.select_menu_item *path
@@ -254,7 +254,7 @@ module Accessibility::DSL
   # Show the "About" window for an app. Returns the window that is
   # opened.
   #
-  # @param [AX::Application]
+  # @param app [AX::Application]
   # @return [AX::Window]
   def show_about_window_for app
     app.show_about_window
@@ -267,7 +267,7 @@ module Accessibility::DSL
   # Try to open the preferences for an app. Returns the window that
   # is opened.
   #
-  # @param [AX::Application]
+  # @param app [AX::Application]
   # @return [AX::Window]
   def show_preferences_window_for app
     app.show_preferences_window
@@ -285,7 +285,7 @@ module Accessibility::DSL
   #
   #   scroll_to table.rows.last
   #
-  # @param [AX::Element]
+  # @param element [AX::Element]
   # @return [void]
   def scroll_to element
     element.ancestor(:scroll_area).scroll_to element
@@ -302,14 +302,14 @@ module Accessibility::DSL
   #     scroll_menu_to pop_up.menu.item(title: "Expensive Cake")
   #   end
   #
-  # @param [AX:]
+  # @param element [AX::Element]
   # @return [void]
   def scroll_menu_to element
-    menu = element.ancestor(:menu).scroll_to element
+    element.ancestor(:menu).scroll_to element
   end
 
 
-  # @group Polling
+  # @!group Polling
 
   ##
   # Simply wait around for something to show up. This method is similar
@@ -335,11 +335,12 @@ module Accessibility::DSL
   #   # Waiting for something that will never show up
   #   wait_for :a_million_dollars, ancestor: fruit_basket, timeout: 1000000
   #
-  # @param [#to_s]
-  # @param [Hash] filters
+  # @param element [#to_s]
+  # @param filters [Hash]
   # @option filters [Number] :timeout (5) timeout in seconds
   # @option filters [AX::Element] :parent
   # @option filters [AX::Element] :ancestor
+  # @yield Optional block used as a search filter
   # @return [AX::Element,nil]
   def wait_for element, filters = {}, &block
     if filters.has_key? :ancestor
@@ -358,9 +359,9 @@ module Accessibility::DSL
   #
   # See {#wait_for} for more details.
   #
-  # @param [#to_s]
-  # @param [AX::Element]
-  # @param [Hash]
+  # @param descendant [#to_s]
+  # @param ancestor [AX::Element]
+  # @param filters [Hash]
   # @return [AX::Element,nil]
   def wait_for_descendant descendant, ancestor, filters, &block
     timeout = filters.delete(:timeout) || 5
@@ -388,9 +389,9 @@ module Accessibility::DSL
   #
   # See {#wait_for} for more details.
   #
-  # @param [#to_s]
-  # @param [AX::Element]
-  # @param [Hash]
+  # @param child [#to_s]
+  # @param parent [AX::Element]
+  # @param filters [Hash]
   # @return [AX::Element,nil]
   def wait_for_child child, parent, filters, &block
     timeout = filters.delete(:timeout) || 5
@@ -418,8 +419,8 @@ module Accessibility::DSL
   # all search results have been returned.
   #
   # @overload wait_for_invalidation_of element
-  # @param [AX::Element]
-  # @param [Hash] filters
+  # @param element [AX::Element]
+  # @param filters [Hash]
   # @option filters [Number] :timeout (5) in seconds
   # @return [Boolean]
   #
@@ -428,8 +429,8 @@ module Accessibility::DSL
   #   wait_for_invalidation_of table.row(static_text: { value: 'Cake' })
   #
   # @overload wait_for_invalidation_of kind, filters = {}, &block
-  # @param [#to_s]
-  # @param [Hash] filters
+  # @param element [#to_s]
+  # @param filters [Hash]
   # @option filters [Number] :timeout (5) in seconds
   # @return [Boolean]
   #
@@ -458,7 +459,7 @@ module Accessibility::DSL
   alias_method :wait_for_invalid,      :wait_for_invalidation_of
 
 
-  # @group Mouse Manipulation
+  # @!group Mouse Manipulation
 
   ##
   # Move the mouse cursor to the given point or object on the screen.
@@ -469,8 +470,8 @@ module Accessibility::DSL
   #  move_mouse_to [344, 516]
   #  move_mouse_to CGPoint.new(100, 100)
   #
-  # @param [#to_point]
-  # @param [Hash] opts
+  # @param arg [#to_point]
+  # @param opts [Hash]
   # @option opts [Number] :duration (0.2) in seconds
   # @option opts [Number] :wait (0.2) in seconds
   def move_mouse_to arg, opts = {}
@@ -495,8 +496,8 @@ module Accessibility::DSL
   #   drag_mouse_to [100,100]
   #   drag_mouse_to drop_zone, from: desktop_icon
   #
-  # @param [#to_point]
-  # @param [Hash] opts
+  # @param arg [#to_point]
+  # @param opts [Hash]
   # @option opts [#to_point] :from a point to move to before dragging
   # @option opts [Number] :duration (0.2) in seconds
   # @option opts [Number] :wait (0.2) in seconds
@@ -516,8 +517,9 @@ module Accessibility::DSL
   # If the second argument is provided then the mouse will move to that
   # point first; the argument must respond to `#to_point`.
   #
-  # @param [Number]
-  # @param [#to_point]
+  # @param lines [Number]
+  # @param obj [#to_point]
+  # @param wait [Number]
   def scroll lines, obj = nil, wait = 0.1
     move_mouse_to obj, wait: 0 if obj
     Mouse.scroll lines
@@ -543,7 +545,7 @@ module Accessibility::DSL
   #
   # @yield Optionally take a block that is executed between click down
   #        and click up events.
-  # @param [#to_point]
+  # @param obj [#to_point]
   def click obj = nil, wait = 0.2
     move_mouse_to obj, wait: 0 if obj
     Mouse.click_down
@@ -558,7 +560,7 @@ module Accessibility::DSL
   # If an argument is provided then the mouse will move to that point
   # first; the argument must respond to `#to_point`.
   #
-  # @param [#to_point]
+  # @param obj [#to_point]
   def right_click obj = nil, wait = 0.2
     move_mouse_to obj, wait: 0 if obj
     Mouse.right_click
@@ -572,7 +574,7 @@ module Accessibility::DSL
   # If an argument is provided then the mouse will move to that point
   # first; the argument must respond to `#to_point`.
   #
-  # @param [#to_point]
+  # @param obj [#to_point]
   def double_click obj = nil, wait = 0.2
     move_mouse_to obj, wait: 0 if obj
     Mouse.double_click
@@ -580,7 +582,7 @@ module Accessibility::DSL
   end
 
 
-  # @group Debug Helpers
+  # @!group Debug Helpers
 
   ##
   # Highlight an element on screen. You can optionally specify the
@@ -603,8 +605,8 @@ module Accessibility::DSL
   #   # highlighter automatically turns off after 5 seconds
   #   highlight window.outline.row, colour: NSColor.greenColor, timeout: 5
   #
-  # @param [#bounds]
-  # @param [Hash] opts
+  # @param obj [#bounds]
+  # @param opts [Hash]
   # @option opts [Number] :timeout
   # @option opts [NSColor] :colour (NSColor.magentaColor)
   # @return [Accessibility::Highlighter]
@@ -614,6 +616,8 @@ module Accessibility::DSL
   end
 
   ##
+  # @deprecated Use {AX::Element#inspect_subtree} instead.
+  #
   # Get the dump of the subtree of children and descendants for the given
   # element. Each generation down the tree will be indented another level,
   # and each element will be inspected.
@@ -622,6 +626,7 @@ module Accessibility::DSL
   #
   #   puts subtree app
   #
+  # @param element [AX::Element]
   # @return [String]
   def subtree element
     element.inspect_subtree
@@ -639,7 +644,7 @@ module Accessibility::DSL
   #
   #   graph app.main_window
   #
-  # @param [AX::Element]
+  # @param element [AX::Element]
   # @return [String] path to the saved image
   def graph element
     require 'accessibility/graph'
@@ -667,8 +672,8 @@ module Accessibility::DSL
   #   screenshot app.title, "/Volumes/SecretStash"
   #     # => "/Volumes/SecretStash/Safari-20120422184650.png"
   #
-  # @param [#to_s]
-  # @param [#to_s]
+  # @param name [#to_s]
+  # @param dir [#to_s]
   # @return [String] path to the screenshot
   def screenshot name = "AXElements-ScreenShot", dir = '~/Desktop'
     # @todo this could move to its own class, much like
@@ -692,7 +697,7 @@ module Accessibility::DSL
   alias_method :capture_screen, :screenshot
 
 
-  # @endgroup
+  # @!endgroup
 
 
   ##
@@ -704,7 +709,7 @@ module Accessibility::DSL
   #   app_with_bundle_identifier 'com.apple.finder'
   #   launch                     'com.apple.mail'
   #
-  # @param [String]
+  # @param id [String]
   # @return [AX::Application,nil]
   def app_with_bundle_identifier id
     Accessibility.application_with_bundle_identifier id
@@ -721,7 +726,7 @@ module Accessibility::DSL
   #
   #   app_with_name 'Finder'
   #
-  # @param [String]
+  # @param name [String]
   # @return [AX::Application,nil]
   def app_with_name name
     AX::Application.new name
@@ -735,14 +740,14 @@ module Accessibility::DSL
   #
   #   app_with_pid 35843
   #
-  # @param [Fixnum]
+  # @param pid [Fixnum]
   # @return [AX::Application]
   def app_with_pid pid
     AX::Application.new pid
   end
 
   ##
-  # Convenience for `AX::SystemWide.new`.
+  # Synonym for `AX::SystemWide.new`.
   #
   # @return [AX::SystemWide]
   def system_wide
@@ -775,8 +780,8 @@ module Accessibility::DSL
   #
   #   element_at window # find out what is in the middle of the window
   #
-  # @param [#to_point]
-  # @param [Hash] opts
+  # @param point [#to_point]
+  # @param opts [Hash]
   # @option opts [AX::Application] :for
   # @return [AX::Element]
   def element_at_point point, opts = {}

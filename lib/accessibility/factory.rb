@@ -9,20 +9,22 @@ module AX; end
 # Mixin made for processing low level data from AXAPI methods.
 module Accessibility::Factory
 
+  ##
   # @todo This should provide alternate #to_ruby functionality for
   #       the __NSCFType class in order to avoid the overhead of
   #       checking type information (or at least reducing it).
   #       However, it will force the lower level to always wrap
   #       element references; this should be ok most of the time
   #       but makes testing a bit of a pain...hmmm
-
-  ##
+  #
   # Processes any given data from an AXAPI function and wraps it if
   # needed. Meant for taking a return value from
   # {Accessibility::Core#attribute} and friends.
   #
   # Generally, used to process an `AXUIElementRef` into a some kind
   # of {AX::Element} subclass.
+  #
+  # @param value [Object]
   def process value
     return nil if value.nil? # CFGetTypeID(nil) crashes runtime
     case CFGetTypeID(value)
@@ -70,7 +72,7 @@ module Accessibility::Factory
   # Some code paths have been unrolled for efficiency. Don't hate player,
   # hate the game.
   #
-  # @param [AXUIElementRef]
+  # @param ref [AXUIElementRef]
   # @return [AX::Element]
   def process_element ref
     if role = ref.role
@@ -108,7 +110,7 @@ module Accessibility::Factory
   # Find the class for a given role. If the class does not exist it will
   # be created on demand.
   #
-  # @param [#to_s]
+  # @param role [#to_s]
   # @return [Class]
   def class_for role
     if AX.const_defined? role, false
@@ -122,8 +124,8 @@ module Accessibility::Factory
   # Find the class for a given subrole and role. If the class does not
   # exist it will be created on demand.
   #
-  # @param [#to_s]
-  # @param [#to_s]
+  # @param subrole [#to_s]
+  # @param role [#to_s]
   # @return [Class]
   def class_for2 subrole, role
     # @todo it would be nice if we didn't have to lookup twice
@@ -138,7 +140,7 @@ module Accessibility::Factory
   # Create a new class in the {AX} namespace that has {AX::Element}
   # as the superclass.
   #
-  # @param [#to_s]
+  # @param name [#to_s]
   # @return [Class]
   def create_class name
     klass = Class.new AX::Element
@@ -149,8 +151,8 @@ module Accessibility::Factory
   # Create a new class in the {AX} namesapce that has the given
   # `superklass` as the superclass..
   #
-  # @param [#to_s] name
-  # @param [#to_s] superklass
+  # @param name [#to_s]
+  # @param superklass [#to_s]
   # @return [Class]
   def create_class2 name, superklass
     unless AX.const_defined? superklass, false

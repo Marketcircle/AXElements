@@ -55,7 +55,7 @@ class Accessibility::Translator
   #   unprefix KAXWindowCreatedNotification # => 'WindowCreated'
   #   unprefix NSAccessibilityButtonRole    # => 'Button'
   #
-  # @param [String]
+  # @param key [String]
   # @return [String]
   def unprefix key
     @unprefixes[key]
@@ -69,6 +69,7 @@ class Accessibility::Translator
   #
   #   rubyize ["AXRole", "AXTitleUIElement"] # => [:role, :title_ui_element]
   #
+  # @param keys [Array<String>]
   # @return [Array<Symbol>]
   def rubyize keys
     keys.map { |x| @rubyisms[x] }
@@ -77,7 +78,7 @@ class Accessibility::Translator
   ##
   # Given a symbol, return the equivalent accessibility constant.
   #
-  # @param [#to_sym]
+  # @param key [#to_sym]
   # @return [String]
   def cocoaify key
     @cocoaifications[key.to_sym]
@@ -93,7 +94,7 @@ class Accessibility::Translator
   #   classify 'text_field' # => "TextField"
   #   classify 'buttons'    # => "Button"
   #
-  # @param [String]
+  # @param klass [String]
   # @return [String]
   def classify klass
     @classifications[klass]
@@ -109,7 +110,7 @@ class Accessibility::Translator
   #   singularize 'buttons'     # => 'button'
   #   singularize 'check_boxes' # => 'check_box'
   #
-  # @param [String]
+  # @param klass [String]
   # @return [String]
   def singularize klass
     @singularizations[klass]
@@ -121,7 +122,7 @@ class Accessibility::Translator
   # a notification constant then the original string parameter will
   # be returned.
   #
-  # @param [#to_s]
+  # @param name [#to_s]
   # @return [String]
   def guess_notification name
     name  = name.to_s.gsub /(?:^|_)(.)/ do $1.upcase! || $1 end

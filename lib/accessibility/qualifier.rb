@@ -22,8 +22,8 @@ class Accessibility::Qualifier
   #     element.children.size > 5 && NSContainsRect(element.bounds, rect)
   #   end
   #
-  # @param [#to_s]
-  # @param [Hash]
+  # @param klass [#to_s]
+  # @param criteria [Hash]
   # @yield Optional block that can qualify an element
   def initialize klass, criteria
     @klass    = TRANSLATOR.classify(klass)
@@ -36,7 +36,7 @@ class Accessibility::Qualifier
   # Whether or not a candidate object matches the criteria given
   # at initialization.
   #
-  # @param [AX::Element]
+  # @param element [AX::Element]
   def qualifies? element
     the_right_type?(element) && meets_criteria?(element)
   end
@@ -62,7 +62,7 @@ class Accessibility::Qualifier
   # array. This is done to avoid checking types for each call to
   # {#qualifies?}.
   #
-  # @param [Hash]
+  # @param criteria [Hash]
   def compile criteria
     @filters = criteria.map do |key, value|
       if value.kind_of? Hash
@@ -84,7 +84,7 @@ class Accessibility::Qualifier
   # Checks if a candidate object is of the correct class, respecting
   # that that the class being searched for may not be defined yet.
   #
-  # @param [AX::Element]
+  # @param element [AX::Element]
   def the_right_type? element
     unless @const
       if AX.const_defined? @klass
@@ -100,7 +100,7 @@ class Accessibility::Qualifier
   # Determines if the element meets all the criteria of the filters,
   # spawning sub-searches if necessary.
   #
-  # @param [AX::Element]
+  # @param element [AX::Element]
   def meets_criteria? element
     @filters.all? do |filter|
       self.send *filter, element

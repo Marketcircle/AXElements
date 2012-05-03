@@ -83,7 +83,7 @@ class << Accessibility
   # Find out if the app is running and if so, return the running application
   # for that bundle.
   #
-  # @param [String]
+  # @param bundle [String]
   # @return [NSRunningApplication,nil]
   def app_running? bundle
     NSRunningApplication.runningApplicationsWithBundleIdentifier(bundle).first

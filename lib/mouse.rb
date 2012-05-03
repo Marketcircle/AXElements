@@ -48,8 +48,8 @@ module Mouse
   ##
   # Move the mouse from the current position to the given point.
   #
-  # @param [CGPoint] point
-  # @param [Float] duration animation duration, in seconds
+  # @param point [CGPoint]
+  # @param duration [Float] animation duration, in seconds
   def move_to point, duration = 0.2
     animate KCGEventMouseMoved, KCGMouseButtonLeft, current_position, point, duration
   end
@@ -57,8 +57,8 @@ module Mouse
   ##
   # Click and drag from the current position to the given point.
   #
-  # @param [CGPoint]
-  # @param [Float] duration animation duration, in seconds
+  # @param point [CGPoint]
+  # @param duration [Float] animation duration, in seconds
   def drag_to point, duration = 0.2
     post new_event(KCGEventLeftMouseDown, current_position, KCGMouseButtonLeft)
 
@@ -75,10 +75,10 @@ module Mouse
   # Scrolling too much or too little in a period of time will cause the
   # animation to look weird, possibly causing the app to mess things up.
   #
-  # @param [Fixnum] amount number of units to scroll; positive to scroll
+  # @param amount [Fixnum] number of units to scroll; positive to scroll
   #   up or negative to scroll down
-  # @param [Float] duration animation duration, in seconds
-  # @param [Symbol] units `:line` scrolls by line, `:pixel` scrolls by pixel
+  # @param duration [Float] animation duration, in seconds
+  # @param units [Symbol] `:line` scrolls by line, `:pixel` scrolls by pixel
   def scroll amount, duration = 0.2, units = :line
     units   = UNIT[units] || raise(ArgumentError, "#{units} is not a valid unit")
     steps   = (FPS * duration).round
@@ -96,7 +96,8 @@ module Mouse
   # Perform a down click. You should follow this up with a call to
   # {#click_up} to finish the click.
   #
-  # @param [CGPoint]
+  # @param point [CGPoint]
+  # @param duration [Number]
   def click_down point = current_position, duration = 12
     event = new_event KCGEventLeftMouseDown, point, KCGMouseButtonLeft
     post event
@@ -107,7 +108,7 @@ module Mouse
   # Perform an up click. This should only be called after a call to
   # {#click_down} to finish the click event.
   #
-  # @param [CGPoint]
+  # @param point [CGPoint]
   def click_up point = current_position
     event = new_event KCGEventLeftMouseUp, point, KCGMouseButtonLeft
     post event
@@ -116,7 +117,8 @@ module Mouse
   ##
   # Standard secondary click. Default position is the current position.
   #
-  # @param [CGPoint]
+  # @param point [CGPoint]
+  # @param duration [Number]
   def secondary_click point = current_position, duration = 12
     event = new_event KCGEventRightMouseDown, point, KCGMouseButtonRight
     post event
@@ -129,7 +131,7 @@ module Mouse
   ##
   # A standard double click. Defaults to clicking at the current position.
   #
-  # @param [CGPoint]
+  # @param point [CGPoint]
   def double_click point = current_position
     event = new_event KCGEventLeftMouseDown, point, KCGMouseButtonLeft
     post event
@@ -155,8 +157,9 @@ module Mouse
   # to figure out. See the `CGMouseButton` enum in the reference
   # documentation for the most up to date list.
   #
-  # @param [CGPoint]
-  # @param [Number]
+  # @param point [CGPoint]
+  # @param button [Number]
+  # @param duration [Number]
   def arbitrary_click point = current_position, button = KCGMouseButtonCenter, duration = 12
     event = new_event KCGEventOtherMouseDown, point, button
     post event
