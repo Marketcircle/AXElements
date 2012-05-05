@@ -61,24 +61,23 @@ slider in the menu bar (unless you've hidden it):
 ## Getting Setup
 
 You need to have the OS X command line tools installed in order to
-build and install AXElements, but you will also need Xcode in order to
-run the test suite (sorry). Go ahead and install the tools now if you
+build and install AXElements, but you will also need Xcode if you want
+to run the test suite (sorry). Go ahead and install the tools now if you
 haven't done that yet, I'll wait. Once you have the developer tools,
 you should install MacRuby, the latest nightly build is required. If you
 are on Snow Leopard, you will also need to install the
 [Bridge Support Preview](http://www.macruby.org/blog/2010/10/08/bridgesupport-preview.html).
 
-Then you can install AXElements. You can install AXElements via
-rubygems:
+You will also need to make sure you "enable access for assistive devices".
+This can be done in System Preferences in the Universal Access section:
+
+![Universal Access](http://ferrous26.com/images/enable_accessibility.png)
+
+Then you can install AXElements either from RubyGems or from source. The
+RubyGems install is as usual, but you may need `sudo` power:
 
 ```bash
     gem install AXElements
-```
-
-And then you can try things out in IRb:
-
-```bash
-    irb -rubygems -rax_elements
 ```
 
 Or you can install from source:
@@ -89,12 +88,10 @@ Or you can install from source:
     cd AXElements && rake install
 ```
 
-And then try things out in the developer console. AXElements has no
-gem dependencies, so from the AXElements source directory you can just
-run the `console` task:
+Once all the setup is finished, you can start up AXElements in IRB:
 
 ```bash
-    rake console
+    irb -rubygems -rax_elements
 ```
 
 __NOTE__: If you are not using RVM, then you should use `macrake`
