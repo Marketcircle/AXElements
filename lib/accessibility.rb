@@ -20,6 +20,7 @@ class << Accessibility
   # @group Finding an application object
 
   ##
+  # @note Bundle identifiers are case-sensitive.
   # @todo Move to {AX::Aplication#initialize} eventually.
   #
   # This is the standard way of creating an application object. It will
@@ -47,8 +48,11 @@ class << Accessibility
   def application_with_bundle_identifier bundle
     if app_running?(bundle) || launch_application(bundle)
       10.times do
-        return AX::Application.new(bundle) if app_running? bundle
-        sleep 1
+        if app_running?(bundle) && (app = try_wrapping(bundle))
+          return app
+        else
+          sleep 1
+        end
       end
     else
       raise ArgumentError, "Could not launch app matching bundle id `#{bundle}'"
@@ -87,6 +91,18 @@ class << Accessibility
   # @return [NSRunningApplication,nil]
   def app_running? bundle
     NSRunningApplication.runningApplicationsWithBundleIdentifier(bundle).first
+  end
+
+  ##
+  # Try to wrap an application object, just in case it is not quite ready
+  # for accessibility yet.
+  #
+  # @param [String]
+  # @return [AX::Application]
+  def try_wrapping bundle
+    AX::Application.new bundle
+  rescue RuntimeError => e
+    nil
   end
 
   ##
