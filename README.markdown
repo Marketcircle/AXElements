@@ -12,16 +12,16 @@ computer.
 
 ## Demo
 
-Perhaps you want to do something with the finder. This example opens a
-new Finder window, finds Activity Monitor, and then opens the application
-from a quick look window:
+[Demo Video](http://www.youtube.com/watch?v=G9O5wzb7oTY)
+
+The code from the demo video is right here:
 
 ```ruby
     require 'rubygems'
     require 'ax_elements'
 
     # Highlight objects that the mouse will move to
-    # Accessibility.debug = true
+    Accessibility.debug = true
 
     # Get a reference to the Finder and bring it to the front
     finder = app_with_bundle_identifier 'com.apple.finder'
