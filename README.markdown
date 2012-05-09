@@ -113,13 +113,13 @@ disable it like so:
 
 The [wiki](http://github.com/Marketcircle/AXElements/wiki)
 is the best place to get started, it includes tutorials to help you get
-started as well the API documentation (API docs are broken right now due
-to incompatabilities between MacRuby and YARD).
+started. API documentation is also available on
+[rdoc.info](http://rdoc.info/gems/AXElements/frames).
 
 Though it is not required, you may want to read Apple's
 [Accessibility Overview](http://developer.apple.com/library/mac/#documentation/Accessibility/Conceptual/AccessibilityMacOSX/OSXAXModel/OSXAXmodel.html)
 as a primer on some the rationale for the accessibility APIs as well
-as the technical underpinnings of AXElements.
+as some of the technical the technical underpinnings of AXElements.
 
 
 ## Development
