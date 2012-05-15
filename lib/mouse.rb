@@ -85,7 +85,7 @@ module Mouse
     current = 0.0
     steps.times do |step|
       done     = (step+1).to_f / steps
-      scroll   = ((done - current)*amount).floor
+      scroll   = ((done - current)*amount).round
       post new_scroll_event(units, 1, scroll)
       sleep QUANTUM
       current += scroll.to_f / amount
