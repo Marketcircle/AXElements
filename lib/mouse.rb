@@ -199,8 +199,7 @@ module Mouse
   def close_enough? current, target
     x = current.x - target.x
     y = current.y - target.y
-    delta = Math.sqrt((x**2) + (y**2))
-    delta <= 1.0
+    ((x**2)+(y**2)) <= 1
   end
 
   def new_event event, position, button
