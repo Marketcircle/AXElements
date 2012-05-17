@@ -111,6 +111,12 @@ class TestAccessibilityCore < MiniTest::Unit::TestCase
     assert_equal 0, REF.system_wide.pid
   end
 
+  def test_invalid?
+    assert_equal false, REF.invalid?
+    assert_equal true,  invalid_ref.invalid?
+    assert_equal false, window.invalid?
+  end
+
   def test_size_of
     assert_equal REF.children.size, REF.size_of(KAXChildrenAttribute)
     assert_equal 0,                 pop_up.size_of(KAXChildrenAttribute)

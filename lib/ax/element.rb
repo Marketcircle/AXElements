@@ -451,9 +451,11 @@ class AX::Element
   # Return whether or not the receiver is "dead".
   #
   # A dead element is one that is no longer in the app's view
-  # hierarchy, which is not necessarily related to visibility.
+  # hierarchy. This is not directly related to visibility, but an
+  # element that is invalid will not be visible, but an invisible
+  # element might not be invalid.
   def invalid?
-    @ref.role.nil?
+    @ref.invalid?
   end
 
   ##
