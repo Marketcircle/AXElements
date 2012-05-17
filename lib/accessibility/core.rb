@@ -429,7 +429,7 @@ module Accessibility::Core
   end
 
   ##
-  # The delay between key presses. The default value is `0.01`, which
+  # The delay between key events. The default value is `0.01`, which
   # should be about 50 characters per second (down and up are separate
   # events).
   #
@@ -447,6 +447,15 @@ module Accessibility::Core
                when nil         then 0.009
                else                  ENV['KEY_RATE'].to_f
                end
+
+  ##
+  # Set the delay between key events. This value is used by {#post}
+  # to slow down the typing speed so apps do not get overloaded.
+  #
+  # @param [Number]
+  def key_rate= value
+    @@key_rate = value
+  end
 
 
   # @!group Element Hierarchy Entry Points
