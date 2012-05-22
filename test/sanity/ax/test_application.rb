@@ -19,7 +19,7 @@ class TestAXApplication < MiniTest::Unit::TestCase
   end
 
   def test_inspect
-    assert_match app.inspect, /children/
+    assert_match /children/, app.inspect
     assert_match /\spid=\d+/, app.inspect
     assert_match /\sfocused\[(?:✔|✘)\]/, app.inspect
   end
