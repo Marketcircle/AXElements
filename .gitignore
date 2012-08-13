@@ -13,3 +13,4 @@ Makefile
 *.dot
 pkg/*
 TODO
+unfinished/
