@@ -2,7 +2,7 @@ require 'rubygems'
 gem     'minitest'
 require 'minitest/autorun'
 
-if `sw_vers -productVersion`.to_f > 10.7
+if RUBY_ENGINE == 'macruby' && `sw_vers -productVersion`.to_f > 10.7
   framework '/System/Library/Frameworks/CoreGraphics.framework'
 end
 

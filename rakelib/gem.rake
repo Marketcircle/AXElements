@@ -17,12 +17,3 @@ task :setup_dev do
     Gem::DependencyInstaller.new.install(dep.name, dep.requirement)
   end
 end
-
-ax_typer = Gem::Specification.load('AXTyper.gemspec')
-Gem::PackageTask.new(ax_typer) { }
-
-desc 'Build and install AXTyper'
-task :install_typer => :gem do
-  require 'rubygems/installer'
-  Gem::Installer.new("pkg/#{ax_typer.file_name}").install
-end
