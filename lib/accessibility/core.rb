@@ -684,9 +684,10 @@ module Accessibility::Core
   # on the system wide object, it affets all timeouts.
   #
   # Setting the global timeout to `0` seconds will reset the timeout value
-  # to the system default. Apple does not appear to have publicly documented
-  # what the system default is and there is no API to check what the value
-  # is set to, so I can't tell you what the current value is.
+  # to the system default. The system default timeout value is `6 seconds`
+  # as of the writing of this documentation, but Apple does not appear to
+  # have publicly documented this (we had to ask in person at WWDC) so the
+  # value may change without notice.
   #
   # @param seconds [Number]
   # @return [Number]
