@@ -24,6 +24,8 @@ end
 
 
 require 'accessibility/version'
+require 'accessibility/statistics'
+
 
 ##
 # @todo Slowly back off on raising exceptions in error conditions. Most
@@ -74,6 +76,7 @@ module Accessibility::Core
     @attributes ||= (
       ptr = Pointer.new ARRAY
       case code = AXUIElementCopyAttributeNames(self, ptr)
+      STATS.increment :attributes
       when 0                        then ptr.value
       when KAXErrorInvalidUIElement then []
       else handle_error code
@@ -104,6 +107,7 @@ module Accessibility::Core
     case code = AXUIElementCopyAttributeValue(self, name, ptr)
     when 0
       ptr.value.to_ruby
+    STATS.increment :attribute
     when KAXErrorNoValue, KAXErrorAttributeUnsupported,
          KAXErrorFailure, KAXErrorInvalidUIElement,
                           KAXErrorIllegalArgument then
@@ -123,6 +127,7 @@ module Accessibility::Core
   #
   # @return [String,nil]
   def role
+    STATS.increment :role
     attribute KAXRoleAttribute
   end
 
@@ -138,6 +143,7 @@ module Accessibility::Core
   #
   # @return [String,nil]
   def subrole
+    STATS.increment :subrole
     attribute KAXSubroleAttribute
   end
 
@@ -152,6 +158,7 @@ module Accessibility::Core
   #
   # @return [Array<AX::Element>]
   def children
+    STATS.increment :children
     attribute KAXChildrenAttribute
   end
 
@@ -164,6 +171,7 @@ module Accessibility::Core
   #   value  # => 42
   #
   def value
+    STATS.increment :value
     attribute KAXValueAttribute
   end
 
@@ -182,6 +190,7 @@ module Accessibility::Core
   # @return [Fixnum]
   def pid
     @pid ||= (
+      STATS.increment :pid
       ptr = Pointer.new :int
       case code = AXUIElementGetPid(self, ptr)
       when 0
@@ -202,6 +211,7 @@ module Accessibility::Core
   # element that is invalid will not be visible, but an invisible
   # element might not be invalid.
   def invalid?
+    STATS.increment :valid
     AXUIElementCopyAttributeValue(self, KAXRoleAttribute, Pointer.new(:id)) ==
       KAXErrorInvalidUIElement
   end
@@ -222,6 +232,7 @@ module Accessibility::Core
   # @param name [String]
   # @return [Number]
   def size_of name
+    STATS.increment :size_of
     ptr = Pointer.new :long_long
     case code = AXUIElementGetAttributeValueCount(self, name, ptr)
     when 0
@@ -248,6 +259,7 @@ module Accessibility::Core
   #
   # @param name [String]
   def writable? name
+    STATS.increment :writable?
     ptr = Pointer.new :bool
     case code = AXUIElementIsAttributeSettable(self, name, ptr)
     when 0
@@ -280,6 +292,7 @@ module Accessibility::Core
   #
   # @param name [String]
   def set name, value
+    STATS.increment :set
     code = AXUIElementSetAttributeValue(self, name, value.to_ax)
     if code.zero?
       value
@@ -310,6 +323,7 @@ module Accessibility::Core
   # @return [Array<String>]
   def parameterized_attributes
     @parameterized_attributes ||= (
+      STATS.increment :parameterized_attributes
       ptr = Pointer.new ARRAY
       case code = AXUIElementCopyParameterizedAttributeNames(self, ptr)
       when 0                                         then ptr.value
@@ -338,6 +352,7 @@ module Accessibility::Core
   # @param name [String]
   # @param param [Object]
   def parameterized_attribute name, param
+    STATS.increment :parameterized_attribute
     ptr = Pointer.new :id
     case code = AXUIElementCopyParameterizedAttributeValue(self, name, param.to_ax, ptr)
     when 0
@@ -365,6 +380,7 @@ module Accessibility::Core
   # @return [Array<String>]
   def actions
     @actions ||= (
+      STATS.increment :actions
       ptr = Pointer.new ARRAY
       case code = AXUIElementCopyActionNames(self, ptr)
       when 0                        then ptr.value
@@ -389,6 +405,7 @@ module Accessibility::Core
   # @param action [String]
   # @return [Boolean]
   def perform action
+    STATS.increment :perform
     code = AXUIElementPerformAction(self, action)
     if code.zero?
       true
@@ -421,6 +438,7 @@ module Accessibility::Core
   # @param events [Array<Array(Number,Boolean)>]
   def post events
     events.each do |event|
+      STATS.increment :keyboard_event
       code = AXUIElementPostKeyboardEvent(self, 0, *event)
       handle_error code unless code.zero?
       sleep @@key_rate
@@ -483,6 +501,7 @@ module Accessibility::Core
   # @param point [#to_point]
   # @return [AXUIElementRef,nil]
   def element_at point
+    STATS.increment :element_at
     ptr = Pointer.new ELEMENT
     case code = AXUIElementCopyElementAtPosition(self, *point.to_point, ptr)
     when 0
@@ -510,6 +529,7 @@ module Accessibility::Core
   def application_for pid
     spin_run_loop
     if NSRunningApplication.runningApplicationWithProcessIdentifier pid
+      STATS.increment :create_application
       AXUIElementCreateApplication(pid)
     else
       raise ArgumentError, 'pid must belong to a running application'
@@ -543,6 +563,7 @@ module Accessibility::Core
   # @return [AXObserverRef]
   def observer
     raise ArgumentError, 'A callback is required' unless block_given?
+    STATS.increment :observer
     ptr      = Pointer.new OBSERVER
     callback = proc { |obsrvr, sender, notif, ctx| yield obsrvr, sender, notif }
     code = AXObserverCreate(pid, callback, ptr)
@@ -571,6 +592,7 @@ module Accessibility::Core
   # @param observer [AXObserverRef]
   # @return [CFRunLoopSourceRef]
   def run_loop_source_for observer
+    STATS.increment :get_run_loop_source
     AXObserverGetRunLoopSource(observer)
   end
 
@@ -589,6 +611,7 @@ module Accessibility::Core
   # @param notif [String]
   # @return [Boolean]
   def register observer, notif
+    STATS.increment :register
     case code = AXObserverAddNotification(observer, self, notif, nil)
     when 0 then true
     else handle_error code, notif, observer, nil, nil
@@ -606,6 +629,7 @@ module Accessibility::Core
   # @param notif [String]
   # @return [Boolean]
   def unregister observer, notif
+    STATS.increment :unregister
     case code = AXObserverRemoveNotification(observer, self, notif)
     when 0 then true
     else handle_error code, notif, observer, nil, nil
@@ -626,6 +650,7 @@ module Accessibility::Core
   #
   # @return [AXUIElementRef]
   def system_wide
+    STATS.increment :system_wide
     AXUIElementCreateSystemWide()
   end
 
@@ -666,6 +691,7 @@ module Accessibility::Core
   # @param seconds [Number]
   # @return [Number]
   def set_timeout_to seconds
+    STATS.increment :set_timeout
     case code = AXUIElementSetMessagingTimeout(self, seconds)
     when 0 then seconds
     else handle_error code, seconds
@@ -857,9 +883,11 @@ module Accessibility::ValueUnwrapper
   #
   # @return [Boxed]
   def to_ruby
+    STATS.increment :get_value_type
     box_type = AXValueGetType(self)
     return self if box_type.zero?
     ptr = Pointer.new BOX_TYPES[box_type]
+    STATS.increment :get_value
     AXValueGetValue(self, box_type, ptr)
     ptr.value.to_ruby
   end
@@ -900,6 +928,7 @@ class Boxed
     klass = self.class
     ptr   = Pointer.new klass.type
     ptr.assign self
+    STATS.increment :value_create
     AXValueCreate(klass.ax_value, ptr)
   end
 end
