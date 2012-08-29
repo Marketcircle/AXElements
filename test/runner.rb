@@ -1,3 +1,6 @@
+$LOAD_PATH << 'lib'
+require 'accessibility/statistics'
+
 require 'rubygems'
 gem     'minitest'
 require 'minitest/autorun'
@@ -39,5 +42,3 @@ def pid_for name # sneaky naming
     app.bundleIdentifier == name
   end.processIdentifier
 end
-
-$LOAD_PATH << 'lib'

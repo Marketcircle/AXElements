@@ -19,7 +19,10 @@ else
   sleep 2 # Instead of using high level features of AXElements that we are
           # testing, I think it is just safer to sleep
   # Make sure the test app is closed when testing finishes
-  at_exit do TEST_APP.terminate end
+  at_exit do
+    TEST_APP.terminate
+    puts STATS.to_s
+  end
 end
 
 
@@ -31,4 +34,3 @@ class MiniTest::Unit::TestCase
   PID = pid_for APP_BUNDLE_IDENTIFIER
   REF = AXUIElementCreateApplication(PID)
 end
-
