@@ -42,12 +42,12 @@ class TestAccessibilityStatistics < MiniTest::Unit::TestCase
     2.times   do @stats.increment :pie                 end
     50.times  do @stats.increment :long_attribute_name end
     expected = <<-EOS
-#################
-# AX Statistics #
-#################
+######################
+# AX Call Statistics #
+######################
 cake...................100
-pie......................2
 long_attribute_name.....50
+pie......................2
     EOS
     assert_equal expected, @stats.to_s
   end

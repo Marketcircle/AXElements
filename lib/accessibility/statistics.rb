@@ -38,14 +38,15 @@ class Accessibility::Statistics
 
   def output_header
     <<-EOS
-#################
-# AX Statistics #
-#################
+######################
+# AX Call Statistics #
+######################
     EOS
   end
 
   def output_body
-    @stats.map do |key, val|
+    @stats.keys.sort.map do |key|
+      val = @stats[key]
       key.to_s << dot(key,val) << val.to_s
     end.join("\n")
   end
