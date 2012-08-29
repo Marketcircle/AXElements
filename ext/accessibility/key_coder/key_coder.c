@@ -3,7 +3,7 @@
  *  KeyCoder
  *
  *  Created by Mark Rada on 11-07-27.
- *  Copyright 2011 Marketcircle Incorporated. All rights reserved.
+ *  Copyright 2011-2012 Marketcircle Incorporated. All rights reserved.
  */
 
 
@@ -45,7 +45,8 @@ keycoder_dynamic_mapping()
     UniCharCount string_length = 0;
     UInt32       dead_key_state = 0;
     UCKeyTranslate(
-		   layout,key_code,
+		   layout,
+       key_code,
 		   kUCKeyActionDown,
 		   0,
 		   LMGetKbdType(),  // kb type
@@ -99,7 +100,7 @@ keycoder_post_event(VALUE self, VALUE event)
   CGEventRef event_ref = CGEventCreateKeyboardEvent(NULL, FIX2LONG(code), state);
   CGEventPost(kCGHIDEventTap, event_ref);
 
-  usleep(9000);
+  usleep(9000); // 9000 is a magic number
   return Qtrue;
 }
 
