@@ -1,4 +1,8 @@
 framework 'ApplicationServices'
+if `sw_vers -productVersion`.to_f > 10.7
+  framework '/System/Library/Frameworks/CoreGraphics.framework'
+end
+
 
 ##
 # This is a first attempt at writing a wrapper around the CoreGraphics event
