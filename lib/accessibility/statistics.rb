@@ -45,8 +45,8 @@ class Accessibility::Statistics
   end
 
   def output_body
-    @stats.collect do |key, val|
-      "#{key}#{dot(key,val)}#{val}"
+    @stats.map do |key, val|
+      key.to_s << dot(key,val) << val.to_s
     end.join("\n")
   end
 
