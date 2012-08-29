@@ -1,6 +1,10 @@
 # -*- coding: utf-8 -*-
 
 framework 'Cocoa'
+# Laaaaaaaaaaaaaaaaaaaaaaame Mountain Lion bridge support workaround
+if `sw_vers -productVersion`.to_f > 10.7
+  framework '/System/Library/Frameworks/CoreGraphics.framework'
+end
 
 # check that the Accessibility APIs are enabled and are available to MacRuby
 begin

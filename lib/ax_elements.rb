@@ -1,7 +1,3 @@
-if `sw_vers -productVersion`.to_f > 10.7
-  framework '/System/Library/Frameworks/CoreGraphics.framework'
-end
-
 # Mix the language methods into the TopLevel
 require 'accessibility/dsl'
 include Accessibility::DSL
