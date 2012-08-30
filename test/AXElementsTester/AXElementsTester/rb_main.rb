@@ -11,6 +11,9 @@
 framework 'Cocoa'
 framework 'Webkit'
 
+# Laaaaaame
+framework '/System/Library/Frameworks/CoreGraphics.framework'
+
 # Loading all the Ruby project files.
 main = File.basename(__FILE__, File.extname(__FILE__))
 dir_path = NSBundle.mainBundle.resourcePath.fileSystemRepresentation
