@@ -45,8 +45,8 @@ class Accessibility::Statistics
   end
 
   def output_body
-    @stats.keys.sort.map do |key|
-      val = @stats[key]
+    pairs = @stats.to_a.sort { |x,y| y.last <=> x.last }
+    pairs.map do |key, val|
       key.to_s << dot(key,val) << val.to_s
     end.join("\n")
   end
