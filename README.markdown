@@ -68,7 +68,7 @@ You need to have the OS X command line tools installed in order to
 build and install AXElements, but you will also need Xcode if you want
 to run the test suite (sorry). Go ahead and install the tools now if you
 haven't done that yet, I'll wait. Once you have the developer tools,
-you should install MacRuby, the latest nightly build is required. If you
+you should install MacRuby, version 0.12 or newer is required. If you
 are on Snow Leopard, you will also need to install the
 [Bridge Support Preview](http://www.macruby.org/blog/2010/10/08/bridgesupport-preview.html).
 
