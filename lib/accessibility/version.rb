@@ -7,5 +7,5 @@ module Accessibility
   VERSION   = '1.0.0'
 
   # @return [String]
-  CODE_NAME = 'ジラーチ'
+  CODE_NAME = 'ルナトーン'
 end

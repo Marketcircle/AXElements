@@ -124,9 +124,9 @@ as some of the technical the technical underpinnings of AXElements.
 
 ## Development
 
-AXElements has reached a point where the main focus is now performance,
-features, and documentation. It will be magical, so we're code naming
-the next version "Clefable".
+AXElements has reached a point where the main focus is stability,
+features, and documentation. It will be out of this world, so we're
+code naming the next version "Lunatone".
 
 ![The Moon](https://github.com/Marketcircle/AXElements/raw/gh-pages/images/next_version.png)
 
