@@ -21,20 +21,20 @@ class AX::Application < AX::Element
   def initialize arg
     case arg
     when Fixnum
-      super SYSTEMWIDE.application_for arg
+      super Accessibility::Element.application_for arg
       @app = NSRunningApplication.runningApplicationWithProcessIdentifier arg
     when String
       @app =
         NSRunningApplication.runningApplicationsWithBundleIdentifier(arg).first ||
         (
-          SYSTEMWIDE.spin_run_loop
+          NSRunLoop.runUntilDate Time.now # spin the run loop
           NSWorkspace.sharedWorkspace.runningApplications.find { |app|
             app.localizedName == arg
           }
         )
-      super SYSTEMWIDE.application_for @app.processIdentifier
+      super Accessibility::Element.application_for @app.processIdentifier
     when NSRunningApplication
-      super SYSTEMWIDE.application_for arg.processIdentifier
+      super Accessibility::Element.application_for arg.processIdentifier
       @app = arg
     else
       super arg # assume it is an AXUIElementRef
@@ -292,9 +292,5 @@ class AX::Application < AX::Element
   def bundle
     @bundle ||= NSBundle.bundleWithURL @app.bundleURL
   end
-
-  # @private
-  # @return [AXUIElementRef]
-  SYSTEMWIDE = AXUIElementCreateSystemWide().to_ruby
 
 end
