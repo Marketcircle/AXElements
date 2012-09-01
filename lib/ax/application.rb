@@ -295,6 +295,6 @@ class AX::Application < AX::Element
 
   # @private
   # @return [AXUIElementRef]
-  SYSTEMWIDE = AXUIElementCreateSystemWide()
+  SYSTEMWIDE = AXUIElementCreateSystemWide().to_ruby
 
 end
