@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-require 'accessibility/core'
+require 'accessibility/element'
 require 'accessibility/factory'
 require 'accessibility/translator'
 require 'accessibility/enumerators'
@@ -8,21 +8,22 @@ require 'accessibility/qualifier'
 require 'accessibility/errors'
 require 'accessibility/pp_inspector'
 
+
 ##
 # @abstract
 #
 # The abstract base class for all accessibility objects. `AX::Element`
-# composes low level `AXUIElementRef` objects into a more Rubyish
+# composes low level {Accessibility::Element} objects into a more Rubyish
 # interface.
 #
 # This abstract base class provides generic functionality that all
 # accessibility objects require.
 class AX::Element
   include Accessibility::PPInspector
-  include Accessibility::Factory
 
+  TRANSLATOR = Accessibility::Translator.instance
 
-  # @param ref [AXUIElementRef]
+  # @param ref [Accessibility::Element]
   def initialize ref
     @ref = ref
   end
@@ -44,10 +45,10 @@ class AX::Element
 
   ##
   # Get the value of an attribute. This method will return `nil` if
-  # the attribute does not have a value, if the element does not have
-  # the attribute, or if the element is dead. There is an execption
-  # for the `:children` attribute which is always guaranteed to return
-  # an array.
+  # the attribute does not have a value or if the element is dead. The
+  # execption to the rule is that the `:children` attribute will always
+  # return an array unless the element does not have the `:children`
+  # attribute.
   #
   # @example
   #
@@ -55,7 +56,7 @@ class AX::Element
   #
   # @param attr [#to_sym]
   def attribute attr
-    process @ref.attribute TRANSLATOR.cocoaify attr
+    @ref.attribute(TRANSLATOR.cocoaify(attr)).to_ruby
   end
 
   ##
@@ -70,8 +71,7 @@ class AX::Element
   end
 
   ##
-  # Fetch the children elements for the current element. If the current
-  # element does not have children then an empty array will be returned.
+  # Fetch the children elements for the current element.
   #
   # @return [Array<AX::Element>]
   def children
@@ -188,7 +188,7 @@ class AX::Element
   # @param param [Object]
   def parameterized_attribute attr, param
     param = param.relative_to(@ref.value.size) if value.kind_of? Range
-    process @ref.parameterized_attribute(TRANSLATOR.cocoaify(attr), param)
+    @ref.parameterized_attribute(TRANSLATOR.cocoaify(attr), param).to_ruby
   end
 
 
@@ -439,7 +439,7 @@ class AX::Element
   #
   # @return [AX::Application]
   def application
-    process @ref.application
+    @ref.application.to_ruby
   end
 
   # (see NilClass#blank?)

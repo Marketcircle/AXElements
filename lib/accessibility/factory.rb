@@ -1,37 +1,47 @@
-require 'accessibility/core'
+require 'accessibility/element'
 require 'accessibility/translator'
 
 ##
 # Namespace container for all the accessibility objects.
-module AX; end
+module AX; class Element; end end
+
 
 ##
-# Mixin made for processing low level data from AXAPI methods.
-module Accessibility::Factory
+# Extensions to {Accessibility::Element} for the high level abstraction.
+# These extensions only make sense in the context of the high level API
+# and it requires knowledge of both layers, so the code has been placed
+# in its own file.
+class Accessibility::Element
 
   ##
-  # @todo This should provide alternate #to_ruby functionality for
-  #       the __NSCFType class in order to avoid the overhead of
-  #       checking type information (or at least reducing it).
-  #       However, it will force the lower level to always wrap
-  #       element references; this should be ok most of the time
-  #       but makes testing a bit of a pain...hmmm
+  # @todo Should we handle cases where a subrole has a value of
+  #       'Unknown'? What is the performance impact?
   #
-  # Processes any given data from an AXAPI function and wraps it if
-  # needed. Meant for taking a return value from
-  # {Accessibility::Core#attribute} and friends.
+  # Wrap the low level wrapper with the appropriate high level wrapper.
+  # This involves determining the proper class in the {AX} namespace,
+  # possibly creating it on demand, and then instantiating the class to
+  # wrap the low level object.
   #
-  # Generally, used to process an `AXUIElementRef` into a some kind
-  # of {AX::Element} subclass.
+  # Some code paths have been unrolled for efficiency. Don't hate player,
+  # hate the game.
   #
-  # @param value [Object]
-  def process value
-    return nil if value.nil? # CFGetTypeID(nil) crashes runtime
-    case CFGetTypeID(value)
-    when ARRAY_TYPE then process_array value
-    when REF_TYPE   then process_element value
-    else
-      value
+  # @return [AX::Element]
+  def to_ruby
+    if roll = self.role
+      roll = TRANSLATOR.unprefix roll
+      if attributes.include? KAXSubroleAttribute
+        subroll = self.subrole
+        # Some objects claim to have a subrole but return nil
+        if subroll
+          class_for2(TRANSLATOR.unprefix(subroll), roll).new self
+        else
+          class_for(roll).new self
+        end
+      else
+        class_for(roll).new self
+      end
+    else # failsafe in case object dies before we get the role
+      AX::Element.new self
     end
   end
 
@@ -49,66 +59,14 @@ module Accessibility::Factory
   ##
   # @private
   #
-  # Type ID for `AXUIElementRef` objects.
+  # Serial queue to make sure we only create one class at a time.
   #
-  # @return [Number]
-  REF_TYPE   = AXUIElementGetTypeID()
+  # @return [Dispatch::Queue]
+  CREATE_QUEUE = Dispatch::Queue.new 'com.marketcircle.axelements.create'
 
   ##
-  # @private
-  #
-  # Type ID for `CFArrayRef` objects.
-  #
-  # @return [Number]
-  ARRAY_TYPE = CFArrayGetTypeID()
-
-  ##
-  # @todo Should we handle cases where a subrole has a value of
-  #       'Unknown'? What is the performance impact?
-  #
-  # Takes an `AXUIElementRef` and gives you some kind of wrapped
-  # accessibility object.
-  #
-  # Some code paths have been unrolled for efficiency. Don't hate player,
-  # hate the game.
-  #
-  # @param ref [AXUIElementRef]
-  # @return [AX::Element]
-  def process_element ref
-    if role = ref.role
-      role  = TRANSLATOR.unprefix role
-      attrs = ref.attributes
-      if attrs.include? KAXSubroleAttribute
-        subrole = ref.subrole
-        # Some objects claim to have a subrole but return nil
-        if subrole
-          class_for2(TRANSLATOR.unprefix(subrole), role).new ref
-        else
-          class_for(role).new ref
-        end
-      else
-        class_for(role).new ref
-      end
-    else # failsafe in case object dies before we even get the role
-      AX::Element.new ref
-    end
-  end
-
-  ##
-  # We assume a homogeneous array and only wrap element arrays right now.
-  #
-  # @return [Array]
-  def process_array vals
-    return vals if vals.empty?
-    return vals if CFGetTypeID(vals.first) != REF_TYPE
-    return vals.map { |val| process_element val }
-  end
-
-  ##
-  # @todo Consider using {AX.const_missing} instead.
-  #
   # Find the class for a given role. If the class does not exist it will
-  # be created on demand.
+  # be created.
   #
   # @param role [#to_s]
   # @return [Class]
@@ -128,7 +86,6 @@ module Accessibility::Factory
   # @param role [#to_s]
   # @return [Class]
   def class_for2 subrole, role
-    # @todo it would be nice if we didn't have to lookup twice
     if AX.const_defined? subrole, false
       AX.const_get subrole
     else
@@ -143,8 +100,16 @@ module Accessibility::Factory
   # @param name [#to_s]
   # @return [Class]
   def create_class name
-    klass = Class.new AX::Element
-    AX.const_set name, klass
+    CREATE_QUEUE.sync do
+      # re-check now that we are in the critical section
+      @klass = if AX.const_defined? name, false
+                 AX.const_get name
+               else
+                 klass = Class.new AX::Element
+                 AX.const_set name, klass
+               end
+    end
+    @klass
   end
 
   ##
@@ -158,8 +123,16 @@ module Accessibility::Factory
     unless AX.const_defined? superklass, false
       create_class superklass
     end
-    klass = Class.new AX.const_get(superklass)
-    AX.const_set name, klass
+    CREATE_QUEUE.sync do
+      # re-check now that we are in the critical section
+      @klass = if AX.const_defined? name, false
+                 AX.const_get name
+               else
+                 klass = Class.new AX.const_get(superklass)
+                 AX.const_set name, klass
+               end
+    end
+    @klass
   end
 
 end
