@@ -33,9 +33,8 @@ class TestAccessibilityTranslator < MiniTest::Unit::TestCase
     assert_equal KAXIsApplicationRunningAttribute, TRANSLATOR.cocoaify(:is_application_running)
     assert_equal KAXIsApplicationRunningAttribute, TRANSLATOR.cocoaify(:application_running?)
     assert_equal KAXIsApplicationRunningAttribute, TRANSLATOR.cocoaify(:application_running)
-  end
 
-  def test_cocoaification_of_acronyms
+    # acronyms
     assert_equal KAXURLAttribute,                      TRANSLATOR.cocoaify(:url)
     assert_equal KAXTitleUIElementAttribute,           TRANSLATOR.cocoaify(:title_ui_element)
     assert_equal KAXRTFForRangeParameterizedAttribute, TRANSLATOR.cocoaify(:rtf_for_range)
@@ -46,12 +45,10 @@ class TestAccessibilityTranslator < MiniTest::Unit::TestCase
     assert_equal [:main_window],        TRANSLATOR.rubyize([KAXMainWindowAttribute])
     assert_equal [:string_for_range],   TRANSLATOR.rubyize([KAXStringForRangeParameterizedAttribute])
     assert_equal [:subrole, :children], TRANSLATOR.rubyize([KAXSubroleAttribute, KAXChildrenAttribute])
-  end
 
-  def test_rubyize_doesnt_eat_original_data
     array = [KAXTitleAttribute, KAXMainWindowAttribute]
     TRANSLATOR.rubyize array
-    assert_equal [KAXTitleAttribute, KAXMainWindowAttribute], array
+    assert_equal [KAXTitleAttribute, KAXMainWindowAttribute], array, 'Should not eat original data'
   end
 
   def test_classify
