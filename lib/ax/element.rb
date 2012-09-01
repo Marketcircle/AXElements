@@ -21,8 +21,6 @@ require 'accessibility/pp_inspector'
 class AX::Element
   include Accessibility::PPInspector
 
-  TRANSLATOR = Accessibility::Translator.instance
-
   # @param ref [Accessibility::Element]
   def initialize ref
     @ref = ref
@@ -481,6 +479,10 @@ class AX::Element
   # @private
   # @return [String]
   EQUALS = '='
+
+  # @private
+  # @return [Accessibility::Translator]
+  TRANSLATOR = Accessibility::Translator.instance
 
 end
 
