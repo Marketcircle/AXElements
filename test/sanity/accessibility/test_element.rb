@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 require 'test/helper'
-require 'accessibility/core'
+require 'accessibility/element'
 
 
 class TestAccessibilityElement < MiniTest::Unit::TestCase
@@ -270,7 +270,7 @@ class TestAccessibilityElement < MiniTest::Unit::TestCase
 
   def assert_error args, should_raise: klass, with_fragments: msgs
     e = assert_raises(klass) { (@derp || app).handle_error *args }
-    assert_match /test_core.rb:272/, e.backtrace.first unless RUNNING_COMPILED
+    assert_match /test_element.rb:272/, e.backtrace.first unless RUNNING_COMPILED
     msgs.each { |msg| assert_match msg, e.message }
   end
 
