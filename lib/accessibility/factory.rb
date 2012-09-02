@@ -1,5 +1,6 @@
 require 'accessibility/core'
 require 'accessibility/translator'
+require 'accessibility/statistics'
 
 ##
 # Namespace container for all the accessibility objects.
@@ -27,6 +28,7 @@ module Accessibility::Element
   #
   # @return [AX::Element]
   def to_ruby
+    STATS.increment :FactoryToRuby
     if roll = self.role
       roll = TRANSLATOR.unprefix roll
       if attributes.include? KAXSubroleAttribute
