@@ -11,4 +11,4 @@ desc 'Compile C extensions'
 task :ext => 'ext:key_coder'
 
 desc 'Run all tests'
-task :test => ['test:sanity', 'test:integration', 'test:cruby']
+task :test => ['test:core', 'test:sanity', 'test:integration', 'test:cruby']

@@ -1,4 +1,4 @@
-require 'accessibility/element'
+require 'accessibility/core'
 require 'accessibility/translator'
 
 ##
@@ -11,7 +11,7 @@ module AX; class Element; end end
 # These extensions only make sense in the context of the high level API
 # and it requires knowledge of both layers, so the code has been placed
 # in its own file.
-class Accessibility::Element
+module Accessibility::Element
 
   ##
   # @todo Should we handle cases where a subrole has a value of

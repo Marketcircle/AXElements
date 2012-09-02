@@ -23,6 +23,12 @@ task :clobber => :clobber_fixture
 
 require 'rake/testtask'
 namespace :test do
+  Rake::TestTask.new(:core) do |t|
+    t.libs   << '.'
+    t.pattern = 'test/test_core.rb'
+  end
+  task :core => [:ext, :fixture]
+
   Rake::TestTask.new(:sanity) do |t|
     t.libs   << '.'
     t.pattern = "test/sanity/**/test_*.rb"

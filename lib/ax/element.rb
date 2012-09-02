@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-require 'accessibility/element'
+require 'accessibility/core'
 require 'accessibility/factory'
 require 'accessibility/translator'
 require 'accessibility/enumerators'

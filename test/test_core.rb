@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 require 'test/helper'
-require 'accessibility/element'
+require 'accessibility/core'
 
 
 class TestAccessibilityElement < MiniTest::Unit::TestCase
@@ -12,7 +12,7 @@ class TestAccessibilityElement < MiniTest::Unit::TestCase
     }
   end
 
-  def app;         @@app         ||= Accessibility::Element.new REF           end
+  def app;         @@app         ||= REF                                      end
   def window;      @@window      ||= app.attribute(KAXWindowsAttribute).first end
   def slider;      @@slider      ||= child KAXSliderRole                      end
   def check_box;   @@check_box   ||= child KAXCheckBoxRole                    end
@@ -270,12 +270,12 @@ class TestAccessibilityElement < MiniTest::Unit::TestCase
 
   def assert_error args, should_raise: klass, with_fragments: msgs
     e = assert_raises(klass) { (@derp || app).handle_error *args }
-    assert_match /test_element.rb:272/, e.backtrace.first unless RUNNING_COMPILED
+    assert_match /test_core.rb:272/, e.backtrace.first unless RUNNING_COMPILED
     msgs.each { |msg| assert_match msg, e.message }
   end
 
   def test_handle_errors
-    app_inspect = Regexp.new(Regexp.escape(app.instance_variable_get(:@ref).inspect))
+    app_inspect = Regexp.new(Regexp.escape(app.inspect))
 
        assert_error [KAXErrorFailure],
       should_raise: RuntimeError,

@@ -33,38 +33,26 @@ require 'accessibility/statistics'
 
 ##
 # Core abstraction layer that that interacts with OS X Accessibility
-# APIs (AXAPI). This provides a generic object oriented wrapper around
-# the low level APIs. Each {Accessibility::Element} is initialized with
-# an `AXUIElementRef` object, which is the object being wrapped.
+# APIs (AXAPI). This provides a generic object oriented mixin for
+# the low level APIs. In MacRuby, bridge support turns C structs into
+# "first class" objects. To that end, instead of adding an extra allocation
+# to wrap the object, we will simply add a mixin to add some basic
+# functionality. A more Ruby-ish wrapper is available through {AX::Element}.
+# The complication in making the mixin more fully featured is that the class
+# which we mix into is abstract and shared for a number of different C structs.
 #
-# This class is responsible for handling pointers and dealing with error
+# This module is responsible for handling pointers and dealing with error
 # codes for functions that make use of them. The methods in this class
-# provide a clean Ruby-ish interface to the low level CoreFoundation
-# functions that compose AXAPI. In doing this, we can hide away the need
-# to work with pointers and centralize how AXAPI related errors are handled
-# (since CoreFoundation uses a different pattern for that sort of thing).
+# provide a cleaner, more Ruby-ish interface to the low level CoreFoundation
+# functions that compose AXAPI than are natively available.
 #
 # @example
 #
-#   element = Accessibility::Element.new AXUIElementCreateSystemWide()
+#   element = AXUIElementCreateSystemWide()
 #   element.attributes                      # => ["AXRole", "AXChildren", ...]
 #   element.size_of "AXChildren"            # => 12
 #
-class Accessibility::Element
-
-  # @param [AXUIElementRef]
-  def initialize ref
-    @ref = ref
-  end
-
-  # @return [Boolean]
-  def == other
-    if other.is_a? Accessibility::Element
-      @ref == other.instance_variable_get(:@ref)
-    else
-      @ref == other
-    end
-  end
+module Accessibility::Element
 
 
   # @!group Attributes
@@ -87,7 +75,7 @@ class Accessibility::Element
       STATS.increment :AttributeNames
 
       ptr  = Pointer.new ARRAY
-      code = AXUIElementCopyAttributeNames(@ref, ptr)
+      code = AXUIElementCopyAttributeNames(self, ptr)
 
       case code
       when 0                        then ptr.value
@@ -121,7 +109,7 @@ class Accessibility::Element
     STATS.increment :AttributeValue
 
     ptr  = Pointer.new :id
-    code = AXUIElementCopyAttributeValue(@ref, name, ptr)
+    code = AXUIElementCopyAttributeValue(self, name, ptr)
 
     case code
     when 0
@@ -154,8 +142,8 @@ class Accessibility::Element
   # Shortcut for getting the `KAXSubroleAttribute`.
   #
   # @example
-  #   subrole  # => "AXDialog"
-  #   subrole  # => nil
+  #   window.subrole    # => "AXDialog"
+  #   web_area.subrole  # => nil
   #
   # @return [String,nil]
   def subrole
@@ -182,8 +170,8 @@ class Accessibility::Element
   #
   # @example
   #
-  #   value  # => "Mark Rada"
-  #   value  # => 42
+  #   label.value   # => "Mark Rada"
+  #   slider.value  # => 42
   #
   def value
     STATS.increment :Value
@@ -208,7 +196,7 @@ class Accessibility::Element
       STATS.increment :PID
 
       ptr  = Pointer.new :int
-      code = AXUIElementGetPid(@ref, ptr)
+      code = AXUIElementGetPid(self, ptr)
 
       case code
       when 0
@@ -230,7 +218,7 @@ class Accessibility::Element
   # be valid.
   def invalid?
     STATS.increment :Invalid?
-    AXUIElementCopyAttributeValue(@ref, KAXRoleAttribute, Pointer.new(:id)) ==
+    AXUIElementCopyAttributeValue(self, KAXRoleAttribute, Pointer.new(:id)) ==
       KAXErrorInvalidUIElement
   end
 
@@ -256,7 +244,7 @@ class Accessibility::Element
     STATS.increment :AttributeSizeOf
 
     ptr  = Pointer.new :long_long
-    code = AXUIElementGetAttributeValueCount(@ref, name, ptr)
+    code = AXUIElementGetAttributeValueCount(self, name, ptr)
 
     case code
     when 0
@@ -286,7 +274,7 @@ class Accessibility::Element
     STATS.increment :Writable?
 
     ptr  = Pointer.new :bool
-    code = AXUIElementIsAttributeSettable(@ref, name, ptr)
+    code = AXUIElementIsAttributeSettable(self, name, ptr)
 
     case code
     when 0
@@ -320,7 +308,7 @@ class Accessibility::Element
   # @param name [String]
   def set name, value
     STATS.increment :AttributeSet
-    code = AXUIElementSetAttributeValue(@ref, name, value.to_ax)
+    code = AXUIElementSetAttributeValue(self, name, value.to_ax)
     if code.zero?
       value
     else
@@ -353,7 +341,7 @@ class Accessibility::Element
       STATS.increment :ParameterizedAttributes
 
       ptr  = Pointer.new ARRAY
-      code = AXUIElementCopyParameterizedAttributeNames(@ref, ptr)
+      code = AXUIElementCopyParameterizedAttributeNames(self, ptr)
 
       case code
       when 0                                         then ptr.value
@@ -385,7 +373,7 @@ class Accessibility::Element
     STATS.increment :ParameterizedAttribute
 
     ptr  = Pointer.new :id
-    code = AXUIElementCopyParameterizedAttributeValue(@ref, name, param.to_ax, ptr)
+    code = AXUIElementCopyParameterizedAttributeValue(self, name, param.to_ax, ptr)
 
     case code
     when 0
@@ -415,7 +403,7 @@ class Accessibility::Element
       STATS.increment :Actions
 
       ptr  = Pointer.new ARRAY
-      code = AXUIElementCopyActionNames(@ref, ptr)
+      code = AXUIElementCopyActionNames(self, ptr)
 
       case code
       when 0                        then ptr.value
@@ -441,7 +429,7 @@ class Accessibility::Element
   # @return [Boolean]
   def perform action
     STATS.increment :Perform
-    code = AXUIElementPerformAction(@ref, action)
+    code = AXUIElementPerformAction(self, action)
     if code.zero?
       true
     else
@@ -474,7 +462,7 @@ class Accessibility::Element
   def post events
     events.each do |event|
       STATS.increment :KeyboardEvent
-      code = AXUIElementPostKeyboardEvent(@ref, 0, *event)
+      code = AXUIElementPostKeyboardEvent(self, 0, *event)
       handle_error code unless code.zero?
       sleep @@key_rate
     end
@@ -553,7 +541,7 @@ class Accessibility::Element
     STATS.increment :ElementAtPosition
 
     ptr  = Pointer.new ELEMENT
-    code = AXUIElementCopyElementAtPosition(@ref, *point.to_point, ptr)
+    code = AXUIElementCopyElementAtPosition(self, *point.to_point, ptr)
 
     case code
     when 0
@@ -583,7 +571,7 @@ class Accessibility::Element
     NSRunLoop.currentRunLoop.runUntilDate Time.now
     if NSRunningApplication.runningApplicationWithProcessIdentifier pid
       STATS.increment :CreateApplication
-      Accessibility::Element.new AXUIElementCreateApplication(pid)
+      AXUIElementCreateApplication(pid)
     else
       raise ArgumentError, 'pid must belong to a running application'
     end
@@ -604,7 +592,7 @@ class Accessibility::Element
   # @return [AXUIElementRef]
   def self.system_wide
     STATS.increment :SystemWide
-    Accessibility::Element.new AXUIElementCreateSystemWide()
+    AXUIElementCreateSystemWide()
   end
 
   ##
@@ -632,7 +620,7 @@ class Accessibility::Element
   # @return [Number]
   def set_timeout_to seconds
     STATS.increment :SetTimeout
-    case code = AXUIElementSetMessagingTimeout(@ref, seconds)
+    case code = AXUIElementSetMessagingTimeout(self, seconds)
     when 0 then seconds
     else handle_error code, seconds
     end
@@ -821,9 +809,9 @@ module Accessibility::ValueUnwrapper
   #
   # @return [Boxed]
   def to_ruby
-    STATS.increment :ToRuby
+    STATS.increment :UnwrapperToRuby
     type = AXValueGetType(self)
-    return Accessibility::Element.new(self) if type.zero?
+    return super if type.zero?
 
     STATS.increment :Unwrap
     ptr = Pointer.new BOX_TYPES[type]
@@ -834,8 +822,8 @@ end
 
 # hack to find the __NSCFType class
 klass = AXUIElementCreateSystemWide().class
+klass.send :include, Accessibility::Element
 klass.send :include, Accessibility::ValueUnwrapper
-
 
 ##
 # AXElements extensions to the `Boxed` class. The `Boxed` class is
