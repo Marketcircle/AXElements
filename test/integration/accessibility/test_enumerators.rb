@@ -49,7 +49,7 @@ end
 
 
 class TestAccessibilityEnumeratorsDepthFirst < MiniTest::Unit::TestCase
-  include Accessibility::Core
+  include Accessibility::Element
 
   def app
     @@app ||= AX::Application.new REF

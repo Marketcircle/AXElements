@@ -1,3 +1,6 @@
+require 'test/runner'
+require 'mouse'
+
 class TestMouseModule < MiniTest::Unit::TestCase
 
   def distance point1, point2

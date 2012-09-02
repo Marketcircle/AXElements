@@ -27,7 +27,7 @@ class AX::Application < AX::Element
       @app =
         NSRunningApplication.runningApplicationsWithBundleIdentifier(arg).first ||
         (
-          NSRunLoop.runUntilDate Time.now # spin the run loop
+          spin_run_loop
           NSWorkspace.sharedWorkspace.runningApplications.find { |app|
             app.localizedName == arg
           }
@@ -67,7 +67,7 @@ class AX::Application < AX::Element
   # to the dynamic `#focused?` method, but might make more sense to use
   # in some cases.
   def active?
-    @ref.spin_run_loop
+    spin_run_loop
     @app.active?
   end
   alias_method :focused,  :active?
@@ -76,14 +76,14 @@ class AX::Application < AX::Element
   ##
   # Ask the app whether or not it is hidden.
   def hidden?
-    @ref.spin_run_loop
+    spin_run_loop
     @app.hidden?
   end
 
   ##
   # Ask the app whether or not it is still running.
   def terminated?
-    @ref.spin_run_loop
+    spin_run_loop
     @app.terminated?
   end
 
@@ -287,6 +287,11 @@ class AX::Application < AX::Element
 
 
   private
+
+  # @return [nil]
+  def spin_run_loop
+    NSRunLoop.currentRunLoop.runUntilDate Time.now
+  end
 
   # @return [NSBundle]
   def bundle
