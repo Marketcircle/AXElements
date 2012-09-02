@@ -101,7 +101,7 @@ module Accessibility::Element
   # @example
   #   window.attribute KAXTitleAttribute    # => "HotCocoa Demo"
   #   window.attribute KAXSizeAttribute     # => #<CGSize width=10.0 height=88>
-  #   window.attribute KAXParentAttribute   # => #<Accessibility::Element>
+  #   window.attribute KAXParentAttribute   # => #<AXUIElementRef>
   #   window.attribute KAXNoValueAttribute  # => nil
   #
   # @param name [String]
@@ -159,7 +159,7 @@ module Accessibility::Element
   #
   #   app.children # => [MenuBar, Window, ...]
   #
-  # @return [Array<Accessibility::Element>]
+  # @return [Array<AXUIElementRef>]
   def children
     STATS.increment :Children
     attribute KAXChildrenAttribute
@@ -563,7 +563,7 @@ module Accessibility::Element
   #
   # @example
   #
-  #   app = Element.application_for 54743  # => #<Accessibility::Element>
+  #   app = Element.application_for 54743  # => #<AXUIElementRef>
   #
   # @param pid [Number]
   # @return [AXUIElementRef]

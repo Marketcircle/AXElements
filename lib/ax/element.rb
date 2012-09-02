@@ -13,7 +13,7 @@ require 'accessibility/pp_inspector'
 # @abstract
 #
 # The abstract base class for all accessibility objects. `AX::Element`
-# composes low level {Accessibility::Element} objects into a more Rubyish
+# composes low level {AXUIElementRef} objects into a more Rubyish
 # interface.
 #
 # This abstract base class provides generic functionality that all
@@ -21,7 +21,7 @@ require 'accessibility/pp_inspector'
 class AX::Element
   include Accessibility::PPInspector
 
-  # @param ref [Accessibility::Element]
+  # @param ref [AXUIElementRef]
   def initialize ref
     @ref = ref
   end
