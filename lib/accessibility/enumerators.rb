@@ -19,14 +19,11 @@ module Accessibility::Enumerators
     # @yield An element in the UI hierarchy
     # @yieldparam [AX::Element,AXUIElementRef]
     def each
-      # @todo mutate the array less, perhaps use an index instead
-      #       of #shift, then the array only grows
       queue = [@root]
       until queue.empty?
-        queue.shift.children.each do |x|
-          queue << x
-          yield x
-        end
+        kids = queue.shift.children
+        kids.each do |x| yield x end
+        queue.concat kids
       end
     end
 
