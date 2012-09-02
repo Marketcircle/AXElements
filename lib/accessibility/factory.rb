@@ -28,7 +28,18 @@ module Accessibility::Element
   #
   # @return [AX::Element]
   def to_ruby
-    STATS.increment :FactoryToRuby
+    type = AXValueGetType(self)
+    if type.zero?
+      to_element
+    else
+      to_box type
+    end
+  end
+
+  private
+
+  def to_element
+    STATS.increment :Factory
     if roll = self.role
       roll = TRANSLATOR.unprefix roll
       if attributes.include? KAXSubroleAttribute
@@ -45,6 +56,13 @@ module Accessibility::Element
     else # failsafe in case object dies before we get the role
       AX::Element.new self
     end
+  end
+
+  def to_box type
+    STATS.increment :Unwrap
+    ptr = Pointer.new BOX_TYPES[type]
+    AXValueGetValue(self, type, ptr)
+    ptr.value.to_ruby
   end
 
 
