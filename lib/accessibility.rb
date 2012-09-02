@@ -21,10 +21,10 @@ class << Accessibility
 
   ##
   # @note Bundle identifiers are case-sensitive.
-  # @todo Move to {AX::Aplication#initialize} eventually.
+  # @deprecated Use {AX::Aplication#initialize} instead.
   #
   # This is the standard way of creating an application object. It will
-  # launch the app if it is not already running and then create the
+  # launch the app if it is not already running and create the
   # accessibility object.
   #
   # However, this method is a bit of a hack in cases where the app is not
@@ -41,11 +41,12 @@ class << Accessibility
   # @example
   #
   #   application_with_bundle_identifier 'com.apple.mail' # wait a few seconds
-  #   application_with_bundle_identifier 'com.marketcircle.Daylite'
+  #   application_with_bundle_identifier 'com.marketcircle.Daylite4'
   #
-  # @param [String] bundle a bundle identifier
+  # @param bundle [String] a bundle identifier
   # @return [AX::Application,nil]
   def application_with_bundle_identifier bundle
+    $stderr.puts 'DEPRECATED: Use AX::Application.new instead'
     if app_running?(bundle) || launch_application(bundle)
       10.times do
         if app_running?(bundle) && (app = try_wrapping(bundle))
