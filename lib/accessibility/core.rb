@@ -920,11 +920,11 @@ class NSArray
   #
   # @return [Array]
   def to_ruby
-    out = Array.new(self.size)
+    @out = Array.new(self.size)
     Dispatch::Queue.concurrent.apply(self.size) do |index|
-      out[index] = self[index].to_ruby
+      @out[index] = self[index].to_ruby
     end
-    out
+    @out
   end
 end
 
