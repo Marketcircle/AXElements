@@ -16,7 +16,7 @@ class TestAXElement < MiniTest::Unit::TestCase
   end
 
   def test_search_plural
-    result = app.search(:windows)
+    result = app.window.search(:buttons)
     assert_kind_of NSArray, result
   end
 
