@@ -282,7 +282,7 @@ class AX::Application < AX::Element
   # @param point [#to_point]
   # @return [AX::Element,nil]
   def element_at point
-    process @ref.element_at point
+    @ref.element_at(point).to_ruby
   end
 
 
