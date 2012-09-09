@@ -14,8 +14,20 @@ class TestAccessibilityDSL < MiniTest::Unit::TestCase
 
   def text_area;       @@text_area ||= app.main_window.text_area                             end
   def pop_up;          @@pop_up    ||= app.main_window.pop_up                                end
-  def pref_window;     app.children.find { |x| x.attribute(:title) == 'Preferences'   }      end
-  def spelling_window; app.children.find { |x| x.attribute(:title).to_s.match(/^Spelling/) } end
+  def pref_window
+    app.children.find { |x|
+      if x.respond_to? :title
+        x.attribute(:title) == 'Preferences'
+      end
+    }
+  end
+  def spelling_window
+    app.children.find { |x|
+      if x.respond_to? :title
+        x.attribute(:title).to_s.match(/^Spelling/)
+      end
+    }
+  end
 
   def try_typing string, expected = nil
     expected = string unless expected
