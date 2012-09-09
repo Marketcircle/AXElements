@@ -112,19 +112,27 @@ class Accessibility::Qualifier
   end
 
   def match attr, regexp, element
-    element.attribute(attr).to_s.match regexp
+    if element.attributes.include? attr
+      element.attribute(attr).to_s.match regexp
+    end
   end
 
   def equality attr, value, element
-    element.attribute(attr) == value
+    if element.attributes.include? attr
+      element.attribute(attr) == value
+    end
   end
 
   def parameterized_match attr, param, regexp, element
-    element.parameterized_attribute(attr, param).to_s.match regexp
+    if element.parameterized_attributes.include? attr
+      element.parameterized_attribute(attr, param).to_s.match regexp
+    end
   end
 
   def parameterized_equality attr, param, value, element
-    element.parameterized_attribute(attr, param) == value
+    if element.parameterized_attributes.include? attr
+      element.parameterized_attribute(attr, param) == value
+    end
   end
 
   def block_check element
