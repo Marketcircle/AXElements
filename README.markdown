@@ -1,4 +1,4 @@
-# AXElements
+# AXElements 
 
 AXElements is a DSL abstraction built on top of the Mac OS X
 Accessibility and CGEvent APIs that allows code to be written in a
@@ -123,6 +123,8 @@ as some of the technical the technical underpinnings of AXElements.
 
 
 ## Development
+
+[![Code Climate](https://codeclimate.com/badge.png)](https://codeclimate.com/github/Marketcircle/AXElements)
 
 AXElements has reached a point where the main focus is stability,
 features, and documentation. It will be out of this world, so we're
