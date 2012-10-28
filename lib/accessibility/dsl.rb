@@ -696,6 +696,19 @@ module Accessibility::DSL
   end
   alias_method :capture_screen, :screenshot
 
+  ##
+  # See {Accessibility::ScreenRecorder.record} for details.
+  #
+  # @param file [String]
+  # @return [String]
+  def record file = nil, &block
+    require 'accessibility/screen_recorder'
+    if file
+      Accessibility::ScreenRecorder.record file, &block
+    else
+      Accessibility::ScreenRecorder.record &block
+    end
+  end
 
   # @!endgroup
 
