@@ -81,7 +81,7 @@ Then you can install AXElements either from RubyGems or from source. The
 RubyGems install is as usual, but you may need `sudo` power:
 
 ```bash
-    gem install AXElements
+    gem install AXElements --pre
 ```
 
 Or you can install from source:
