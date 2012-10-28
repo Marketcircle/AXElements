@@ -28,7 +28,7 @@ style that describes user interactions.
     [ 'test/helper.rb' ]
 
 
-  s.add_development_dependency 'minitest',  '~> 3.3'
-  s.add_development_dependency 'yard',      '~> 0.8.2'
+  s.add_development_dependency 'minitest',  '~> 4.1'
+  s.add_development_dependency 'yard',      '~> 0.8.3'
   s.add_development_dependency 'redcarpet', '~> 1.17'
 end
