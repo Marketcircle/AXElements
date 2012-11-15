@@ -46,7 +46,7 @@ class << Accessibility
   # @param bundle [String] a bundle identifier
   # @return [AX::Application,nil]
   def application_with_bundle_identifier bundle
-    $stderr.puts 'DEPRECATED: Use AX::Application.new instead'
+    $stderr.puts "#{__method__} is DEPRECATED: Use AX::Application.new instead"
     if app_running?(bundle) || launch_application(bundle)
       10.times do
         if app_running?(bundle) && (app = try_wrapping(bundle))
@@ -75,7 +75,7 @@ class << Accessibility
   # @param [String] name name of the application to launch
   # @return [AX::Application,nil]
   def application_with_name name
-    $stderr.puts 'DEPRECATED: Use AX::Application.new instead'
+    $stderr.puts "#{__method__} is DEPRECATED: Use AX::Application.new instead"
     AX::Application.new name
   end
 
