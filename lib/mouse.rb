@@ -15,7 +15,7 @@ module Mouse
   extend self
 
   ##
-  # Number of animation steps per second.
+  # Number of animation steps per second
   #
   # @return [Number]
   FPS     = 120
@@ -24,13 +24,13 @@ module Mouse
   # @note We keep the number as a rational to try and avoid rounding
   #       error introduced by the floats, especially MacRuby floats.
   #
-  # Smallest unit of time allowed for an animation step.
+  # Smallest unit of time allowed for an animation step
   #
   # @return [Number]
   QUANTUM = Rational(1, FPS)
 
   ##
-  # Available constants for the type of units to use when scrolling.
+  # Available constants for the type of units to use when scrolling
   #
   # @return [Hash{Symbol=>Fixnum}]
   UNIT = {
@@ -40,7 +40,9 @@ module Mouse
 
   ##
   # The coordinates of the mouse using the flipped coordinate system
-  # (origin in top left).
+  #
+  # Flipped coordinates have the origin in top left corner of the
+  # primary screen.
   #
   # @return [CGPoint]
   def current_position
@@ -48,7 +50,7 @@ module Mouse
   end
 
   ##
-  # Move the mouse from the current position to the given point.
+  # Move the mouse from the current position to the given point
   #
   # @param point [CGPoint]
   # @param duration [Float] animation duration, in seconds
@@ -57,7 +59,7 @@ module Mouse
   end
 
   ##
-  # Click and drag from the current position to the given point.
+  # Click and drag from the current position to the given point
   #
   # @param point [CGPoint]
   # @param duration [Float] animation duration, in seconds
@@ -72,15 +74,17 @@ module Mouse
   ##
   # @todo Need to double check to see if I introduce any inaccuracies.
   #
-  # Scroll at the current position the given amount of units.
+  # Scroll at the current position the given amount of units
   #
   # Scrolling too much or too little in a period of time will cause the
   # animation to look weird, possibly causing the app to mess things up.
   #
-  # @param amount [Fixnum] number of units to scroll; positive to scroll
-  #   up or negative to scroll down
-  # @param duration [Float] animation duration, in seconds
-  # @param units [Symbol] `:line` scrolls by line, `:pixel` scrolls by pixel
+  # A positive `amonut` to scroll will scroll up and a negative `amount`
+  # will scroll down.
+  #
+  # @param amount [Fixnum] number of units to scroll
+  # @param duration [Float] in seconds
+  # @param units [Symbol] must be either `:line` or `:pixel`
   def scroll amount, duration = 0.2, units = :line
     units   = UNIT[units] || raise(ArgumentError, "#{units} is not a valid unit")
     steps   = (FPS * duration).round
@@ -95,8 +99,11 @@ module Mouse
   end
 
   ##
-  # Perform a down click. You should follow this up with a call to
-  # {#click_up} to finish the click.
+  # @api semipublic
+  #
+  # Perform a down click
+  #
+  # You should follow this up with a call to {#click_up} to finish the click.
   #
   # @param point [CGPoint]
   # @param duration [Number]
@@ -107,8 +114,12 @@ module Mouse
   end
 
   ##
-  # Perform an up click. This should only be called after a call to
-  # {#click_down} to finish the click event.
+  # @api semipublic
+  #
+  # Perform an up click
+  #
+  # This should only be called after a call to {#click_down} to finish
+  # the click event.
   #
   # @param point [CGPoint]
   def click_up point = current_position
@@ -117,10 +128,12 @@ module Mouse
   end
 
   ##
-  # Standard secondary click. Default position is the current position.
+  # Standard secondary click, sometimes called a "right click"
+  #
+  # Default position is the current position.
   #
   # @param point [CGPoint]
-  # @param duration [Number]
+  # @param duration [Number] in seconds
   def secondary_click point = current_position, duration = 12
     event = new_event KCGEventRightMouseDown, point, KCGMouseButtonRight
     post event
@@ -153,8 +166,6 @@ module Mouse
   end
 
   ##
-  # Click with an arbitrary mouse button, using numbers to represent
-  # the mouse button. At the time of writing, the documented values are:
   # A standard double click
   #
   # Defaults to clicking at the current position.
@@ -173,6 +184,12 @@ module Mouse
   def triple_click point = current_position
     multi_click 3, point
   end
+
+  ##
+  # Click with an arbitrary mouse button
+  #
+  # Numbers are used to map the mouse buttons. At the time of writing,
+  # the documented values are:
   #
   #  - KCGMouseButtonLeft   = 0
   #  - KCGMouseButtonRight  = 1
