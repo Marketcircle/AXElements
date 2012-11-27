@@ -26,7 +26,8 @@
  *  @return [Hash{String=>Number}]
  */
 
-static VALUE
+static
+VALUE
 keycoder_dynamic_mapping()
 {
 
@@ -91,7 +92,8 @@ keycoder_dynamic_mapping()
  *  @return [true]
  */
 
-static VALUE
+static
+VALUE
 keycoder_post_event(VALUE self, VALUE event)
 {
   VALUE code  = rb_ary_entry(event, 0);
