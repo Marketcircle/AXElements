@@ -131,16 +131,21 @@ module Mouse
   alias_method :right_click, :secondary_click
 
   ##
-  # A standard double click. Defaults to clicking at the current position.
+  # @api semipublic
   #
+  # Generate a multi click event at the given position
+  #
+  # `num_clicks` is the number of clicks for the event, where a value of `2'
+  # corresponds to a double click, `3` corresponds to a triple click, etc.
+  #
+  # However, I've only tested with a double and triple click, for which you
+  # can just call {#double_click} and {#triple_click} instead.
+  #
+  # @param num_clicks [Fixnum]
   # @param point [CGPoint]
-  def double_click point = current_position
+  def multi_click num_clicks, point = current_position
     event = new_event KCGEventLeftMouseDown, point, KCGMouseButtonLeft
-    post event
-    set_type  event, KCGEventLeftMouseUp
-    post event
-
-    CGEventSetIntegerValueField(event, KCGMouseEventClickState, 2)
+    CGEventSetIntegerValueField(event, KCGMouseEventClickState, num_clicks)
     set_type  event, KCGEventLeftMouseDown
     post event
     set_type  event, KCGEventLeftMouseUp
@@ -150,6 +155,24 @@ module Mouse
   ##
   # Click with an arbitrary mouse button, using numbers to represent
   # the mouse button. At the time of writing, the documented values are:
+  # A standard double click
+  #
+  # Defaults to clicking at the current position.
+  #
+  # @param point [CGPoint]
+  def double_click point = current_position
+    multi_click 2, point
+  end
+
+  ##
+  # A standard triple click
+  #
+  # Defaults to clicking at the current position.
+  #
+  # @param point [CGPoint]
+  def triple_click point = current_position
+    multi_click 3, point
+  end
   #
   #  - KCGMouseButtonLeft   = 0
   #  - KCGMouseButtonRight  = 1
