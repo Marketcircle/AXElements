@@ -581,6 +581,19 @@ module Accessibility::DSL
     sleep wait
   end
 
+  ##
+  # Perform a triple click action
+  #
+  # If an argument is provided then the mouse will move to that point
+  # first; the argument must respond to `#to_point`.
+  #
+  # @param obj [#to_point]
+  def triple_click obj = nil, wait = 0.2
+    move_mouse_to obj, wait: 0 if obj
+    Mouse.triple_click
+    sleep wait
+  end
+
 
   # @!group Debug Helpers
 
