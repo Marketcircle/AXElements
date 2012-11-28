@@ -11,11 +11,52 @@ require 'accessibility/string'
 class AX::Application < AX::Element
   include Accessibility::String
 
+  class << self
+    ##
+    # Asynchronously launch an application with given the bundle identifier
+    #
+    # @param bundle [String] bundle identifier for the app
+    # @return [Boolean]
+    def launch bundle
+      NSWorkspace.sharedWorkspace.launchAppWithBundleIdentifier bundle,
+                                                       options: NSWorkspaceLaunchAsync,
+                                additionalEventParamDescriptor: nil,
+                                              launchIdentifier: nil
+    end
+  end
+
   ##
+  # Standard way of creating a new application object
+  #
   # You can initialize an application object with either the process
   # identifier (pid) of the application, the name of the application,
   # an `NSRunningApplication` instance for the application, or an
   # accessibility (`AXUIElementRef`) token.
+  #
+  # Given a PID, we try to lookup the application and wrap it.
+  #
+  # Given an `NSRunningApplication` instance, we simply wrap it.
+  #
+  # Given a string we do some complicated magic to try and figure out if
+  # the string is a bundle identifier or the localized name of the
+  # application. Given a bundle identifier we try to launch the app if
+  # it is not already running, given a localized name we search the running
+  # applications for the app. We wrap what we get back if we get anything
+  # back.
+  #
+  # Note however, given a bundle identifier to launch the application our
+  # implementation is a bit of a hack; I've tried to register for
+  # notifications, launch synchronously, etc., but there is always a problem
+  # with accessibility not being ready right away, so we will poll the app
+  # to see when it is ready with a timeout of ~10 seconds.
+  #
+  # If this method fails to find an app then an exception will be raised.
+  #
+  # @example
+  #
+  #   AX::Application.new 'com.apple.mail'
+  #   AX::Application.new 'Mail'
+  #   AX::Application.new 43567
   #
   # @param arg [Number,String,NSRunningApplication]
   def initialize arg
@@ -24,14 +65,29 @@ class AX::Application < AX::Element
       super Accessibility::Element.application_for arg
       @app = NSRunningApplication.runningApplicationWithProcessIdentifier arg
     when String
-      @app =
-        NSRunningApplication.runningApplicationsWithBundleIdentifier(arg).first ||
-        (
-          spin_run_loop
-          NSWorkspace.sharedWorkspace.runningApplications.find { |app|
-            app.localizedName == arg
-          }
+      until @app
+        @app =
+         (
+          app = NSRunningApplication.runningApplicationsWithBundleIdentifier arg
+          app.first
+
+         ) || (
+           spin_run_loop
+           NSWorkspace.sharedWorkspace.runningApplications.find { |app|
+             app.localizedName == arg
+           }
+
+         ) || (
+           count ||= 0
+           if AX::Application.launch arg
+             sleep 1
+             count += 1
+             raise "#{arg} failed to launch in time" if count == 10
+           else
+             raise "#{arg} is not a registered bundle identifier for the system"
+           end
         )
+      end
       super Accessibility::Element.application_for @app.processIdentifier
     when NSRunningApplication
       super Accessibility::Element.application_for arg.processIdentifier
