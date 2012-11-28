@@ -73,7 +73,7 @@ class AX::Element
   #
   # @return [Array<AX::Element>]
   def children
-    attribute :children
+    @ref.children
   end
 
   ##

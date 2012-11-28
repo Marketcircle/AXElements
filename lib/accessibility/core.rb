@@ -159,7 +159,9 @@ module Accessibility::Element
   # @return [Array<AXUIElementRef>]
   def children
     STATS.increment :Children
-    attribute KAXChildrenAttribute
+    ptr  = Pointer.new :id
+    code = AXUIElementCopyAttributeValue(self, KAXChildrenAttribute, ptr)
+    code.zero? ? ptr.value.to_ruby : []
   end
 
   ##
