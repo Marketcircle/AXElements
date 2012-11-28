@@ -13,6 +13,13 @@ class TestAXApplication < MiniTest::Unit::TestCase
     assert_equal app, AX::Application.new(running_app)
   end
 
+  def test_initialize_causing_app_to_launch
+    app = AX::Application.new('com.apple.Grab')
+    assert_kind_of AX::Application, app
+  ensure
+    app.terminate if app
+  end
+
   def test_can_set_focus_and_blur_app # lol, blur
     assert app.set :focused, false
     refute app.active?
