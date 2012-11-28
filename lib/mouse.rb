@@ -172,6 +172,9 @@ module Mouse
   #
   # @param point [CGPoint]
   def double_click point = current_position
+    # some apps still expect to receive the single click event first
+    # and then the double click event
+    multi_click 1, point
     multi_click 2, point
   end
 
@@ -182,6 +185,9 @@ module Mouse
   #
   # @param point [CGPoint]
   def triple_click point = current_position
+    # some apps still expect to receive the single click event first
+    # and then the double and triple click events
+    double_click
     multi_click 3, point
   end
 
