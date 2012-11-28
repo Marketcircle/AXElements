@@ -102,7 +102,7 @@ class << Accessibility
   # @return [AX::Application]
   def try_wrapping bundle
     AX::Application.new bundle
-  rescue RuntimeError => e
+  rescue RuntimeError
     nil
   end
 
