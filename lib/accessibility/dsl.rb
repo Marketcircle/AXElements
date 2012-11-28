@@ -738,7 +738,7 @@ module Accessibility::DSL
   # @param id [String]
   # @return [AX::Application,nil]
   def app_with_bundle_identifier id
-    Accessibility.application_with_bundle_identifier id
+    AX::Application.new id
   end
   alias_method :app_with_bundle_id, :app_with_bundle_identifier
   alias_method :launch,             :app_with_bundle_identifier
