@@ -25,7 +25,6 @@ module Accessibility::Enumerators
         kids.each do |x| yield x end
         queue.concat kids
       end
-      []
     end
 
     ##
