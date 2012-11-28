@@ -24,6 +24,17 @@ class TestAXApplication < MiniTest::Unit::TestCase
     assert_match /\sfocused\[(?:✔|✘)\]/, app.inspect
   end
 
+  def tset_action_methods_forward_to_perform
+    def app.perform name
+      [:cracker_jacks, name]
+    end
+
+    assert_equal [:cracker_jacks, :terminate], app.terminate
+    assert_equal [:cracker_jacks, :force_terminate], app.terminate!
+    assert_equal [:cracker_jacks, :hide], app.hide
+    assert_equal [:cracker_jacks, :unhide], app.unhide
+  end
+
   def test_terminate
     got_called = false
     mock       = Object.new

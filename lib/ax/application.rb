@@ -198,6 +198,45 @@ class AX::Application < AX::Element
 
   # @group Actions
 
+  ##
+  # @note This is often async and may return before the action is completed
+  #
+  # Ask the app to quit
+  #
+  # @return [Boolean]
+  def terminate
+    perform :terminate
+  end
+
+  ##
+  # @note This is often async and may return before the action is completed
+  #
+  # Force the app to quit
+  #
+  # @return [Boolean]
+  def terminate!
+    perform :force_terminate
+  end
+
+  ##
+  # @note This is often async and may return before the action is completed
+  #
+  # Ask the app to hide itself
+  #
+  # @return [Boolean]
+  def hide
+    perform :hide
+  end
+
+  ##
+  # @note This is often async and may return before the action is completed
+  #
+  # As the app to unhide itself and bring to front
+  #
+  # @return [Boolean]
+  def unhide
+    perform :unhide
+  end
 
   # (see AX::Element#perform)
   def perform name
