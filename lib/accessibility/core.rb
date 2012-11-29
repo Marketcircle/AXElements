@@ -112,7 +112,7 @@ module Accessibility::Element
     when 0
       ptr.value.to_ruby
     when KAXErrorNoValue, KAXErrorInvalidUIElement
-      name == KAXChildrenAttribute ? [] : nil
+      nil
     else
       handle_error code, name
     end
