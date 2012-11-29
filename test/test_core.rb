@@ -63,8 +63,8 @@ class TestAccessibilityElement < MiniTest::Unit::TestCase
 
     assert_nil window.attribute(KAXGrowAreaAttribute), 'KAXErrorNoValue == nil'
 
-    assert_nil   invalid_ref.attribute(KAXRoleAttribute), 'Dead element == nil'
-    assert_empty invalid_ref.attribute(KAXChildrenAttribute)
+    assert_nil invalid_ref.attribute(KAXRoleAttribute), 'Dead element == nil'
+    assert_nil invalid_ref.attribute(KAXChildrenAttribute)
 
     assert_raises(ArgumentError) { app.attribute('MADE_UP_ATTR') }
   end
