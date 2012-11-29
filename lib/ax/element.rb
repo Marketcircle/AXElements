@@ -6,7 +6,7 @@ require 'accessibility/translator'
 require 'accessibility/enumerators'
 require 'accessibility/qualifier'
 require 'accessibility/errors'
-require 'accessibility/pp_inspector'
+require 'accessibility/pretty_printer'
 
 
 ##
@@ -19,7 +19,7 @@ require 'accessibility/pp_inspector'
 # This abstract base class provides generic functionality that all
 # accessibility objects require.
 class AX::Element
-  include Accessibility::PPInspector
+  include Accessibility::PrettyPrinter
 
   # @param ref [AXUIElementRef]
   def initialize ref

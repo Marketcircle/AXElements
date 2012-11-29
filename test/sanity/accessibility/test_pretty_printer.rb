@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 
-class TestAccessibilityPPInspector < MiniTest::Unit::TestCase
-  include Accessibility::PPInspector
+class TestAccessibilityPrettyPrinter < MiniTest::Unit::TestCase
+  include Accessibility::PrettyPrinter
 
-  # expected API for PPInspector module
+  # expected API for PrettyPrinter module
   attr_reader :attributes
   def attribute attr; @attribute; end
   def size_of   attr; @size_of;   end

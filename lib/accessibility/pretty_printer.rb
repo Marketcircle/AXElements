@@ -10,7 +10,7 @@
 #  - `#attribute` returns the value of a given attribute
 #  - `#size_of` returns the size for an attribute
 #
-module Accessibility::PPInspector
+module Accessibility::PrettyPrinter
 
   ##
   # Create an identifier for the receiver by using various attributes
