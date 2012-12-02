@@ -224,7 +224,7 @@ module Mouse
   # Executes a mouse movement animation. It can be a simple cursor
   # move or a drag depending on what is passed to `type`.
   def animate type, button, from, to, duration
-    current = current_position
+    current = from
     xstep   = (to.x - current.x) / (FPS * duration)
     ystep   = (to.y - current.y) / (FPS * duration)
     start   = NSDate.date
