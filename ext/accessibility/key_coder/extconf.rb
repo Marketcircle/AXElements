@@ -10,7 +10,7 @@ else
     clang = `which clang`.chomp
     if clang.empty?
       $stdout.puts "Clang not installed. Cannot build C extension"
-      exit 1
+      raise "Clang not installed. Cannot build C extension"
     else
       RbConfig::MAKEFILE_CONFIG["CC"]  = clang
       RbConfig::MAKEFILE_CONFIG["CXX"] = clang
