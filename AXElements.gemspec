@@ -22,7 +22,7 @@ style that describes user interactions.
     Dir.glob('lib/**/*.rb*') +
     Dir.glob('ext/**/*{.rb,.m,.c}') +
     Dir.glob('rakelib/*.rake') +
-    ['Rakefile', 'README.markdown', '.yardopts']
+    ['Rakefile', 'README.markdown', 'History.markdown', '.yardopts']
   s.test_files       =
     Dir.glob('test/**/test_*.rb') +
     [ 'test/helper.rb' ]

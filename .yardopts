@@ -8,3 +8,6 @@
 --hide-void-return
 lib/**/*.rb
 ext/**/*{.m,.c}
+-
+History.markdown
+
