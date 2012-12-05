@@ -550,6 +550,7 @@ module Accessibility::DSL
     move_mouse_to obj, wait: 0 if obj
     Mouse.click_down
     yield if block_given?
+  ensure
     Mouse.click_up
     sleep wait
   end
