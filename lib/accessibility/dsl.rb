@@ -629,24 +629,6 @@ module Accessibility::DSL
   end
 
   ##
-  # @deprecated Use {AX::Element#inspect_subtree} instead.
-  #
-  # Get the dump of the subtree of children and descendants for the given
-  # element. Each generation down the tree will be indented another level,
-  # and each element will be inspected.
-  #
-  # @example
-  #
-  #   puts subtree app
-  #
-  # @param element [AX::Element]
-  # @return [String]
-  def subtree element
-    element.inspect_subtree
-  end
-  alias_method :subtree_for, :subtree
-
-  ##
   # @note You will need to have GraphViz command line tools installed
   #       in order for this to work.
   #
