@@ -72,7 +72,9 @@ class Accessibility::Translator
   # @param keys [Array<String>]
   # @return [Array<Symbol>]
   def rubyize keys
-    keys.map { |x| @rubyisms[x] }
+    keys = keys.map { |x| @rubyisms[x] }
+    keys.flatten!
+    keys
   end
 
   ##
@@ -133,6 +135,17 @@ class Accessibility::Translator
 
   private
 
+  def preloads
+    {
+     # basic preloads
+     id:                   KAXIdentifierAttribute,
+     placeholder:          KAXPlaceholderValueAttribute,
+     # workarounds for known case where AX uses "Is" for a boolean attribute
+     application_running:  KAXIsApplicationRunningAttribute,
+     application_running?: KAXIsApplicationRunningAttribute
+    }
+  end
+
   # @return [Hash{String=>String}]
   def init_unprefixes
     @unprefixes = Hash.new do |hash, key|
@@ -143,8 +156,9 @@ class Accessibility::Translator
   # @return [Hash{String=>Symbol}]
   def init_rubyisms
     @rubyisms = Hash.new do |hash, key|
-      hash[key] = Accessibility::Inflector.underscore(@unprefixes[key]).to_sym
+      hash[key] = [Accessibility::Inflector.underscore(@unprefixes[key]).to_sym]
     end
+    preloads.each_pair do |k,v| @rubyisms[v] << k end
   end
 
   # @return [Hash{Symbol=>String}]
@@ -152,12 +166,7 @@ class Accessibility::Translator
     @cocoaifications = Hash.new do |hash, key|
       hash[key] = "AX#{Accessibility::Inflector.camelize(key.chomp QUESTION_MARK)}"
     end
-    # preload the table
-    @cocoaifications[:id]          = KAXIdentifierAttribute
-    @cocoaifications[:placeholder] = KAXPlaceholderValueAttribute
-    # workaround the one known case where AX uses "Is" for a boolean attribute
-    @cocoaifications[:application_running]  = # let the value all fall through
-    @cocoaifications[:application_running?] = KAXIsApplicationRunningAttribute
+    preloads.each_pair do |k, v| @cocoaifications[k] = v end
   end
 
   # @return [Hash{String=>String}]
