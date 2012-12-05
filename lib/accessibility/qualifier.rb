@@ -29,7 +29,7 @@ class Accessibility::Qualifier
     @klass    = TRANSLATOR.classify(klass)
     @criteria = criteria
     @block    = Proc.new if block_given?
-    compile criteria
+    compile!
   end
 
   ##
@@ -63,8 +63,8 @@ class Accessibility::Qualifier
   # {#qualifies?}.
   #
   # @param criteria [Hash]
-  def compile criteria
-    @filters = criteria.map do |key, value|
+  def compile!
+    @filters = @criteria.map do |key, value|
       if value.kind_of? Hash
         [:subsearch, key, value]
       elsif key.kind_of? Array
