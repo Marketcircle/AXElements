@@ -16,7 +16,7 @@ module Accessibility::PrettyPrinter
   # Create an identifier for the receiver by using various attributes
   # that should make it very easy to identify the element.
   #
-  # @return [String]
+  # @return [String,#to_s]
   def pp_identifier
     # @note use, or lack of use, of #inspect is intentional for visual effect
 
@@ -49,9 +49,7 @@ module Accessibility::PrettyPrinter
       return " id=#{attribute(:identifier)}"
     end
 
-  ensure
-    # @todo should we have other fallbacks?
-    return EMPTY_STRING
+  rescue NoMethodError
   end
 
   ##

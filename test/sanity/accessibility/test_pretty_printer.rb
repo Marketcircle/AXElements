@@ -18,10 +18,10 @@ class TestAccessibilityPrettyPrinter < MiniTest::Unit::TestCase
     assert_match /value=3.14/, pp_identifier
 
     @attribute  = ''
-    assert_match EMPTY_STRING, pp_identifier
+    assert_match EMPTY_STRING, pp_identifier.to_s
 
     @attribute  = nil
-    assert_match EMPTY_STRING, pp_identifier
+    assert_match EMPTY_STRING, pp_identifier.to_s
   end
 
   def test_identifier_using_title
@@ -44,7 +44,7 @@ class TestAccessibilityPrettyPrinter < MiniTest::Unit::TestCase
     assert_match /roflcopter/, pp_identifier
 
     @attribute  = NSString.string
-    assert_equal EMPTY_STRING, pp_identifier
+    assert_equal EMPTY_STRING, pp_identifier.to_s
 
     @attribute  = 26
     assert_match /26/, pp_identifier
@@ -62,7 +62,7 @@ class TestAccessibilityPrettyPrinter < MiniTest::Unit::TestCase
 
   def test_identifier_empty_string_as_final_fallback
     @attributes = NSArray.array
-    assert_equal EMPTY_STRING, pp_identifier
+    assert_equal EMPTY_STRING, pp_identifier.to_s
   end
 
   def test_position
