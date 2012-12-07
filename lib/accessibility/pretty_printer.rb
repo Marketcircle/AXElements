@@ -49,6 +49,7 @@ module Accessibility::PrettyPrinter
       return " id=#{attribute(:identifier)}"
     end
 
+  ensure
     # @todo should we have other fallbacks?
     return EMPTY_STRING
   end
