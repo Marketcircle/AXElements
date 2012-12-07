@@ -47,7 +47,7 @@ class Accessibility::Graph
 
     def identifier
       klass = @element.class.to_s.split(NAMESPACE).last
-      ident = @element.pp_identifier.dup
+      ident = @element.pp_identifier.to_s.dup
       if ident.length > 12
         ident = "#{ident[0...12]}..."
       end
@@ -58,9 +58,13 @@ class Accessibility::Graph
     end
 
     def shape
-      (@element.attribute(:focused) && OCTAGON) ||
-      (@element.actions.empty? && OVAL)         ||
-      BOX
+      if @element.attributes.include?(:focused) && @element.attribute(:focused)
+        OCTAGON
+      elsif @element.actions.empty?
+        OVAL
+      else
+        BOX
+      end
     end
 
     def style
@@ -69,7 +73,7 @@ class Accessibility::Graph
         return FILLED unless @element.attribute(:enabled)
       end
       # bold if focused and no children
-      if @element.attribute(:focused)
+      if @element.attributes.include?(:focused) && @element.attribute(:focused)
         return BOLD if @element.size_of(:children).zero?
       end
       SOLID
