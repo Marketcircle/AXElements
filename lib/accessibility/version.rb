@@ -4,7 +4,7 @@
 # The main AXElements namespace.
 module Accessibility
   # @return [String]
-  VERSION   = '1.0.0.alpha7'
+  VERSION   = '1.0.0.alpha8'
 
   # @return [String]
   CODE_NAME = 'ルナトーン'
