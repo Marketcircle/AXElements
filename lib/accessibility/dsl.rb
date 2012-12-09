@@ -693,16 +693,17 @@ module Accessibility::DSL
   alias_method :capture_screen, :screenshot
 
   ##
-  # See {Accessibility::ScreenRecorder.record} for details.
+  # See (ScreenRecorder)[http://rdoc.info/gems/screen_recorder/frames]
+  # for details on the screen recording options
   #
   # @param file [String]
   # @return [String]
   def record file = nil, &block
-    require 'accessibility/screen_recorder'
+    require 'screen_recorder'
     if file
-      Accessibility::ScreenRecorder.record file, &block
+      ScreenRecorder.record file, &block
     else
-      Accessibility::ScreenRecorder.record &block
+      ScreenRecorder.record &block
     end
   end
 
