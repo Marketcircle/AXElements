@@ -914,9 +914,6 @@ class NSArray
   def to_size;  CGSize.new(first, at(1))  end
   # @return [CGRect]
   def to_rect;  CGRectMake(*self[0..3])   end
-  ##
-  # Override `super` to exploit trivial parallelism.
-  #
   # @return [Array]
   def to_ruby
     map do |obj| obj.to_ruby end
