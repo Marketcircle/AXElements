@@ -29,7 +29,7 @@ style that describes user interactions.
 
 
   s.add_runtime_dependency     'mouse',           '~> 1.0.1'
-  s.add_runtime_dependency     'screen_recorder', '~> 0.1.2'
+  s.add_runtime_dependency     'screen_recorder', '~> 0.1.3'
 
   s.add_development_dependency 'minitest', '~> 4.3'
   s.add_development_dependency 'yard',     '~> 0.8.3'
