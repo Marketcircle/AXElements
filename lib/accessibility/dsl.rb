@@ -247,7 +247,7 @@ module Accessibility::DSL
   # @param path [String,Regexp]
   # @return [Boolean]
   def select_menu_item app, *path
-    app.select_menu_item *path
+    app.application.select_menu_item *path
   end
 
   ##
