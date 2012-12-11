@@ -11,6 +11,33 @@ require 'accessibility/string'
 class AX::SystemWide < AX::Element
   include Accessibility::String
 
+  class << self
+    ##
+    # Find and return the group that represents the dock
+    #
+    # @return [AX::Group]
+    def desktop
+      AX::Application.finder.scroll_areas.first.groups.first
+    end
+
+    ##
+    # @note This currently does not include spotlight or the
+    #       notification center as they interact oddly with
+    #       accessibility APIs and how AXElements handle errors
+    #
+    # Find and return menu bar items for the system
+    #
+    # That is, menu bar items that do not belong to the current
+    # app, but that belong to the system, such as the clock or
+    # wi-fi menu.
+    #
+    # @return [AX::MenuBarItem]
+    def status_items
+      AX::Application.new('SystemUIServer').menu_bar.children
+    end
+  end
+
+
   ##
   # Overridden since there is only one way to get the element ref.
   def initialize
