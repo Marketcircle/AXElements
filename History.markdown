@@ -3,7 +3,7 @@
   * Added History.markdown to track notable changes
   * Added `Application.frontmost_application`
   * Added `Application.menu_bar_owner`
-  * Added `SystemWide.status_bar_items`
+  * Added `SystemWide.status_items`
   * Added `SystemWide.desktop`
   * Added `Application.finder`
   * Added `Application.dock`
