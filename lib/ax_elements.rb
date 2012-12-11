@@ -2,6 +2,8 @@
 require 'accessibility/dsl'
 include Accessibility::DSL
 
+require 'accessibility/system_info'
+
 ##
 # The Mac OS X dock application.
 #

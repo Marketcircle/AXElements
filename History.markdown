@@ -8,6 +8,7 @@
   * Added `Application.finder`
   * Added `Application.dock`
   * Added `DSL#record` to run a screen recording of the given block
+  * Added `Accessibility::SystemInfo` for getting information about the running system
 
   * Ported `mouse.rb` to C and moved code to [MRMouse](https://github.com/ferrous26/MRMouse)
 
