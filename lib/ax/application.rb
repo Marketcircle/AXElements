@@ -50,6 +50,28 @@ class AX::Application < AX::Element
       new 'com.apple.notificationcenterui'
     end
 
+    ##
+    # Find and return the application which is frontmost
+    #
+    # This is often, but not necessarily, the same as the app that
+    # owns the menu bar.
+    #
+    # @return [AX::Application]
+    def frontmost_application
+      new NSWorkspace.sharedWorkspace.frontmostApplication
+    end
+    alias_method :frontmost_app, :frontmost_application
+
+    ##
+    # Find and return the application which owns the menu bar
+    #
+    # This is often, but not necessarily, the same as the app that
+    # is frontmost.
+    #
+    # @return [AX::Application]
+    def menu_bar_owner
+      new NSWorkspace.sharedWorkspace.menuBarOwningApplication
+    end
   end
 
   ##
