@@ -23,6 +23,33 @@ class AX::Application < AX::Element
                                 additionalEventParamDescriptor: nil,
                                               launchIdentifier: nil
     end
+
+    ##
+    # Find and return the dock application
+    #
+    # @return [AX::Application]
+    def dock
+      new 'com.apple.dock'
+    end
+
+    ##
+    # Find and return the dock application
+    #
+    # @return [AX::Application]
+    def finder
+      new 'com.apple.finder'
+    end
+
+    ##
+    # Find and return the notification center UI app
+    #
+    # Obviously, this will only work on OS X 10.8+
+    #
+    # @return [AX::Application]
+    def notification_center
+      new 'com.apple.notificationcenterui'
+    end
+
   end
 
   ##
