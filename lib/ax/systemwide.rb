@@ -123,4 +123,9 @@ class AX::SystemWide < AX::Element
     @ref.set_timeout_to seconds
   end
 
+  # (see AX::Application.frontmost_application)
+  def focused_application
+    AX::Application.frontmost_app
+  end
+
 end
