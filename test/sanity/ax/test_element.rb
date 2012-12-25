@@ -71,7 +71,7 @@ class TestSearchResultBlankness < MiniTest::Unit::TestCase
 
   def test_array_blank
     [
-      NSArray.array,
+      Array.new,
       [true]
     ].each do |ary|
       assert_equal ary.empty?, ary.blank?

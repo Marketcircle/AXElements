@@ -1,8 +1,6 @@
 $LOAD_PATH << 'lib'
-require 'accessibility/statistics'
 
 require 'rubygems'
-gem     'minitest'
 require 'minitest/autorun'
 
 # preprocessor powers, assemble!
@@ -28,6 +26,7 @@ RUNNING_COMPILED =
   $LOADED_FEATURES.find { |file| file.match /ax_elements.rbo/ }
 
 def pid_for name # sneaky naming
+  require 'accessibility/extras'
   NSWorkspace.sharedWorkspace.runningApplications.find do |app|
     app.bundleIdentifier == name
   end.processIdentifier
