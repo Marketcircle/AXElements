@@ -47,6 +47,9 @@ module Accessibility::NSArrayCompat
 
 end
 
+unless defined? NSArray
+  NSArray = Array
+end
 
 # AXElements extensions for `NSArray`.
 class NSArray
