@@ -1,3 +1,8 @@
+require 'active_support/core_ext/numeric'
+require 'active_support/core_ext/date'
+require 'active_support/core_ext/date_time'
+require 'active_support/core_ext/time'
+
 # Mix the language methods into the TopLevel
 require 'accessibility/dsl'
 include Accessibility::DSL
