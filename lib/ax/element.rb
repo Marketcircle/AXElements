@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 
+require 'active_support/core_ext/object'
+
 require 'accessibility/core'
 require 'accessibility/factory'
 require 'accessibility/translator'
@@ -484,25 +486,4 @@ class AX::Element
   # @return [Accessibility::Translator]
   TRANSLATOR = Accessibility::Translator.instance
 
-end
-
-
-# Extensions so checking `#blank?` on search result "just works".
-class NSArray
-  # (see NilClass#blank?)
-  alias_method :blank?, :empty?
-end
-
-# Extensions so checking `#blank?` on search result "just works".
-class NilClass
-  ##
-  # Whether or not the object is "blank". The concept of blankness
-  # borrowed from `Active Support` and is true if the object is falsey
-  # or `#empty?`.
-  #
-  # This method is used by implicit searching in AXElements to
-  # determine if searches yielded responses.
-  def blank?
-    true
-  end
 end
