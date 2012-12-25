@@ -1,5 +1,12 @@
 require 'accessibility/version'
-require 'ax_elements/vendor/inflector'
+require 'active_support/inflector'
+
+ActiveSupport::Inflector.inflections do |inflect|
+  # Related to accessibility
+  inflect.acronym('UI')
+  inflect.acronym('RTF')
+  inflect.acronym('URL')
+end
 
 framework 'ApplicationServices'
 
