@@ -1,6 +1,5 @@
 require 'accessibility/core'
 require 'accessibility/translator'
-require 'accessibility/statistics'
 
 ##
 # Namespace container for all the accessibility objects.
@@ -12,7 +11,7 @@ module AX; class Element; end end
 # These extensions only make sense in the context of the high level API
 # and it requires knowledge of both layers, so the code has been placed
 # in its own file.
-module Accessibility::Element
+module Accessibility::AXElement
 
   ##
   # @todo Should we handle cases where a subrole has a value of
@@ -28,18 +27,14 @@ module Accessibility::Element
   #
   # @return [AX::Element]
   def to_ruby
-    type = AXValueGetType(self)
-    if type.zero?
-      to_element
-    else
-      to_box type
-    end
+    obj = super
+    obj == self ? to_element : obj
   end
+
 
   private
 
   def to_element
-    STATS.increment :Factory
     if roll = self.role
       roll = TRANSLATOR.unprefix roll
       if attributes.include? KAXSubroleAttribute
@@ -56,13 +51,6 @@ module Accessibility::Element
     else # failsafe in case object dies before we get the role
       AX::Element.new self
     end
-  end
-
-  def to_box type
-    STATS.increment :Unwrap
-    ptr = Pointer.new BOX_TYPES[type]
-    AXValueGetValue(self, type, ptr)
-    ptr.value.to_ruby
   end
 
 
@@ -156,3 +144,5 @@ module Accessibility::Element
   end
 
 end
+
+Accessibility.const_get(:Element).send :include, Accessibility::AXElement
