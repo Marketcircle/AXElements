@@ -5,11 +5,6 @@ require 'rubygems'
 gem     'minitest'
 require 'minitest/autorun'
 
-# Laaaaaaaaaaaaaaaaaaaaaame
-if RUBY_ENGINE == 'macruby' && `sw_vers -productVersion`.to_f > 10.7
-  framework '/System/Library/Frameworks/CoreGraphics.framework'
-end
-
 # preprocessor powers, assemble!
 if ENV['BENCH']
   require 'minitest/benchmark'
