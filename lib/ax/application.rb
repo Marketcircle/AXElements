@@ -434,7 +434,7 @@ class AX::Application < AX::Element
 
   # @return [nil]
   def spin_run_loop
-    NSRunLoop.currentRunLoop.runUntilDate Time.now
+    spin(0)
   end
 
   # @return [NSBundle]
