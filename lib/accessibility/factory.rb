@@ -79,10 +79,10 @@ module Accessibility::Element
   ##
   # @private
   #
-  # Serial queue to make sure we only create one class at a time.
+  # Mutex to make sure we only create one class at a time.
   #
-  # @return [Dispatch::Queue]
-  CREATE_QUEUE = Dispatch::Queue.new 'com.marketcircle.axelements.create'
+  # @return [Mutex]
+  MUTEX = Mutex.new
 
   ##
   # Find the class for a given role. If the class does not exist it will
@@ -120,7 +120,7 @@ module Accessibility::Element
   # @param name [#to_s]
   # @return [Class]
   def create_class name
-    CREATE_QUEUE.sync do
+    MUTEX.sync do
       # re-check now that we are in the critical section
       @klass = if AX.const_defined? name, false
                  AX.const_get name
@@ -143,7 +143,7 @@ module Accessibility::Element
     unless AX.const_defined? superklass, false
       create_class superklass
     end
-    CREATE_QUEUE.sync do
+    MUTEX.sync do
       # re-check now that we are in the critical section
       @klass = if AX.const_defined? name, false
                  AX.const_get name
