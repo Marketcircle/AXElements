@@ -1,5 +1,6 @@
 require 'ax/element'
 require 'accessibility/translator'
+require 'active_support/core_ext/array/access'
 
 ##
 # An old hack on arrays that allows you to map a single method across
@@ -10,18 +11,6 @@ require 'accessibility/translator'
 # not, but at this point there is too much code written that depends
 # on this and so I will just keep it around for backwards compatability.
 module Accessibility::NSArrayCompat
-
-  ##
-  # Equivalent to `#at(1)`
-  def second
-    at(1)
-  end
-
-  ##
-  # Equivalent to `#at(2)`
-  def third
-    at(2)
-  end
 
   ##
   # @note Debatably bad idea. Maintained for backwards compatibility.
