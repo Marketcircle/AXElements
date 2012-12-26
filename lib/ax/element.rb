@@ -55,7 +55,7 @@ class AX::Element
   #
   # @param attr [#to_sym]
   def attribute attr
-    @ref.attribute TRANSLATOR.cocoaify(attr)
+    @ref.attribute(TRANSLATOR.cocoaify(attr)).to_ruby
   end
 
   ##
@@ -66,7 +66,7 @@ class AX::Element
   #
   # @return [String]
   def description
-    attribute :description
+    attribute(:description).to_ruby
   end
 
   ##
@@ -74,7 +74,7 @@ class AX::Element
   #
   # @return [Array<AX::Element>]
   def children
-    @ref.children
+    @ref.children.to_ruby
   end
 
   ##
@@ -92,7 +92,7 @@ class AX::Element
     elements = [self] if elements.empty?
     element  = elements.last
     if element.attributes.include? :parent
-      ancestry(elements << element.parent)
+      ancestry(elements << element.attribute(:parent))
     else
       elements
     end
@@ -187,7 +187,7 @@ class AX::Element
   # @param param [Object]
   def parameterized_attribute attr, param
     param = param.relative_to(@ref.value.size) if value.kind_of? Range
-    @ref.parameterized_attribute TRANSLATOR.cocoaify(attr), param
+    @ref.parameterized_attribute(TRANSLATOR.cocoaify(attr), param).to_ruby
   end
 
 
