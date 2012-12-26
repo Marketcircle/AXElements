@@ -51,7 +51,7 @@ class TestAXElement < MiniTest::Unit::TestCase
     end
 
     # the nil case
-    center_test CGPointZero, CGSizeZero, CGPointZero
+    center_test CGPoint.new, CGSize.new, CGPoint.new
     # simple square with origin at zero
     center_test [0,0], [2,2], [1,1]
     # simple square in positive positive quadrant

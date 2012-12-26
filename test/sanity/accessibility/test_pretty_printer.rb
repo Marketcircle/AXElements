@@ -43,7 +43,7 @@ class TestAccessibilityPrettyPrinter < MiniTest::Unit::TestCase
     @attribute  = 'roflcopter'
     assert_match /roflcopter/, pp_identifier
 
-    @attribute  = NSString.string
+    @attribute  = ''
     assert_equal EMPTY_STRING, pp_identifier.to_s
 
     @attribute  = 26
@@ -66,7 +66,7 @@ class TestAccessibilityPrettyPrinter < MiniTest::Unit::TestCase
   end
 
   def test_position
-    @attribute = CGPointZero
+    @attribute = CGPoint.new
     assert_match /\(0\.0, 0\.0\)/, pp_position
 
     @attribute = CGPoint.new(3.14, -5)

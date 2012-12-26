@@ -5,13 +5,13 @@ require 'ax/application'
 class TestAccessibilityElementFactory < MiniTest::Unit::TestCase
 
   def window
-    @@window ||= REF.children.find { |x| x.role == KAXWindowRole }
+    @@window ||= REF.to_ruby.children.find { |x| x.role == KAXWindowRole }
   end
 
   def scroll_area
     @@scroll_area ||= window.children.find { |x|
       x.attributes.include?(:description) &&
-        x.attribute(:description) == 'Test Web Area'
+        x.description == 'Test Web Area'
     }
   end
 
