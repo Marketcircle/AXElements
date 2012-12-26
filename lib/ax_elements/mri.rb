@@ -34,6 +34,14 @@ unless on_macruby?
     NSDate = Time
   end
 
+  class Symbol
+
+    def chomp suffix
+      to_s.chomp suffix
+    end
+
+  end
+
 end
 
 unless defined? KAXIdentifierAttribute
