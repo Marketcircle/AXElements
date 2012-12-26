@@ -131,7 +131,7 @@ module Accessibility::DSL
   #   The normal way to raise an exception.
   def raise *args
     arg = args.first
-    arg.kind_of?(AX::Element) ? arg.perform(:raise) : super(*args)
+    arg.kind_of?(AX::Element) ? arg.perform(:raise) : Kernel.raise(*args)
   end
 
   ##
