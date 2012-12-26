@@ -1,5 +1,6 @@
 require 'accessibility/version'
 require 'active_support/inflector'
+require 'ax_elements/mri'
 
 ActiveSupport::Inflector.inflections do |inflect|
   # Related to accessibility
@@ -8,20 +9,7 @@ ActiveSupport::Inflector.inflections do |inflect|
   inflect.acronym('URL')
 end
 
-if on_macruby?
-  framework 'ApplicationServices'
-
-  unless Object.const_defined? :KAXIdentifierAttribute
-    ##
-    # Added for backwards compatability with Snow Leopard.
-    # This attribute is standard with Lion and newer. AXElements depends
-    # on it being defined.
-    #
-    # @return [String]
-    KAXIdentifierAttribute = 'AXIdentifier'
-  end
-
-end
+framework 'ApplicationServices' if on_macruby?
 
 
 ##
@@ -148,11 +136,11 @@ class Accessibility::Translator
   def preloads
     {
      # basic preloads
-     id:                   'AXIdentifier',
-     placeholder:          'AXPlaceholderValue',
+     id:                   KAXIdentifierAttribute,
+     placeholder:          KAXPlaceholderValueAttribute,
      # workarounds for known case where AX uses "Is" for a boolean attribute
-     application_running:  'AXIsApplicationRunning',
-     application_running?: 'AXIsApplicationRunning'
+     application_running:  KAXIsApplicationRunningAttribute,
+     application_running?: KAXIsApplicationRunningAttribute,
     }
   end
 

@@ -1,4 +1,6 @@
 require 'ax_elements/active_support_selections'
+require 'accessibility/bridge'
+require 'ax_elements/mri' unless on_macruby?
 
 # Mix the language methods into the TopLevel
 require 'accessibility/dsl'
