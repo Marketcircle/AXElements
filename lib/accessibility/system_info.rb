@@ -1,4 +1,5 @@
 require 'accessibility/version'
+require 'accessibility/extras'
 
 ##
 # Interface for collecting some simple information about the system.
@@ -12,16 +13,29 @@ module Accessibility::SystemInfo
   extend self
 
   ##
+  # The name the machine uses for Bonjour
+  #
+  # @example
+  #
+  #   Accessibility::SystemInfo.name
+  #     # => "ferrous"
+  #
+  # @return [String]
+  def name
+    NSHost.currentHost.localizedName
+  end
+
+  ##
   # All hostnames that the system responds to
   #
   # @example
   #
-  #   Accessibility::SystemInfo.hostnames 
+  #   Accessibility::SystemInfo.hostnames
   #     # => ["ferrous.local", "localhost"]
   #
   # @return [Array<String>]
   def hostnames
-    host.names
+    NSHost.currentHost.names
   end
 
   ##
@@ -46,7 +60,7 @@ module Accessibility::SystemInfo
   #
   # @return [Array<String>]
   def addresses
-    host.addresses
+    NSHost.currentHost.addresses
   end
 
   ##
@@ -67,7 +81,7 @@ module Accessibility::SystemInfo
   #
   # @example
   #
-  #   Accessibility::SystemInfo.ipv6_addresses 
+  #   Accessibility::SystemInfo.ipv6_addresses
   #     # => ["fe80::6aa8:6dff:fe20:822%en1", "fe80::1%lo0", "::1"]
   #
   # @return [Array<String>]
@@ -86,7 +100,7 @@ module Accessibility::SystemInfo
   def model
     @model ||= `sysctl hw.model`.split.last.chomp
   end
-  
+
   ##
   # OS X version string
   #
@@ -96,7 +110,7 @@ module Accessibility::SystemInfo
   #
   # @return [String]
   def osx_version
-    pinfo.operatingSystemVersionString
+    NSProcessInfo.processInfo.operatingSystemVersionString
   end
 
   ##
@@ -108,7 +122,7 @@ module Accessibility::SystemInfo
   #
   # @return [Float]
   def uptime
-    pinfo.systemUptime
+    NSProcessInfo.processInfo.systemUptime
   end
 
   ##
@@ -122,7 +136,7 @@ module Accessibility::SystemInfo
   #
   # @return [Fixnum]
   def num_processors
-    pinfo.processorCount
+    NSProcessInfo.processInfo.processorCount
   end
 
   ##
@@ -134,7 +148,7 @@ module Accessibility::SystemInfo
   #
   # @return [Fixnum]
   def num_active_processors
-    pinfo.activeProcessorCount
+    NSProcessInfo.processInfo.activeProcessorCount
   end
 
   ##
@@ -146,20 +160,71 @@ module Accessibility::SystemInfo
   #
   # @return [Fixnum]
   def total_ram
-    pinfo.physicalMemory
+    NSProcessInfo.processInfo.physicalMemory
   end
   alias_method :ram, :total_ram
 
-
-  private
-
-  def host
-    NSHost.currentHost
+  ##
+  # Return the current state of the battery
+  #
+  # @example
+  #
+  #   battery_state # => :charged
+  #   # unplug AC cord
+  #   battery_state # => :discharging
+  #   # plug AC cord back in after several minutes
+  #   battery_state # => :charging
+  #
+  #   # try this method when you have no battery
+  #   battery_state # => :not_installed
+  #
+  # @return [Symbol]
+  def battery_state
+    Battery.state
   end
 
-  def pinfo
-    NSProcessInfo.processInfo
+  ##
+  # Returns the charge percentage of the battery (if present)
+  #
+  # A special value of `-1.0` is returned if you have no battery.
+  #
+  # @example
+  #
+  #   battery_charge_level # => 1.0
+  #   # unplug AC cord and wait a couple of minutes
+  #   battery_charge_level # => 0.99
+  #
+  #   # if you have no battery
+  #   battery_charge_level # => -1.0
+  #
+  # @return [Float]
+  def battery_charge_level
+    Battery.level
+  end
+  alias_method :battery_level, :battery_charge_level
+
+  ##
+  # Return an estimate on the number of minutes until the battery is drained
+  #
+  # A special value of `0` indicates that the battery is not discharging.
+  # You should really only call this after you know that the battery is
+  # discharging by calling {#battery_state} and having `:discharging` returned.
+  #
+  # A special value of `-1` is returned when the estimate is in flux and
+  # cannot be accurately estimated.
+  #
+  # @example
+  #
+  #   # AC cord plugged in
+  #   battery_life_estimate # => 0
+  #   # unplug AC cord
+  #   battery_life_estimate # => -1
+  #   # wait a few minutes
+  #   battery_life_estimate # => 423
+  #
+  # @return [Fixnum]
+  def battery_life_estimate
+    Battery.time_to_empty
   end
 
 end
-
