@@ -100,71 +100,115 @@ class << AX
 end
 
 
-
-##
-# Extensions to {Accessibility::Element} for the higher level abstractions
-#
-# These extensions only make sense in the context of the high level API
-# but needs to be applied on the lower level class, so the code has been
-# placed in its own file.
-module Accessibility::Element
+if on_macruby?
 
   ##
-  # @todo Should we handle cases where a subrole has a value of
-  #       'Unknown'? What is the performance impact?
+  # Extensions to {Accessibility::Element} for the higher level abstractions
   #
-  # Wrap the low level wrapper with the appropriate high level wrapper.
-  # This involves determining the proper class in the {AX} namespace,
-  # possibly creating it on demand, and then instantiating the class to
-  # wrap the low level object.
-  #
-  # Some code paths have been unrolled for efficiency. Don't hate player,
-  # hate the game.
-  #
-  # @return [AX::Element]
-  def to_ruby
-    type = AXValueGetType(self)
-    if type.zero?
-      to_element
-    else
-      to_box type
+  # These extensions only make sense in the context of the high level API
+  # but needs to be applied on the lower level class, so the code has been
+  # placed in its own file.
+  module Accessibility::Element
+
+    ##
+    # @todo Should we handle cases where a subrole has a value of
+    #       'Unknown'? What is the performance impact?
+    #
+    # Wrap the low level wrapper with the appropriate high level wrapper.
+    # This involves determining the proper class in the {AX} namespace,
+    # possibly creating it on demand, and then instantiating the class to
+    # wrap the low level object.
+    #
+    # Some code paths have been unrolled for efficiency. Don't hate player,
+    # hate the game.
+    #
+    # @return [AX::Element]
+    def to_ruby
+      type = AXValueGetType(self)
+      if type.zero?
+        to_element
+      else
+        to_box type
+      end
     end
-  end
 
 
-  private
+    private
 
-  ##
-  # @private
-  #
-  # Reference to the singleton instance of the translator.
-  #
-  # @return [Accessibility::Translator]
-  TRANSLATOR = Accessibility::Translator.instance
+    ##
+    # @private
+    #
+    # Reference to the singleton instance of the translator.
+    #
+    # @return [Accessibility::Translator]
+    TRANSLATOR = Accessibility::Translator.instance
 
-  def to_box type
-    ptr = Pointer.new ValueWrapper::BOX_TYPES[type]
-    AXValueGetValue(self, type, ptr)
-    ptr.value.to_ruby
-  end
+    def to_box type
+      ptr = Pointer.new ValueWrapper::BOX_TYPES[type]
+      AXValueGetValue(self, type, ptr)
+      ptr.value.to_ruby
+    end
 
-  def to_element
-    if roll = self.role
-      roll = TRANSLATOR.unprefix roll
-      if attributes.include? KAXSubroleAttribute
-        subroll = self.subrole
-        # Some objects claim to have a subrole but return nil
-        if subroll
-          AX.class_for2(TRANSLATOR.unprefix(subroll), roll).new self
+    def to_element
+      if roll = self.role
+        roll = TRANSLATOR.unprefix roll
+        if attributes.include? KAXSubroleAttribute
+          subroll = self.subrole
+          # Some objects claim to have a subrole but return nil
+          if subroll
+            AX.class_for2(TRANSLATOR.unprefix(subroll), roll).new self
+          else
+            AX.class_for(roll).new self
+          end
         else
           AX.class_for(roll).new self
         end
-      else
-        AX.class_for(roll).new self
+      else # failsafe in case object dies before we get the role
+        AX::Element.new self
       end
-    else # failsafe in case object dies before we get the role
-      AX::Element.new self
     end
+
+  end
+
+
+else
+
+
+  ##
+  # `AXElements` extensions to the `Accessibility::Element` class
+  class Accessibility::Element
+
+    ##
+    # Override the default `#to_ruby` so that proper classes are
+    # chosen for each object.
+    #
+    # @return [AX::Element]
+    def to_ruby
+      if roll = self.role
+        roll = TRANSLATOR.unprefix roll
+        if attributes.include? KAXSubroleAttribute
+          subroll = self.subrole
+          # Some objects claim to have a subrole but return nil
+          if subroll
+            AX.class_for2(TRANSLATOR.unprefix(subroll), roll).new self
+          else
+            AX.class_for(roll).new self
+          end
+        else
+          AX.class_for(roll).new self
+        end
+      else # failsafe in case object dies before we get the role
+        AX::Element.new self
+      end
+    end
+
+    ##
+    # @private
+    #
+    # Reference to the singleton instance of the translator.
+    #
+    # @return [Accessibility::Translator]
+    TRANSLATOR = Accessibility::Translator.instance
   end
 
 end
