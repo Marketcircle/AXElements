@@ -41,7 +41,7 @@ class AX::SystemWide < AX::Element
   ##
   # Overridden since there is only one way to get the element ref.
   def initialize
-    super AXUIElementCreateSystemWide()
+    super Accessibility::Element.system_wide
   end
 
   ##
