@@ -8,16 +8,19 @@ ActiveSupport::Inflector.inflections do |inflect|
   inflect.acronym('URL')
 end
 
-framework 'ApplicationServices'
+if on_macruby?
+  framework 'ApplicationServices'
 
-unless Object.const_defined? :KAXIdentifierAttribute
-  ##
-  # Added for backwards compatability with Snow Leopard.
-  # This attribute is standard with Lion and newer. AXElements depends
-  # on it being defined.
-  #
-  # @return [String]
-  KAXIdentifierAttribute = 'AXIdentifier'
+  unless Object.const_defined? :KAXIdentifierAttribute
+    ##
+    # Added for backwards compatability with Snow Leopard.
+    # This attribute is standard with Lion and newer. AXElements depends
+    # on it being defined.
+    #
+    # @return [String]
+    KAXIdentifierAttribute = 'AXIdentifier'
+  end
+
 end
 
 
@@ -145,11 +148,11 @@ class Accessibility::Translator
   def preloads
     {
      # basic preloads
-     id:                   KAXIdentifierAttribute,
-     placeholder:          KAXPlaceholderValueAttribute,
+     id:                   'AXIdentifier',
+     placeholder:          'AXPlaceholderValue',
      # workarounds for known case where AX uses "Is" for a boolean attribute
-     application_running:  KAXIsApplicationRunningAttribute,
-     application_running?: KAXIsApplicationRunningAttribute
+     application_running:  'AXIsApplicationRunning',
+     application_running?: 'AXIsApplicationRunning'
     }
   end
 
@@ -163,7 +166,7 @@ class Accessibility::Translator
   # @return [Hash{String=>Symbol}]
   def init_rubyisms
     @rubyisms = Hash.new do |hash, key|
-      hash[key] = [Accessibility::Inflector.underscore(@unprefixes[key]).to_sym]
+      hash[key] = [ActiveSupport::Inflector.underscore(@unprefixes[key]).to_sym]
     end
     preloads.each_pair do |k,v| @rubyisms[v] << k end
   end
@@ -171,7 +174,9 @@ class Accessibility::Translator
   # @return [Hash{Symbol=>String}]
   def init_cocoaifications
     @cocoaifications = Hash.new do |hash, key|
-      hash[key] = "AX#{Accessibility::Inflector.camelize(key.chomp QUESTION_MARK)}"
+      str_key = key.to_s
+      str_key.chomp! QUESTION_MARK
+      hash[key] = "AX#{ActiveSupport::Inflector.camelize(str_key)}"
     end
     preloads.each_pair do |k, v| @cocoaifications[k] = v end
   end
@@ -179,14 +184,14 @@ class Accessibility::Translator
   # @return [Hash{String=>String}]
   def init_classifications
     @classifications = Hash.new do |hash, key|
-      hash[key] = Accessibility::Inflector.classify(key)
+      hash[key] = ActiveSupport::Inflector.classify(key)
     end
   end
 
   # @return [Hash{String=>String}]
   def init_singularizations
     @singularizations = Hash.new do |hash, key|
-      hash[key] = Accessibility::Inflector.singularize(key)
+      hash[key] = ActiveSupport::Inflector.singularize(key)
     end
   end
 
