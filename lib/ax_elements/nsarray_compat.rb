@@ -31,7 +31,6 @@ module Accessibility::NSArrayCompat
   def method_missing method, *args
     smethod = TRANSLATOR.singularize(method.to_s.chomp('?'))
     map do |x|
-      puts x.inspect
       if    !x.kind_of?(AX::Element) then super
       elsif  x.respond_to? method    then x.send method,  *args
       else                                x.send smethod, *args
@@ -127,8 +126,16 @@ class NSArray
     # Create a new array with the same contents as the given array
     #
     # @param ary [Array]
-    def arrayWithArray ary
+    def self.arrayWithArray ary
       ary.dup
+    end
+
+    ##
+    # Create and return a new empty array
+    #
+    # @return [Array]
+    def self.array
+      []
     end
 
   end
