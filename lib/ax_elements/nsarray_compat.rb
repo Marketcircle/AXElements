@@ -29,11 +29,12 @@ module Accessibility::NSArrayCompat
   #   outline.rows.text_fields.values # all at once
   #
   def method_missing method, *args
-    smethod = TRANSLATOR.singularize(method.chomp('?'))
+    smethod = TRANSLATOR.singularize(method.to_s.chomp('?'))
     map do |x|
-      if    !x.kind_of? AX::Element then super
-      elsif  x.respond_to? method   then x.send method,  *args
-      else                               x.send smethod, *args
+      puts x.inspect
+      if    !x.kind_of?(AX::Element) then super
+      elsif  x.respond_to? method    then x.send method,  *args
+      else                                x.send smethod, *args
       end
     end
   end
@@ -51,7 +52,87 @@ unless defined? NSArray
   NSArray = Array
 end
 
-# AXElements extensions for `NSArray`.
+##
+# AXElements extensions for `NSArray`
 class NSArray
   include Accessibility::NSArrayCompat
+
+  if on_macruby?
+
+    ##
+    # Returns the tail of the array from `position`
+    #
+    # @example
+    #
+    #   [1, 2, 3, 4].from(0)   # => [1, 2, 3, 4]
+    #   [1, 2, 3, 4].from(2)   # => [3, 4]
+    #   [1, 2, 3, 4].from(10)  # => []
+    #   [].from(0)             # => []
+    #
+    # @param position [Fixnum]
+    # @return [Array]
+    def from position
+      self[position, length] || []
+    end
+
+    ##
+    # Returns the beginning of the array up to `position`
+    #
+    #   [1, 2, 3, 4].to(0)   # => [1]
+    #   [1, 2, 3, 4].to(2)   # => [1, 2, 3]
+    #   [1, 2, 3, 4].to(10)  # => [1, 2, 3, 4]
+    #   [].to(0)             # => []
+    #
+    # @param count [Fixnum]
+    # @return [Array]
+    def to count
+      take count + 1
+    end
+
+    ##
+    # Equal to `self[1]`
+    def second
+      at(1)
+    end
+
+    ##
+    # Equal to `self[2]`
+    def third
+      at(2)
+    end
+
+    ##
+    # Equal to `self[3]`
+    def fourth
+      at(3)
+    end
+
+    ##
+    # Equal to `self[4]`
+    def fifth
+      at(4)
+    end
+
+    ##
+    # Equal to `self[41]`
+    #
+    # Also known as accessing "the reddit".
+    def forty_two
+      at(41)
+    end
+
+  else
+
+    ##
+    # Create a new array with the same contents as the given array
+    #
+    # @param ary [Array]
+    def arrayWithArray ary
+      ary.dup
+    end
+
+  end
+
+  alias_method :the_reddit, :forty_two
+
 end
