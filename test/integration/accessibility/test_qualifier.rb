@@ -72,14 +72,14 @@ class TestAccessibilityQualifier < MiniTest::Unit::TestCase
 
   def test_qualifies_based_on_param_attribute_value
     e = app.attribute(:main_window).attribute(:title_ui_element)
-    q = qualifier(:StaticText, [:string_for_range, CFRange.new(0,2)] => 'AX' )
+    q = qualifier(:StaticText, [:string_for_range, 0..1] => 'AX' )
     assert q.qualifies? e
     refute q.qualifies? list
   end
 
   def test_qualifies_based_on_param_attribute_regexp_match
     e = app.attribute(:main_window).attribute(:title_ui_element)
-    q = qualifier(:StaticText, [:string_for_range, CFRange.new(0,2)] => /AX/ )
+    q = qualifier(:StaticText, [:string_for_range, 0..1] => /AX/ )
     assert q.qualifies? e
     refute q.qualifies? items.sample
   end
