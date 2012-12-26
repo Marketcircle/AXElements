@@ -1,3 +1,4 @@
+require 'rubygems'
 require 'accessibility/core'
 framework 'Cocoa' if on_macruby?
 
