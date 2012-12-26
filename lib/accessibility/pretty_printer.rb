@@ -12,6 +12,10 @@
 #
 module Accessibility::PrettyPrinter
 
+  unless defined? NSString
+    NSString = String
+  end
+
   ##
   # Create an identifier for the receiver by using various attributes
   # that should make it very easy to identify the element.
