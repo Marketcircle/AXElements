@@ -121,7 +121,7 @@ class AX::Application < AX::Element
           app.first
 
          ) || (
-           spin_run_loop
+           spin
            NSWorkspace.sharedWorkspace.runningApplications.find { |app|
              app.localizedName == arg
            }
@@ -129,7 +129,7 @@ class AX::Application < AX::Element
          ) || (
            count ||= 0
            if AX::Application.launch arg
-             sleep 1
+             spin 1
              count += 1
              raise "#{arg} failed to launch in time" if count == 10
            else
@@ -172,7 +172,7 @@ class AX::Application < AX::Element
   # to the dynamic `#focused?` method, but might make more sense to use
   # in some cases.
   def active?
-    spin_run_loop
+    spin
     @app.active?
   end
   alias_method :focused,  :active?
@@ -181,14 +181,14 @@ class AX::Application < AX::Element
   ##
   # Ask the app whether or not it is hidden.
   def hidden?
-    spin_run_loop
+    spin
     @app.hidden?
   end
 
   ##
   # Ask the app whether or not it is still running.
   def terminated?
-    spin_run_loop
+    spin
     @app.terminated?
   end
 
@@ -292,17 +292,17 @@ class AX::Application < AX::Element
     case name
     when :terminate
       return true if terminated?
-      @app.terminate; sleep 0.2; terminated?
+      @app.terminate; spin 0.2; terminated?
     when :force_terminate
       return true if terminated?
-      @app.forceTerminate; sleep 0.2; terminated?
+      @app.forceTerminate; spin 0.2; terminated?
     when :hide
       return true if hidden?
-      @app.hide; sleep 0.2; hidden?
+      @app.hide; spin 0.2; hidden?
     when :unhide
       return true if active?
       @app.activateWithOptions(NSApplicationActivateIgnoringOtherApps)
-      sleep 0.2; active?
+      spin 0.2; active?
     else
       super
     end
@@ -431,11 +431,6 @@ class AX::Application < AX::Element
 
 
   private
-
-  # @return [nil]
-  def spin_run_loop
-    spin(0)
-  end
 
   # @return [NSBundle]
   def bundle
