@@ -91,25 +91,25 @@ class NSArray
     ##
     # Equal to `self[1]`
     def second
-      at(1)
+      self[1]
     end
 
     ##
     # Equal to `self[2]`
     def third
-      at(2)
+      self[2]
     end
 
     ##
     # Equal to `self[3]`
     def fourth
-      at(3)
+      self[3]
     end
 
     ##
     # Equal to `self[4]`
     def fifth
-      at(4)
+      self[4]
     end
 
     ##
@@ -117,7 +117,7 @@ class NSArray
     #
     # Also known as accessing "the reddit".
     def forty_two
-      at(41)
+      self[41]
     end
 
   else
