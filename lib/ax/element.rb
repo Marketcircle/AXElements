@@ -457,11 +457,17 @@ class AX::Element
     @ref.invalid?
   end
 
-  ##
-  # Like {#respond_to?}, this is overriden to include attribute methods.
-  # Though, it does include dynamic predicate methods at the moment.
-  def methods include_super = true, include_objc_super = false
-    super.concat(attributes).concat(parameterized_attributes)
+  if on_macruby?
+    ##
+    # Like {#respond_to?}, this is overriden to include attribute methods.
+    # Though, it does include dynamic predicate methods at the moment.
+    def methods include_super = true, include_objc_super = false
+      super.concat(attributes).concat(parameterized_attributes)
+    end
+  else
+    def methods include_super = true
+      super.concat(attributes).concat(parameterized_attributes)
+    end
   end
 
   ##
