@@ -144,6 +144,10 @@ class Accessibility::Qualifier
 end
 
 
+unless defined? NSDictionary
+  NSDictionary = Hash
+end
+
 ##
 # AXElements extensions to `NSDictionary`.
 class NSDictionary
