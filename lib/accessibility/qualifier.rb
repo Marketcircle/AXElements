@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+
+require 'active_support/core_ext/object'
 require 'accessibility/translator'
 
 ##
