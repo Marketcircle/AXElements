@@ -215,17 +215,7 @@ class TestAccessibilityDSL < MiniTest::Unit::TestCase
     assert_kind_of Accessibility::Highlighter, highlighter
     assert_equal   NSColor.blueColor,          highlighter.color
     highlighter.stop
-
-    def highlight_test
-      @got_called = true
-    end
-    highlighter = dsl.highlight app.main_window, color: NSColor.greenColor, timeout: 0.1
-    NSNotificationCenter.defaultCenter.addObserver self,
-                                         selector: 'highlight_test',
-                                             name: NSWindowWillCloseNotification,
-                                           object: highlighter
-    sleep 0.1
-    assert @got_called
+    refute highlighter.visible?
   end
 
   def test_screenshot
