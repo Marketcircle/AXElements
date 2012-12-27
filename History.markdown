@@ -1,6 +1,8 @@
 # 1.0.0 
 
+  * Added `NSScreen.wakeup` to the `NSScreen` class to wake up sleeping displays
   * Added `Accessibility::SystemInfo` for getting information about the running system
+    - Added a `Battery` module for querying information about the battery status
   * Added `DSL#record` to run a screen recording of the given block (actual video!)
   * Added `Application.frontmost_application`
   * Added `Application.menu_bar_owner`
@@ -11,8 +13,14 @@
   * Added `SystemWide.desktop`
   * Added History.markdown to track notable changes
 
-  * Ported `mouse.rb` to C and moved code to [MRMouse](https://github.com/ferrous26/MRMouse)
+  * Moved MiniTest extensions to their own repository/gem [minitest-ax\_elements](https://github.com/AXElements/minitest-ax_elements)
+  * Moved RSpec extensions to their own repository/gem [rspec-ax\_elements](https://github.com/AXElements/rspec-ax_elements)
 
+  * Ported `mouse.rb` to C and moved code to [mouse](https://github.com/AXElements/mouse)
+  * Ported `core.rb` to C and moved code to [accessibility\_core](https://github.com/AXElements/accessibility_core)
+  * Ported `screen_recorder.rb` to C and moved code to [screen\_recorder](https://github.com/AXElements/screen_recorder)
+
+  * Deprecate `AX::DOCK` constant, use `AX::Application.dock` instead
   * Remove `Accessibility.application_with_bundle_identifier`; use `AX::Application.new` instead
   * Remove `Accessibility.application_with_name; use `AX::Application.new` instead
   * Remove `DSL#subtree_for`; use `Element#inspect_subtree` instead
