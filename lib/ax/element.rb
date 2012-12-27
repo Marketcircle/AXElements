@@ -79,7 +79,7 @@ class AX::Element
 
   ##
   # Get a list of elements, starting with the receiver and riding
-  # the hierarchy up to the top level object (i.e. the {AX::Application}).
+  # the hierarchy up to the top level object (i.e. the {AX::Application})
   #
   # @example
   #
@@ -88,8 +88,8 @@ class AX::Element
   #     # => [#<AX::ApplicationDockItem...>, #<AX::List...>, #<AX::Application...>]
   #
   # @return [Array<AX::Element>]
-  def ancestry *elements
-    elements = [self] if elements.empty?
+  def ancestry elements = self
+    elements = Array(elements)
     element  = elements.last
     if element.attributes.include? :parent
       ancestry(elements << element.attribute(:parent))
@@ -97,6 +97,7 @@ class AX::Element
       elements
     end
   end
+  alias_method :lineage, :ancestry
 
   ##
   # Get the process identifier for the application that the element
