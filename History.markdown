@@ -1,5 +1,7 @@
 # 1.0.0 
 
+  * AXElements can now run on MRI as well as MacRuby
+
   * Added `NSScreen.wakeup` to the `NSScreen` class to wake up sleeping displays
   * Added `Accessibility::SystemInfo` for getting information about the running system
     - Added a `Battery` module for querying information about the battery status
