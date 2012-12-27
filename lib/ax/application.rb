@@ -292,17 +292,17 @@ class AX::Application < AX::Element
     case name
     when :terminate
       return true if terminated?
-      @app.terminate; spin 0.2; terminated?
+      @app.terminate; spin 0.25; terminated?
     when :force_terminate
       return true if terminated?
-      @app.forceTerminate; spin 0.2; terminated?
+      @app.forceTerminate; spin 0.25; terminated?
     when :hide
       return true if hidden?
-      @app.hide; spin 0.2; hidden?
+      @app.hide; spin 0.25; hidden?
     when :unhide
       return true if active?
       @app.activateWithOptions(NSRunningApplication::NSApplicationActivateIgnoringOtherApps)
-      spin 0.2; active?
+      spin 0.25; active?
     else
       super
     end
