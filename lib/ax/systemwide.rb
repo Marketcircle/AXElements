@@ -13,7 +13,7 @@ class AX::SystemWide < AX::Element
 
   class << self
     ##
-    # Find and return the group that represents the dock
+    # Find and return the group that represents the desktop
     #
     # @return [AX::Group]
     def desktop
