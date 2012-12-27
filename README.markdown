@@ -1,4 +1,4 @@
-# AXElements 
+# AXElements
 
 AXElements is a DSL abstraction built on top of the Mac OS X
 Accessibility and CGEvent APIs that allows code to be written in a
@@ -64,8 +64,10 @@ The code from the demo video is right here:
 
 ## Getting Setup
 
-You will need a MacRuby nightly build for installation. You can get help setting
-up by referencing the
+You will need Ruby 1.9.3 or a MacRuby nightly build for
+installation. You can get help installing Ruby 1.9.3 from the
+[Ruby Website](http://www.ruby-lang.org), or help installing MacRuby
+from the
 [Setup MacRuby](https://github.com/MacRuby/MacRuby/wiki/Setting-up-MacRuby)
 guide on Github.
 
@@ -95,11 +97,11 @@ Once all the setup is finished, you can start up AXElements in IRB:
     irb -rubygems -rax_elements
 ```
 
-__NOTE__: If you are not using RVM, then you should use `macrake`
-instead of `rake`, and `macirb` instead of `irb`, etc.. You may also
-need to add `sudo` to your command when you install the gem. If you
-are not using RVM with MacRuby, but have RVM installed, remember to
-disable it like so:
+__NOTE__: If you are not using RVM, but are using MacRuby, then you
+should use `macrake` instead of `rake`, and `macirb` instead of `irb`,
+etc.. You may also need to add `sudo` to your command when you install
+the gem. If you are not using RVM with MacRuby, but have RVM
+installed, remember to disable it like so:
 
 ```bash
     rvm use system
