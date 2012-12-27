@@ -166,7 +166,8 @@ class TestAccessibilityDSL < MiniTest::Unit::TestCase
 
   def test_wait_for_invalidation_of_element
     app.main_window.button(title: 'Yes').perform(:press)
-    Dispatch::Queue.new("herp").after(1) do
+    Thread.new do
+      sleep 1
       app.main_window.button(title: 'No').perform(:press)
     end
 
@@ -175,7 +176,8 @@ class TestAccessibilityDSL < MiniTest::Unit::TestCase
 
   def test_wait_for_invalidation_of_wait_for
     app.main_window.button(title: 'Yes').perform(:press)
-    Dispatch::Queue.new("herp").after(1) do
+    Thread.new do
+      sleep 1
       app.main_window.button(title: 'No').perform(:press)
     end
 
@@ -211,7 +213,7 @@ class TestAccessibilityDSL < MiniTest::Unit::TestCase
   def test_highlight
     highlighter = dsl.highlight app.main_window, colour: NSColor.blueColor
     assert_kind_of Accessibility::Highlighter, highlighter
-    assert_equal   NSColor.blueColor,          highlighter.backgroundColor
+    assert_equal   NSColor.blueColor,          highlighter.color
     highlighter.stop
 
     def highlight_test

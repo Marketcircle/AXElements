@@ -32,7 +32,7 @@ class TestAXApplication < MiniTest::Unit::TestCase
     assert app.attribute :focused?
 
   ensure
-    running_app.activateWithOptions NSApplicationActivateIgnoringOtherApps
+    running_app.activateWithOptions NSRunningApplication::NSApplicationActivateIgnoringOtherApps
   end
 
   def test_can_hide_and_unhide_app
@@ -49,7 +49,7 @@ class TestAXApplication < MiniTest::Unit::TestCase
     refute app.hidden?
 
   ensure
-    running_app.activateWithOptions NSApplicationActivateIgnoringOtherApps
+    running_app.activateWithOptions NSRunningApplication::NSApplicationActivateIgnoringOtherApps
   end
 
   def test_set_calls_super
