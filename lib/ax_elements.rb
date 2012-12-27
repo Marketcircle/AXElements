@@ -9,10 +9,12 @@ include Accessibility::DSL
 require 'accessibility/system_info'
 
 ##
+# @deprecated Please use {AX::Application.dock} instead
+#
 # The Mac OS X dock application.
 #
 # @return [AX::Application]
-AX::DOCK = AX::Application.new('com.apple.dock')
+AX::DOCK = AX::Application.dock
 
 # Load explicitly defined elements that are optional
 require 'ax/button'
