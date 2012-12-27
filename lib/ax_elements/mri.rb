@@ -14,6 +14,7 @@ unless on_macruby?
   KAXPlaceholderValueAttribute = 'AXPlaceholderValue'
   KAXWindowRole                = 'AXWindow'
   KAXCloseButtonSubrole        = 'AXCloseButton'
+  KAXTrashDockItemSubrole      = 'AXTrashDockItem'
   KAXRTFForRangeParameterizedAttribute    = 'AXRTFForRange'
   KAXIsApplicationRunningAttribute        = 'AXIsApplicationRunning'
   KAXStringForRangeParameterizedAttribute = 'AXStringForRange'
