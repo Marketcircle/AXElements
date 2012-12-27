@@ -19,7 +19,7 @@ class AX::Application < AX::Element
     # @return [Boolean]
     def launch bundle
       NSWorkspace.sharedWorkspace.launchAppWithBundleIdentifier bundle,
-                                                       options: NSWorkspaceLaunchAsync,
+                                                       options: NSWorkspace::NSWorkspaceLaunchAsync,
                                 additionalEventParamDescriptor: nil,
                                               launchIdentifier: nil
     end
@@ -301,7 +301,7 @@ class AX::Application < AX::Element
       @app.hide; spin 0.2; hidden?
     when :unhide
       return true if active?
-      @app.activateWithOptions(NSApplicationActivateIgnoringOtherApps)
+      @app.activateWithOptions(NSRunningApplication::NSApplicationActivateIgnoringOtherApps)
       spin 0.2; active?
     else
       super
