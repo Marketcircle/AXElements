@@ -10,6 +10,8 @@ require 'ax/scroll_area'
 require 'ax/menu'
 require 'accessibility'
 require 'accessibility/enumerators'
+require 'accessibility/highlighter'
+
 
 ##
 # DSL methods for AXElements.
@@ -627,7 +629,6 @@ module Accessibility::DSL
   # @option opts [NSColor] :colour (NSColor.magentaColor)
   # @return [Accessibility::Highlighter]
   def highlight obj, opts = {}
-    require 'accessibility/highlighter'
     Accessibility::Highlighter.new obj.bounds, opts
   end
 
