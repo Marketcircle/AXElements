@@ -41,13 +41,4 @@ namespace :test do
     t.pattern = "test/sanity/accessibility/test_string.rb"
   end
   task :string => :ext
-
-  desc 'Run tests under CRuby (where applicable)'
-  task :cruby do
-    if ENV['RUBY_VERSION'] # using rvm
-      puts sh 'rvm 1.9.3 do rake test:string'
-    else
-      sh 'rake test:string'
-    end
-  end
 end
