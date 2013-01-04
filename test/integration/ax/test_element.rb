@@ -10,6 +10,13 @@ class TestAXElement < MiniTest::Unit::TestCase
     assert_equal app.window.close_button, list.first
   end
 
+  def test_parameterized_attribute_normalizes_ranges
+    text = app.main_window.static_text
+    expected = text.value
+    actual   = text.parameterized_attribute :string_for_range, 0..-1
+    assert_equal expected, actual
+  end
+
   def test_search_singular_returns_array
     result = app.search(:window)
     assert_kind_of AX::Window, result

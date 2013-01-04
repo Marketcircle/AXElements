@@ -187,7 +187,7 @@ class AX::Element
   # @param attr [#to_sym]
   # @param param [Object]
   def parameterized_attribute attr, param
-    param = param.relative_to(@ref.value.size) if value.kind_of? Range
+    param = param.relative_to(@ref.value.size) if param.kind_of? Range
     @ref.parameterized_attribute(TRANSLATOR.cocoaify(attr), param).to_ruby
   end
 

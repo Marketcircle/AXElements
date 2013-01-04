@@ -30,3 +30,4 @@
   * Remove `DSL#subtree_for`; use `Element#inspect_subtree` instead
 
   * Fixed fetching parameterized attributes through `Element#method_missing`
+  * Fixed `Element#parameterized_attribute` automatically normalizing `Range` parameters
