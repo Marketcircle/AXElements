@@ -22,8 +22,11 @@
   * Ported `core.rb` to C and moved code to [accessibility\_core](https://github.com/AXElements/accessibility_core)
   * Ported `screen_recorder.rb` to C and moved code to [screen\_recorder](https://github.com/AXElements/screen_recorder)
 
+  * Changed `DSL#right_click` to accept a block; block is yielded to between click down and click up events
+
   * Deprecate `AX::DOCK` constant, use `AX::Application.dock` instead
   * Remove `Accessibility.application_with_bundle_identifier`; use `AX::Application.new` instead
   * Remove `Accessibility.application_with_name; use `AX::Application.new` instead
   * Remove `DSL#subtree_for`; use `Element#inspect_subtree` instead
 
+  * Fixed fetching parameterized attributes through `Element#method_missing`
