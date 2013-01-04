@@ -22,12 +22,13 @@ class AX::ScrollArea < AX::Element
   def scroll_to element
     return if NSContainsRect(self.bounds, element.bounds)
     Mouse.move_to self.to_point
-    # calculate direction to scroll
+
+    # calculate direction and velocity for scrolling
     direction = element.position.y > self.position.y ? -5 : 5
-    until NSContainsRect(self.bounds, element.bounds)
-      Mouse.scroll direction
-    end
-    sleep 0.1
+
+    Mouse.scroll direction until NSContainsRect(self.bounds, element.bounds)
+
+    spin 0.1
   end
 
 end
