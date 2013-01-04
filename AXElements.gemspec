@@ -30,7 +30,7 @@ style that describes user interactions.
 
   s.add_runtime_dependency 'mouse',              '~> 1.1.0'
   s.add_runtime_dependency 'screen_recorder',    '~> 0.1.5'
-  s.add_runtime_dependency 'accessibility_core', '~> 0.4.0'
+  s.add_runtime_dependency 'accessibility_core', '~> 0.4.1'
   s.add_runtime_dependency 'activesupport',      '~> 3.2.10'
 
 
