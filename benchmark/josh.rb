@@ -2,6 +2,19 @@ require 'benchmark'
 require 'rubygems'
 require 'ax_elements'
 
+# This benchmark will only read and navigate through the
+# accessibility hierarchy for Safari. It will not start
+# moving your mouse around or simulate keyboard input.
+#
+# Safari will be automatically launched if it is not
+# running. Different amounts of windows and tabs will
+# affect the benchmark numbers, as will the currently
+# active tab for each window.
+#
+# Note: MacRuby sometimes crashes when running the
+# "inspect_subtree" benchmark; it seems to depend on the
+# current active tab, but I haven't looked into it yet.
+
 n      = 1_000
 safari = AX::Application.new 'com.apple.Safari'
 
