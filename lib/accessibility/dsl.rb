@@ -560,15 +560,24 @@ module Accessibility::DSL
   end
 
   ##
-  # Perform a right (aka secondary) click action.
+  # Perform a right (a.k.a. secondary) click action.
   #
   # If an argument is provided then the mouse will move to that point
   # first; the argument must respond to `#to_point`.
   #
+  # If a block is given, it will be yielded to between the click down
+  # and click up event. This behaviour is the same as passing a block
+  # to {DSL#click}.
+  #
+  # @yield Optionally take a block that is executed between click down
+  #        and click up events.
   # @param obj [#to_point]
   def right_click obj = nil, wait = 0.2
     move_mouse_to obj, wait: 0 if obj
-    Mouse.right_click
+    Mouse.right_click_down
+    yield if block_given?
+  ensure
+    Mouse.right_click_up
     sleep wait
   end
   alias_method :secondary_click, :right_click

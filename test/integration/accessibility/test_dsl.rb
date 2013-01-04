@@ -201,6 +201,18 @@ class TestAccessibilityDSL < MiniTest::Unit::TestCase
     app.main_window.set :position, orig_window_position if orig_window_position
   end
 
+  def test_right_click_with_block
+    area = app.main_window.web_area
+
+    got_called = false
+    dsl.right_click area do
+      got_called = true
+    end
+    assert got_called
+  ensure
+    dsl.click area
+  end
+
   def test_triple_click
     dummy_text = 'Lorem ipsum dolor.' * 15
     text_area.set :value, dummy_text
