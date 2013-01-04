@@ -339,7 +339,7 @@ class AX::Element
       return attribute(method)
 
     elsif @ref.parameterized_attributes.include? key
-      return paramaterized_attribute(method, args.first)
+      return parameterized_attribute(method, args.first)
 
     elsif @ref.attributes.include? KAXChildrenAttribute
       if (result = search(method, *args, &block)).blank?

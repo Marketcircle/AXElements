@@ -43,6 +43,13 @@ class TestAXElement < MiniTest::Unit::TestCase
     box.set :value, '' if box
   end
 
+  def test_parameterized_attribute_through_method_missing
+    field = app.window.static_text
+    expected = field.parameterized_attribute :string_for_range, 0..2
+    actual   = field.string_for_range 0..2
+    assert_equal expected, actual
+  end
+
   def test_invalid
     refute app.invalid?
 
