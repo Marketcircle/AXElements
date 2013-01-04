@@ -303,7 +303,7 @@ module Accessibility::DSL
   # @example
   #
   #   click window.pop_up do
-  #     scroll_menu_to pop_up.menu_item(title: "Expensive Cake")
+  #     scroll_menu_to pop_up.menu.item(title: "Expensive Cake")
   #   end
   #
   # @param element [AX::Element]
