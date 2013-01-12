@@ -432,7 +432,7 @@ class AX::Element
   def bounds
     CGRect.new(attribute(:position), attribute(:size))
   end
-  alias_method :rect, :bounds
+  alias_method :to_rect, :bounds
 
   ##
   # Get the application object for the element.

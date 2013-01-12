@@ -23,6 +23,7 @@
   * Ported `screen_recorder.rb` to C and moved code to [screen\_recorder](https://github.com/AXElements/screen_recorder)
 
   * Changed `DSL#right_click` to accept a block; block is yielded to between click down and click up events
+  * Changed `AX::Element#rect` to `AX::Element#to_rect`
 
   * Deprecate `AX::DOCK` constant, use `AX::Application.dock` instead
   * Remove `Accessibility.application_with_bundle_identifier`; use `AX::Application.new` instead
