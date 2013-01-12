@@ -480,7 +480,7 @@ module Accessibility::DSL
   # @option opts [Number] :wait (0.2) in seconds
   def move_mouse_to arg, opts = {}
     duration = opts[:duration] || 0.2
-    if Accessibility.debug? && arg.respond_to?(:bounds)
+    if Accessibility.debug? && arg.kind_of?(AX::Element)
       highlight arg, timeout: duration, color: NSColor.orangeColor
     end
     Mouse.move_to arg.to_point, duration
