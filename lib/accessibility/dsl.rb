@@ -274,7 +274,7 @@ module Accessibility::DSL
   # @param app [AX::Application]
   # @return [AX::Window]
   def show_preferences_window_for app
-    app.show_preferences_window
+    app.application.show_preferences_window
   end
 
   ##
