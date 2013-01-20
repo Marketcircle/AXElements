@@ -1,13 +1,14 @@
 # -*- coding: utf-8 -*-
+require 'accessibility/bridge'
 
 ##
 # The main AXElements namespace.
 module Accessibility
   # @return [String]
-  VERSION   = '1.0.0.gamma'
+  VERSION   = '0.9.0'
 
   # @return [String]
-  CODE_NAME = 'ルナトーン'
+  CODE_NAME = 'エネコロロ'
 
   # @return [String]
   ENGINE = case RUBY_ENGINE
