@@ -14,6 +14,7 @@
   * Added `SystemWide.status_items`
   * Added `SystemWide.desktop`
   * Added History.markdown to track notable changes
+  * Added CONTRIBUTING.markdown with much less stringent guidelines
 
   * Moved MiniTest extensions to their own repository/gem [minitest-ax\_elements](https://github.com/AXElements/minitest-ax_elements)
   * Moved RSpec extensions to their own repository/gem [rspec-ax\_elements](https://github.com/AXElements/rspec-ax_elements)

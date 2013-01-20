@@ -10,4 +10,5 @@ lib/**/*.rb
 ext/**/*{.m,.c}
 -
 History.markdown
+CONTRIBUTING.markdown
 
