@@ -107,4 +107,8 @@ class TestAXApplication < MiniTest::Unit::TestCase
     assert_equal '1.0', app.version
   end
 
+  def test_ancestor
+    assert_nil app.ancestor(:menu)
+  end
+
 end

@@ -264,6 +264,8 @@ class AX::Element
   # As the opposite of {#search}, this also takes filters, and can
   # be used to find a specific ancestor for the current element.
   #
+  # Returns `nil` if no ancestor is found.
+  #
   # @example
   #
   #   button.ancestor :window       # => #<AX::StandardWindow>
@@ -272,12 +274,13 @@ class AX::Element
   # @param kind [#to_s]
   # @param filters [Hash{Symbol=>Object}]
   # @yield Optional block used for search filtering
-  # @return [AX::Element]
+  # @return [AX::Element,nil]
   def ancestor kind, filters = {}, &block
     qualifier = Accessibility::Qualifier.new(kind, filters, &block)
-    element   = attribute :parent
+    element   = self
     until qualifier.qualifies? element
       element = element.attribute :parent
+      return nil unless element
     end
     element
   end
