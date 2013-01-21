@@ -314,6 +314,8 @@ module Accessibility::DSL
 
   ##
   # @note This is a hack to workaround an AXAPI deficiency
+  # @note This method may move or be renamed in the next release, though
+  #       it will not be removed
   #
   # Find a contextual menu that is open near the mouses current position
   #
