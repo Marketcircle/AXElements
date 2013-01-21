@@ -331,4 +331,15 @@ class TestAccessibilityDSL < MiniTest::Unit::TestCase
     pop_up.menu_item.perform :cancel unless pop_up.children.empty?
   end
 
+  def test_contextual_menu
+    Mouse.move_to app.window.web_area
+    menu = nil
+    dsl.right_click do
+      menu = dsl.contextual_menu
+    end
+    refute_nil menu, 'did not find the contextual menu'
+    refute_nil menu.item(title: 'Reload')
+    menu.perform :cancel
+  end
+
 end

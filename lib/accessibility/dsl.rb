@@ -312,6 +312,29 @@ module Accessibility::DSL
     element.ancestor(:menu).scroll_to element
   end
 
+  ##
+  # @note This is a hack to workaround an AXAPI deficiency
+  #
+  # Find a contextual menu that is open near the mouses current position
+  #
+  # This method assumes that it is being called in the block of a call to
+  # {#right_click}, and that the contextual menu is going to be very close
+  # to the mouse pointer.
+  #
+  # @return [AX::Menu,nil]
+  def contextual_menu
+    # CAST, just like high school trigonometry! :P
+    c, a, s, t = quads = Array.new(4) { Mouse.current_position }
+    c.x -= 10; c.y += 10
+    a.x += 10; a.y += 10
+    s.x += 10; s.y -= 10
+    t.x -= 10; t.y -= 10
+    elements = quads.map { |quad| element_at_point quad }
+    elements.uniq!
+    elements.map! { |el| el.kind_of?(AX::Menu) ? el : el.ancestor(:menu) }
+    elements.find { |element| element.present? }
+  end
+
 
   # @!group Polling
 
