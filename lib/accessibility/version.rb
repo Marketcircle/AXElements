@@ -7,15 +7,12 @@ module Accessibility
   VERSION   = '1.0.0.beta4'
 
   # @return [String]
-  CODE_NAME = 'エネコロロ'
-
-  # @return [String]
-  ENGINE = case RUBY_ENGINE
-           when 'macruby' then 'サンダース'
-           when 'ruby'    then 'ブースター'
-           when 'rbx'     then 'ブラッキー' # for when rbx has good cext support
-           else 'シャワーズ' # vapor(ware)eon
-           end
+  CODE_NAME = case RUBY_ENGINE
+              when 'macruby' then 'サンダース'
+              when 'ruby'    then 'ブースター'
+              when 'rbx'     then 'ブラッキー' # for when rbx has good cext support
+              else 'シャワーズ' # vapor(ware)eon
+              end
 
   ##
   # The complete version string for AXElements
@@ -25,7 +22,7 @@ module Accessibility
   #
   # @return [String]
   def self.version
-    "#{VERSION}-#{ENGINE}"
+    "#{VERSION}-#{CODE_NAME}"
   end
 
 end
