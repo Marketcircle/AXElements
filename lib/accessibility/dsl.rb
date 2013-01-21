@@ -556,6 +556,27 @@ module Accessibility::DSL
   end
 
   ##
+  # @todo Need to expose the units option? Would allow scrolling by pixel.
+  #
+  # Horizontally scrolls an arbitrary number of lines at the mouses current
+  # point on the screen
+  #
+  # Use a positive number to scroll left, and a negative number to scroll
+  # right.
+  #
+  # If the second argument is provided then the mouse will move to that
+  # point first; the argument must respond to `#to_point`.
+  #
+  # @param lines [Number]
+  # @param obj [#to_point]
+  # @param wait [Number]
+  def horizontal_scroll lines, obj = nil, wait = 0.1
+    move_mouse_to obj, wait: 0 if obj
+    Mouse.horizontal_scroll lines
+    sleep wait
+  end
+
+  ##
   # Perform a regular click.
   #
   # If a parameter is provided then the mouse will move to that point
@@ -630,6 +651,97 @@ module Accessibility::DSL
   def triple_click obj = nil, wait = 0.2
     move_mouse_to obj, wait: 0 if obj
     Mouse.triple_click
+    sleep wait
+  end
+
+  ##
+  # Perform a swipe gesture in the given `direction`
+  #
+  # Valid directions are:
+  #
+  #   - `:up`
+  #   - `:down`
+  #   - `:left`
+  #   - `:right`
+  #
+  # An optional second argument can be provided. If the argument
+  # is provided then the mouse pointer will move to that point first.
+  #
+  # @example
+  #
+  #   swipe :left, safari.web_area
+  #
+  # @param direction [Symbol]
+  # @param obj [#to_point]
+  def swipe direction, obj = nil, wait = 0.2
+    move_mouse_to obj, wait: 0 if obj
+    Mouse.swipe
+    sleep wait
+  end
+
+  ##
+  # Perform a pinch gesture in the given `direction`
+  #
+  # You can optionally specify the `magnification` factor and
+  # `position` for the pinch event.
+  #*
+  # Available pinch directions are:
+  #
+  #   - `:zoom` or `:expand`
+  #   - `:unzoom` or `:contract`
+  #
+  # Magnification is a relative magnification setting. A zoom value of
+  # `1.0` means `1.0` more than the current zoom level. `2.0` would be
+  # `2.0` levels higher than the current zoom.
+  #
+  # You can also optionally specify an object/point on screen for the mouse
+  # pointer to be moved to before the gesture begins.
+  #
+  # @param direction [Symbol]
+  # @param magnification [Float]
+  # @param obj [#to_point]
+  def pinch direction, magnification = 1, obj = nil, wait = 0.2
+    move_mouse_to obj, wait: 0 if obj
+    Mouse.pinch direction, magnification
+    sleep wait
+  end
+
+  ##
+  # Perform a rotation gesture in the given `direction` the given `angle` degrees
+  #
+  # Possible directions are:
+  #
+  #   - `:cw`, ':clockwise`, ':clock_wise` to rotate in the clockwise
+  #     direction
+  #   - `:ccw`, ':counter_clockwise`, `:counter_clock_wise` to rotate in
+  #     the the counter clockwise direction
+  #
+  # The `angle` parameter is a number of degrees to rotate. There are 360
+  # degrees in a full rotation, as you would expect in Euclidian geometry.
+  #
+  # You can also optionally specify an object/point on screen for the mouse
+  # pointer to be moved to before the gesture begins. The movement will
+  # be instantaneous.
+  #
+  # @param direction [Symbol]
+  # @param angle [Float]
+  # @param obj [#to_point]
+  def rotate direction, angle, obj = nil, wait = 0.2
+    move_mouse_to obj, wait: 0 if obj
+    Mouse.rotate direction, angle
+    sleep wait
+  end
+
+  ##
+  # Perform a smart magnify (double tap on trackpad)
+  #
+  # You can optionally specify an object/point on the screen where to perform
+  # the smart magnification. The mouse will move to this point first
+  #
+  # @param obj [#to_point]
+  def smart_magnify obj = nil, wait = 0.2
+    move_mouse_to obj, wait: 0 if obj
+    Mouse.smart_magnify
     sleep wait
   end
 
