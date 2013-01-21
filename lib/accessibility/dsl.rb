@@ -779,6 +779,7 @@ module Accessibility::DSL
   end
 
   ##
+  # @note This method is currently experimental
   # @note You will need to have GraphViz command line tools installed
   #       in order for this to work.
   #
@@ -845,7 +846,16 @@ module Accessibility::DSL
   # See (ScreenRecorder)[http://rdoc.info/gems/screen_recorder/frames]
   # for details on the screen recording options
   #
+  # @example
+  #
+  #   file = record do
+  #     run_tests
+  #   end
+  #   `open '#{file}'`
+  #
   # @param file [String]
+  # @yield
+  # @yieldparam recorder [ScreenRecorder]
   # @return [String]
   def record file = nil, &block
     require 'screen_recorder'
