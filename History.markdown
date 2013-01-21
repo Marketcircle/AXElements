@@ -2,12 +2,12 @@
 
   * AXElements can now run on MRI as well as MacRuby
 
-  * Added `DSL#pinch`
-  * Added `DSL#rotate`
+  * Added `DSL#pinch` to simulate pinch gestures
+  * Added `DSL#rotate` to simulate rotation gestures
+  * Added `DSL#swipe` to simulate swipe gestures
+  * Added `DSL#smart_magnify` to simulate smart magnification (two finger double tap)
   * Added `DSL#horizontal_scroll`
-  * Added `DSL#swipe`
-  * Added `DSL#smart_magnify`
-  * Added `DSL#contextual_menu` hack for finding contextual menus
+  * Added `DSL#contextual_menu` hack for finding contextual menus (WIP)
   * Added `NSScreen.wakeup` to the `NSScreen` class to wake up sleeping displays
   * Added `Accessibility::SystemInfo` for getting information about the running system
     - Added a `Battery` module for querying information about the battery status
@@ -22,8 +22,8 @@
   * Added History.markdown to track notable changes
   * Added CONTRIBUTING.markdown with much less stringent guidelines
 
-  * Moved MiniTest extensions to their own repository/gem [minitest-ax\_elements](https://github.com/AXElements/minitest-ax_elements)
-  * Moved RSpec extensions to their own repository/gem [rspec-ax\_elements](https://github.com/AXElements/rspec-ax_elements)
+  * Moved MiniTest extensions to their own gem/repository [minitest-ax\_elements](https://github.com/AXElements/minitest-ax_elements)
+  * Moved RSpec extensions to their own gem/repository [rspec-ax\_elements](https://github.com/AXElements/rspec-ax_elements)
 
   * Ported `mouse.rb` to C and moved code to [mouse](https://github.com/AXElements/mouse)
   * Ported `core.rb` to C and moved code to [accessibility\_core](https://github.com/AXElements/accessibility_core)
