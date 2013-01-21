@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-require 'accessibility/bridge'
 
 ##
 # The main AXElements namespace.
