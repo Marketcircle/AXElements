@@ -675,7 +675,7 @@ module Accessibility::DSL
   # @param obj [#to_point]
   def swipe direction, obj = nil, wait = 0.2
     move_mouse_to obj, wait: 0 if obj
-    Mouse.swipe
+    Mouse.swipe direction
     sleep wait
   end
 
